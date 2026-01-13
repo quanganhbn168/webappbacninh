@@ -1,0 +1,50 @@
+/* AdminLTE Custom Polishing */
+:root {
+    --primary: #f59e0b;
+    --dark: #0f172a;
+}
+
+.main-sidebar {
+    background-color: var(--dark) !important;
+}
+
+.brand-link {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav-sidebar .nav-item>.nav-link.active,
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+    background-color: var(--primary) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+}
+
+.small-box {
+    border-radius: 15px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+.card {
+    border-radius: 12px !important;
+}
+
+.card-primary.card-outline {
+    border-top: 3px solid var(--primary) !important;
+}
+
+.btn-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+.btn-primary:hover {
+    background-color: #d97706 !important;
+    border-color: #d97706 !important;
+}
+
+/* Pace custom color */
+.pace .pace-progress {
+    background: var(--primary) !important;
+}

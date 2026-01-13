@@ -6,25 +6,37 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     {{-- SEO cơ bản --}}
-    <title>@yield('title', 'WebApp Bắc Ninh - Thiết kế website chuyên nghiệp')</title>
+    <title>@yield('meta_title', 'WebApp Bắc Ninh - Thiết kế website chuyên nghiệp')</title>
     <meta name="description" content="@yield('meta_description', 'Thiết kế web theo ngành nghề, chuẩn SEO, dễ dùng và tối ưu chuyển đổi.')">
     <meta name="keywords" content="@yield('meta_keywords', 'thiết kế web, web bắc ninh, website bán hàng, web tuyển sinh, landing page')">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url()->current() }}" />
 
     {{-- Open Graph (Facebook) --}}
-    <meta property="og:title" content="@yield('title', 'WebApp Bắc Ninh')" />
+    <meta property="og:title" content="@yield('meta_title', 'WebApp Bắc Ninh - Thiết kế website chuyên nghiệp')" />
     <meta property="og:description" content="@yield('meta_description', 'Thiết kế web theo ngành nghề, chuẩn SEO')" />
     <meta property="og:url" content="{{ url()->current() }}" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="@yield('meta_image', asset('images/og-image.jpg'))" />
+    <meta property="og:image" content="@yield('meta_image', asset($site_settings['default_og_image'] ?? 'images/default-og.jpg'))" />
+
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('meta_title', $site_settings['site_name'] ?? 'WebApp Bắc Ninh')">
+    <meta name="twitter:description" content="@yield('meta_description', 'Thiết kế web theo ngành nghề, chuẩn SEO')">
+    <meta name="twitter:image" content="@yield('meta_image', asset($site_settings['default_og_image'] ?? 'images/default-og.jpg'))">
 
     {{-- Favicon --}}
-    <link rel="icon" href="{{ asset('images/webapp.svg') }}" type="image/x-icon" />
-    <link rel="apple-touch-icon" href="{{ asset('images/webapp.svg') }}" />
+    <link rel="icon" href="{{ asset($site_settings['site_favicon'] ?? 'images/webapp.svg') }}" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="{{ asset($site_settings['site_favicon'] ?? 'images/webapp.svg') }}" />
 
-    {{-- Preload fonts nếu có --}}
-    {{-- <link rel="preload" as="font" href="{{ asset('fonts/your-font.woff2') }}" type="font/woff2" crossorigin="anonymous"> --}}
+    {{-- Fonts --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif !important; }
+        .ls-1 { letter-spacing: 0.5px; }
+    </style>
 
     {{-- CSS --}}
     @vite('resources/scss/app-user.scss')
@@ -39,6 +51,17 @@
 
     {{-- Content --}}
     <main class="min-vh-100">
+        {{-- Flash Messages --}}
+        @if(session('success'))
+            <div class="alert alert-success text-center m-0">{{ session('success') }}</div>
+        @endif
+        @if(session('warning'))
+            <div class="alert alert-warning text-center m-0">{{ session('warning') }}</div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger text-center m-0">{{ session('error') }}</div>
+        @endif
+
         @yield('content')
     </main>
 

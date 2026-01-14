@@ -12,7 +12,7 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        if (Auth::check() && Auth::user()->hasRole('super_admin')) {
+        if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->hasRole('super_admin')) {
             return redirect()->route('admin.dashboard');
         }
         return view('vendor.adminlte.auth.login');
@@ -25,13 +25,13 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            if (Auth::user()->hasRole('super_admin')) {
+        if (Auth::guard('admin')->attempt($credentials)) {
+            if (Auth::guard('admin')->user()->hasRole('super_admin')) {
                 $request->session()->regenerate();
                 return redirect()->intended(route('admin.dashboard'));
             }
             
-            Auth::logout();
+            Auth::guard('admin')->logout();
             return back()->withErrors([
                 'email' => 'Tài khoản không có quyền truy cập quản trị.',
             ]);
@@ -44,7 +44,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('admin.login');

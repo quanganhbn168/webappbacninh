@@ -15,7 +15,7 @@ class LandlordAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || !auth()->user()->hasRole('super_admin')) {
+        if (!auth('admin')->check() || !auth('admin')->user()->hasRole('super_admin')) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Unauthorized landlord access.'], 403);
             }

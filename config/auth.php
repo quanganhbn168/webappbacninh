@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'admin' => [ // Separate guard for Admin/Landlord
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
     ],
 
     /*

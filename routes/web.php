@@ -86,7 +86,7 @@ Route::prefix('system029/admin')->group(function () {
 });
 
 // Landlord Admin Panel (Obfuscated)
-Route::prefix('system029/admin')->middleware(['auth', 'landlord'])->group(function () {
+Route::prefix('system029/admin')->middleware(['auth:admin', 'landlord'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     
     // Tenants

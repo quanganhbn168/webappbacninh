@@ -30,6 +30,14 @@
 @stop
 
 @section('css')
+    <style>
+        /* Fix Avatar Jumping in Navbar */
+        .navbar-nav .user-menu .user-image {
+            width: 30px !important;
+            height: 30px !important;
+            object-fit: cover;
+        }
+    </style>
     @stack('admin_css')
 @stop
 

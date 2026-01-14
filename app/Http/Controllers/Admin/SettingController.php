@@ -21,7 +21,7 @@ class SettingController extends Controller
         $data = $request->except('_token');
         
         // Image fields that should be uploaded
-        $imageFields = ['site_logo_wide', 'site_logo_white', 'site_logo_square', 'site_favicon'];
+        $imageFields = ['site_logo_wide', 'site_logo_white', 'site_logo_square', 'site_favicon', 'default_og_image'];
         
         foreach ($data as $key => $value) {
             $setting = Setting::where('key', $key)->first();

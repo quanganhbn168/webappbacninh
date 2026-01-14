@@ -57,6 +57,13 @@
                                                     <small class="text-muted">Được sử dụng làm thẻ <code>alt</code> cho logo và tiêu đề trang.</small>
                                                 </div>
 
+                                                {{-- Site Description --}}
+                                                <div class="form-group mb-3">
+                                                    <label class="font-weight-bold">Mô tả Website (Meta Description)</label>
+                                                    <textarea name="site_description" class="form-control" rows="3">{{ $items->firstWhere('key', 'site_description')->value ?? '' }}</textarea>
+                                                    <small class="text-muted">Mô tả chung cho toàn trang (SEO default).</small>
+                                                </div>
+
                                                 {{-- Site Short Name --}}
                                                 <div class="form-group mb-3">
                                                     <label class="font-weight-bold">Tên viết tắt (adminlte.logo)</label>

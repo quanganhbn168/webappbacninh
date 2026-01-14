@@ -53,8 +53,15 @@ class TiktokService
             
             if ($response->successful()) {
                 $data = $response->json();
-                if (isset($data['data']['play'])) {
-                    return $data['data']['play']; // Link video không logo
+                
+                // Ưu tiên lấy HD nếu có (hdplay)
+                if (!empty($data['data']['hdplay'])) {
+                    return $data['data']['hdplay']; 
+                }
+
+                // Nếu không có HD thì lấy bản thường (play)
+                if (!empty($data['data']['play'])) {
+                    return $data['data']['play'];
                 }
             }
         } catch (Exception $e) {

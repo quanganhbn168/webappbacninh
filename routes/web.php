@@ -104,6 +104,11 @@ Route::prefix('system029/admin')->middleware(['auth:admin', 'landlord'])->group(
     // Tenants
     Route::resource('tenants', TenantController::class)->names('admin.tenants');
     
+    // Mini Apps
+    Route::post('mini-apps/update-order', [\App\Http\Controllers\Admin\MiniAppController::class, 'updateOrder'])->name('admin.mini-apps.update-order');
+    Route::delete('mini-apps/bulk-destroy', [\App\Http\Controllers\Admin\MiniAppController::class, 'bulkDestroy'])->name('admin.mini-apps.bulk-destroy');
+    Route::resource('mini-apps', \App\Http\Controllers\Admin\MiniAppController::class)->names('admin.mini-apps');
+
     // Blog
     Route::post('blog/upload-image', [PostController::class, 'uploadImage'])->name('admin.blog.upload');
     Route::get('blog/check-slug', [PostController::class, 'checkSlug'])->name('admin.blog.check-slug');
@@ -130,6 +135,16 @@ Route::prefix('system029/admin')->middleware(['auth:admin', 'landlord'])->group(
     Route::post('ad-banners/bulk-destroy', [AdBannerController::class, 'bulkDestroy'])->name('admin.ad-banners.bulkDestroy');
     Route::post('ad-banners/update-order', [AdBannerController::class, 'updateOrder'])->name('admin.ad-banners.updateOrder');
     Route::resource('ad-banners', AdBannerController::class)->names('admin.ad-banners');
+
+    // Services
+    Route::post('services/bulk-destroy', [\App\Http\Controllers\Admin\ServiceController::class, 'bulkDestroy'])->name('admin.services.bulkDestroy');
+    Route::post('services/update-order', [\App\Http\Controllers\Admin\ServiceController::class, 'updateOrder'])->name('admin.services.updateOrder');
+    Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)->names('admin.services');
+
+    // Templates
+    Route::post('templates/bulk-destroy', [\App\Http\Controllers\Admin\TemplateController::class, 'bulkDestroy'])->name('admin.templates.bulkDestroy');
+    Route::post('templates/update-order', [\App\Http\Controllers\Admin\TemplateController::class, 'updateOrder'])->name('admin.templates.updateOrder');
+    Route::resource('templates', \App\Http\Controllers\Admin\TemplateController::class)->names('admin.templates');
     
 });
 

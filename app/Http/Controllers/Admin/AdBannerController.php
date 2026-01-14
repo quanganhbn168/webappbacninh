@@ -12,11 +12,23 @@ use Illuminate\Http\Request;
 
 class AdBannerController extends Controller
 {
+    use \App\Traits\HasBulkActions;
+
     protected AdBannerService $adBannerService;
 
     public function __construct(AdBannerService $adBannerService)
     {
         $this->adBannerService = $adBannerService;
+    }
+
+    protected function getService()
+    {
+        return $this->adBannerService;
+    }
+
+    protected function getIndexRouteName()
+    {
+        return 'admin.ad-banners.index';
     }
 
     public function index()
@@ -64,27 +76,5 @@ class AdBannerController extends Controller
         $this->adBannerService->delete($adBanner);
 
         return redirect()->route('admin.ad-banners.index')->with('success', 'Xóa banner thành công!');
-    }
-
-    public function updateOrder(Request $request)
-    {
-        $request->validate(['order' => 'required|array']);
-        
-        $this->adBannerService->updateOrder($request->order);
-
-        return response()->json(['success' => true]);
-    }
-
-    public function bulkDestroy(Request $request)
-    {
-        $ids = json_decode($request->ids, true);
-        
-        if (empty($ids)) {
-            return redirect()->route('admin.ad-banners.index')->with('error', 'Không có mục nào được chọn.');
-        }
-
-        $deleted = $this->adBannerService->bulkDelete($ids);
-
-        return redirect()->route('admin.ad-banners.index')->with('success', "Đã xóa {$deleted} banner!");
     }
 }

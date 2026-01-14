@@ -30,8 +30,8 @@
                                        data-toggle="pill" 
                                        href="#tab-{{ $group }}" 
                                        role="tab">
-                                       <i class="fas fa-{{ $group == 'branding' ? 'image' : ($group == 'contact' ? 'address-card' : 'share-nodes') }} mr-1"></i>
-                                       {{ ucfirst($group) }}
+                                       <i class="fas fa-{{ $group == 'branding' ? 'image' : ($group == 'contact' ? 'address-card' : ($group == 'home' ? 'home' : 'share-nodes')) }} mr-1"></i>
+                                       {{ $group == 'home' ? 'Trang chủ' : ucfirst($group) }}
                                     </a>
                                 </li>
                             @endforeach
@@ -211,6 +211,62 @@
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                                                         <button type="button" class="btn btn-primary" onclick="submitTestMail()">Gửi ngay</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    @elseif($group === 'home')
+                                        {{-- Custom Layout for Homepage --}}
+                                        <div class="row">
+                                            {{-- Hero Section --}}
+                                            <div class="col-md-12 mb-4">
+                                                <div class="card card-outline card-primary h-100">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title font-weight-bold"><i class="fas fa-star mr-1"></i> Hero Section (Banner Chính)</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label>Badge Text (Ví dụ: Beta 1.0)</label>
+                                                                    <input type="text" name="hero_badge_text" class="form-control" value="{{ $items->firstWhere('key', 'hero_badge_text')->value ?? '' }}">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Tiêu đề chính (Hỗ trợ HTML)</label>
+                                                                    <textarea name="hero_title" class="form-control" rows="3">{{ $items->firstWhere('key', 'hero_title')->value ?? '' }}</textarea>
+                                                                    <small class="text-muted">Dùng thẻ &lt;br&gt; để xuống dòng, &lt;span&gt; để tô màu.</small>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Mô tả ngắn</label>
+                                                                    <textarea name="hero_description" class="form-control" rows="3">{{ $items->firstWhere('key', 'hero_description')->value ?? '' }}</textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label>Nút chính - Text</label>
+                                                                    <input type="text" name="hero_btn_primary_text" class="form-control" value="{{ $items->firstWhere('key', 'hero_btn_primary_text')->value ?? '' }}">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Nút chính - URL</label>
+                                                                    <input type="text" name="hero_btn_primary_url" class="form-control" value="{{ $items->firstWhere('key', 'hero_btn_primary_url')->value ?? '' }}">
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-6">
+                                                                        <div class="form-group">
+                                                                            <label>Nút phụ - Text</label>
+                                                                            <input type="text" name="hero_btn_secondary_text" class="form-control" value="{{ $items->firstWhere('key', 'hero_btn_secondary_text')->value ?? '' }}">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <div class="form-group">
+                                                                            <label>Nút phụ - URL</label>
+                                                                            <input type="text" name="hero_btn_secondary_url" class="form-control" value="{{ $items->firstWhere('key', 'hero_btn_secondary_url')->value ?? '' }}">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

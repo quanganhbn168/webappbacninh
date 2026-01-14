@@ -26,6 +26,9 @@ class SettingsServiceProvider extends ServiceProvider
             try {
                 $settings = Setting::all();
 
+                // Share settings globally with all views
+                \Illuminate\Support\Facades\View::share('settings', $settings->keyBy('key'));
+
                 foreach ($settings as $setting) {
                     if ($setting->key === 'site_short_name' && !empty($setting->value)) {
                         Config::set('adminlte.logo', '<b>' . $setting->value . '</b>');

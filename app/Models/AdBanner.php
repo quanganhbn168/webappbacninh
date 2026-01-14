@@ -55,6 +55,10 @@ class AdBanner extends Model
      */
     public function getImageUrlAttribute(): string
     {
+        if ($this->image && (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://'))) {
+            return $this->image;
+        }
+
         return $this->image ? asset($this->image) : asset('images/ad-placeholder.jpg');
     }
 }

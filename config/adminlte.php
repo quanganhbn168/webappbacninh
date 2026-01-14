@@ -342,6 +342,11 @@ return [
             'url'  => 'admin/services',
             'icon' => 'fas fa-fw fa-concierge-bell',
         ],
+        [
+            'text' => 'Hệ sinh thái (Mini Apps)',
+            'route'  => 'admin.mini-apps.index',
+            'icon' => 'fas fa-fw fa-cubes',
+        ],
         ['header' => 'NỘI DUNG'],
         [
             'text' => 'Blog & Tin tức',

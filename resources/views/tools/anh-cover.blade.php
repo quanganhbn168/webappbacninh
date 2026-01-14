@@ -109,21 +109,40 @@
                                 </div>
                             </div>
                             <div class="col-md-7">
-                                <form action="{{ route('cover.download') }}" method="POST" class="h-100 d-flex flex-column justify-content-center">
+                                <form action="{{ route('cover.download') }}" method="POST" class="d-flex flex-column justify-content-center">
                                     @csrf
                                     <input type="hidden" name="image_url" :value="result.thumbnail_url">
                                     <input type="hidden" name="filename" :value="result.title">
                                     <input type="hidden" name="provider" :value="result.provider">
 
-                                    <div class="mb-4">
-                                        <label for="title" class="form-label fw-bold text-secondary text-uppercase small">Tiêu đề (Tên file ảnh)</label>
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label fw-bold text-secondary text-uppercase small">Tiêu đề</label>
                                         <input type="text" id="title" x-model="result.title" class="form-control form-control-lg">
                                     </div>
 
-                                    <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm">
-                                        <i class="fas fa-download me-2"></i> Tải ảnh về máy
+                                    <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm mb-3">
+                                        <i class="fas fa-image me-2"></i> Tải Ảnh Cover (JPG)
                                     </button>
                                 </form>
+
+                                {{-- Form Tải Video (Nếu có) --}}
+                                <template x-if="result.video_url">
+                                    <form action="{{ route('cover.download.video') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="video_url" :value="result.video_url">
+                                        <input type="hidden" name="filename" :value="result.title">
+                                        
+                                        <button type="submit" class="btn btn-danger btn-lg w-100 fw-bold shadow-sm">
+                                            <i class="fas fa-video me-2"></i> Tải Video (No Watermark)
+                                        </button>
+                                    </form>
+                                </template>
+                                
+                                <template x-if="!result.video_url && result.provider === 'tiktok'">
+                                    <div class="alert alert-warning small mt-2">
+                                        <i class="fas fa-exclamation-triangle me-1"></i> Không tìm thấy link video không logo.
+                                    </div>
+                                </template>
                             </div>
                         </div>
                     </div>

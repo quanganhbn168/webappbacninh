@@ -55,6 +55,13 @@
                                 </div>
                             </div>
                             
+                            <div class="mb-4 form-check">
+                                <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                                <label class="form-check-label small text-muted" for="terms">
+                                    Tôi đồng ý với <a href="#" class="text-primary text-decoration-none">Điều khoản & Chính sách</a>
+                                </label>
+                            </div>
+                            
                             <div class="d-grid mb-3">
                                 <button type="submit" class="btn btn-primary btn-lg shadow-sm fw-bold">Đăng ký ngay</button>
                             </div>
@@ -68,7 +75,8 @@
                                 <a href="{{ route('social.login', 'google') }}" class="btn btn-outline-danger w-50 fw-bold">
                                     <i class="fab fa-google me-2"></i> Google
                                 </a>
-                                <a href="{{ route('social.login', 'facebook') }}" class="btn btn-outline-primary w-50 fw-bold">
+                                {{-- Custom Style for Facebook Blue --}}
+                                <a href="{{ route('social.login', 'facebook') }}" class="btn w-50 fw-bold" style="color: #1877F2; border-color: #1877F2; background-color: transparent;" onmouseover="this.style.backgroundColor='#1877F2'; this.style.color='white'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#1877F2'">
                                     <i class="fab fa-facebook-f me-2"></i> Facebook
                                 </a>
                             </div>

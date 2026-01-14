@@ -60,7 +60,8 @@
                                 <a href="{{ route('social.login', 'google') }}" class="btn btn-outline-danger w-50 fw-bold">
                                     <i class="fab fa-google me-2"></i> Google
                                 </a>
-                                <a href="{{ route('social.login', 'facebook') }}" class="btn btn-outline-primary w-50 fw-bold">
+                                {{-- Custom Style for Facebook Blue --}}
+                                <a href="{{ route('social.login', 'facebook') }}" class="btn w-50 fw-bold" style="color: #1877F2; border-color: #1877F2; background-color: transparent;" onmouseover="this.style.backgroundColor='#1877F2'; this.style.color='white'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#1877F2'">
                                     <i class="fab fa-facebook-f me-2"></i> Facebook
                                 </a>
                             </div>

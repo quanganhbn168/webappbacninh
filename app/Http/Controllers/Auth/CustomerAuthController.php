@@ -43,6 +43,9 @@ class CustomerAuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'terms' => 'accepted',
+        ], [
+            'terms.accepted' => 'Bạn phải đồng ý với điều khoản và chính sách.',
         ]);
 
         $user = User::create([

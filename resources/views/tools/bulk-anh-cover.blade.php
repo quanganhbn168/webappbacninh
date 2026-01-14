@@ -37,6 +37,11 @@
         <div class="text-center mb-6">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Lấy Ảnh Cover Video — Hàng loạt</h1>
             <p class="text-gray-500 mt-2">Dán nhiều link YouTube/TikTok, lấy thumbnail, sửa tiêu đề và lưu tất cả.</p>
+            <div class="mt-4">
+                <a href="{{ route('cover.page') }}" class="inline-block px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition">
+                    &larr; Quay lại chế độ tải đơn lẻ
+                </a>
+            </div>
         </div>
 
         {{-- Khu dán link --}}

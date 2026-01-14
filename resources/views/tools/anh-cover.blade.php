@@ -74,6 +74,11 @@
             <div class="text-center mb-6">
                 <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Lấy Ảnh Cover Video</h1>
                 <p class="text-gray-500 mt-2">Dán link YouTube hoặc TikTok để lấy ảnh thumbnail chất lượng cao.</p>
+                <div class="mt-4">
+                    <a href="{{ route('cover.bulk.page') }}" class="inline-block px-4 py-2 bg-purple-100 text-purple-700 font-medium rounded-lg hover:bg-purple-200 transition">
+                        ⚡ Chuyển sang chế độ tải hàng loạt (Bulk) &rarr;
+                    </a>
+                </div>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-2">

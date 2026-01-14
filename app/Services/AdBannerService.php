@@ -3,11 +3,10 @@
 namespace App\Services;
 
 use App\Models\AdBanner;
-use Illuminate\Http\UploadedFile;
 
 class AdBannerService
 {
-    public function create(array $data, ?UploadedFile $image = null): AdBanner
+    public function create(array $data): AdBanner
     {
         $banner = AdBanner::create([
             'name' => $data['name'],
@@ -21,14 +20,15 @@ class AdBannerService
             'ends_at' => $data['ends_at'] ?? null,
         ]);
 
-        if ($image) {
-            $banner->addMedia($image)->toMediaCollection('banner_image');
+        // Handle LFM path (string)
+        if (!empty($data['banner_image'])) {
+            $this->addMediaFromPath($banner, $data['banner_image'], 'banner_image');
         }
 
         return $banner;
     }
 
-    public function update(AdBanner $banner, array $data, ?UploadedFile $image = null): AdBanner
+    public function update(AdBanner $banner, array $data): AdBanner
     {
         $banner->update([
             'name' => $data['name'],
@@ -42,12 +42,28 @@ class AdBannerService
             'ends_at' => $data['ends_at'] ?? null,
         ]);
 
-        if ($image) {
+        // Handle LFM path (string) - only update if new image provided
+        if (!empty($data['banner_image']) && $data['banner_image'] !== $banner->getFirstMediaUrl('banner_image')) {
             $banner->clearMediaCollection('banner_image');
-            $banner->addMedia($image)->toMediaCollection('banner_image');
+            $this->addMediaFromPath($banner, $data['banner_image'], 'banner_image');
         }
 
         return $banner;
+    }
+
+    /**
+     * Add media from LFM path.
+     */
+    private function addMediaFromPath($model, string $path, string $collection): void
+    {
+        // Convert relative path to absolute path
+        $absolutePath = public_path(ltrim($path, '/'));
+        
+        if (file_exists($absolutePath)) {
+            $model->addMedia($absolutePath)
+                ->preservingOriginal()
+                ->toMediaCollection($collection);
+        }
     }
 
     public function delete(AdBanner $banner): bool

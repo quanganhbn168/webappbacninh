@@ -33,10 +33,10 @@ class ProjectController extends Controller
 
     public function store(StoreProjectRequest $request)
     {
-        $this->projectService->create(
-            $request->validated(),
-            $request->file('featured_image')
-        );
+        $data = $request->validated();
+        $data['is_featured'] = $request->has('is_featured');
+        
+        $this->projectService->create($data);
 
         return redirect()->route('admin.projects.index')->with('success', 'Tạo dự án thành công!');
     }
@@ -49,11 +49,10 @@ class ProjectController extends Controller
 
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        $this->projectService->update(
-            $project,
-            $request->validated(),
-            $request->file('featured_image')
-        );
+        $data = $request->validated();
+        $data['is_featured'] = $request->has('is_featured');
+        
+        $this->projectService->update($project, $data);
 
         return redirect()->route('admin.projects.index')->with('success', 'Cập nhật dự án thành công!');
     }

@@ -37,7 +37,7 @@ class AdBannerController extends Controller
         $data['is_active'] = $request->has('is_active');
         $data['open_new_tab'] = $request->has('open_new_tab');
 
-        $this->adBannerService->create($data, $request->file('banner_image'));
+        $this->adBannerService->create($data);
 
         return redirect()->route('admin.ad-banners.index')->with('success', 'Tạo banner thành công!');
     }
@@ -54,7 +54,7 @@ class AdBannerController extends Controller
         $data['is_active'] = $request->has('is_active');
         $data['open_new_tab'] = $request->has('open_new_tab');
 
-        $this->adBannerService->update($adBanner, $data, $request->file('banner_image'));
+        $this->adBannerService->update($adBanner, $data);
 
         return redirect()->route('admin.ad-banners.index')->with('success', 'Cập nhật banner thành công!');
     }

@@ -3,14 +3,13 @@
 namespace App\Services;
 
 use App\Models\Project;
-use Illuminate\Http\UploadedFile;
 
 class ProjectService
 {
     /**
      * Create a new project.
      */
-    public function create(array $data, ?UploadedFile $image = null): Project
+    public function create(array $data): Project
     {
         $project = Project::create([
             'title' => $data['title'],
@@ -21,8 +20,9 @@ class ProjectService
             'order' => $data['order'] ?? 0,
         ]);
 
-        if ($image) {
-            $project->addMedia($image)->toMediaCollection('featured_image');
+        // Handle LFM path (string)
+        if (!empty($data['featured_image'])) {
+            $this->addMediaFromPath($project, $data['featured_image'], 'featured_image');
         }
 
         return $project;
@@ -31,7 +31,7 @@ class ProjectService
     /**
      * Update an existing project.
      */
-    public function update(Project $project, array $data, ?UploadedFile $image = null): Project
+    public function update(Project $project, array $data): Project
     {
         $project->update([
             'title' => $data['title'],
@@ -42,12 +42,28 @@ class ProjectService
             'order' => $data['order'] ?? 0,
         ]);
 
-        if ($image) {
+        // Handle LFM path (string) - only update if new image provided
+        if (!empty($data['featured_image']) && $data['featured_image'] !== $project->getFirstMediaUrl('featured_image')) {
             $project->clearMediaCollection('featured_image');
-            $project->addMedia($image)->toMediaCollection('featured_image');
+            $this->addMediaFromPath($project, $data['featured_image'], 'featured_image');
         }
 
         return $project;
+    }
+
+    /**
+     * Add media from LFM path.
+     */
+    private function addMediaFromPath($model, string $path, string $collection): void
+    {
+        // Convert relative path to absolute path
+        $absolutePath = public_path(ltrim($path, '/'));
+        
+        if (file_exists($absolutePath)) {
+            $model->addMedia($absolutePath)
+                ->preservingOriginal()
+                ->toMediaCollection($collection);
+        }
     }
 
     /**

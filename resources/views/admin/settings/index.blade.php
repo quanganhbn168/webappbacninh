@@ -8,10 +8,6 @@
     <li class="breadcrumb-item active">Settings</li>
 @stop
 
-@push('css')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-@endpush
-
 @section('admin_content')
     <div class="row">
         <div class="col-md-12">
@@ -371,7 +367,12 @@
         form.submit();
     }
 
-    // SweetAlert2 Toast for success
+</script>
+@endpush
+
+@push('admin_js')
+<script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
+<script>
     @if(session('success'))
     const Toast = Swal.mixin({
         toast: true,

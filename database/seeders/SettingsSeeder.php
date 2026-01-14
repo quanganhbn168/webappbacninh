@@ -21,6 +21,23 @@ class SettingsSeeder extends Seeder
             ['key' => 'contact_email', 'value' => 'contact@webappbacninh.com', 'group' => 'contact'],
             ['key' => 'contact_phone', 'value' => '0987654321', 'group' => 'contact'],
             ['key' => 'contact_address', 'value' => 'TP. Bắc Ninh, Bắc Ninh', 'group' => 'contact'],
+
+            // Mail Configuration
+            ['key' => 'mail_mailer', 'value' => 'smtp', 'group' => 'mail'],
+            ['key' => 'mail_host', 'value' => 'smtp.gmail.com', 'group' => 'mail'],
+            ['key' => 'mail_port', 'value' => '587', 'group' => 'mail'],
+            ['key' => 'mail_username', 'value' => '', 'group' => 'mail'],
+            ['key' => 'mail_password', 'value' => '', 'group' => 'mail'],
+            ['key' => 'mail_encryption', 'value' => 'tls', 'group' => 'mail'],
+            ['key' => 'mail_from_address', 'value' => 'noreply@webappbacninh.com', 'group' => 'mail'],
+            ['key' => 'mail_from_name', 'value' => 'WebApp Bắc Ninh', 'group' => 'mail'],
+
+            // Payment & Integrations
+            ['key' => 'payment_momo_api_key', 'value' => '', 'group' => 'payment'],
+            ['key' => 'payment_zalo_app_id', 'value' => '', 'group' => 'payment'],
+            ['key' => 'payment_sepay_api_key', 'value' => '', 'group' => 'payment'],
+            ['key' => 'payment_vietqr_client_id', 'value' => '', 'group' => 'payment'],
+            ['key' => 'payment_vietqr_api_key', 'value' => '', 'group' => 'payment'],
             
             // SEO & Social
             ['key' => 'default_og_image', 'value' => 'images/default-og.jpg', 'group' => 'seo'], // Ảnh chia sẻ mặc định

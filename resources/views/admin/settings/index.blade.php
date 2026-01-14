@@ -133,7 +133,131 @@
                                                 <div class="col-sm-9">
                                                     @if(Str::contains($setting->key, 'email'))
                                                         <input type="email" name="{{ $setting->key }}" class="form-control" value="{{ $setting->value }}">
-                                                    @elseif(Str::contains($setting->key, ['og_image']))
+                                                    @elseif($group === 'mail')
+                                        {{-- Custom Layout for Mail --}}
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle mr-1"></i> Cấu hình gửi mail (SMTP). Thay đổi sẽ có hiệu lực ngay lập tức.
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Mailer</label>
+                                                    <input type="text" name="mail_mailer" class="form-control" value="{{ $items->firstWhere('key', 'mail_mailer')->value ?? 'smtp' }}" readonly>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Host (Ví dụ: smtp.gmail.com)</label>
+                                                    <input type="text" name="mail_host" class="form-control" value="{{ $items->firstWhere('key', 'mail_host')->value ?? '' }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Port (Ví dụ: 587)</label>
+                                                    <input type="number" name="mail_port" class="form-control" value="{{ $items->firstWhere('key', 'mail_port')->value ?? '' }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Encryption (Mã hóa)</label>
+                                                    <select name="mail_encryption" class="form-control">
+                                                        <option value="tls" {{ ($items->firstWhere('key', 'mail_encryption')->value ?? '') == 'tls' ? 'selected' : '' }}>TLS</option>
+                                                        <option value="ssl" {{ ($items->firstWhere('key', 'mail_encryption')->value ?? '') == 'ssl' ? 'selected' : '' }}>SSL</option>
+                                                        <option value="" {{ ($items->firstWhere('key', 'mail_encryption')->value ?? '') == '' ? 'selected' : '' }}>None</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Username (Email gửi)</label>
+                                                    <input type="text" name="mail_username" class="form-control" value="{{ $items->firstWhere('key', 'mail_username')->value ?? '' }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Password (Mật khẩu ứng dụng)</label>
+                                                    <input type="password" name="mail_password" class="form-control" value="{{ $items->firstWhere('key', 'mail_password')->value ?? '' }}">
+                                                    <small class="text-muted">Đối với Gmail, hãy sử dụng Mật khẩu ứng dụng (App Password).</small>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>From Address (Địa chỉ gửi hiển thị)</label>
+                                                    <input type="text" name="mail_from_address" class="form-control" value="{{ $items->firstWhere('key', 'mail_from_address')->value ?? '' }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>From Name (Tên người gửi)</label>
+                                                    <input type="text" name="mail_from_name" class="form-control" value="{{ $items->firstWhere('key', 'mail_from_name')->value ?? '' }}">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    @elseif($group === 'payment')
+                                        {{-- Custom Layout for Payment --}}
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-lock mr-1"></i> Các thông tin này là bảo mật. Vui lòng không chia sẻ cho người lạ.
+                                        </div>
+
+                                        <div class="row">
+                                            {{-- MOMO --}}
+                                            <div class="col-md-6">
+                                                <div class="card card-outline card-pink">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title text-pink font-weight-bold">MOMO</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <label>API Key / Partner Code</label>
+                                                            <input type="text" name="payment_momo_api_key" class="form-control" value="{{ $items->firstWhere('key', 'payment_momo_api_key')->value ?? '' }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            {{-- ZALO --}}
+                                            <div class="col-md-6">
+                                                <div class="card card-outline card-primary">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title text-primary font-weight-bold">ZaloPay</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <label>App ID</label>
+                                                            <input type="text" name="payment_zalo_app_id" class="form-control" value="{{ $items->firstWhere('key', 'payment_zalo_app_id')->value ?? '' }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- SEPAY --}}
+                                            <div class="col-md-6">
+                                                <div class="card card-outline card-orange">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title text-orange font-weight-bold">SePay</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <label>API Key</label>
+                                                            <input type="password" name="payment_sepay_api_key" class="form-control" value="{{ $items->firstWhere('key', 'payment_sepay_api_key')->value ?? '' }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- VIETQR --}}
+                                            <div class="col-md-6">
+                                                <div class="card card-outline card-success">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title text-success font-weight-bold">VietQR</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <label>Client ID</label>
+                                                            <input type="text" name="payment_vietqr_client_id" class="form-control" value="{{ $items->firstWhere('key', 'payment_vietqr_client_id')->value ?? '' }}">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>API Key</label>
+                                                            <input type="password" name="payment_vietqr_api_key" class="form-control" value="{{ $items->firstWhere('key', 'payment_vietqr_api_key')->value ?? '' }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    @elseif(Str::contains($setting->key, ['og_image']))
                                                          {{-- Fallback for OG Image - use direct upload too --}}
                                                          <div class="mb-2 p-2 bg-light border rounded text-center d-inline-block" style="min-width: 120px; min-height: 80px;">
                                                             <img src="{{ asset($setting->value) }}" 

@@ -6,23 +6,29 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     {{-- SEO cơ bản --}}
-    <title>@yield('meta_title', 'WebApp Bắc Ninh - Thiết kế website chuyên nghiệp')</title>
-    <meta name="description" content="@yield('meta_description', 'Thiết kế web theo ngành nghề, chuẩn SEO, dễ dùng và tối ưu chuyển đổi.')">
-    <meta name="keywords" content="@yield('meta_keywords', 'thiết kế web, web bắc ninh, website bán hàng, web tuyển sinh, landing page')">
-    <meta name="robots" content="index, follow">
+    <title>@yield('meta_title', $site_settings['site_name'] ?? 'WebApp Bắc Ninh')</title>
+    <meta name="title" content="@yield('meta_title', $site_settings['site_name'] ?? 'WebApp Bắc Ninh')" />
+    <meta name="description" content="@yield('meta_description', 'Thiết kế web theo ngành nghề, chuẩn SEO, dễ dùng và tối ưu chuyển đổi.')" />
+    <meta name="keywords" content="@yield('meta_keywords', 'thiết kế web, web bắc ninh, website bán hàng, web tuyển sinh, landing page')" />
+    <meta name="robots" content="index, follow" />
+    <meta name="revisit-after" content="1 days" />
+    <meta name="author" content="{{ $site_settings['site_name'] ?? 'WebApp Bắc Ninh' }}" />
     <link rel="canonical" href="{{ url()->current() }}" />
+    <link rel="image_src" href="@yield('meta_image', asset($site_settings['default_og_image'] ?? 'images/default-og.jpg'))" />
 
     {{-- Open Graph (Facebook) --}}
-    <meta property="og:title" content="@yield('meta_title', 'WebApp Bắc Ninh - Thiết kế website chuyên nghiệp')" />
-    <meta property="og:description" content="@yield('meta_description', 'Thiết kế web theo ngành nghề, chuẩn SEO')" />
-    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:site_name" content="{{ $site_settings['site_name'] ?? 'WebApp Bắc Ninh' }}" />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:title" content="@yield('meta_title', $site_settings['site_name'] ?? 'WebApp Bắc Ninh')" />
+    <meta property="og:description" content="@yield('meta_description', 'Thiết kế web theo ngành nghề, chuẩn SEO, dễ dùng và tối ưu chuyển đổi.')" />
     <meta property="og:image" content="@yield('meta_image', asset($site_settings['default_og_image'] ?? 'images/default-og.jpg'))" />
+    <meta property="og:image:alt" content="@yield('meta_title', $site_settings['site_name'] ?? 'WebApp Bắc Ninh')" />
 
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('meta_title', $site_settings['site_name'] ?? 'WebApp Bắc Ninh')">
-    <meta name="twitter:description" content="@yield('meta_description', 'Thiết kế web theo ngành nghề, chuẩn SEO')">
+    <meta name="twitter:description" content="@yield('meta_description', 'Thiết kế web theo ngành nghề, chuẩn SEO, dễ dùng và tối ưu chuyển đổi.')">
     <meta name="twitter:image" content="@yield('meta_image', asset($site_settings['default_og_image'] ?? 'images/default-og.jpg'))">
 
     {{-- Favicon --}}

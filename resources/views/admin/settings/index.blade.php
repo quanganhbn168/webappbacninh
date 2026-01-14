@@ -179,6 +179,33 @@
                                                     <label>From Name (Tên người gửi)</label>
                                                     <input type="text" name="mail_from_name" class="form-control" value="{{ $items->firstWhere('key', 'mail_from_name')->value ?? '' }}">
                                                 </div>
+                                                <button type="button" class="btn btn-warning btn-sm btn-block mt-3" data-toggle="modal" data-target="#testMailModal">
+                                                    <i class="fas fa-paper-plane mr-1"></i> Gửi thử Email
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {{-- Test Mail Modal --}}
+                                        <div class="modal fade" id="testMailModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Gửi Email Kiểm Tra</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label>Gửi tới Email:</label>
+                                                            <input type="email" id="test_email" class="form-control" value="{{ auth()->user()->email }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                                        <button type="button" class="btn btn-primary" onclick="submitTestMail()">Gửi ngay</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -323,6 +350,21 @@
             var fileName = input.files[0].name;
             $(input).next('.custom-file-label').html(fileName);
         }
+    }
+    function submitTestMail() {
+        var email = $('#test_email').val();
+        if(!email) {
+            alert('Vui lòng nhập email nhận!');
+            return;
+        }
+        
+        // Create dynamic form to submit
+        var form = $('<form action="{{ route("admin.settings.test-mail") }}" method="POST">' +
+            '<input type="hidden" name="_token" value="{{ csrf_token() }}">' +
+            '<input type="hidden" name="email" value="' + email + '">' +
+            '</form>');
+        $('body').append(form);
+        form.submit();
     }
 </script>
 @endpush

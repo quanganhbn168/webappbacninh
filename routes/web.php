@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\Auth\CustomerAuthController;
 
 foreach (config('tenancy.central_domains') as $domain) {
     Route::domain($domain)->group(function () {
@@ -25,9 +26,16 @@ foreach (config('tenancy.central_domains') as $domain) {
         Route::get('/', [HomeController::class, 'index'])->name('home');
 
         // Tìm kiếm, đăng nhập, đăng ký (giữ nguyên)
-        Route::get('/search', fn() => view('frontend.index'))->name('search');
-        Route::get('/login', fn() => view('frontend.index'))->name('login');
-        Route::get('/register', fn() => view('frontend.index'))->name('register');
+        // Tìm kiếm
+        Route::get('/search', fn() => view('frontend.index'))->name('search'); // Placeholder for search
+
+        // Authentication Routes
+        Route::get('/login', [CustomerAuthController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [CustomerAuthController::class, 'login']);
+        Route::get('/register', [CustomerAuthController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/register', [CustomerAuthController::class, 'register']);
+        Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('logout');
+
         Route::get('/contact', fn() => view('frontend.index'))->name('contact');
 
         // Blog
@@ -102,6 +110,7 @@ Route::prefix('system029/admin')->middleware(['auth:admin', 'landlord'])->group(
     // Settings
     Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings');
     Route::post('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
+    Route::post('/settings/test-mail', [SettingController::class, 'sendTestMail'])->name('admin.settings.test-mail');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile');

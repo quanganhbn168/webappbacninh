@@ -44,4 +44,21 @@ class SettingController extends Controller
         
         return back()->with('success', 'Cập nhật cấu hình thành công!');
     }
+    public function sendTestMail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        try {
+            \Illuminate\Support\Facades\Mail::raw('Đây là email kiểm tra kết nối SMTP từ WebApp Bắc Ninh.', function ($message) use ($request) {
+                $message->to($request->email)
+                        ->subject('Test SMTP Connection - WebApp Bắc Ninh');
+            });
+
+            return back()->with('success', 'Gửi email test thành công! Hãy kiểm tra hộp thư đến (hoặc spam).');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Lỗi gửi mail: ' . $e->getMessage());
+        }
+    }
 }

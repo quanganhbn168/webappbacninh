@@ -8,13 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Post extends Model implements HasMedia
+class Post extends Model
 {
-    use HasFactory, HasSlug, InteractsWithMedia;
+    use HasFactory, HasSlug;
 
     protected $fillable = [
         'category_id',
@@ -59,48 +56,16 @@ class Post extends Model implements HasMedia
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    // ==================== MEDIA ====================
-
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('featured_image')
-            ->singleFile()
-            ->useFallbackUrl(asset('images/placeholder.jpg'));
-
-        $this->addMediaCollection('og_image')
-            ->singleFile()
-            ->useFallbackUrl(asset('images/og-placeholder.jpg'));
-    }
-
-    public function registerMediaConversions(Media $media = null): void
-    {
-        $this->addMediaConversion('thumb')
-            ->width(300)->height(200)->sharpen(10)
-            ->performOnCollections('featured_image');
-
-        $this->addMediaConversion('medium')
-            ->width(800)->height(600)
-            ->performOnCollections('featured_image');
-
-        $this->addMediaConversion('og')
-            ->width(1200)->height(630)
-            ->performOnCollections('og_image', 'featured_image');
-    }
-
     // ==================== ACCESSORS ====================
 
     public function getFeaturedImageUrlAttribute(): string
     {
-        $media = $this->getFirstMediaUrl('featured_image');
-        if ($media) return $media;
         if ($this->featured_image) return asset($this->featured_image);
         return asset('images/placeholder.jpg');
     }
 
     public function getOgImageUrlAttribute(): string
     {
-        $media = $this->getFirstMediaUrl('og_image', 'og');
-        if ($media) return $media;
         if ($this->og_image) return asset($this->og_image);
         return $this->featured_image_url;
     }

@@ -7,6 +7,9 @@ use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 use App\Models\Post;
 use App\Models\PostCategory;
+use App\Models\Service;
+use App\Models\Template;
+use App\Models\MiniApp;
 use Illuminate\Support\Facades\Cache;
 
 class SitemapController extends Controller
@@ -35,7 +38,7 @@ class SitemapController extends Controller
             }
 
             // 3. Services
-            $services = \App\Models\Service::active()->get();
+            $services = Service::active()->get();
             foreach ($services as $service) {
                  $sitemap->add(
                     Url::create(route('services.show', $service->slug))
@@ -47,7 +50,7 @@ class SitemapController extends Controller
 
             // 4. Templates (Categories/Items)
             // Assuming categories for templates are mapped to /templates/{slug}
-            $templates = \App\Models\Template::active()->get();
+            $templates = Template::active()->get();
              foreach ($templates as $template) {
                  $sitemap->add(
                     Url::create(route('templates.show', $template->slug))
@@ -58,7 +61,7 @@ class SitemapController extends Controller
             }
 
             // 5. Mini Apps (Using direct links if internal)
-            $miniApps = \App\Models\MiniApp::active()->get();
+            $miniApps = MiniApp::active()->get();
             foreach ($miniApps as $app) {
                 // Only add if link is internal and not just hash
                 if ($app->link && !str_starts_with($app->link, '#') && !str_starts_with($app->link, 'http')) {

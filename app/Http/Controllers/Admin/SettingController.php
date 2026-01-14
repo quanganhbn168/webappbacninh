@@ -19,23 +19,13 @@ class SettingController extends Controller
     public function update(Request $request)
     {
         $data = $request->except('_token');
+        
         foreach ($data as $key => $value) {
             $setting = Setting::where('key', $key)->first();
             if (!$setting) continue;
 
-            if ($request->hasFile($key)) {
-                // Clear old media
-                $setting->clearMediaCollection('settings');
-                // Store new media
-                $media = $setting->addMediaFromRequest($key)
-                    ->preservingOriginal()
-                    ->toMediaCollection('settings');
-                // Update value with public URL (for current helper compatibility)
-                $setting->update(['value' => $media->getUrl()]);
-            } else {
-                $setting->update(['value' => $value]);
-            }
-            
+            // Simply save the value (text path for images, text for other settings)
+            $setting->update(['value' => $value ?? '']);
             Cache::forget('setting.' . $key);
         }
         

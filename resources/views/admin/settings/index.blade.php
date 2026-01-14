@@ -72,11 +72,11 @@
                                                              id="preview-logo-wide" 
                                                              style="max-height: 80px; max-width: 100%; object-fit: contain;">
                                                     </div>
-                                                    <div class="custom-file">
-                                                        <input type="file" name="site_logo_wide" class="custom-file-input" id="input-logo-wide" accept="image/*" onchange="previewImage(this, 'preview-logo-wide')">
-                                                        <label class="custom-file-label" for="input-logo-wide">Chọn file...</label>
-                                                    </div>
-                                                    <small class="text-muted">Kích thước: Chiều cao ~65-80px. Định dạng: PNG, SVG.</small>
+                                                    <input type="text" name="site_logo_wide" class="form-control" 
+                                                           value="{{ $items->firstWhere('key', 'site_logo_wide')->value ?? '' }}"
+                                                           placeholder="/images/logo.png"
+                                                           oninput="document.getElementById('preview-logo-wide').src = this.value ? '{{ asset('') }}' + this.value.replace(/^\\//, '') : ''">
+                                                    <small class="text-muted">Đường dẫn tương đối từ thư mục <code>public/</code>. VD: <code>images/logo.png</code></small>
                                                 </div>
 
                                                 {{-- Logo White --}}
@@ -87,11 +87,11 @@
                                                              id="preview-logo-white" 
                                                              style="max-height: 80px; max-width: 100%; object-fit: contain;">
                                                     </div>
-                                                    <div class="custom-file">
-                                                        <input type="file" name="site_logo_white" class="custom-file-input" id="input-logo-white" accept="image/*" onchange="previewImage(this, 'preview-logo-white')">
-                                                        <label class="custom-file-label" for="input-logo-white">Chọn file...</label>
-                                                    </div>
-                                                    <small class="text-muted">Dùng cho Dark Mode / Footer tối màu. Định dạng: PNG, SVG (Màu trắng).</small>
+                                                    <input type="text" name="site_logo_white" class="form-control" 
+                                                           value="{{ $items->firstWhere('key', 'site_logo_white')->value ?? '' }}"
+                                                           placeholder="/images/logo-white.png"
+                                                           oninput="document.getElementById('preview-logo-white').src = this.value ? '{{ asset('') }}' + this.value.replace(/^\\//, '') : ''">
+                                                    <small class="text-muted">Đường dẫn tương đối từ thư mục <code>public/</code>. VD: <code>images/logo-white.png</code></small>
                                                 </div>
 
                                                 {{-- Logo Square --}}
@@ -102,11 +102,11 @@
                                                              id="preview-logo-square" 
                                                              style="max-height: 80px; max-width: 100%; object-fit: contain;">
                                                     </div>
-                                                    <div class="custom-file">
-                                                        <input type="file" name="site_logo_square" class="custom-file-input" id="input-logo-square" accept="image/*" onchange="previewImage(this, 'preview-logo-square')">
-                                                        <label class="custom-file-label" for="input-logo-square">Chọn file...</label>
-                                                    </div>
-                                                    <small class="text-muted">Kích thước: Vuông (1:1). Định dạng: PNG, SVG.</small>
+                                                    <input type="text" name="site_logo_square" class="form-control" 
+                                                           value="{{ $items->firstWhere('key', 'site_logo_square')->value ?? '' }}"
+                                                           placeholder="/images/logo-square.png"
+                                                           oninput="document.getElementById('preview-logo-square').src = this.value ? '{{ asset('') }}' + this.value.replace(/^\\//, '') : ''">
+                                                    <small class="text-muted">Đường dẫn tương đối từ thư mục <code>public/</code>. VD: <code>images/logo-square.png</code></small>
                                                 </div>
                                             </div>
 
@@ -121,11 +121,11 @@
                                                              id="preview-favicon" 
                                                              style="max-height: 48px; max-width: 100%; object-fit: contain;">
                                                     </div>
-                                                    <div class="custom-file">
-                                                        <input type="file" name="site_favicon" class="custom-file-input" id="input-favicon" accept="image/*,image/x-icon" onchange="previewImage(this, 'preview-favicon')">
-                                                        <label class="custom-file-label" for="input-favicon">Chọn file...</label>
-                                                    </div>
-                                                    <small class="text-muted">Định dạng: ICO, PNG, SVG.</small>
+                                                    <input type="text" name="site_favicon" class="form-control" 
+                                                           value="{{ $items->firstWhere('key', 'site_favicon')->value ?? '' }}"
+                                                           placeholder="/images/favicon.ico"
+                                                           oninput="document.getElementById('preview-favicon').src = this.value ? '{{ asset('') }}' + this.value.replace(/^\\//, '') : ''">
+                                                    <small class="text-muted">Đường dẫn tương đối từ thư mục <code>public/</code>. VD: <code>images/favicon.ico</code></small>
                                                 </div>
                                             </div>
                                         </div>

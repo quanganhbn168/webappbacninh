@@ -75,6 +75,7 @@ Route::get('/anh-cover', [ThumbnailController::class, 'showCoverPage'])->name('c
 // Các route xử lý logic (sẽ làm ở các bước sau)
 Route::post('/get-info', [ThumbnailController::class, 'getInfo'])->name('cover.getInfo');
 Route::post('/download-thumbnail', [ThumbnailController::class, 'download'])->name('cover.download');
+Route::post('/download-video', [ThumbnailController::class, 'downloadVideo'])->name('cover.download.video');
 
 
 // routes/web.php

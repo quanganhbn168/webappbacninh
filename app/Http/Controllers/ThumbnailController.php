@@ -139,6 +139,49 @@ class ThumbnailController extends Controller
         }
     }
 
+    /**
+     * Tải Video về máy
+     */
+    public function downloadVideo(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'video_url'    => 'required|url',
+            'filename'     => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', 'Link video không hợp lệ.');
+        }
+
+        try {
+            $videoUrl = $request->input('video_url');
+            $fileNameFromInput = $request->input('filename');
+            $finalFileName = empty(trim($fileNameFromInput))
+                ? 'video-' . time() . '.mp4'
+                : Str::slug(Str::limit($fileNameFromInput, 150, '')) . '.mp4';
+
+            // Cách 1: Stream thẳng từ nguồn (Tiết kiệm RAM server)
+            // Tuy nhiên, Laravel Http Client không hỗ trợ stream response trực tiếp dễ dàng như readfile
+            // Nên ta dùng fopen của PHP để pipe stream
+            
+            return response()->streamDownload(function () use ($videoUrl) {
+                if ($stream = fopen($videoUrl, 'r')) {
+                    while (!feof($stream)) {
+                        echo fread($stream, 1024 * 8); // Đọc từng chunk 8KB
+                        flush();
+                    }
+                    fclose($stream);
+                }
+            }, $finalFileName, [
+                'Content-Type' => 'video/mp4',
+            ]);
+
+        } catch (Exception $e) {
+            Log::error('Lỗi download video: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Không thể tải video. Link có thể đã hết hạn.');
+        }
+    }
+
     public function showBulkCoverPage()
     {
         return view('tools.bulk-anh-cover');

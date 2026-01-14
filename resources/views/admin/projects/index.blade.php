@@ -11,6 +11,13 @@
     <div class="card-header">
         <h3 class="card-title">Danh sách dự án</h3>
         <div class="card-tools">
+            <form action="{{ route('admin.projects.bulkDestroy') }}" method="POST" id="bulkDeleteForm" class="d-inline">
+                @csrf
+                <input type="hidden" name="ids" id="bulkDeleteIds">
+                <button type="submit" class="btn btn-danger btn-sm d-none" id="bulkDeleteBtn" onclick="return confirm('Xóa các mục đã chọn?')">
+                    <i class="fas fa-trash"></i> Xóa đã chọn (<span id="selectedCount">0</span>)
+                </button>
+            </form>
             <a href="{{ route('admin.projects.create') }}" class="btn btn-success btn-sm">
                 <i class="fas fa-plus"></i> Thêm mới
             </a>
@@ -20,21 +27,23 @@
         <table class="table table-hover text-nowrap">
             <thead>
                 <tr>
-                    <th style="width: 50px">#</th>
+                    <th style="width: 30px"><input type="checkbox" id="selectAll"></th>
+                    <th style="width: 30px"><i class="fas fa-grip-vertical text-muted"></i></th>
                     <th style="width: 80px">Ảnh</th>
                     <th>Tiêu đề</th>
                     <th>Danh mục</th>
                     <th>Nổi bật</th>
-                    <th style="width: 150px">Thao tác</th>
+                    <th style="width: 120px">Thao tác</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="sortable-projects">
                 @forelse($projects as $project)
-                <tr>
-                    <td>{{ $project->id }}</td>
+                <tr data-id="{{ $project->id }}">
+                    <td><input type="checkbox" class="row-checkbox" value="{{ $project->id }}"></td>
+                    <td class="handle" style="cursor: grab;"><i class="fas fa-grip-vertical text-muted"></i></td>
                     <td>
-                        @if($project->image)
-                            <img src="{{ asset('storage/' . $project->image) }}" alt="" style="width: 60px; height: 40px; object-fit: cover;" class="rounded">
+                        @if($project->getFirstMediaUrl('featured_image', 'thumb'))
+                            <img src="{{ $project->getFirstMediaUrl('featured_image', 'thumb') }}" alt="" style="width: 60px; height: 40px; object-fit: cover;" class="rounded">
                         @else
                             <span class="badge bg-secondary">No Image</span>
                         @endif
@@ -63,7 +72,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="text-center text-muted py-4">Chưa có dự án nào.</td>
+                    <td colspan="7" class="text-center text-muted py-4">Chưa có dự án nào.</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -74,3 +83,57 @@
     </div>
 </div>
 @stop
+
+@push('js')
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script>
+$(function() {
+    // SortableJS for drag-to-sort
+    var el = document.getElementById('sortable-projects');
+    if (el) {
+        Sortable.create(el, {
+            handle: '.handle',
+            animation: 150,
+            onEnd: function() {
+                var order = [];
+                $('#sortable-projects tr[data-id]').each(function() {
+                    order.push($(this).data('id'));
+                });
+                
+                $.ajax({
+                    url: '{{ route("admin.projects.updateOrder") }}',
+                    method: 'POST',
+                    data: { order: order, _token: '{{ csrf_token() }}' },
+                    success: function() {
+                        toastr.success('Đã cập nhật thứ tự!');
+                    }
+                });
+            }
+        });
+    }
+
+    // Select all checkbox
+    $('#selectAll').on('change', function() {
+        $('.row-checkbox').prop('checked', $(this).is(':checked'));
+        updateBulkDeleteBtn();
+    });
+
+    // Individual checkbox
+    $('.row-checkbox').on('change', updateBulkDeleteBtn);
+
+    function updateBulkDeleteBtn() {
+        var checked = $('.row-checkbox:checked');
+        var count = checked.length;
+        $('#selectedCount').text(count);
+        
+        if (count > 0) {
+            $('#bulkDeleteBtn').removeClass('d-none');
+            var ids = checked.map(function() { return $(this).val(); }).get();
+            $('#bulkDeleteIds').val(JSON.stringify(ids));
+        } else {
+            $('#bulkDeleteBtn').addClass('d-none');
+        }
+    }
+});
+</script>
+@endpush

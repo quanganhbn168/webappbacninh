@@ -328,8 +328,8 @@
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm h-100 hover-top">
                     <div class="bg-light ratio ratio-4x3 rounded-top overflow-hidden">
-                        @if($project->image)
-                            <img src="{{ asset('storage/' . $project->image) }}" alt="{{ $project->title }}" class="img-fluid object-fit-cover w-100 h-100">
+                        @if($project->getFirstMediaUrl('featured_image', 'thumb'))
+                            <img src="{{ $project->getFirstMediaUrl('featured_image', 'thumb') }}" alt="{{ $project->title }}" class="img-fluid object-fit-cover w-100 h-100">
                         @else
                             <div class="d-flex align-items-center justify-content-center text-muted bg-secondary bg-opacity-10 h-100">
                                 <i class="fas fa-image fa-3x"></i>

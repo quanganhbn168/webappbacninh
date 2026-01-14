@@ -38,19 +38,14 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Ảnh đại diện</label>
-                        @if($project->image)
-                            <div class="mb-2">
-                                <img src="{{ asset('storage/' . $project->image) }}" alt="" class="img-thumbnail" style="max-height: 150px;">
-                            </div>
-                        @endif
-                        <div class="custom-file">
-                            <input type="file" name="image" class="custom-file-input" id="imageInput" accept="image/*">
-                            <label class="custom-file-label" for="imageInput">Chọn file mới...</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
+                    {{-- Use reusable image uploader component --}}
+                    <x-admin.image-uploader 
+                        name="featured_image" 
+                        label="Ảnh đại diện"
+                        :value="$project->getFirstMediaUrl('featured_image')"
+                        ratio="4x3" />
+
+                    <div class="form-group mt-3">
                         <label>Danh mục</label>
                         <select name="category" class="form-control">
                             <option value="">-- Chọn --</option>
@@ -83,12 +78,3 @@
     </form>
 </div>
 @stop
-
-@push('js')
-<script>
-    document.getElementById('imageInput').addEventListener('change', function(e) {
-        var fileName = e.target.files[0]?.name || 'Chọn file mới...';
-        e.target.nextElementSibling.innerText = fileName;
-    });
-</script>
-@endpush

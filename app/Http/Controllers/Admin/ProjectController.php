@@ -4,11 +4,20 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Services\ProjectService;
+use App\Http\Requests\Admin\StoreProjectRequest;
+use App\Http\Requests\Admin\UpdateProjectRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
+    protected ProjectService $projectService;
+
+    public function __construct(ProjectService $projectService)
+    {
+        $this->projectService = $projectService;
+    }
+
     public function index()
     {
         $projects = Project::orderBy('order')->paginate(10);
@@ -20,25 +29,12 @@ class ProjectController extends Controller
         return view('admin.projects.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-            'link' => 'nullable|url',
-            'category' => 'nullable|string|max:100',
-            'is_featured' => 'boolean',
-            'order' => 'integer',
-        ]);
-
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('projects', 'public');
-        }
-
-        $validated['is_featured'] = $request->has('is_featured');
-
-        Project::create($validated);
+        $this->projectService->create(
+            $request->validated(),
+            $request->file('featured_image')
+        );
 
         return redirect()->route('admin.projects.index')->with('success', 'Tạo dự án thành công!');
     }
@@ -48,40 +44,49 @@ class ProjectController extends Controller
         return view('admin.projects.edit', compact('project'));
     }
 
-    public function update(Request $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-            'link' => 'nullable|url',
-            'category' => 'nullable|string|max:100',
-            'is_featured' => 'boolean',
-            'order' => 'integer',
-        ]);
-
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($project->image) {
-                Storage::disk('public')->delete($project->image);
-            }
-            $validated['image'] = $request->file('image')->store('projects', 'public');
-        }
-
-        $validated['is_featured'] = $request->has('is_featured');
-
-        $project->update($validated);
+        $this->projectService->update(
+            $project,
+            $request->validated(),
+            $request->file('featured_image')
+        );
 
         return redirect()->route('admin.projects.index')->with('success', 'Cập nhật dự án thành công!');
     }
 
     public function destroy(Project $project)
     {
-        if ($project->image) {
-            Storage::disk('public')->delete($project->image);
-        }
-        $project->delete();
+        $this->projectService->delete($project);
 
         return redirect()->route('admin.projects.index')->with('success', 'Xóa dự án thành công!');
+    }
+
+    /**
+     * Update sorting order via AJAX.
+     */
+    public function updateOrder(Request $request)
+    {
+        $request->validate(['order' => 'required|array']);
+        
+        $this->projectService->updateOrder($request->order);
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Bulk delete projects.
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $ids = json_decode($request->ids, true);
+        
+        if (empty($ids)) {
+            return redirect()->route('admin.projects.index')->with('error', 'Không có mục nào được chọn.');
+        }
+
+        $deleted = $this->projectService->bulkDelete($ids);
+
+        return redirect()->route('admin.projects.index')->with('success', "Đã xóa {$deleted} dự án!");
     }
 }

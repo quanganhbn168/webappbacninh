@@ -16,9 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->string('image')->nullable();
             $table->string('link')->nullable();
-            $table->string('category')->nullable(); // e.g., E-commerce, F&B, Real Estate
+            $table->string('category')->nullable();
             $table->boolean('is_featured')->default(false);
             $table->integer('order')->default(0);
             $table->timestamps();

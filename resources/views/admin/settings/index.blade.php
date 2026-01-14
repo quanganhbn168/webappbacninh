@@ -8,13 +8,17 @@
     <li class="breadcrumb-item active">Settings</li>
 @stop
 
+@push('css')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@endpush
+
 @section('admin_content')
     <div class="row">
         <div class="col-md-12">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible">
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    {{ session('success') }}
+                    {{ session('error') }}
                 </div>
             @endif
 
@@ -366,5 +370,24 @@
         $('body').append(form);
         form.submit();
     }
+
+    // SweetAlert2 Toast for success
+    @if(session('success'))
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+    Toast.fire({
+        icon: 'success',
+        title: '{{ session("success") }}'
+    });
+    @endif
 </script>
 @endpush

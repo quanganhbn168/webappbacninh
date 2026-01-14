@@ -122,18 +122,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    @else
-                                        {{-- Generic Loop for Other Groups --}}
-                                        @foreach($items as $setting)
-                                            <div class="form-group row mb-2 border-bottom pb-2">
-                                                <label class="col-sm-3 col-form-label font-weight-bold text-muted small">
-                                                    {{ ucfirst(str_replace('_', ' ', $setting->key)) }}
-                                                    <small class="d-block text-gray font-weight-normal"><code>{{ $setting->key }}</code></small>
-                                                </label>
-                                                <div class="col-sm-9">
-                                                    @if(Str::contains($setting->key, 'email'))
-                                                        <input type="email" name="{{ $setting->key }}" class="form-control" value="{{ $setting->value }}">
-                                                    @elseif($group === 'mail')
+
+                                    @elseif($group === 'mail')
                                         {{-- Custom Layout for Mail --}}
                                         <div class="row">
                                             <div class="col-md-12 mb-3">
@@ -257,7 +247,18 @@
                                             </div>
                                         </div>
 
-                                    @elseif(Str::contains($setting->key, ['og_image']))
+                                    @else
+                                        {{-- Generic Loop for Other Groups --}}
+                                        @foreach($items as $setting)
+                                            <div class="form-group row mb-2 border-bottom pb-2">
+                                                <label class="col-sm-3 col-form-label font-weight-bold text-muted small">
+                                                    {{ ucfirst(str_replace('_', ' ', $setting->key)) }}
+                                                    <small class="d-block text-gray font-weight-normal"><code>{{ $setting->key }}</code></small>
+                                                </label>
+                                                <div class="col-sm-9">
+                                                    @if(Str::contains($setting->key, 'email'))
+                                                        <input type="email" name="{{ $setting->key }}" class="form-control" value="{{ $setting->value }}">
+                                                    @elseif(Str::contains($setting->key, ['og_image']))
                                                          {{-- Fallback for OG Image - use direct upload too --}}
                                                          <div class="mb-2 p-2 bg-light border rounded text-center d-inline-block" style="min-width: 120px; min-height: 80px;">
                                                             <img src="{{ asset($setting->value) }}" 

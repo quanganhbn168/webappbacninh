@@ -31,9 +31,7 @@ class SettingsServiceProvider extends ServiceProvider
                         $this->setConfigMail($setting);
                     }
                     if ($setting->group === 'payment') {
-                        // For now we might just want to access these via Setting::get() or similar, 
-                        // but if there are specific config keys we can set them here.
-                        // Example: Config::set('payment.momo.api_key', $setting->value);
+                        $this->setConfigPayment($setting);
                     }
                 }
             } catch (\Exception $e) {
@@ -70,6 +68,29 @@ class SettingsServiceProvider extends ServiceProvider
                 break;
             case 'mail_from_name':
                 Config::set('mail.from.name', $setting->value);
+                break;
+        }
+    }
+
+    private function setConfigPayment($setting)
+    {
+        if (empty($setting->value)) return;
+
+        switch ($setting->key) {
+            case 'payment_momo_api_key':
+                Config::set('payment.momo.api_key', $setting->value);
+                break;
+            case 'payment_zalo_app_id':
+                Config::set('payment.zalo.app_id', $setting->value);
+                break;
+            case 'payment_sepay_api_key':
+                Config::set('payment.sepay.api_key', $setting->value);
+                break;
+            case 'payment_vietqr_client_id':
+                Config::set('payment.vietqr.client_id', $setting->value);
+                break;
+            case 'payment_vietqr_api_key':
+                Config::set('payment.vietqr.api_key', $setting->value);
                 break;
         }
     }

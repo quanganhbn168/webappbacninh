@@ -151,4 +151,4 @@ Route::prefix('system029/admin')->middleware(['auth:admin', 'landlord'])->group(
 // AdminLTE Auth Routes (Auto-registered if adminlte:install auth was run, 
 // but we might need to ensure standard auth routes exist)
 // Auth::routes();
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+

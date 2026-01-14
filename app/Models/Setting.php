@@ -4,12 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-
-class Setting extends Model implements HasMedia
+class Setting extends Model
 {
-    use InteractsWithMedia;
-
     protected $fillable = ['key', 'value', 'group', 'type'];
 }

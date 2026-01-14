@@ -1,158 +1,142 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Công cụ lấy ảnh Cover (Thumbnail) — Hàng loạt</title>
+@extends('layouts.master')
 
-    {{-- Tailwind + Alpine (nếu layout đã có thì bỏ 2 dòng dưới) --}}
-    @vite(['resources/css/app.css'])
+@section('title', 'Lấy Ảnh Cover Hàng Loạt (Bulk Thumbnail) - WebApp Bắc Ninh')
+
+@push('head')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>[x-cloak]{display:none!important}</style>
-</head>
-<body class="bg-gray-100">
-<div class="container mx-auto p-4 md:p-8 max-w-5xl">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+@endpush
 
+@section('content')
+<div class="container py-5">
+    
+    <div class="card shadow-lg border-0 rounded-lg" x-data="BulkThumb()" x-init="init()">
+        <div class="card-body p-4 p-md-5">
 
+            {{-- Alerts --}}
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
-    <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg"
-         x-data="BulkThumb()"
-         x-init="init()">
-
-        @if (session('success'))
-            <div class="mb-4 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg"
-                 x-data="{show:true}" x-show="show" x-init="setTimeout(()=>show=false,5000)" x-transition>
-                {{ session('success') }}
-            </div>
-        @endif
-        @if (session('error'))
-            <div class="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded-lg"
-                 x-data="{show:true}" x-show="show" x-init="setTimeout(()=>show=false,5000)" x-transition>
-                {{ session('error') }}
-            </div>
-        @endif
-
-        <div class="text-center mb-6">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Lấy Ảnh Cover Video — Hàng loạt</h1>
-            <p class="text-gray-500 mt-2">Dán nhiều link YouTube/TikTok, lấy thumbnail, sửa tiêu đề và lưu tất cả.</p>
-            <div class="mt-4">
-                <a href="{{ route('cover.page') }}" class="inline-block px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition">
-                    &larr; Quay lại chế độ tải đơn lẻ
-                </a>
-            </div>
-        </div>
-
-        {{-- Khu dán link --}}
-        <div class="grid gap-3">
-            <label class="text-sm font-medium text-gray-700">Dán mỗi link 1 dòng (TikTok/YouTube)</label>
-            <textarea x-model="urlsText" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                      rows="8" placeholder="https://www.tiktok.com/@phantrongg/video/7544718877503081746&#10;https://www.tiktok.com/@phantrongg/video/7539834301647490322&#10;..."></textarea>
-
-            <div class="flex flex-wrap gap-2 items-center">
-                <button @click="parseUrls()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                        :disabled="isLoading">
-                    <span x-show="!isLoading">Phân tích & lấy thông tin</span>
-                    <span x-show="isLoading">Đang lấy...</span>
-                </button>
-
-                <button @click="clearAll()" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Xoá tất cả</button>
-
-                <div class="ml-auto flex items-center gap-2">
-                    <label class="text-sm text-gray-700">Sắp xếp:</label>
-                    <select x-model="sortBy" @change="applySort()"
-                            class="p-2 border border-gray-300 rounded-lg">
-                        <option value="none">Không sắp xếp</option>
-                        <option value="title_asc">Tiêu đề A→Z</option>
-                        <option value="title_desc">Tiêu đề Z→A</option>
-                        <option value="provider">Theo nền tảng</option>
-                    </select>
+            <div class="text-center mb-5">
+                <h1 class="h2 fw-bold text-dark mb-2">Lấy Ảnh Cover Video — Hàng loạt</h1>
+                <p class="text-muted">Dán nhiều link YouTube/TikTok, lấy thumbnail, sửa tiêu đề và tải tất cả trong một nốt nhạc.</p>
+                <div class="mt-3">
+                    <a href="{{ route('cover.page') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-4">
+                        <i class="fas fa-arrow-left me-1"></i> Quay lại chế độ tải đơn lẻ
+                    </a>
                 </div>
             </div>
 
-            <template x-if="error">
-                <div class="p-3 bg-red-100 text-red-700 border border-red-300 rounded-lg" x-text="error"></div>
-            </template>
-        </div>
-
-        {{-- Danh sách kết quả --}}
-        <div class="mt-6" x-show="items.length" x-cloak>
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-3">
-                    <label class="inline-flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" class="h-4 w-4" @change="toggleSelectAll($event)">
-                        <span class="text-sm">Chọn tất cả (<span x-text="selectedCount()"></span>/<span x-text="items.length"></span>)</span>
-                    </label>
-                </div>
-                <div class="flex gap-2">
-                    <button @click="downloadSelected()"
-                            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                        Tải ZIP các mục đã chọn
+            {{-- Khu dán link --}}
+            <div class="mb-4">
+                <label class="form-label fw-bold small text-uppercase text-secondary">Dán danh sách link (Mỗi link 1 dòng)</label>
+                <textarea x-model="urlsText" class="form-control form-control-lg bg-light" rows="8" 
+                          placeholder="https://www.tiktok.com/@user/video/123...&#10;https://www.youtube.com/watch?v=abc..."></textarea>
+                
+                <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+                    <button @click="parseUrls()" class="btn btn-primary" :disabled="isLoading">
+                        <span x-show="!isLoading"><i class="fas fa-search me-1"></i> Phân tích danh sách</span>
+                        <span x-show="isLoading"><span class="spinner-border spinner-border-sm me-1"></span> Đang xử lý...</span>
                     </button>
-                    <button @click="selectAll(); downloadSelected()"
-                            class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-                        Tải ZIP tất cả
-                    </button>
+                    
+                    <button @click="clearAll()" class="btn btn-light border">Xoá tất cả</button>
+
+                    <div class="ms-auto d-flex align-items-center gap-2">
+                        <label class="small text-muted mb-0">Sắp xếp:</label>
+                        <select x-model="sortBy" @change="applySort()" class="form-select form-select-sm" style="width: auto;">
+                            <option value="none">Mặc định</option>
+                            <option value="title_asc">Tiêu đề A→Z</option>
+                            <option value="title_desc">Tiêu đề Z→A</option>
+                            <option value="provider">Theo nền tảng</option>
+                        </select>
+                    </div>
                 </div>
+
+                <template x-if="error">
+                    <div class="alert alert-danger mt-3" x-text="error"></div>
+                </template>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <template x-for="(it, idx) in items" :key="it.uid">
-                    <div class="border rounded-xl overflow-hidden shadow-sm">
-                        <div class="flex gap-3 p-3">
-                            <div class="w-32 shrink-0">
-                                <img :src="it.thumbnail_url" class="w-full h-24 object-cover rounded-md" loading="lazy" alt="">
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center justify-between">
-                                    <span class="px-2 py-0.5 text-xs rounded-full"
-                                          :class="it.provider==='tiktok' ? 'bg-black text-white':'bg-red-600 text-white'"
-                                          x-text="it.provider.toUpperCase()"></span>
-                                    <label class="inline-flex items-center gap-1">
-                                        <input type="checkbox" x-model="it.selected" class="h-4 w-4">
-                                        <span class="text-xs text-gray-600">Chọn</span>
-                                    </label>
-                                </div>
+            {{-- Danh sách kết quả --}}
+            <div class="mt-5" x-show="items.length" x-cloak>
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-3 gap-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="selectAllMeta" @change="toggleSelectAll($event)">
+                        <label class="form-check-label user-select-none" for="selectAllMeta">
+                            Chọn tất cả (<span x-text="selectedCount()"></span>/<span x-text="items.length"></span>)
+                        </label>
+                    </div>
 
-                                <div class="mt-2">
-                                    <label class="text-xs text-gray-500">Tiêu đề (sẽ là tên file)</label>
-                                    <input type="text" x-model="it.title"
-                                           class="mt-1 w-full p-2 border rounded-lg focus:ring-1 focus:ring-blue-500">
-                                </div>
+                    <div class="d-flex gap-2">
+                        <button @click="downloadSelected()" class="btn btn-success">
+                            <i class="fas fa-file-zipper me-1"></i> Tải ZIP (Đã chọn)
+                        </button>
+                        <button @click="selectAll(); downloadSelected()" class="btn btn-outline-success">
+                            <i class="fas fa-download me-1"></i> Tải ZIP (Tất cả)
+                        </button>
+                    </div>
+                </div>
 
-                                <div class="mt-2 text-xs text-gray-500 break-all">
-                                    <div><span class="font-medium">Original:</span> <span x-text="it.original_url"></span></div>
-                                    <div><span class="font-medium">URL player:</span> <span x-text="it.url"></span></div>
-                                </div>
+                <div class="row g-3">
+                    <template x-for="(it, idx) in items" :key="it.uid">
+                        <div class="col-lg-6">
+                            <div class="card h-100 border shadow-sm">
+                                <div class="card-body p-2">
+                                    <div class="d-flex gap-3">
+                                        <div class="flex-shrink-0" style="width: 120px;">
+                                            <img :src="it.thumbnail_url" class="img-fluid rounded border" loading="lazy" alt="">
+                                        </div>
+                                        <div class="flex-grow-1 overflow-hidden">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <span class="badge" 
+                                                      :class="it.provider==='tiktok' ? 'bg-dark text-white' : 'bg-danger text-white'" 
+                                                      x-text="it.provider.toUpperCase()"></span>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" x-model="it.selected">
+                                                </div>
+                                            </div>
 
-                                <div class="mt-2 flex items-center gap-2">
-                                    <button @click="moveUp(idx)" class="px-2 py-1 text-sm border rounded">↑</button>
-                                    <button @click="moveDown(idx)" class="px-2 py-1 text-sm border rounded">↓</button>
-                                    <a :href="it.original_url" target="_blank" class="ml-auto text-sm text-blue-600 hover:underline">Mở</a>
+                                            <div class="mb-2">
+                                                <input type="text" x-model="it.title" class="form-control form-control-sm" placeholder="Nhập tên file...">
+                                            </div>
+
+                                            <div class="d-flex gap-1">
+                                                <button @click="moveUp(idx)" class="btn btn-xs btn-outline-secondary py-0" title="Lên">↑</button>
+                                                <button @click="moveDown(idx)" class="btn btn-xs btn-outline-secondary py-0" title="Xuống">↓</button>
+                                                <a :href="it.original_url" target="_blank" class="ms-auto small text-decoration-none">Xem gốc <i class="fas fa-external-link-alt small"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </template>
+                    </template>
+                </div>
             </div>
+
+            {{-- Form submit bulk (ẩn) --}}
+            <form id="bulkForm" class="hidden d-none" method="POST" action="{{ route('cover.download.bulk') }}">
+                @csrf
+                <div id="bulkPayload"></div>
+            </form>
+
         </div>
-
-        {{-- Form submit bulk (ẩn) --}}
-        <form id="bulkForm" class="hidden" method="POST" action="{{ route('cover.download.bulk') }}">
-            @csrf
-            <input type="hidden" name="download_zip" x-model="downloadZip">
-            <div id="bulkPayload"></div>
-        </form>
     </div>
-
-    <footer class="text-center mt-6 text-sm text-gray-500">
-        <p>Phát triển bởi WebAppBacNinh</p>
-    </footer>
 </div>
 
+@endsection
 
+@push('scripts')
     <script src="{{ asset('js/tools/bulk-anh-cover.js') }}"></script>
-
-</body>
-</html>
+@endpush

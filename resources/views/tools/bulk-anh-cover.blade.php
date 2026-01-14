@@ -6,7 +6,7 @@
     <title>Công cụ lấy ảnh Cover (Thumbnail) — Hàng loạt</title>
 
     {{-- Tailwind + Alpine (nếu layout đã có thì bỏ 2 dòng dưới) --}}
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -84,6 +84,7 @@
                         <input type="checkbox" class="h-4 w-4" @change="toggleSelectAll($event)">
                         <span class="text-sm">Chọn tất cả (<span x-text="selectedCount()"></span>/<span x-text="items.length"></span>)</span>
                     </label>
+                </div>
                 <div class="flex gap-2">
                     <button @click="downloadSelected()"
                             class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
@@ -151,7 +152,7 @@
 </div>
 
 
-    <script src="{{ asset('js/tools/bulk-anh-cover.js') }}"></script> --}}
+    <script src="{{ asset('js/tools/bulk-anh-cover.js') }}"></script>
 
 </body>
 </html>

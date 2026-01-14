@@ -23,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
     ];
 
     /**
@@ -50,6 +51,9 @@ class User extends Authenticatable
 
     public function adminlte_image()
     {
+        if ($this->avatar) {
+            return $this->avatar;
+        }
         return asset('images/logo.png');
     }
 

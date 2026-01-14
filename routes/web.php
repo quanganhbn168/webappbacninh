@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TenantController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\SitemapController;
 
@@ -100,6 +102,13 @@ Route::prefix('system029/admin')->middleware(['auth:admin', 'landlord'])->group(
     // Settings
     Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings');
     Route::post('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
+
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
+
+    // Users
+    Route::resource('users', UserController::class)->names('admin.users');
     
 });
 

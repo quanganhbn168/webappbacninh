@@ -28,14 +28,20 @@ class SettingController extends Controller
             if (!$setting) continue;
 
             // Handle file uploads for image fields
-            if (in_array($key, $imageFields) && $request->hasFile($key)) {
-                $file = $request->file($key);
-                $filename = $key . '_' . time() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('images/settings'), $filename);
-                $value = 'images/settings/' . $filename;
+            if (in_array($key, $imageFields)) {
+                if ($request->hasFile($key)) {
+                    $file = $request->file($key);
+                    $filename = $key . '_' . time() . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('images/settings'), $filename);
+                    
+                    $setting->update(['value' => 'images/settings/' . $filename]);
+                    Cache::forget('setting.' . $key);
+                }
+                // If image field but no new file, DO NOT update (keep old value)
+                continue;
             }
 
-            // Save value (either uploaded path or text value)
+            // Save value for non-image fields
             $setting->update(['value' => $value ?? '']);
             Cache::forget('setting.' . $key);
         }

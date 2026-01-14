@@ -1,14 +1,15 @@
 @props([
-    'slot' => 'default',
+    'position' => 'default',
     'class' => ''
 ])
 
 @php
-    $banners = \App\Models\AdBanner::forSlot($slot)->get();
+    $slotEnum = \App\Enums\BannerSlot::tryFrom($position);
+    $banners = $slotEnum ? \App\Models\AdBanner::forSlot($slotEnum)->get() : collect([]);
 @endphp
 
 @if($banners->isNotEmpty())
-    <div class="ad-slot ad-slot-{{ $slot }} {{ $class }}">
+    <div class="ad-slot ad-slot-{{ $position }} {{ $class }}">
         @foreach($banners as $banner)
             <a href="{{ $banner->link ?? '#' }}" 
                class="d-block text-decoration-none mb-2"

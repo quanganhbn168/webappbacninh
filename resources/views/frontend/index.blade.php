@@ -148,7 +148,7 @@
 </section>
 
 {{-- Ad Slot: After Hero --}}
-<x-frontend.ad-slot slot="after_hero" class="container py-4" />
+<x-frontend.ad-slot position="after_hero" class="container py-4" />
 
 {{-- Theme Library Section --}}
 <section class="py-5 bg-white border-bottom">
@@ -483,7 +483,7 @@
 </section>
 
 {{-- Ad Slot: Before Blog --}}
-<x-frontend.ad-slot slot="before_blog" class="container py-4" />
+<x-frontend.ad-slot position="before_blog" class="container py-4" />
 
 {{-- Blog / News Section --}}
 <section class="py-5 bg-white border-top">

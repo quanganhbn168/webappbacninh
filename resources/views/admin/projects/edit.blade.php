@@ -42,7 +42,7 @@
                     <x-admin.image-uploader 
                         name="featured_image" 
                         label="Ảnh đại diện"
-                        :value="$project->getFirstMediaUrl('featured_image')"
+                        :value="$project->image"
                         ratio="4x3" />
 
                     <div class="form-group mt-3">

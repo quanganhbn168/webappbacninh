@@ -8,9 +8,10 @@ class AdBannerService
 {
     public function create(array $data): AdBanner
     {
-        $banner = AdBanner::create([
+        return AdBanner::create([
             'name' => $data['name'],
             'slot' => $data['slot'],
+            'image' => $data['banner_image'] ?? null, // LFM path
             'link' => $data['link'] ?? null,
             'alt_text' => $data['alt_text'] ?? null,
             'is_active' => $data['is_active'] ?? true,
@@ -19,13 +20,6 @@ class AdBannerService
             'starts_at' => $data['starts_at'] ?? null,
             'ends_at' => $data['ends_at'] ?? null,
         ]);
-
-        // Handle LFM path (string)
-        if (!empty($data['banner_image'])) {
-            $this->addMediaFromPath($banner, $data['banner_image'], 'banner_image');
-        }
-
-        return $banner;
     }
 
     public function update(AdBanner $banner, array $data): AdBanner
@@ -33,6 +27,7 @@ class AdBannerService
         $banner->update([
             'name' => $data['name'],
             'slot' => $data['slot'],
+            'image' => $data['banner_image'] ?? $banner->image, // Keep old if not provided
             'link' => $data['link'] ?? null,
             'alt_text' => $data['alt_text'] ?? null,
             'is_active' => $data['is_active'] ?? true,
@@ -42,33 +37,11 @@ class AdBannerService
             'ends_at' => $data['ends_at'] ?? null,
         ]);
 
-        // Handle LFM path (string) - only update if new image provided
-        if (!empty($data['banner_image']) && $data['banner_image'] !== $banner->getFirstMediaUrl('banner_image')) {
-            $banner->clearMediaCollection('banner_image');
-            $this->addMediaFromPath($banner, $data['banner_image'], 'banner_image');
-        }
-
         return $banner;
-    }
-
-    /**
-     * Add media from LFM path.
-     */
-    private function addMediaFromPath($model, string $path, string $collection): void
-    {
-        // Convert relative path to absolute path
-        $absolutePath = public_path(ltrim($path, '/'));
-        
-        if (file_exists($absolutePath)) {
-            $model->addMedia($absolutePath)
-                ->preservingOriginal()
-                ->toMediaCollection($collection);
-        }
     }
 
     public function delete(AdBanner $banner): bool
     {
-        $banner->clearMediaCollection('banner_image');
         return $banner->delete();
     }
 
@@ -81,13 +54,6 @@ class AdBannerService
 
     public function bulkDelete(array $ids): int
     {
-        $banners = AdBanner::whereIn('id', $ids)->get();
-        
-        foreach ($banners as $banner) {
-            $banner->clearMediaCollection('banner_image');
-            $banner->delete();
-        }
-
-        return count($banners);
+        return AdBanner::whereIn('id', $ids)->delete();
     }
 }

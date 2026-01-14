@@ -42,8 +42,8 @@
                     <td><input type="checkbox" class="row-checkbox" value="{{ $project->id }}"></td>
                     <td class="handle" style="cursor: grab;"><i class="fas fa-grip-vertical text-muted"></i></td>
                     <td>
-                        @if($project->getFirstMediaUrl('featured_image', 'thumb'))
-                            <img src="{{ $project->getFirstMediaUrl('featured_image', 'thumb') }}" alt="" style="width: 60px; height: 40px; object-fit: cover;" class="rounded">
+                        @if($project->image)
+                            <img src="{{ $project->image_url }}" alt="" style="width: 60px; height: 40px; object-fit: cover;" class="rounded">
                         @else
                             <span class="badge bg-secondary">No Image</span>
                         @endif

@@ -6,18 +6,16 @@ use App\Enums\ProjectCategory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Project extends Model implements HasMedia
+class Project extends Model
 {
-    use HasSlug, InteractsWithMedia;
+    use HasSlug;
 
     protected $fillable = [
         'title',
         'slug',
         'description',
+        'image', // LFM path
         'link',
         'category',
         'is_featured',
@@ -42,31 +40,10 @@ class Project extends Model implements HasMedia
     }
 
     /**
-     * Register media collections.
-     */
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('featured_image')
-            ->singleFile();
-    }
-
-    /**
-     * Register media conversions.
-     */
-    public function registerMediaConversions(?Media $media = null): void
-    {
-        $this->addMediaConversion('thumb')
-            ->width(400)
-            ->height(300)
-            ->sharpen(10);
-    }
-
-    /**
-     * Get the featured image URL.
+     * Get the image URL.
      */
     public function getImageUrlAttribute(): string
     {
-        return $this->getFirstMediaUrl('featured_image', 'thumb') 
-            ?: asset('images/project-placeholder.jpg');
+        return $this->image ? asset($this->image) : asset('images/project-placeholder.jpg');
     }
 }

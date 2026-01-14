@@ -43,8 +43,8 @@
                     <td><input type="checkbox" class="row-checkbox" value="{{ $banner->id }}"></td>
                     <td class="handle" style="cursor: grab;"><i class="fas fa-grip-vertical text-muted"></i></td>
                     <td>
-                        @if($banner->getFirstMediaUrl('banner_image', 'thumb'))
-                            <img src="{{ $banner->getFirstMediaUrl('banner_image', 'thumb') }}" alt="" style="width: 100px; height: 50px; object-fit: cover;" class="rounded">
+                        @if($banner->image)
+                            <img src="{{ $banner->image_url }}" alt="" style="width: 100px; height: 50px; object-fit: cover;" class="rounded">
                         @else
                             <span class="badge bg-secondary">No Image</span>
                         @endif

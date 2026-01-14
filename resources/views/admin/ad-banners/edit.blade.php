@@ -61,7 +61,7 @@
                     <x-admin.image-uploader 
                         name="banner_image" 
                         label="Ảnh Banner"
-                        :value="$adBanner->getFirstMediaUrl('banner_image')"
+                        :value="$adBanner->image"
                         ratio="16x9" />
                     
                     <div class="form-group mt-3">

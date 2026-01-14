@@ -57,6 +57,13 @@
                                                     <small class="text-muted">Được sử dụng làm thẻ <code>alt</code> cho logo và tiêu đề trang.</small>
                                                 </div>
 
+                                                {{-- Site Short Name --}}
+                                                <div class="form-group mb-3">
+                                                    <label class="font-weight-bold">Tên viết tắt (adminlte.logo)</label>
+                                                    <input type="text" name="site_short_name" class="form-control" value="{{ $items->firstWhere('key', 'site_short_name')->value ?? '' }}" placeholder="VD: WebAppBN">
+                                                    <small class="text-muted">Hiển thị ở góc trên bên trái trang quản trị.</small>
+                                                </div>
+
                                                 {{-- Logo Wide --}}
                                                 <div class="form-group mb-4">
                                                     <label class="font-weight-bold d-block">Logo Ngang (Header)</label>

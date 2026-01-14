@@ -27,6 +27,9 @@ class SettingsServiceProvider extends ServiceProvider
                 $settings = Setting::all();
 
                 foreach ($settings as $setting) {
+                    if ($setting->key === 'site_short_name' && !empty($setting->value)) {
+                        Config::set('adminlte.logo', '<b>' . $setting->value . '</b>');
+                    }
                     if ($setting->group === 'mail') {
                         $this->setConfigMail($setting);
                     }

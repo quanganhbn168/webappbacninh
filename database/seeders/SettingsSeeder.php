@@ -12,6 +12,7 @@ class SettingsSeeder extends Seeder
         $settings = [
             // Branding
             ['key' => 'site_name', 'value' => 'WebApp Bắc Ninh', 'group' => 'branding'],
+            ['key' => 'site_short_name', 'value' => 'WebAppBN', 'group' => 'branding'],
             ['key' => 'site_logo_wide', 'value' => 'images/logo-wide.png', 'group' => 'branding'], // Logo dài (Header)
             ['key' => 'site_logo_white', 'value' => 'images/logo-white.png', 'group' => 'branding'], // Logo trắng (Nền đen)
             ['key' => 'site_logo_square', 'value' => 'images/logo-square.png', 'group' => 'branding'], // Logo vuông (Mobile, Footer)

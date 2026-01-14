@@ -365,6 +365,11 @@ return [
             'url'  => 'admin/profile',
             'icon' => 'fas fa-fw fa-user-shield',
         ],
+        [
+            'text' => 'Quản lý thành viên',
+            'route'  => 'admin.users.index',
+            'icon' => 'fas fa-fw fa-users',
+        ],
     ],
 
     /*

@@ -18,6 +18,18 @@ return [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID', 'placeholder-google-client-id'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET', 'placeholder-google-client-secret'),
+        'redirect' => env('APP_URL') . '/auth/google/callback',
+    ],
+
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID', 'placeholder-facebook-client-id'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET', 'placeholder-facebook-client-secret'),
+        'redirect' => env('APP_URL') . '/auth/facebook/callback',
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

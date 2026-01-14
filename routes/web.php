@@ -36,6 +36,10 @@ foreach (config('tenancy.central_domains') as $domain) {
         Route::post('/register', [CustomerAuthController::class, 'register']);
         Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('logout');
 
+        // Social Login
+        Route::get('/auth/{provider}', [CustomerAuthController::class, 'redirectToProvider'])->name('social.login');
+        Route::get('/auth/{provider}/callback', [CustomerAuthController::class, 'handleProviderCallback']);
+
         Route::get('/contact', fn() => view('frontend.index'))->name('contact');
 
         // Blog

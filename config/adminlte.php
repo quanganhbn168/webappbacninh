@@ -354,6 +354,16 @@ return [
             'url'  => 'admin/pages',
             'icon' => 'far fa-fw fa-file-alt',
         ],
+        [
+            'text' => 'Dự án tiêu biểu',
+            'route'  => 'admin.projects.index',
+            'icon' => 'fas fa-fw fa-briefcase',
+        ],
+        [
+            'text' => 'Banner / Quảng cáo',
+            'route'  => 'admin.banners.index',
+            'icon' => 'fas fa-fw fa-bullhorn',
+        ],
         ['header' => 'CÀI ĐẶT'],
         [
             'text' => 'Cấu hình hệ thống',

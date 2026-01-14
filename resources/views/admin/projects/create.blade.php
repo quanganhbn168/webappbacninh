@@ -1,0 +1,88 @@
+@extends('adminlte::page')
+
+@section('title', 'Thêm Dự án')
+
+@section('content_header')
+    <h1>Thêm Dự án mới</h1>
+@stop
+
+@section('content')
+<div class="card">
+    <form action="{{ route('admin.projects.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="card-body">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label>Tiêu đề <span class="text-danger">*</span></label>
+                        <input type="text" name="title" class="form-control" value="{{ old('title') }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả</label>
+                        <textarea name="description" class="form-control" rows="4">{{ old('description') }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Link dự án</label>
+                        <input type="url" name="link" class="form-control" value="{{ old('link') }}" placeholder="https://...">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Ảnh đại diện</label>
+                        <div class="custom-file">
+                            <input type="file" name="image" class="custom-file-input" id="imageInput" accept="image/*">
+                            <label class="custom-file-label" for="imageInput">Chọn file...</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Danh mục</label>
+                        <select name="category" class="form-control">
+                            <option value="">-- Chọn --</option>
+                            <option value="E-commerce">E-commerce</option>
+                            <option value="F&B">F&B</option>
+                            <option value="Real Estate">Bất động sản</option>
+                            <option value="Corporate">Doanh nghiệp</option>
+                            <option value="Other">Khác</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Thứ tự hiển thị</label>
+                        <input type="number" name="order" class="form-control" value="{{ old('order', 0) }}">
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="is_featured" name="is_featured" value="1">
+                            <label class="custom-control-label" for="is_featured">Đánh dấu Nổi bật</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Lưu
+            </button>
+            <a href="{{ route('admin.projects.index') }}" class="btn btn-default">Hủy</a>
+        </div>
+    </form>
+</div>
+@stop
+
+@push('js')
+<script>
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+        var fileName = e.target.files[0]?.name || 'Chọn file...';
+        e.target.nextElementSibling.innerText = fileName;
+    });
+</script>
+@endpush

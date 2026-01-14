@@ -324,11 +324,35 @@
         </div>
         
         <div class="row g-4">
-            {{-- Project 1 --}}
+            @forelse($projects as $project)
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm h-100 hover-top">
                     <div class="bg-light ratio ratio-4x3 rounded-top overflow-hidden">
-                        {{-- Placeholder Image --}}
+                        @if($project->image)
+                            <img src="{{ asset('storage/' . $project->image) }}" alt="{{ $project->title }}" class="img-fluid object-fit-cover w-100 h-100">
+                        @else
+                            <div class="d-flex align-items-center justify-content-center text-muted bg-secondary bg-opacity-10 h-100">
+                                <i class="fas fa-image fa-3x"></i>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="card-body">
+                        @if($project->category)
+                            <span class="badge bg-info bg-opacity-10 text-info mb-2">{{ $project->category }}</span>
+                        @endif
+                        <h5 class="fw-bold card-title">{{ $project->title }}</h5>
+                        <p class="card-text text-muted small">{{ Str::limit($project->description, 80) }}</p>
+                        @if($project->link)
+                            <a href="{{ $project->link }}" target="_blank" class="text-primary fw-bold small text-decoration-none">Xem chi tiết <i class="fas fa-arrow-right"></i></a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @empty
+            {{-- Fallback: Placeholder cards khi chưa có dự án --}}
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 hover-top">
+                    <div class="bg-light ratio ratio-4x3 rounded-top overflow-hidden">
                         <div class="d-flex align-items-center justify-content-center text-muted bg-secondary bg-opacity-10 h-100">
                             <i class="fas fa-image fa-3x"></i>
                         </div>
@@ -340,8 +364,6 @@
                     </div>
                 </div>
             </div>
-
-            {{-- Project 2 --}}
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm h-100 hover-top">
                     <div class="bg-light ratio ratio-4x3 rounded-top overflow-hidden">
@@ -356,8 +378,6 @@
                     </div>
                 </div>
             </div>
-
-            {{-- Project 3 --}}
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm h-100 hover-top">
                     <div class="bg-light ratio ratio-4x3 rounded-top overflow-hidden">
@@ -372,6 +392,7 @@
                     </div>
                 </div>
             </div>
+            @endforelse
         </div>
         
         <div class="text-center mt-5">

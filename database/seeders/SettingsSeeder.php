@@ -45,6 +45,13 @@ class SettingsSeeder extends Seeder
             ['key' => 'meta_keywords', 'value' => 'thiết kế web, web bắc ninh', 'group' => 'seo'],
             ['key' => 'facebook_url', 'value' => 'https://facebook.com/webappbacninh', 'group' => 'social'],
             ['key' => 'zalo_url', 'value' => 'https://zalo.me/0987654321', 'group' => 'social'],
+
+            // Hero Section (Homepage)
+            ['key' => 'hero_badge', 'value' => 'Phiên bản Beta 1.0', 'group' => 'hero'],
+            ['key' => 'hero_title', 'value' => 'Khởi tạo Website<br>Chỉ trong 5 giây', 'group' => 'hero'],
+            ['key' => 'hero_subtitle', 'value' => 'Nền tảng công nghệ "All-in-One". Không chỉ là website bán hàng, mà là cả một hệ sinh thái công cụ hỗ trợ kinh doanh, tính toán và quản trị dành riêng cho người Bắc Ninh.', 'group' => 'hero'],
+            ['key' => 'hero_cta_text', 'value' => 'Tạo Website Ngay', 'group' => 'hero'],
+            ['key' => 'hero_cta_link', 'value' => '#register-section', 'group' => 'hero'],
         ];
 
         foreach ($settings as $setting) {

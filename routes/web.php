@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Auth\CustomerAuthController;
+use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\BannerController;
 
 foreach (config('tenancy.central_domains') as $domain) {
     Route::domain($domain)->group(function () {
@@ -122,6 +124,12 @@ Route::prefix('system029/admin')->middleware(['auth:admin', 'landlord'])->group(
 
     // Users
     Route::resource('users', UserController::class)->names('admin.users');
+
+    // Projects
+    Route::resource('projects', ProjectController::class)->names('admin.projects');
+
+    // Banners
+    Route::resource('banners', BannerController::class)->names('admin.banners');
     
 });
 

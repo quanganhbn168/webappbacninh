@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
 use App\Models\Setting;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 
 class SettingController extends Controller
 {
@@ -34,6 +34,7 @@ class SettingController extends Controller
         
         return back()->with('success', 'Cập nhật cấu hình thành công!');
     }
+
     public function sendTestMail(Request $request)
     {
         $request->validate([
@@ -41,7 +42,7 @@ class SettingController extends Controller
         ]);
 
         try {
-            \Illuminate\Support\Facades\Mail::raw('Đây là email kiểm tra kết nối SMTP từ WebApp Bắc Ninh.', function ($message) use ($request) {
+            Mail::raw('Đây là email kiểm tra kết nối SMTP từ WebApp Bắc Ninh.', function ($message) use ($request) {
                 $message->to($request->email)
                         ->subject('Test SMTP Connection - WebApp Bắc Ninh');
             });

@@ -75,11 +75,6 @@ Route::get('/anh-cover', [ThumbnailController::class, 'showCoverPage'])->name('c
 // Các route xử lý logic (sẽ làm ở các bước sau)
 Route::post('/get-info', [ThumbnailController::class, 'getInfo'])->name('cover.getInfo');
 Route::post('/download-thumbnail', [ThumbnailController::class, 'download'])->name('cover.download');
-// Route để hiển thị trang danh sách
-Route::get('/anh-cover/danh-sach', [ThumbnailController::class, 'showList'])->name('cover.list');
-
-// Route để xử lý xóa một mục
-Route::delete('/anh-cover/xoa/{log}', [ThumbnailController::class, 'deleteLog'])->name('cover.delete');
 
 
 // routes/web.php

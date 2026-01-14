@@ -15,12 +15,7 @@
 <body class="bg-gray-100">
 <div class="container mx-auto p-4 md:p-8 max-w-5xl">
 
-    <div class="text-right mb-4">
-        <a href="{{ route('cover.list') }}"
-           class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-800 transition">
-            Xem danh sách đã lưu &rarr;
-        </a>
-    </div>
+
 
     <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg"
          x-data="BulkThumb()"
@@ -84,20 +79,14 @@
                         <input type="checkbox" class="h-4 w-4" @change="toggleSelectAll($event)">
                         <span class="text-sm">Chọn tất cả (<span x-text="selectedCount()"></span>/<span x-text="items.length"></span>)</span>
                     </label>
-                    <label class="inline-flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" class="h-4 w-4" x-model="downloadZip">
-                        <span class="text-sm">Tải ZIP về máy sau khi lưu</span>
-                    </label>
-                </div>
-
                 <div class="flex gap-2">
                     <button @click="downloadSelected()"
                             class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                        Lưu các mục đã chọn
+                        Tải ZIP các mục đã chọn
                     </button>
                     <button @click="selectAll(); downloadSelected()"
                             class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-                        Lưu tất cả
+                        Tải ZIP tất cả
                     </button>
                 </div>
             </div>

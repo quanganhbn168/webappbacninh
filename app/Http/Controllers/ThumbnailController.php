@@ -56,171 +56,91 @@ class ThumbnailController extends Controller
     /**
      * Tải ảnh, lưu vào server/database và tùy chọn gửi về cho người dùng.
      */
+    /**
+     * Tải ảnh trực tiếp về máy (Không lưu server).
+     */
     public function download(Request $request)
     {
-        // Thêm 'url' vào validation để lấy link từ service trả về
         $validator = Validator::make($request->all(), [
             'image_url'    => 'required|url',
             'filename'     => 'nullable|string',
             'provider'     => 'required|string',
-            'original_url' => 'required|url',
-            'url'          => 'required|url', // Thêm validation cho link nhúng
         ]);
 
-        // Sửa lại view 'anh-cover.blade.php' để thêm input hidden cho 'url'
-        // <input type="hidden" name="url" :value="result.url">
-
         if ($validator->fails()) {
-            return redirect()->back()->with('error', 'Dữ liệu không hợp lệ, không thể xử lý.');
+            return redirect()->back()->with('error', 'Dữ liệu không hợp lệ.');
         }
 
         try {
-            // ----- BƯỚC 1: CHUẨN BỊ DỮ LIỆU -----
             $imageUrl = $request->input('image_url');
             $fileNameFromInput = $request->input('filename');
             $finalFileName = empty(trim($fileNameFromInput))
                 ? $request->input('provider') . '-' . time() . '.jpg'
                 : Str::slug(Str::limit($fileNameFromInput, 150, '')) . '.jpg';
 
-            // ----- BƯỚC 2: LƯU VÀO SERVER VÀ DATABASE -----
+            // Lấy nội dung ảnh
             $imageContents = Http::get($imageUrl)->body();
-            $savedPath = 'thumbnails/' . $finalFileName;
 
-            Storage::disk('public')->put($savedPath, $imageContents);
-
-            ThumbnailLog::create([
-                'provider'      => $request->input('provider'),
-                'original_url'  => $request->input('original_url'),
-                'title'         => $fileNameFromInput,
-                'thumbnail_url' => $imageUrl,
-                'url'           => $request->input('url'), // <-- Lưu vào cột 'url' mới
-                'saved_path'    => $savedPath,
-            ]);
-
-            // ----- BƯỚC 3: KIỂM TRA CHECKBOX VÀ TRẢ VỀ KẾT QUẢ -----
-            if ($request->has('download_to_client')) {
-                return response($imageContents)
-                    ->header('Content-Type', 'image/jpeg')
-                    ->header('Content-Disposition', 'attachment; filename="' . $finalFileName . '"');
-            }
-
-            return redirect()->back()->with('success', 'Đã lưu ảnh và thông tin vào server thành công!');
+            // Trả về file stream tải xuống ngay lập tức
+            return response($imageContents)
+                ->header('Content-Type', 'image/jpeg')
+                ->header('Content-Disposition', 'attachment; filename="' . $finalFileName . '"');
 
         } catch (Exception $e) {
-            Log::error('Lỗi khi download/lưu ảnh: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Đã có lỗi xảy ra trong quá trình xử lý. Vui lòng thử lại.');
+            Log::error('Lỗi download ảnh: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Không thể tải ảnh. Vui lòng thử lại.');
         }
     }
-
-    /**
-     * Hiển thị danh sách các thumbnail đã lưu.
-     */
-    public function showList()
-    {
-        $logs = ThumbnailLog::latest()->paginate(15);
-        return view('tools.list-cover', ['logs' => $logs]);
-    }
-
-    /**
-     * Xóa một log và file ảnh tương ứng.
-     */
-    public function deleteLog(ThumbnailLog $log)
-    {
-        try {
-            Storage::disk('public')->delete($log->saved_path);
-            $log->delete();
-            return redirect()->route('cover.list')->with('success', 'Đã xóa thành công!');
-        } catch (Exception $e) {
-            Log::error('Lỗi khi xóa log: ' . $e->getMessage());
-            return redirect()->route('cover.list')->with('error', 'Có lỗi xảy ra, không thể xóa.');
-        }
-    }
-
 
     public function downloadBulk(Request $request)
-{
-    $validated = $request->validate([
-        'items'                 => 'required|array|min:1',
-        'items.*.image_url'     => 'required|url',
-        'items.*.filename'      => 'nullable|string',
-        'items.*.provider'      => 'required|string',
-        'items.*.original_url'  => 'required|url',
-        'items.*.url'           => 'required|url',
-        'download_zip'          => 'nullable|in:true,false,1,0,on,off',
-    ], [
-        'items.required' => 'Không có mục nào để lưu.',
-    ]);
+    {
+        $validated = $request->validate([
+            'items'                 => 'required|array|min:1',
+            'items.*.image_url'     => 'required|url',
+            'items.*.filename'      => 'nullable|string',
+            'items.*.provider'      => 'required|string',
+        ]);
 
-    $items = $validated['items'];
-    $downloadZip = filter_var($request->input('download_zip'), FILTER_VALIDATE_BOOLEAN);
+        $items = $validated['items'];
 
-    $savedFiles = [];
-    $errors = [];
-
-    foreach ($items as $i => $it) {
         try {
-            $fileNameFromInput = trim($it['filename'] ?? '');
-            // rút gọn để an toàn tên file
-            $safeName = \Illuminate\Support\Str::slug(\Illuminate\Support\Str::limit($fileNameFromInput ?: ($it['provider'].'-'.time().'-'.$i), 150, ''), '-');
-            $finalFileName = ($safeName ?: 'thumbnail-'.$i).'.jpg';
+            $zipName = 'thumbnails-' . date('Ymd-His') . '.zip';
+            $zipPath = tempnam(sys_get_temp_dir(), 'zip'); // Tạo file temp
 
-            $imageContents = Http::get($it['image_url'])->body();
-            $savedPath = 'thumbnails/' . $finalFileName;
-            Storage::disk('public')->put($savedPath, $imageContents);
+            $zip = new ZipArchive();
+            if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                return redirect()->back()->with('error', 'Không thể tạo file ZIP.');
+            }
 
-            ThumbnailLog::create([
-                'provider'      => $it['provider'],
-                'original_url'  => $it['original_url'],
-                'title'         => $fileNameFromInput ?: null,
-                'thumbnail_url' => $it['image_url'],
-                'url'           => $it['url'],
-                'saved_path'    => $savedPath,
-            ]);
+            foreach ($items as $i => $it) {
+                try {
+                    $fileNameFromInput = trim($it['filename'] ?? '');
+                    $safeName = Str::slug(Str::limit($fileNameFromInput ?: ($it['provider'] . '-' . time() . '-' . $i), 150, ''), '-');
+                    $finalFileName = ($safeName ?: 'thumbnail-' . $i) . '.jpg';
 
-            $savedFiles[] = $savedPath;
-        } catch (\Throwable $e) {
-            Log::error('Bulk save thumbnail error: '.$e->getMessage());
-            $errors[] = "Mục #".($i+1)." lỗi: ".$e->getMessage();
+                    // Tải content ảnh về RAM
+                    $imageContents = Http::get($it['image_url'])->body();
+                    
+                    // Thêm trực tiếp vào ZIP
+                    $zip->addFromString($finalFileName, $imageContents);
+                } catch (\Throwable $e) {
+                    Log::error('Lỗi thêm ảnh vào ZIP: ' . $e->getMessage());
+                    // Tiếp tục với ảnh tiếp theo nếu lỗi
+                }
+            }
+            $zip->close();
+
+            // Trả về file ZIP và xóa sau khi gửi
+            return response()->download($zipPath, $zipName)->deleteFileAfterSend(true);
+
+        } catch (Exception $e) {
+             Log::error('Lỗi bulk download: ' . $e->getMessage());
+             return redirect()->back()->with('error', 'Có lỗi xảy ra khi tạo file nén.');
         }
     }
 
-    // Nếu không cần tải ZIP: quay lại kèm thông báo
-    if (!$downloadZip) {
-        $msg = 'Đã lưu '.count($savedFiles).' ảnh vào server.';
-        if (!empty($errors)) {
-            $msg .= ' Có '.count($errors).' lỗi.';
-            return redirect()->back()->with('error', $msg);
-        }
-        return redirect()->back()->with('success', $msg);
+    public function showBulkCoverPage()
+    {
+        return view('tools.bulk-anh-cover');
     }
-
-    // Gói ZIP để tải về
-    if (empty($savedFiles)) {
-        return redirect()->back()->with('error', 'Không có tệp nào để nén.');
-    }
-
-    $zipName = 'thumbnails-'.date('Ymd-His').'.zip';
-    $zipPath = storage_path('app/public/'.$zipName);
-
-    $zip = new ZipArchive();
-    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-        return redirect()->back()->with('error', 'Không thể tạo file ZIP.');
-    }
-
-    foreach ($savedFiles as $relPath) {
-        $abs = Storage::disk('public')->path($relPath);
-        if (file_exists($abs)) {
-            $zip->addFile($abs, basename($relPath));
-        }
-    }
-    $zip->close();
-
-    return response()->download($zipPath)->deleteFileAfterSend(true);
-}
-// app/Http/Controllers/ThumbnailController.php
-public function showBulkCoverPage()
-{
-    return view('tools.bulk-anh-cover');
-}
-
 }

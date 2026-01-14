@@ -17,12 +17,7 @@
 <body class="bg-gray-100">
 
     <div class="container mx-auto p-4 md:p-8 max-w-4xl">
-        <div class="text-right mb-4">
-            <a href="{{ route('cover.list') }}"
-                class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-800 transition">
-                Xem danh sách đã lưu &rarr;
-            </a>
-        </div>
+
         <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg" x-data="{
             url: '',
             isLoading: false,
@@ -117,28 +112,16 @@
                             <input type="hidden" name="image_url" :value="result.thumbnail_url">
                             <input type="hidden" name="filename" :value="result.title">
                             <input type="hidden" name="provider" :value="result.provider">
-                            <input type="hidden" name="original_url" :value="url">
-
-                            <input type="hidden" name="url" :value="result.url">
 
                             <div class="mb-4">
-                                <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Tiêu đề (có
-                                    thể chỉnh sửa)</label>
+                                <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Tiêu đề (tên file ảnh)</label>
                                 <input type="text" id="title" x-model="result.title"
                                     class="w-full p-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
                             </div>
 
-                            <div class="mb-4">
-                                <label for="download_to_client" class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="checkbox" name="download_to_client" id="download_to_client"
-                                        class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                    <span class="text-sm text-gray-700 font-medium">Tải về máy tính</span>
-                                </label>
-                            </div>
-
                             <button type="submit"
                                 class="w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition">
-                                Lưu vào Server
+                                Tải ảnh về máy
                             </button>
                         </form>
                     </div>

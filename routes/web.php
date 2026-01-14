@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Auth\CustomerAuthController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\AdBannerController;
 
 foreach (config('tenancy.central_domains') as $domain) {
     Route::domain($domain)->group(function () {
@@ -128,6 +129,11 @@ Route::prefix('system029/admin')->middleware(['auth:admin', 'landlord'])->group(
     Route::post('projects/bulk-destroy', [ProjectController::class, 'bulkDestroy'])->name('admin.projects.bulkDestroy');
     Route::post('projects/update-order', [ProjectController::class, 'updateOrder'])->name('admin.projects.updateOrder');
     Route::resource('projects', ProjectController::class)->names('admin.projects');
+
+    // Ad Banners
+    Route::post('ad-banners/bulk-destroy', [AdBannerController::class, 'bulkDestroy'])->name('admin.ad-banners.bulkDestroy');
+    Route::post('ad-banners/update-order', [AdBannerController::class, 'updateOrder'])->name('admin.ad-banners.updateOrder');
+    Route::resource('ad-banners', AdBannerController::class)->names('admin.ad-banners');
     
 });
 

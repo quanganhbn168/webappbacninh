@@ -4,12 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\UserService;
+use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    protected UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index()
     {
         $users = User::with('roles')->paginate(10);
@@ -22,22 +31,9 @@ class UserController extends Controller
         return view('admin.users.create', compact('roles'));
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|string|exists:roles,name',
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $user->assignRole($request->role);
+        $this->userService->create($request->validated());
 
         return redirect()->route('admin.users.index')->with('success', 'Tạo tài khoản thành công!');
     }
@@ -48,35 +44,33 @@ class UserController extends Controller
         return view('admin.users.edit', compact('user', 'roles'));
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|string|exists:roles,name',
-        ]);
-
-        $user->name = $request->name;
-        $user->email = $request->email;
-
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-        }
-
-        $user->save();
-        $user->syncRoles([$request->role]);
+        $this->userService->update($user, $request->validated());
 
         return redirect()->route('admin.users.index')->with('success', 'Cập nhật tài khoản thành công!');
     }
 
     public function destroy(User $user)
     {
-        if ($user->hasRole('super_admin') && User::role('super_admin')->count() <= 1) {
+        if (!$this->userService->delete($user)) {
             return back()->with('error', 'Không thể xóa quản trị viên cuối cùng!');
         }
         
-        $user->delete();
         return back()->with('success', 'Xóa tài khoản thành công!');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = json_decode($request->ids, true);
+        
+        if (empty($ids)) {
+            return redirect()->route('admin.users.index')->with('error', 'Không có mục nào được chọn.');
+        }
+
+        $deleted = $this->userService->bulkDelete($ids);
+
+        return redirect()->route('admin.users.index')->with('success', "Đã xóa {$deleted} tài khoản!");
+    }
 }
+

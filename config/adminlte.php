@@ -359,6 +359,11 @@ return [
             'route'  => 'admin.projects.index',
             'icon' => 'fas fa-fw fa-briefcase',
         ],
+        [
+            'text' => 'Banner / Quảng cáo',
+            'route'  => 'admin.ad-banners.index',
+            'icon' => 'fas fa-fw fa-bullhorn',
+        ],
         ['header' => 'CÀI ĐẶT'],
         [
             'text' => 'Cấu hình hệ thống',

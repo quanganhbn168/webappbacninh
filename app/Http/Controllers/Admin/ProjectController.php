@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Enums\ProjectCategory;
 use App\Services\ProjectService;
 use App\Http\Requests\Admin\StoreProjectRequest;
 use App\Http\Requests\Admin\UpdateProjectRequest;
@@ -26,7 +27,8 @@ class ProjectController extends Controller
 
     public function create()
     {
-        return view('admin.projects.create');
+        $categories = ProjectCategory::options();
+        return view('admin.projects.create', compact('categories'));
     }
 
     public function store(StoreProjectRequest $request)
@@ -41,7 +43,8 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        return view('admin.projects.edit', compact('project'));
+        $categories = ProjectCategory::options();
+        return view('admin.projects.edit', compact('project', 'categories'));
     }
 
     public function update(UpdateProjectRequest $request, Project $project)

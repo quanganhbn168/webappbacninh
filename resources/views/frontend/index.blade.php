@@ -338,7 +338,7 @@
                     </div>
                     <div class="card-body">
                         @if($project->category)
-                            <span class="badge bg-info bg-opacity-10 text-info mb-2">{{ $project->category }}</span>
+                            <span class="badge bg-info bg-opacity-10 text-info mb-2">{{ $project->category->label() }}</span>
                         @endif
                         <h5 class="fw-bold card-title">{{ $project->title }}</h5>
                         <p class="card-text text-muted small">{{ Str::limit($project->description, 80) }}</p>

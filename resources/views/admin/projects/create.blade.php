@@ -47,11 +47,11 @@
                         <label>Danh mục</label>
                         <select name="category" class="form-control">
                             <option value="">-- Chọn --</option>
-                            <option value="E-commerce">E-commerce</option>
-                            <option value="F&B">F&B</option>
-                            <option value="Real Estate">Bất động sản</option>
-                            <option value="Corporate">Doanh nghiệp</option>
-                            <option value="Other">Khác</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category['value'] }}" {{ old('category') == $category['value'] ? 'selected' : '' }}>
+                                    {{ $category['label'] }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">

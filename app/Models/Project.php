@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ProjectCategory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -24,6 +25,7 @@ class Project extends Model implements HasMedia
     ];
 
     protected $casts = [
+        'category' => ProjectCategory::class,
         'is_featured' => 'boolean',
     ];
 

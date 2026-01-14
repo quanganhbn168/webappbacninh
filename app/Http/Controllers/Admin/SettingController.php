@@ -20,11 +20,22 @@ class SettingController extends Controller
     {
         $data = $request->except('_token');
         
+        // Image fields that should be uploaded
+        $imageFields = ['site_logo_wide', 'site_logo_white', 'site_logo_square', 'site_favicon'];
+        
         foreach ($data as $key => $value) {
             $setting = Setting::where('key', $key)->first();
             if (!$setting) continue;
 
-            // Simply save the value (text path for images, text for other settings)
+            // Handle file uploads for image fields
+            if (in_array($key, $imageFields) && $request->hasFile($key)) {
+                $file = $request->file($key);
+                $filename = $key . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('images/settings'), $filename);
+                $value = 'images/settings/' . $filename;
+            }
+
+            // Save value (either uploaded path or text value)
             $setting->update(['value' => $value ?? '']);
             Cache::forget('setting.' . $key);
         }

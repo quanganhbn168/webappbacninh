@@ -278,66 +278,156 @@
                                             <i class="fas fa-lock mr-1"></i> Các thông tin này là bảo mật. Vui lòng không chia sẻ cho người lạ.
                                         </div>
 
-                                        <div class="row">
-                                            {{-- MOMO --}}
+                                        {{-- Default Provider --}}
+                                        <div class="row mb-4">
                                             <div class="col-md-6">
-                                                <div class="card card-outline card-pink">
+                                                <div class="form-group">
+                                                    <label class="font-weight-bold">Phương thức thanh toán mặc định</label>
+                                                    <select name="default_payment_provider" class="form-control">
+                                                        <option value="vnpay" {{ ($items->firstWhere('key', 'default_payment_provider')->value ?? '') == 'vnpay' ? 'selected' : '' }}>VNPay</option>
+                                                        <option value="momo" {{ ($items->firstWhere('key', 'default_payment_provider')->value ?? '') == 'momo' ? 'selected' : '' }}>MoMo</option>
+                                                        <option value="sepay" {{ ($items->firstWhere('key', 'default_payment_provider')->value ?? '') == 'sepay' ? 'selected' : '' }}>SePay</option>
+                                                        <option value="paypal" {{ ($items->firstWhere('key', 'default_payment_provider')->value ?? '') == 'paypal' ? 'selected' : '' }}>PayPal</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            {{-- VNPay --}}
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card card-outline card-primary h-100">
                                                     <div class="card-header">
-                                                        <h3 class="card-title text-pink font-weight-bold">MOMO</h3>
+                                                        <h3 class="card-title"><i class="fas fa-credit-card mr-2"></i><strong>VNPay</strong></h3>
                                                     </div>
                                                     <div class="card-body">
                                                         <div class="form-group">
-                                                            <label>API Key / Partner Code</label>
-                                                            <input type="text" name="payment_momo_api_key" class="form-control" value="{{ $items->firstWhere('key', 'payment_momo_api_key')->value ?? '' }}">
+                                                            <label>TMN Code (Mã Merchant)</label>
+                                                            <input type="text" name="vnpay_tmn_code" class="form-control" 
+                                                                   value="{{ $items->firstWhere('key', 'vnpay_tmn_code')->value ?? '' }}"
+                                                                   placeholder="Mã merchant từ VNPay">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Hash Secret (Khóa bí mật)</label>
+                                                            <input type="password" name="vnpay_hash_secret" class="form-control" 
+                                                                   value="{{ $items->firstWhere('key', 'vnpay_hash_secret')->value ?? '' }}"
+                                                                   placeholder="••••••••">
+                                                        </div>
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="vnpay_sandbox" name="vnpay_sandbox" value="1"
+                                                                   {{ ($items->firstWhere('key', 'vnpay_sandbox')->value ?? '1') == '1' ? 'checked' : '' }}>
+                                                            <label class="custom-control-label" for="vnpay_sandbox">Chế độ Sandbox (Test)</label>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             
-                                            {{-- ZALO --}}
-                                            <div class="col-md-6">
-                                                <div class="card card-outline card-primary">
+                                            {{-- MoMo --}}
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card card-outline h-100" style="border-color: #ae2070;">
                                                     <div class="card-header">
-                                                        <h3 class="card-title text-primary font-weight-bold">ZaloPay</h3>
+                                                        <h3 class="card-title" style="color: #ae2070;"><i class="fas fa-mobile-alt mr-2"></i><strong>MoMo</strong></h3>
                                                     </div>
                                                     <div class="card-body">
                                                         <div class="form-group">
-                                                            <label>App ID</label>
-                                                            <input type="text" name="payment_zalo_app_id" class="form-control" value="{{ $items->firstWhere('key', 'payment_zalo_app_id')->value ?? '' }}">
+                                                            <label>Partner Code</label>
+                                                            <input type="text" name="momo_partner_code" class="form-control" 
+                                                                   value="{{ $items->firstWhere('key', 'momo_partner_code')->value ?? '' }}"
+                                                                   placeholder="MOMO...">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Access Key</label>
+                                                            <input type="password" name="momo_access_key" class="form-control" 
+                                                                   value="{{ $items->firstWhere('key', 'momo_access_key')->value ?? '' }}"
+                                                                   placeholder="••••••••">
+                                                        </div>
+                                                        <div class="form-group mb-0">
+                                                            <label>Secret Key</label>
+                                                            <input type="password" name="momo_secret_key" class="form-control" 
+                                                                   value="{{ $items->firstWhere('key', 'momo_secret_key')->value ?? '' }}"
+                                                                   placeholder="••••••••">
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            {{-- SEPAY --}}
-                                            <div class="col-md-6">
-                                                <div class="card card-outline card-orange">
+                                            {{-- SePay --}}
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card card-outline card-success h-100">
                                                     <div class="card-header">
-                                                        <h3 class="card-title text-orange font-weight-bold">SePay</h3>
+                                                        <h3 class="card-title text-success"><i class="fas fa-qrcode mr-2"></i><strong>SePay</strong></h3>
                                                     </div>
                                                     <div class="card-body">
                                                         <div class="form-group">
-                                                            <label>API Key</label>
-                                                            <input type="password" name="payment_sepay_api_key" class="form-control" value="{{ $items->firstWhere('key', 'payment_sepay_api_key')->value ?? '' }}">
+                                                            <label>Webhook Token</label>
+                                                            <input type="password" name="sepay_webhook_token" class="form-control" 
+                                                                   value="{{ $items->firstWhere('key', 'sepay_webhook_token')->value ?? '' }}"
+                                                                   placeholder="Token từ SePay Dashboard">
+                                                            <small class="text-muted">Lấy từ <a href="https://my.sepay.vn/webhooks" target="_blank">SePay Webhooks</a></small>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group">
+                                                                    <label>Match Pattern</label>
+                                                                    <input type="text" name="sepay_match_pattern" class="form-control" 
+                                                                           value="{{ $items->firstWhere('key', 'sepay_match_pattern')->value ?? 'SE' }}"
+                                                                           placeholder="SE">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group">
+                                                                    <label>Ngân hàng</label>
+                                                                    <select name="sepay_bank_name" id="sepay_bank_select" class="form-control select2-bank" style="width: 100%">
+                                                                        @foreach(config('vietqr_banks.banks', []) as $code => $bank)
+                                                                            <option value="{{ $bank['short_name'] }}" 
+                                                                                    data-logo="https://api.vietqr.io/img/{{ $code }}.png"
+                                                                                    {{ ($items->firstWhere('key', 'sepay_bank_name')->value ?? '') == $bank['short_name'] ? 'selected' : '' }}>
+                                                                                {{ $bank['short_name'] }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Số tài khoản</label>
+                                                            <input type="text" name="sepay_bank_account" class="form-control" 
+                                                                   value="{{ $items->firstWhere('key', 'sepay_bank_account')->value ?? '' }}"
+                                                                   placeholder="0123456789">
+                                                        </div>
+                                                        <div class="form-group mb-0">
+                                                            <label>Tên chủ tài khoản</label>
+                                                            <input type="text" name="sepay_account_name" class="form-control" 
+                                                                   value="{{ $items->firstWhere('key', 'sepay_account_name')->value ?? '' }}"
+                                                                   placeholder="NGUYEN VAN A">
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            {{-- VIETQR --}}
-                                            <div class="col-md-6">
-                                                <div class="card card-outline card-success">
+                                            {{-- PayPal --}}
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card card-outline card-info h-100">
                                                     <div class="card-header">
-                                                        <h3 class="card-title text-success font-weight-bold">VietQR</h3>
+                                                        <h3 class="card-title text-info"><i class="fab fa-paypal mr-2"></i><strong>PayPal</strong></h3>
                                                     </div>
                                                     <div class="card-body">
                                                         <div class="form-group">
                                                             <label>Client ID</label>
-                                                            <input type="text" name="payment_vietqr_client_id" class="form-control" value="{{ $items->firstWhere('key', 'payment_vietqr_client_id')->value ?? '' }}">
+                                                            <input type="text" name="paypal_client_id" class="form-control" 
+                                                                   value="{{ $items->firstWhere('key', 'paypal_client_id')->value ?? '' }}"
+                                                                   placeholder="Client ID từ PayPal Developer">
                                                         </div>
                                                         <div class="form-group">
-                                                            <label>API Key</label>
-                                                            <input type="password" name="payment_vietqr_api_key" class="form-control" value="{{ $items->firstWhere('key', 'payment_vietqr_api_key')->value ?? '' }}">
+                                                            <label>Client Secret</label>
+                                                            <input type="password" name="paypal_client_secret" class="form-control" 
+                                                                   value="{{ $items->firstWhere('key', 'paypal_client_secret')->value ?? '' }}"
+                                                                   placeholder="••••••••">
+                                                        </div>
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="paypal_sandbox" name="paypal_sandbox" value="1"
+                                                                   {{ ($items->firstWhere('key', 'paypal_sandbox')->value ?? '1') == '1' ? 'checked' : '' }}>
+                                                            <label class="custom-control-label" for="paypal_sandbox">Chế độ Sandbox (Test)</label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -429,6 +519,22 @@
         $('body').append(form);
         form.submit();
     }
+
+    // Select2 Bank with Logo
+    $(document).ready(function() {
+        function formatBank(bank) {
+            if (!bank.id) return bank.text;
+            var logo = $(bank.element).data('logo');
+            return $('<span><img src="' + logo + '" style="height: 20px; margin-right: 8px; vertical-align: middle;" onerror="this.style.display=\'none\'" />' + bank.text + '</span>');
+        }
+        
+        $('.select2-bank').select2({
+            theme: 'bootstrap4',
+            templateResult: formatBank,
+            templateSelection: formatBank,
+            escapeMarkup: function(m) { return m; }
+        });
+    });
 
 </script>
 @endpush

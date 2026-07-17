@@ -1,0 +1,1 @@
+<main><section class="not-found-page"><div class="container text-center"><i class="fa-regular fa-file-lines"></i><h1>Không tìm thấy bài viết</h1><p>Đường dẫn có thể đã thay đổi hoặc bài viết chưa được xuất bản.</p><a class="btn btn-primary" href="<?= e(url('kien-thuc.php')) ?>">Quay lại trang kiến thức</a></div></section></main>

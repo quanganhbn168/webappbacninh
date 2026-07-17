@@ -37,8 +37,8 @@
                             :value="$post->slug"
                             placeholder="de-trong-de-tu-dong-tao"
                             size="sm"
-                            :checkUrl="route('admin.blog.check-slug')"
                             :excludeId="$post->id"
+                            model="App\Models\Post"
                         />
 
                         <x-admin.textarea 
@@ -111,12 +111,14 @@
                             placeholder="-- Chọn danh mục --"
                         />
 
-                        <x-admin.tag-input 
-                            name="tags" 
+                        <x-admin.select 
+                            name="tags[]" 
                             label="Tags (Thẻ)"
                             :options="$allTags"
                             :selected="$selectedTags"
-                            help="Nhập tag và nhấn Enter để tạo mới."
+                            multiple
+                            tags
+                            help="Chọn tag có sẵn hoặc nhập mới."
                         />
                     </div>
                 </div>

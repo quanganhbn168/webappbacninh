@@ -51,7 +51,7 @@
             var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
             var y = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
 
-            var cmsURL = '{{ route("unisharp.lfm.show") }}?editor=' + meta.fieldname;
+            var cmsURL = '{{ route('unisharp.lfm.show') }}?editor=' + meta.fieldname;
             if (meta.filetype == 'image') {
                 cmsURL = cmsURL + "&type=Images";
             } else {

@@ -310,11 +310,9 @@ return [
             'topnav_right' => true,
         ],
 
+
         // Sidebar items:
-        [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
-        ],
+
         [
             'text' => 'Xem Trang Chủ',
             'url'  => '/',
@@ -334,13 +332,39 @@ return [
         ],
         [
             'text' => 'Kho Giao Diện',
-            'url'  => 'admin/templates',
             'icon' => 'fas fa-fw fa-th-large',
+            'submenu' => [
+                [
+                    'text' => 'Danh sách giao diện',
+                    'route'  => 'admin.templates.index',
+                    'icon' => 'far fa-circle', // Standard sub-item icon
+                    'active' => ['system029/admin/templates*'],
+                ],
+                [
+                    'text' => 'Danh mục giao diện',
+                    'route'  => 'admin.template-categories.index',
+                    'icon' => 'far fa-circle', // Standard sub-item icon
+                    'active' => ['system029/admin/template-categories*'],
+                ],
+            ]
         ],
         [
             'text' => 'Dịch Vụ',
-            'url'  => 'admin/services',
             'icon' => 'fas fa-fw fa-concierge-bell',
+            'submenu' => [
+                [
+                    'text' => 'Danh sách dịch vụ',
+                    'route' => 'admin.services.index',
+                    'icon' => 'far fa-circle',
+                    'active' => ['system029/admin/services*'],
+                ],
+                [
+                    'text' => 'Nhóm dịch vụ',
+                    'route' => 'admin.service-categories.index',
+                    'icon' => 'far fa-circle',
+                    'active' => ['system029/admin/service-categories*'],
+                ],
+            ],
         ],
         [
             'text' => 'Hệ sinh thái (Mini Apps)',

@@ -1,12 +1,15 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Thêm Banner')
 
-@section('content_header')
-    <h1>Thêm Banner mới</h1>
+@section('header_title', 'Thêm Banner Mới')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.ad-banners.index') }}">Banner</a></li>
+    <li class="breadcrumb-item active">Thêm mới</li>
 @stop
 
-@section('content')
+@section('admin_content')
 <div class="card">
     <form action="{{ route('admin.ad-banners.store') }}" method="POST" enctype="multipart/form-data">
         @csrf

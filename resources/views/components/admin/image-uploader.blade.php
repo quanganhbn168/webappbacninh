@@ -89,7 +89,7 @@
             var previewId = $btn.data('preview');
             
             $btn.filemanager('image', {
-                prefix: '',
+                prefix: '{{ route('unisharp.lfm.show') }}',
             });
             
             // Watch for input value changes

@@ -24,8 +24,13 @@ class Tag extends Model
             ->saveSlugsTo('slug');
     }
 
-    public function posts(): BelongsToMany
+    public function posts(): \Illuminate\Database\Eloquent\Relations\MorphedByMany
     {
-        return $this->belongsToMany(Post::class)->withTimestamps();
+        return $this->morphedByMany(Post::class, 'taggable');
+    }
+
+    public function templates(): \Illuminate\Database\Eloquent\Relations\MorphedByMany
+    {
+        return $this->morphedByMany(Template::class, 'taggable');
     }
 }

@@ -1,23 +1,21 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Quản lý Dự án')
 
-@section('content_header')
-    <h1>Dự án tiêu biểu</h1>
+@section('header_title', 'Danh sách Dự án')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item active">Dự án</li>
 @stop
 
-@section('content')
+@section('admin_content')
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Danh sách dự án</h3>
         <div class="card-tools">
-            <form action="{{ route('admin.projects.bulkDestroy') }}" method="POST" id="bulkDeleteForm" class="d-inline">
-                @csrf
-                <input type="hidden" name="ids" id="bulkDeleteIds">
-                <button type="submit" class="btn btn-danger btn-sm d-none" id="bulkDeleteBtn" onclick="return confirm('Xóa các mục đã chọn?')">
-                    <i class="fas fa-trash"></i> Xóa đã chọn (<span id="selectedCount">0</span>)
-                </button>
-            </form>
+            <x-admin.bulk-action 
+                model="Project"
+            />
             <a href="{{ route('admin.projects.create') }}" class="btn btn-success btn-sm">
                 <i class="fas fa-plus"></i> Thêm mới
             </a>
@@ -84,7 +82,7 @@
 </div>
 @stop
 
-@push('js')
+@push('admin_js')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script>
 $(function() {

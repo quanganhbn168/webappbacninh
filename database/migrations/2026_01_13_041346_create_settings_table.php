@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('settings', function (Blueprint $table) {
+        Schema::create(config('settings.repositories.database.table') ?? 'settings', function (Blueprint $table) {
             $table->id();
-            $table->string('key')->unique();
-            $table->text('value')->nullable();
-            $table->string('group')->default('general');
-            $table->string('type')->default('text'); // text, image, textarea
+            $table->string('group');
+            $table->string('name');
+            $table->boolean('locked')->default(false);
+            $table->json('payload');
             $table->timestamps();
+            $table->unique(['group', 'name']);
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('settings');
+        Schema::dropIfExists(config('settings.repositories.database.table') ?? 'settings');
     }
 };

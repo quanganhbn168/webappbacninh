@@ -81,20 +81,5 @@ class PostController extends Controller
         return response()->json(['error' => 'Tải ảnh thất bại'], 400);
     }
 
-    /**
-     * Check slug uniqueness via AJAX.
-     */
-    public function checkSlug(Request $request)
-    {
-        $slug = Str::slug($request->slug);
-        $exists = Post::where('slug', $slug)
-            ->when($request->exclude_id, fn($q, $id) => $q->where('id', '!=', $id))
-            ->exists();
-        
-        return response()->json([
-            'exists' => $exists,
-            'slug' => $slug,
-            'message' => $exists ? 'Slug này đã tồn tại, vui lòng chọn slug khác.' : 'Slug hợp lệ!'
-        ]);
-    }
+
 }

@@ -6,28 +6,38 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table): void {
             $table->id();
+            $table->foreignId('project_category_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('code')->nullable()->unique();
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->string('image')->nullable(); // LFM path
+            $table->text('excerpt')->nullable();
+            $table->string('image')->nullable();
             $table->string('link')->nullable();
             $table->string('category')->nullable();
+            $table->string('industry')->nullable();
+            $table->unsignedSmallInteger('year')->nullable();
+            $table->string('client')->nullable();
+            $table->string('duration')->nullable();
+            $table->string('website_type')->nullable();
+            $table->longText('challenge')->nullable();
+            $table->longText('solution')->nullable();
+            $table->json('gallery')->nullable();
+            $table->json('results')->nullable();
+            $table->json('deliverables')->nullable();
+            $table->json('technologies')->nullable();
+            $table->json('data')->nullable();
             $table->boolean('is_featured')->default(false);
-            $table->integer('order')->default(0);
+            $table->boolean('is_active')->default(true);
+            $table->unsignedInteger('order')->default(0);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('projects');

@@ -35,7 +35,7 @@
                             placeholder="de-trong-de-tu-dong-tao"
                             help="Để trống nếu anh muốn hệ thống tự tạo từ tiêu đề."
                             size="sm"
-                            :checkUrl="route('admin.blog.check-slug')"
+                            model="App\Models\Post"
                         />
 
                         <x-admin.textarea 
@@ -105,11 +105,13 @@
                             placeholder="-- Chọn danh mục --"
                         />
 
-                        <x-admin.tag-input 
-                            name="tags" 
+                        <x-admin.select 
+                            name="tags[]" 
                             label="Tags (Thẻ)"
                             :options="$allTags"
-                            help="Nhập tag và nhấn Enter để tạo mới."
+                            multiple
+                            tags
+                            help="Chọn tag có sẵn hoặc nhập mới rồi nhấn Enter."
                         />
                     </div>
                 </div>

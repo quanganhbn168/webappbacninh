@@ -7,11 +7,16 @@ use App\Models\Template;
 use App\Http\Requests\Admin\StoreTemplateRequest;
 use App\Http\Requests\Admin\UpdateTemplateRequest;
 use App\Services\TemplateService;
+use App\Models\TemplateCategory;
+use App\Models\Tag;
 use Illuminate\Http\Request;
+use App\Models\Slug;
+use Illuminate\Support\Str;
+use App\Traits\HasBulkActions;
 
 class TemplateController extends Controller
 {
-    use \App\Traits\HasBulkActions;
+    use HasBulkActions;
 
     protected TemplateService $templateService;
 
@@ -36,22 +41,27 @@ class TemplateController extends Controller
         return view('admin.templates.index', compact('templates'));
     }
 
+
     public function create()
     {
-        return view('admin.templates.create');
+        $categories = TemplateCategory::all();
+        $tags = Tag::pluck('name', 'id');
+        return view('admin.templates.create', compact('categories', 'tags'));
     }
 
     public function store(StoreTemplateRequest $request)
     {
         $data = $request->validated();
-        $this->templateService->create($data, $request->file('image_file'));
+        $this->templateService->create($data);
 
         return redirect()->route('admin.templates.index')->with('success', 'Thêm giao diện thành công!');
     }
 
     public function edit(Template $template)
     {
-        return view('admin.templates.edit', compact('template'));
+        $categories = TemplateCategory::all();
+        $tags = Tag::pluck('name', 'id');
+        return view('admin.templates.edit', compact('template', 'categories', 'tags'));
     }
 
     public function update(UpdateTemplateRequest $request, Template $template)
@@ -59,8 +69,9 @@ class TemplateController extends Controller
         $data = $request->validated();
         $data['is_active'] = $request->has('is_active');
         $data['is_premium'] = $request->has('is_premium');
+        $data['is_free'] = $request->has('is_free');
 
-        $this->templateService->update($template, $data, $request->file('image_file'));
+        $this->templateService->update($template, $data);
 
         return redirect()->route('admin.templates.index')->with('success', 'Cập nhật giao diện thành công!');
     }
@@ -70,4 +81,5 @@ class TemplateController extends Controller
         $this->templateService->delete($template);
         return redirect()->route('admin.templates.index')->with('success', 'Xóa giao diện thành công!');
     }
+
 }

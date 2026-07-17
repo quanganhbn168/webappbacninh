@@ -11,7 +11,7 @@ class ProjectService
      */
     public function create(array $data): Project
     {
-        return Project::create([
+        $project = Project::create([
             'title' => $data['title'],
             'description' => $data['description'] ?? null,
             'image' => $data['featured_image'] ?? null, // LFM path
@@ -20,6 +20,12 @@ class ProjectService
             'is_featured' => $data['is_featured'] ?? false,
             'order' => $data['order'] ?? 0,
         ]);
+
+        if (!empty($data['featured_image'])) {
+            $project->importMediaFromLegacyPath($data['featured_image'], 'featured');
+        }
+
+        return $project;
     }
 
     /**
@@ -36,6 +42,10 @@ class ProjectService
             'is_featured' => $data['is_featured'] ?? false,
             'order' => $data['order'] ?? 0,
         ]);
+
+        if (!empty($data['featured_image'])) {
+            $project->importMediaFromLegacyPath($data['featured_image'], 'featured');
+        }
 
         return $project;
     }

@@ -3,7 +3,7 @@
 @section('meta_title', $post->meta_title ?? $post->title . ' - WebApp Bắc Ninh')
 @section('meta_description', $post->meta_description ?? Str::limit(strip_tags($post->content), 160))
 @section('meta_keywords', $post->meta_keywords)
-@section('meta_image', $post->og_image ? asset($post->og_image) : ($post->featured_image ? asset($post->featured_image) : asset('images/og-image.jpg')))
+@section('meta_image', $post->og_image_url)
 
 @section('content')
 <article class="py-5 bg-white">
@@ -36,9 +36,9 @@
                 </header>
 
                 {{-- Featured Image --}}
-                @if($post->featured_image)
+                @if($post->hasMedia('featured') || $post->featured_image)
                     <div class="mb-5 rounded-4 overflow-hidden shadow-sm">
-                        <img src="{{ asset($post->featured_image) }}" class="img-fluid w-100" alt="{{ $post->title }}">
+                        <img src="{{ $post->featured_image_url }}" class="img-fluid w-100" alt="{{ $post->title }}">
                     </div>
                 @endif
 

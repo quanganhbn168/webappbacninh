@@ -1,23 +1,21 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Quản lý Dịch Vụ')
 
-@section('content_header')
-    <h1>Quản lý Dịch Vụ</h1>
+@section('header_title', 'Danh sách Dịch Vụ')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item active">Dịch vụ</li>
 @stop
 
-@section('content')
+@section('admin_content')
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Danh sách dịch vụ</h3>
         <div class="card-tools">
-            <form action="{{ route('admin.services.bulkDestroy') }}" method="POST" id="bulkDeleteForm" class="d-inline">
-                @csrf
-                <input type="hidden" name="ids" id="bulkDeleteIds">
-                <button type="submit" class="btn btn-danger btn-sm d-none" id="bulkDeleteBtn" onclick="return confirm('Xóa các mục đã chọn?')">
-                    <i class="fas fa-trash"></i> Xóa đã chọn (<span id="selectedCount">0</span>)
-                </button>
-            </form>
+            <x-admin.bulk-action 
+                model="Service"
+            />
             <a href="{{ route('admin.services.create') }}" class="btn btn-success btn-sm">
                 <i class="fas fa-plus"></i> Thêm mới
             </a>
@@ -31,6 +29,7 @@
                     <th style="width: 30px"><i class="fas fa-grip-vertical text-muted"></i></th>
                     <th style="width: 50px">Icon</th>
                     <th>Tên dịch vụ</th>
+                    <th>Nhóm</th>
                     <th>Mô tả ngắn</th>
                     <th>Trạng thái</th>
                     <th style="width: 120px">Thao tác</th>
@@ -48,7 +47,8 @@
                             <i class="fas fa-cube text-muted"></i>
                         @endif
                     </td>
-                    <td>{{ $service->title }}</td>
+                    <td><div class="font-weight-bold">{{ $service->title }}</div><small class="text-muted">/{{ $service->slug }}</small></td>
+                    <td>{{ $service->category?->name ?? 'Landing riêng / chưa phân nhóm' }}</td>
                     <td>{{ Str::limit($service->description, 50) }}</td>
                     <td>
                         @if($service->is_active)
@@ -72,7 +72,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="text-center text-muted py-4">Chưa có dịch vụ nào.</td>
+                    <td colspan="8" class="text-center text-muted py-4">Chưa có dịch vụ nào.</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -84,7 +84,7 @@
 </div>
 @stop
 
-@push('js')
+@push('admin_js')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script>
 $(function() {

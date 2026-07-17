@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreServiceRequest extends FormRequest
 {
@@ -23,6 +24,8 @@ class StoreServiceRequest extends FormRequest
     {
         return [
             'title'       => 'required|string|max:255',
+            'slug'        => ['nullable', 'string', 'max:255', Rule::unique('services', 'slug')],
+            'service_category_id' => ['nullable', 'integer', Rule::exists('service_categories', 'id')],
             'icon'        => 'required|string|max:50',
             'description' => 'nullable|string|max:500',
             'content'     => 'nullable|string',

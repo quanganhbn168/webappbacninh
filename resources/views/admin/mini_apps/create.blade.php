@@ -86,7 +86,7 @@
     </div>
 @endsection
 
-@push('js')
+@push('admin_js')
 <script>
     $('#icon').on('input', function() {
         var iconClass = $(this).val();

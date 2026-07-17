@@ -9,6 +9,16 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+        then: function () {
+            // Admin Routes
+            Route::middleware('web')
+                ->group(base_path('routes/admin.php'));
+
+            // Global Catch-all (Slug Handler) - MUST BE LAST
+            Route::middleware('web')
+                ->get('/{slug}', [\App\Http\Controllers\Frontend\SlugController::class, 'show'])
+                ->name('slug.handle');
+        },
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([

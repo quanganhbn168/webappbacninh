@@ -20,9 +20,9 @@
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <form action="{{ route('admin.mini-apps.bulk-destroy') }}" method="POST" id="bulk-delete-form">
-                        @csrf
-                        @method('DELETE')
+                    <x-admin.bulk-action 
+                        model="MiniApp"
+                    />
                         <table class="table table-hover table-striped projects">
                             <thead>
                                 <tr>
@@ -107,9 +107,7 @@
                     </form>
                 </div>
                 <div class="card-footer clearfix">
-                    <button type="button" class="btn btn-danger btn-sm" id="btn-bulk-delete" disabled>
-                        <i class="fas fa-trash"></i> Xóa đã chọn
-                    </button>
+
                     <div class="float-right">
                         {{ $miniApps->links() }}
                     </div>
@@ -125,7 +123,7 @@
     </form>
 @endsection
 
-@push('js')
+@push('admin_js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     <script>
         // Sortable
@@ -158,28 +156,32 @@
         // Check All
         $('#checkAll').click(function() {
             $('.check-item').prop('checked', this.checked);
-            toggleBulkDeleteBtn();
+            updateBulkDeleteState();
         });
 
         $('.check-item').change(function() {
-            toggleBulkDeleteBtn();
+            updateBulkDeleteState();
             // Update CheckAll state
             var allChecked = $('.check-item:checked').length == $('.check-item').length;
             $('#checkAll').prop('checked', allChecked);
         });
 
-        function toggleBulkDeleteBtn() {
-            var checkedCount = $('.check-item:checked').length;
-            $('#btn-bulk-delete').prop('disabled', checkedCount === 0);
-            $('#btn-bulk-delete').html('<i class="fas fa-trash"></i> Xóa đã chọn (' + checkedCount + ')');
-        }
-
-        // Bulk Delete
-        $('#btn-bulk-delete').click(function() {
-            if(confirm('Bạn có chắc chắn muốn xóa các mục đã chọn?')) {
-                $('#bulk-delete-form').submit();
+        function updateBulkDeleteState() {
+            var checked = $('.check-item:checked');
+            var count = checked.length;
+            $('#selectedCount').text(count); // Expects component to have #selectedCount, check component def
+            
+            if (count > 0) {
+                $('#bulkDeleteBtn').removeClass('d-none');
+                var ids = checked.map(function() { return $(this).val(); }).get();
+                $('#bulkDeleteIds').val(JSON.stringify(ids));
+            } else {
+                $('#bulkDeleteBtn').addClass('d-none');
             }
-        });
+        }
+        
+        // Remove old click handler since component handles confirm
+        // $('#btn-bulk-delete').click(...) -> Removed
 
         // Delete Confirmation
         function confirmDelete(url) {

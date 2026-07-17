@@ -1,93 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Danh sách ảnh đã lưu</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
 </head>
-<body class="bg-gray-100">
-
-    <div class="container mx-auto p-4 md:p-8">
-
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Danh sách ảnh đã lưu</h1>
-            <a href="{{ route('cover.page') }}" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition">
-                &larr; Quay lại trang chính
-            </a>
+<body class="bg-light">
+    <main class="container py-4 py-md-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <h1 class="h2 mb-0">Danh sách ảnh đã lưu</h1>
+            <a href="{{ route('cover.page') }}" class="btn btn-primary">&larr; Quay lại trang chính</a>
         </div>
 
         @if (session('success'))
-            <div class="mb-4 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg">{{ session('success') }}</div>
+            <div class="alert alert-success">{{ session('success') }}</div>
         @endif
         @if (session('error'))
-            <div class="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded-lg">{{ session('error') }}</div>
+            <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-        <div class="bg-white p-6 rounded-xl shadow-lg">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ảnh</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiêu đề</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Link Nhúng (URL)</th>
-                            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse ($logs as $log)
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
                             <tr>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <a href="{{ $log->url ?? $log->original_url }}" class="glightbox">
-                                        <img src="{{ asset('storage/' . $log->saved_path) }}" alt="Thumbnail" class="h-12 w-20 object-cover rounded-md transition transform hover:scale-110">
-                                    </a>
-                                </td>
-                                <td class="px-4 py-4">
-                                    <div class="text-sm font-medium text-gray-900 truncate" style="max-width: 250px;" title="{{ $log->title }}">
-                                        {{ $log->title ?: 'Không có tiêu đề' }}
-                                    </div>
-                                    <div class="text-sm text-gray-500">
-                                        {{ $log->created_at->format('d/m/Y') }}
-                                    </div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <div x-data="{ link: '{{ $log->url ?? $log->original_url }}' }" class="flex items-center">
-                                        <input type="text" readonly :value="link" class="w-48 p-1 border bg-gray-50 text-xs rounded-l-md">
-                                        <button @click="navigator.clipboard.writeText(link); $el.innerText = 'Đã chép!'; setTimeout(() => $el.innerText = 'Chép', 2000)" class="px-2 py-1 bg-gray-200 text-xs rounded-r-md hover:bg-gray-300">Chép</button>
-                                    </div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="flex items-center justify-end space-x-3">
-                                        <a href="{{ asset('storage/' . $log->saved_path) }}" target="_blank" class="text-blue-600 hover:text-blue-900" title="Xem ảnh gốc">Xem</a>
-                                        <form action="{{ route('cover.delete', $log) }}" method="POST" onsubmit="return confirm('Anh có chắc chắn muốn xóa ảnh này không?');">
+                                <th>Ảnh</th>
+                                <th>Tiêu đề</th>
+                                <th>Link nhúng (URL)</th>
+                                <th class="text-end">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($logs as $log)
+                                @php($url = $log->url ?? $log->original_url)
+                                <tr>
+                                    <td style="width: 110px;">
+                                        <a href="{{ $url }}" class="glightbox">
+                                            <img src="{{ asset('storage/'.$log->saved_path) }}" alt="Thumbnail" class="img-fluid rounded" style="width: 80px; height: 48px; object-fit: cover;">
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold text-truncate" style="max-width: 250px;" title="{{ $log->title }}">{{ $log->title ?: 'Không có tiêu đề' }}</div>
+                                        <small class="text-muted">{{ $log->created_at->format('d/m/Y') }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="input-group input-group-sm" style="min-width: 260px;">
+                                            <input type="text" readonly value="{{ $url }}" class="form-control">
+                                            <button type="button" class="btn btn-outline-secondary js-copy-link" data-copy="{{ $url }}">Chép</button>
+                                        </div>
+                                    </td>
+                                    <td class="text-end text-nowrap">
+                                        <a href="{{ asset('storage/'.$log->saved_path) }}" target="_blank" class="btn btn-outline-primary btn-sm">Xem</a>
+                                        <form action="{{ route('cover.delete', $log) }}" method="POST" class="d-inline" onsubmit="return confirm('Anh có chắc chắn muốn xóa ảnh này không?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900" title="Xóa vĩnh viễn">Xóa</button>
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">Xóa</button>
                                         </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="px-6 py-12 text-center text-gray-500">Chưa có ảnh nào được lưu.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-5">Chưa có ảnh nào được lưu.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
-            <div class="mt-6">
-                {{ $logs->links() }}
-            </div>
+            @if ($logs->hasPages())
+                <div class="card-footer">{{ $logs->links() }}</div>
+            @endif
         </div>
-    </div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
-    <script type="text/javascript">
-        const lightbox = GLightbox({ selector: '.glightbox' });
+    <script>
+        GLightbox({ selector: '.glightbox' });
+        document.querySelectorAll('.js-copy-link').forEach((button) => {
+            button.addEventListener('click', async () => {
+                await navigator.clipboard.writeText(button.dataset.copy);
+                const original = button.textContent;
+                button.textContent = 'Đã chép';
+                window.setTimeout(() => { button.textContent = original; }, 2000);
+            });
+        });
     </script>
 </body>
 </html>

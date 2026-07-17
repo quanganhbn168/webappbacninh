@@ -8,7 +8,7 @@ class AdBannerService
 {
     public function create(array $data): AdBanner
     {
-        return AdBanner::create([
+        $banner = AdBanner::create([
             'name' => $data['name'],
             'slot' => $data['slot'],
             'image' => $data['banner_image'] ?? null, // LFM path
@@ -20,6 +20,12 @@ class AdBannerService
             'starts_at' => $data['starts_at'] ?? null,
             'ends_at' => $data['ends_at'] ?? null,
         ]);
+
+        if (!empty($data['banner_image'])) {
+            $banner->importMediaFromLegacyPath($data['banner_image'], 'featured');
+        }
+
+        return $banner;
     }
 
     public function update(AdBanner $banner, array $data): AdBanner
@@ -36,6 +42,10 @@ class AdBannerService
             'starts_at' => $data['starts_at'] ?? null,
             'ends_at' => $data['ends_at'] ?? null,
         ]);
+
+        if (!empty($data['banner_image'])) {
+            $banner->importMediaFromLegacyPath($data['banner_image'], 'featured');
+        }
 
         return $banner;
     }

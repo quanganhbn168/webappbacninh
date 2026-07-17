@@ -1,12 +1,15 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Thêm Dự án')
 
-@section('content_header')
-    <h1>Thêm Dự án mới</h1>
+@section('header_title', 'Thêm Dự án Mới')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.projects.index') }}">Dự án</a></li>
+    <li class="breadcrumb-item active">Thêm mới</li>
 @stop
 
-@section('content')
+@section('admin_content')
 <div class="card">
     <form action="{{ route('admin.projects.store') }}" method="POST" enctype="multipart/form-data">
         @csrf

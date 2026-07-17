@@ -1,12 +1,15 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Sửa Banner')
 
-@section('content_header')
-    <h1>Sửa Banner: {{ $adBanner->name }}</h1>
+@section('header_title', 'Chỉnh sửa Banner')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.ad-banners.index') }}">Banner</a></li>
+    <li class="breadcrumb-item active">Chỉnh sửa</li>
 @stop
 
-@section('content')
+@section('admin_content')
 <div class="card">
     <form action="{{ route('admin.ad-banners.update', $adBanner) }}" method="POST" enctype="multipart/form-data">
         @csrf

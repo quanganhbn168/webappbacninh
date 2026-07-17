@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use App\Models\ServiceCategory;
 use App\Http\Requests\Admin\StoreServiceRequest;
 use App\Http\Requests\Admin\UpdateServiceRequest;
 use App\Services\ServiceService;
@@ -32,13 +33,15 @@ class ServiceController extends Controller
 
     public function index()
     {
-        $services = Service::ordered()->paginate(10);
+        $services = Service::with('category')->ordered()->paginate(10);
         return view('admin.services.index', compact('services'));
     }
 
     public function create()
     {
-        return view('admin.services.create');
+        $categories = ServiceCategory::active()->pluck('name', 'id');
+
+        return view('admin.services.create', compact('categories'));
     }
 
     public function store(StoreServiceRequest $request)
@@ -53,7 +56,9 @@ class ServiceController extends Controller
 
     public function edit(Service $service)
     {
-        return view('admin.services.edit', compact('service'));
+        $categories = ServiceCategory::active()->pluck('name', 'id');
+
+        return view('admin.services.edit', compact('service', 'categories'));
     }
 
     public function update(UpdateServiceRequest $request, Service $service)

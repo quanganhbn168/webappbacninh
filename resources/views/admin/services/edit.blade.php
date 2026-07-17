@@ -1,12 +1,15 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Chỉnh sửa Dịch Vụ')
 
-@section('content_header')
-    <h1>Chỉnh sửa: {{ $service->title }}</h1>
+@section('header_title', 'Chỉnh sửa Dịch Vụ')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.services.index') }}">Dịch vụ</a></li>
+    <li class="breadcrumb-item active">Chỉnh sửa</li>
 @stop
 
-@section('content')
+@section('admin_content')
 <div class="row">
     <div class="col-md-12">
         <form action="{{ route('admin.services.update', $service) }}" method="POST">
@@ -18,6 +21,24 @@
                         <label for="title">Tên dịch vụ <span class="text-danger">*</span></label>
                         <input type="text" name="title" id="title" class="form-control" value="{{ old('title', $service->title) }}" required>
                         @error('title') <span class="text-danger">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="slug">Đường dẫn</label>
+                            <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $service->slug) }}" required>
+                            @error('slug') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="service_category_id">Nhóm dịch vụ</label>
+                            <select name="service_category_id" id="service_category_id" class="form-control">
+                                <option value="">-- Chưa phân nhóm / landing riêng --</option>
+                                @foreach($categories as $id => $name)
+                                    <option value="{{ $id }}" @selected(old('service_category_id', $service->service_category_id) == $id)>{{ $name }}</option>
+                                @endforeach
+                            </select>
+                            <small class="form-text text-muted">Dịch vụ chưa có landing riêng sẽ hiển thị theo nhóm này.</small>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -35,9 +56,11 @@
                         <textarea name="description" id="description" class="form-control" rows="3" required>{{ old('description', $service->description) }}</textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label for="content">Nội dung chi tiết</label>
-                        <textarea name="content" id="content" class="form-control" rows="10">{{ old('content', $service->content) }}</textarea>
+                            <x-admin.editor
+                                name="content"
+                                label="Nội dung chi tiết (HTML)"
+                                :value="old('content', $service->content)"
+                            />
                     </div>
 
                     <div class="form-group">
@@ -56,10 +79,3 @@
     </div>
 </div>
 @stop
-
-@push('js')
-    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
-    <script>
-        CKEDITOR.replace('content');
-    </script>
-@endpush

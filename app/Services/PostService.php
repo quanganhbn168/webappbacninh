@@ -15,6 +15,7 @@ class PostService
     {
         $postData = $this->prepareData($data);
         $post = Post::create($postData);
+        $this->importMedia($post, $data);
         
         $this->syncTags($post, $data['tags'] ?? []);
         
@@ -28,6 +29,7 @@ class PostService
     {
         $postData = $this->prepareData($data, $post);
         $post->update($postData);
+        $this->importMedia($post, $data);
         
         $this->syncTags($post, $data['tags'] ?? []);
         
@@ -97,5 +99,16 @@ class PostService
         }
         
         $post->tags()->sync($tagIds);
+    }
+
+    private function importMedia(Post $post, array $data): void
+    {
+        if (!empty($data['featured_image'])) {
+            $post->importMediaFromLegacyPath($data['featured_image'], 'featured');
+        }
+
+        if (!empty($data['og_image'])) {
+            $post->importMediaFromLegacyPath($data['og_image'], 'og');
+        }
     }
 }

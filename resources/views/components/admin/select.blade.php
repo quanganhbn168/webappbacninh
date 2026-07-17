@@ -8,9 +8,13 @@
     'help' => null
 ])
 
+@php
+    $id = $attributes->get('id') ?? str_replace(['[', ']'], '', $name) . '_' . uniqid();
+@endphp
+
 <div class="form-group mb-3">
     @if($label)
-        <label for="{{ $name }}" class="font-weight-bold small text-muted mb-1">
+        <label for="{{ $id }}" class="font-weight-bold small text-muted mb-1">
             {{ $label }}
             @if($required)<span class="text-danger">*</span>@endif
         </label>
@@ -18,16 +22,24 @@
     
     <select 
         name="{{ $name }}" 
-        id="{{ $name }}" 
+        id="{{ $id }}" 
         class="form-control select2bs4 @error($name) is-invalid @enderror"
         data-placeholder="{{ $placeholder }}"
         {{ $required ? 'required' : '' }}
         {{ $attributes }}
         style="width: 100%;"
     >
-        <option value="">{{ $placeholder }}</option>
+        @if(!$attributes->has('multiple'))
+            <option value="">{{ $placeholder }}</option>
+        @endif
         @foreach($options as $value => $text)
-            <option value="{{ $value }}" {{ old($name, $selected) == $value ? 'selected' : '' }}>
+            <option value="{{ $value }}" 
+                @if(is_array(old($name, $selected)))
+                    {{ in_array($value, old($name, $selected)) ? 'selected' : '' }}
+                @else
+                    {{ old($name, $selected) == $value ? 'selected' : '' }}
+                @endif
+            >
                 {{ $text }}
             </option>
         @endforeach
@@ -45,10 +57,14 @@
 @push('admin_js')
 <script>
     $(document).ready(function() {
-        $('#{{ $name }}').select2({
+        $('#{{ $id }}').select2({
             theme: 'bootstrap4',
             width: '100%',
-            allowClear: true
+            allowClear: true,
+            @if($attributes->has('tags'))
+            tags: true,
+            tokenSeparators: [',']
+            @endif
         });
     });
 </script>

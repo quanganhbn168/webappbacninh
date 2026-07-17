@@ -1,196 +1,134 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\ServiceProvider;
-
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ThumbnailController;
+use App\Http\Controllers\Auth\CustomerAuthController;
 use App\Http\Controllers\DomainController;
-use App\Http\Controllers\TenantRegisterController;
+use App\Http\Controllers\Frontend\LeadController;
+use App\Http\Controllers\Frontend\ArticleController;
+use App\Http\Controllers\Frontend\OperationServiceController;
+use App\Http\Controllers\Frontend\ProjectController;
+use App\Http\Controllers\Frontend\ServiceController;
+use App\Http\Controllers\Frontend\SiteController;
+use App\Http\Controllers\Frontend\ThemeController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TaxController;
-use App\Http\Controllers\BlogPostController;
+use App\Http\Controllers\TenantRegisterController;
+use App\Http\Controllers\ThumbnailController;
 use App\Http\Controllers\ToolController;
-use App\Http\Controllers\PaymentController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Auth\CustomerAuthController;
+Route::controller(SiteController::class)->group(function (): void {
+    Route::get('/', 'home')->name('home');
+    Route::get('/gioi-thieu', 'about')->name('about');
+    Route::get('/lien-he', 'contact')->name('contact');
+    Route::get('/bang-gia', 'pricing')->name('pricing');
+    Route::get('/hop-tac-agency', 'agency')->name('agency');
 
-use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\TenantController;
-use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\PostController;
-use App\Http\Controllers\Admin\ProjectController;
-use App\Http\Controllers\Admin\AdBannerController;
-use App\Http\Controllers\Admin\MiniAppController;
-use App\Http\Controllers\Admin\ServiceController;
-use App\Http\Controllers\Admin\TemplateController;
+    Route::get('/chinh-sach-bao-mat', 'legal')->defaults('slug', 'chinh-sach-bao-mat')->name('legal.privacy');
+    Route::get('/dieu-khoan-su-dung', 'legal')->defaults('slug', 'dieu-khoan-su-dung')->name('legal.terms');
+    Route::get('/chinh-sach-bao-hanh', 'legal')->defaults('slug', 'chinh-sach-bao-hanh')->name('legal.warranty');
+    Route::get('/quy-trinh-thanh-toan', 'legal')->defaults('slug', 'quy-trinh-thanh-toan')->name('legal.payment');
+});
 
-foreach (config('tenancy.central_domains') as $domain) {
-    Route::domain($domain)->group(function () {
-        // Sitemap (Dynamic)
-        Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/thiet-ke-website', [ServiceController::class, 'index'])->name('services.index');
+Route::get('/thiet-ke-website/{slug}', [ServiceController::class, 'detail'])->name('services.show');
 
-        // Trang chủ
-        Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/kho-giao-dien', [ThemeController::class, 'index'])->name('themes.index');
+Route::get('/kho-giao-dien/{slug}', [ThemeController::class, 'detail'])->name('themes.show');
 
-        // Tìm kiếm, đăng nhập, đăng ký (giữ nguyên)
-        // Tìm kiếm
-        Route::get('/search', fn() => view('frontend.index'))->name('search'); // Placeholder for search
+Route::get('/du-an', [ProjectController::class, 'index'])->name('projects.index');
+Route::get('/du-an/{slug}', [ProjectController::class, 'detail'])->name('projects.show');
 
-        // Authentication Routes
-        Route::get('/login', [CustomerAuthController::class, 'showLoginForm'])->name('login');
-        Route::post('/login', [CustomerAuthController::class, 'login']);
-        Route::get('/register', [CustomerAuthController::class, 'showRegistrationForm'])->name('register');
-        Route::post('/register', [CustomerAuthController::class, 'register']);
-        Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('logout');
+Route::get('/kien-thuc', [ArticleController::class, 'index'])->name('articles.index');
+Route::get('/kien-thuc/{slug}', [ArticleController::class, 'detail'])->name('articles.show');
 
-        // Social Login
-        Route::get('/auth/{provider}', [CustomerAuthController::class, 'redirectToProvider'])->name('social.login');
-        Route::get('/auth/{provider}/callback', [CustomerAuthController::class, 'handleProviderCallback']);
+Route::get('/dich-vu-van-hanh', [OperationServiceController::class, 'index'])->name('operations.index');
+Route::get('/dich-vu-van-hanh/{slug}', [OperationServiceController::class, 'detail'])->name('operations.show');
 
-        Route::get('/contact', fn() => view('frontend.index'))->name('contact');
+Route::post('/lien-he', [LeadController::class, 'store'])->name('leads.store');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::redirect('/contact', '/lien-he', 301);
+Route::redirect('/blog', '/kien-thuc', 301);
+Route::get('/blog/{slug}', fn (string $slug) => redirect()->route('articles.show', $slug, 301));
+Route::get('/search', fn () => redirect()->route('articles.index'))->name('search');
 
-        // Blog
-        Route::get('/blog', [BlogPostController::class, 'index'])->name('blog.index');
-        Route::get('/blog/{slug}', [BlogPostController::class, 'show'])->name('blog.show');
+Route::get('/login', [CustomerAuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [CustomerAuthController::class, 'login']);
+Route::get('/register', [CustomerAuthController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [CustomerAuthController::class, 'register']);
+Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('logout');
+Route::get('/auth/{provider}', [CustomerAuthController::class, 'redirectToProvider'])->name('social.login');
+Route::get('/auth/{provider}/callback', [CustomerAuthController::class, 'handleProviderCallback']);
+Route::get('/domain-check', [DomainController::class, 'check'])->name('domain.check');
 
-        // Check Domain
-        Route::get('/domain-check', [DomainController::class, 'check'])->name('domain.check');
-    });
-}
-
-// Template theo ngành (route cho danh mục)
-Route::get('/templates', fn() => view('frontend.templates.index'))->name('templates.index');
-Route::get('/templates/{slug}', function ($slug) {
-    return view('frontend.templates.show', compact('slug'));
-})->name('templates.show');
-
-// Dịch vụ hosting, tên miền...
-Route::get('/services/{slug}', function ($slug) {
-    return view('frontend.services.show', compact('slug'));
-})->name('services.show');
-Route::post('/subscribe', function () {
-    return back()->with('success', 'Cảm ơn bạn đã để lại email, chúng tôi sẽ liên hệ sớm!');
-})->name('subscribe.email');
-
-
-
-// Route để hiển thị trang công cụ lấy ảnh cover
 Route::get('/anh-cover', [ThumbnailController::class, 'showCoverPage'])->name('cover.page');
-
-// Các route xử lý logic (sẽ làm ở các bước sau)
 Route::post('/get-info', [ThumbnailController::class, 'getInfo'])->name('cover.getInfo');
 Route::post('/download-thumbnail', [ThumbnailController::class, 'download'])->name('cover.download');
 Route::post('/download-video', [ThumbnailController::class, 'downloadVideo'])->name('cover.download.video');
-
-
-// routes/web.php
 Route::get('/bulk-anh-cover', [ThumbnailController::class, 'showBulkCoverPage'])->name('cover.bulk.page');
 Route::post('/download-bulk', [ThumbnailController::class, 'downloadBulk'])->name('cover.download.bulk');
 
-// Tính thuế TNCN (Mini App)
 Route::get('/tinh-thue-tncn', [TaxController::class, 'showPersonalTax'])->name('tools.tax');
 Route::post('/tinh-thue-tncn/calculate', [TaxController::class, 'calculatePersonalTax'])->name('tools.tax.calculate');
-
-// Tính thuế Hộ kinh doanh (Mini App)
 Route::get('/tinh-thue-ho-kinh-doanh', [TaxController::class, 'showHouseholdTax'])->name('tools.tax.household');
 Route::post('/tinh-thue-ho-kinh-doanh/calculate', [TaxController::class, 'calculateHouseholdTax'])->name('tools.tax.household.calculate');
+Route::get('/tinh-thue-doanh-nghiep', [TaxController::class, 'showSMETax'])->name('tools.tax.sme');
+Route::post('/tinh-thue-doanh-nghiep/calculate', [TaxController::class, 'calculateSMETax'])->name('tools.tax.sme.calculate');
 
-// Tính thuế Doanh nghiệp nhỏ và vừa (Mini App)
-// Tools / Mini Apps
-Route::prefix('tools')->group(function () {
+Route::prefix('tools')->group(function (): void {
     Route::get('/qr-code', [ToolController::class, 'qrCode'])->name('tools.qr');
     Route::get('/ngan-hang', [ToolController::class, 'bankQr'])->name('tools.bank-qr');
     Route::get('/calendar', [ToolController::class, 'calendar'])->name('tools.calendar');
     Route::get('/vong-quay-an-trua', [ToolController::class, 'foodWheel'])->name('tools.food-wheel');
 });
 
-Route::get('/tinh-thue-doanh-nghiep', [TaxController::class, 'showSMETax'])->name('tools.tax.sme');
-Route::post('/tinh-thue-doanh-nghiep/calculate', [TaxController::class, 'calculateSMETax'])->name('tools.tax.sme.calculate');
-
-// Payment Gateway
-Route::prefix('payment')->group(function () {
+Route::prefix('payment')->group(function (): void {
     Route::get('/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
     Route::post('/process', [PaymentController::class, 'process'])->name('payment.process');
     Route::get('/callback/{provider}', [PaymentController::class, 'callback'])->name('payment.callback');
     Route::get('/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
     Route::get('/result', [PaymentController::class, 'result'])->name('payment.result');
     Route::post('/api/process', [PaymentController::class, 'processApi'])->name('payment.api.process');
-    
-    // SePay QR Code page
     Route::get('/sepay/qr', [PaymentController::class, 'sepayQr'])->name('payment.sepay.qr');
 });
 
-// Đăng ký Tenant
+Route::post('/subscribe', fn () => back()->with('success', 'Cảm ơn bạn đã để lại email, chúng tôi sẽ liên hệ sớm!'))->name('subscribe.email');
 Route::post('/create-tenant', [TenantRegisterController::class, 'store']);
 
-// Redirect legacy /admin to secret prefix
-Route::get('/admin/{path?}', function ($path = null) {
-    return redirect('/system029/admin/' . ($path ? $path : 'login'));
-})->where('path', '.*');
+$legacyRedirects = [
+    'index.php' => 'home',
+    'gioi-thieu.php' => 'about',
+    'lien-he.php' => 'contact',
+    'bang-gia.php' => 'pricing',
+    'hop-tac-agency.php' => 'agency',
+    'thiet-ke-website.php' => 'services.index',
+    'kho-giao-dien.php' => 'themes.index',
+    'du-an.php' => 'projects.index',
+    'kien-thuc.php' => 'articles.index',
+    'dich-vu-van-hanh.php' => 'operations.index',
+];
+foreach ($legacyRedirects as $uri => $routeName) {
+    Route::get('/'.$uri, fn () => redirect()->route($routeName, status: 301));
+}
 
-// Landlord Admin Authentication (Obfuscated)
-Route::prefix('system029/admin')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout');
-});
+foreach (config('website_services') as $service) {
+    Route::get('/'.$service['route'], fn () => redirect()->route('services.show', $service['slug'], 301));
+}
+foreach (config('operation_services') as $service) {
+    $slug = pathinfo($service['route'], PATHINFO_FILENAME);
+    Route::get('/'.$service['route'], fn () => redirect()->route('operations.show', $slug, 301));
+}
+$legalRoutes = [
+    'chinh-sach-bao-mat' => 'legal.privacy',
+    'dieu-khoan-su-dung' => 'legal.terms',
+    'chinh-sach-bao-hanh' => 'legal.warranty',
+    'quy-trinh-thanh-toan' => 'legal.payment',
+];
+foreach ($legalRoutes as $slug => $routeName) {
+    Route::get('/'.$slug.'.php', fn () => redirect()->route($routeName, status: 301));
+}
 
-// Landlord Admin Panel (Obfuscated)
-Route::prefix('system029/admin')->middleware(['auth:admin', 'landlord'])->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
-    
-    // Tenants
-    Route::resource('tenants', TenantController::class)->names('admin.tenants');
-    
-    // Mini Apps
-    Route::post('mini-apps/update-order', [MiniAppController::class, 'updateOrder'])->name('admin.mini-apps.update-order');
-    Route::delete('mini-apps/bulk-destroy', [MiniAppController::class, 'bulkDestroy'])->name('admin.mini-apps.bulk-destroy');
-    Route::resource('mini-apps', MiniAppController::class)->names('admin.mini-apps');
-
-    // Blog
-    Route::post('blog/upload-image', [PostController::class, 'uploadImage'])->name('admin.blog.upload');
-    Route::get('blog/check-slug', [PostController::class, 'checkSlug'])->name('admin.blog.check-slug');
-    Route::resource('blog', PostController::class)->names('admin.blog');
-    
-    // Settings
-    Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings');
-    Route::post('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
-    Route::post('/settings/test-mail', [SettingController::class, 'sendTestMail'])->name('admin.settings.test-mail');
-
-    // Profile
-    Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile');
-    Route::post('/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
-
-    // Users
-    Route::resource('users', UserController::class)->names('admin.users');
-
-    // Projects
-    Route::post('projects/bulk-destroy', [ProjectController::class, 'bulkDestroy'])->name('admin.projects.bulkDestroy');
-    Route::post('projects/update-order', [ProjectController::class, 'updateOrder'])->name('admin.projects.updateOrder');
-    Route::resource('projects', ProjectController::class)->names('admin.projects');
-
-    // Ad Banners
-    Route::post('ad-banners/bulk-destroy', [AdBannerController::class, 'bulkDestroy'])->name('admin.ad-banners.bulkDestroy');
-    Route::post('ad-banners/update-order', [AdBannerController::class, 'updateOrder'])->name('admin.ad-banners.updateOrder');
-    Route::resource('ad-banners', AdBannerController::class)->names('admin.ad-banners');
-
-    // Services
-    Route::post('services/bulk-destroy', [ServiceController::class, 'bulkDestroy'])->name('admin.services.bulkDestroy');
-    Route::post('services/update-order', [ServiceController::class, 'updateOrder'])->name('admin.services.updateOrder');
-    Route::resource('services', ServiceController::class)->names('admin.services');
-
-    // Templates
-    Route::post('templates/bulk-destroy', [TemplateController::class, 'bulkDestroy'])->name('admin.templates.bulkDestroy');
-    Route::post('templates/update-order', [TemplateController::class, 'updateOrder'])->name('admin.templates.updateOrder');
-    Route::resource('templates', TemplateController::class)->names('admin.templates');
-    
-});
-
-// AdminLTE Auth Routes (Auto-registered if adminlte:install auth was run, 
-// but we might need to ensure standard auth routes exist)
-// Auth::routes();
-
+Route::get('/chi-tiet-giao-dien.php', fn (Request $request) => redirect()->route('themes.show', $request->string('slug'), 301));
+Route::get('/chi-tiet-du-an.php', fn (Request $request) => redirect()->route('projects.show', $request->string('slug'), 301));
+Route::get('/chi-tiet-bai-viet.php', fn (Request $request) => redirect()->route('articles.show', $request->string('slug'), 301));

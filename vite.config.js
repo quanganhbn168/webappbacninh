@@ -14,10 +14,13 @@ export default defineConfig({
     }),
   ],
   css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@import "./theme.scss";`
-      }
-    }
-  }
+    scss: {
+      additionalData: `@import "./theme.scss";`,
+    },
+  },
+  resolve: {
+    alias: {
+      $: 'jQuery',
+    },
+  },
 });

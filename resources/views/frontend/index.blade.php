@@ -266,8 +266,8 @@
                 <div class="col-md-4">
                     <div class="card border-0 h-100 hover-shadow transition rounded-4 overflow-hidden shadow-sm">
                         <div class="ratio ratio-16x9 mb-3 bg-secondary bg-opacity-10">
-                            @if($post->featured_image)
-                                <img src="{{ asset($post->featured_image) }}" class="img-fluid object-fit-cover w-100 h-100" alt="{{ $post->title }}">
+                        @if($post->hasMedia('featured') || $post->featured_image)
+                            <img src="{{ $post->featured_image_url }}" class="img-fluid object-fit-cover w-100 h-100" alt="{{ $post->title }}">
                             @else
                                 <div class="d-flex align-items-center justify-content-center h-100 text-muted">
                                     <i class="far fa-newspaper fa-2x"></i>

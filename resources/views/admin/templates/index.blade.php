@@ -1,23 +1,21 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Quản lý Kho Giao Diện')
 
-@section('content_header')
-    <h1>Quản lý Kho Giao Diện</h1>
+@section('header_title', 'Danh sách giao diện')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item active">Kho Giao Diện</li>
 @stop
 
-@section('content')
+@section('admin_content')
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Danh sách giao diện</h3>
         <div class="card-tools">
-            <form action="{{ route('admin.templates.bulkDestroy') }}" method="POST" id="bulkDeleteForm" class="d-inline">
-                @csrf
-                <input type="hidden" name="ids" id="bulkDeleteIds">
-                <button type="submit" class="btn btn-danger btn-sm d-none" id="bulkDeleteBtn" onclick="return confirm('Xóa các mục đã chọn?')">
-                    <i class="fas fa-trash"></i> Xóa đã chọn (<span id="selectedCount">0</span>)
-                </button>
-            </form>
+            <x-admin.bulk-action 
+                model="Template"
+            />
             <a href="{{ route('admin.templates.create') }}" class="btn btn-success btn-sm">
                 <i class="fas fa-plus"></i> Thêm mới
             </a>
@@ -74,13 +72,12 @@
                         <a href="{{ route('admin.templates.edit', $template) }}" class="btn btn-warning btn-sm">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <form action="{{ route('admin.templates.destroy', $template) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
+                        <x-admin.duplicate-button 
+                            model="Template" 
+                            :id="$template->id" 
+                            create-route="admin.templates.create" 
+                        />
+                        <x-admin.delete-button :action="route('admin.templates.destroy', $template)" />
                     </td>
                 </tr>
                 @empty
@@ -97,7 +94,7 @@
 </div>
 @stop
 
-@push('js')
+@push('admin_js')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script>
 $(function() {

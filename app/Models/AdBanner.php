@@ -3,13 +3,16 @@
 namespace App\Models;
 
 use App\Enums\BannerSlot;
+use App\Traits\ImportsLegacyMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class AdBanner extends Model
+class AdBanner extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, ImportsLegacyMedia, InteractsWithMedia;
 
     protected $fillable = [
         'name',
@@ -55,10 +58,19 @@ class AdBanner extends Model
      */
     public function getImageUrlAttribute(): string
     {
+        if ($this->hasMedia('featured')) {
+            return $this->getFirstMediaUrl('featured');
+        }
+
         if ($this->image && (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://'))) {
             return $this->image;
         }
 
         return $this->image ? asset($this->image) : asset('images/ad-placeholder.jpg');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('featured')->singleFile();
     }
 }

@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\HasSlug;
+use App\Traits\ImportsLegacyMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Post extends Model
+class Post extends Model implements HasMedia
 {
-    use HasFactory, HasSlug;
+    use HasFactory, HasSlug, ImportsLegacyMedia, InteractsWithMedia;
 
     protected $fillable = [
         'category_id',
@@ -26,11 +27,16 @@ class Post extends Model
         'og_image',
         'is_published',
         'published_at',
+        'read_time',
+        'is_featured',
+        'data',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
         'published_at' => 'datetime',
+        'is_featured' => 'boolean',
+        'data' => 'array',
     ];
 
     // ==================== RELATIONSHIPS ====================
@@ -40,33 +46,38 @@ class Post extends Model
         return $this->belongsTo(PostCategory::class, 'category_id');
     }
 
-    public function tags(): BelongsToMany
+    public function tags(): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
-        return $this->belongsToMany(Tag::class)->withTimestamps();
+        return $this->morphToMany(Tag::class, 'taggable');
     }
 
     // ==================== SLUG ====================
-
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('title')
-            ->saveSlugsTo('slug')
-            ->slugsShouldBeNoLongerThan(100)
-            ->doNotGenerateSlugsOnUpdate();
-    }
+    // Removed Spatie implementation in favor of centralized system
 
     // ==================== ACCESSORS ====================
 
     public function getFeaturedImageUrlAttribute(): string
     {
-        if ($this->featured_image) return asset($this->featured_image);
+        if ($this->hasMedia('featured')) {
+            return $this->getFirstMediaUrl('featured');
+        }
+        if ($this->featured_image) {
+            return asset($this->featured_image);
+        }
+
         return asset('images/placeholder.jpg');
     }
 
     public function getOgImageUrlAttribute(): string
     {
-        if ($this->og_image) return asset($this->og_image);
+        if ($this->hasMedia('og')) {
+            return $this->getFirstMediaUrl('og');
+        }
+
+        if ($this->og_image) {
+            return asset($this->og_image);
+        }
+
         return $this->featured_image_url;
     }
 
@@ -84,6 +95,13 @@ class Post extends Model
 
     public function scopeWithTag($query, $tagSlug)
     {
-        return $query->whereHas('tags', fn($q) => $q->where('slug', $tagSlug));
+        return $query->whereHas('tags', fn ($q) => $q->where('slug', $tagSlug));
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('featured')->singleFile();
+        $this->addMediaCollection('og')->singleFile();
+        $this->addMediaCollection('content');
     }
 }

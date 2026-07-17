@@ -8,43 +8,45 @@ use Illuminate\Support\Facades\Storage;
 
 class TemplateService
 {
-    public function create(array $data, $imageFile = null)
+    public function create(array $data)
     {
-        $data['slug'] = Str::slug($data['name']);
+        if (empty($data['slug'])) {
+            $data['slug'] = Str::slug($data['name']);
+        }
         
-        if ($imageFile) {
-            $filename = time() . '_' . $imageFile->getClientOriginalName();
-            $imageFile->move(public_path('uploads/templates'), $filename);
-            $data['image'] = 'uploads/templates/' . $filename;
+        $template = Template::create($data);
+        $this->importMedia($template, $data);
+
+        // Process Tags
+        if (isset($data['tags'])) {
+            $this->syncTags($template, $data['tags']);
         }
 
-        return Template::create($data);
+        return $template;
     }
 
-    public function update(Template $template, array $data, $imageFile = null)
+    public function update(Template $template, array $data)
     {
-        $data['slug'] = Str::slug($data['name']);
+        if (empty($data['slug'])) {
+            $data['slug'] = Str::slug($data['name']);
+        }
+        
+        $template->update($data);
+        $this->importMedia($template, $data);
 
-        if ($imageFile) {
-            // Delete old image if exists
-            if ($template->image && file_exists(public_path($template->image))) {
-                unlink(public_path($template->image));
-            }
-
-            $filename = time() . '_' . $imageFile->getClientOriginalName();
-            $imageFile->move(public_path('uploads/templates'), $filename);
-            $data['image'] = 'uploads/templates/' . $filename;
+        // Process Tags
+        if (isset($data['tags'])) {
+            $this->syncTags($template, $data['tags']);
         }
 
-        $template->update($data);
         return $template;
     }
 
     public function delete(Template $template)
     {
-        if ($template->image && file_exists(public_path($template->image))) {
-            unlink(public_path($template->image));
-        }
+        // Image is managed by LFM, so we might not want to auto-delete physical file 
+        // as it might be used elsewhere.
+        // User requested: "lưu là lưu cái gì (link hay upload)", implicating simple link storage.
         return $template->delete();
     }
 
@@ -63,6 +65,43 @@ class TemplateService
     {
         foreach ($order as $index => $id) {
             Template::where('id', $id)->update(['order' => $index + 1]);
+        }
+    }
+
+    protected function syncTags(Template $template, $tags)
+    {
+        if (is_string($tags)) {
+           // Handle legacy comma separated string if any, though we use select now
+           $tags = explode(',', $tags);
+        }
+        
+        $tagIds = [];
+        if (is_array($tags)) {
+             foreach ($tags as $tag) {
+                if (is_numeric($tag)) {
+                    $tagIds[] = (int) $tag;
+                } elseif (!empty($tag)) {
+                    // Create new tag
+                    $newTag = \App\Models\Tag::firstOrCreate(
+                        ['name' => $tag],
+                        ['slug' => Str::slug($tag)]
+                    );
+                    $tagIds[] = $newTag->id;
+                }
+            }
+        }
+       
+        $template->tags()->sync($tagIds);
+    }
+
+    private function importMedia(Template $template, array $data): void
+    {
+        if (!empty($data['image'])) {
+            $template->importMediaFromLegacyPath($data['image'], 'featured');
+        }
+
+        if (!empty($data['images'])) {
+            $template->importMediaCollectionFromLegacyPaths($data['images'], 'gallery');
         }
     }
 }

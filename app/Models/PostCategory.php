@@ -5,8 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+use App\Traits\HasSlug;
 
 class PostCategory extends Model
 {
@@ -25,12 +24,8 @@ class PostCategory extends Model
         'is_active' => 'boolean',
     ];
 
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
-    }
+    // ==================== SLUG ====================
+    // Removed Spatie implementation in favor of centralized system
 
     public function posts(): HasMany
     {
@@ -40,5 +35,14 @@ class PostCategory extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true)->orderBy('order');
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($category) {
+            if ($category->posts()->exists()) {
+                throw new \Exception('Không thể xóa danh mục này vì vẫn còn bài viết thuộc danh mục.');
+            }
+        });
     }
 }

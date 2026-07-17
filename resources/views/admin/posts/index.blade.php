@@ -36,8 +36,8 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>
                                 <div class="rounded overflow-hidden shadow-sm" style="width: 60px; height: 40px; background: #eee;">
-                                    @if($post->featured_image)
-                                        <img src="{{ asset($post->featured_image) }}" class="img-fluid object-fit-cover" style="width: 100%; height: 100%;" alt="thumb">
+                                @if($post->hasMedia('featured') || $post->featured_image)
+                                    <img src="{{ $post->featured_image_url }}" class="img-fluid object-fit-cover" style="width: 100%; height: 100%;" alt="thumb">
                                     @else
                                         <i class="fas fa-image text-muted d-block text-center mt-2"></i>
                                     @endif

@@ -14,8 +14,14 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
+            PermissionSeeder::class,
+            AdminSeeder::class,
             SettingsSeeder::class,
-            PostCategorySeeder::class,
+            MenuSeeder::class,
+            FrontendDataSeeder::class,
+            MediaSeeder::class,
+            MiniAppSeeder::class,
+            AdBannerSeeder::class,
             TagSeeder::class,
         ]);
     }

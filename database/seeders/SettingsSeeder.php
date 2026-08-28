@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Settings\ContactSettings;
+use App\Settings\FaviconSettings;
 use App\Settings\GeneralSettings;
 use App\Settings\SeoSettings;
 use App\Settings\SocialSettings;
@@ -26,6 +27,16 @@ class SettingsSeeder extends Seeder
         $website->site_logo_square = '';
         $website->site_favicon = '';
         $website->save();
+
+        $favicon = app(FaviconSettings::class);
+        $favicon->short_name = 'WebApp Bắc Ninh';
+        $favicon->maskable_icon = '';
+        $favicon->safari_mask_icon = '';
+        $favicon->theme_color = '#0f172a';
+        $favicon->background_color = '#ffffff';
+        $favicon->safari_mask_color = '#0f172a';
+        $favicon->generated_version = '';
+        $favicon->save();
 
         $seo = app(SeoSettings::class);
         $seo->default_meta_title = config('site.name');

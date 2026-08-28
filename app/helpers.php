@@ -1,6 +1,9 @@
 <?php
 
+use App\Domain\Settings\Actions\RenderTrackingCode;
+use App\Domain\Site\Actions\ResolvePublicAssetUrl;
 use App\Settings\ContactSettings;
+use App\Settings\FaviconSettings;
 use App\Settings\GeneralSettings;
 use App\Settings\SeoSettings;
 use App\Settings\SocialSettings;
@@ -24,6 +27,13 @@ if (! function_exists('site_settings')) {
             'site_logo_white' => '',
             'site_logo_square' => '',
             'site_favicon' => '',
+            'favicon_short_name' => '',
+            'favicon_maskable_icon' => '',
+            'favicon_safari_mask_icon' => '',
+            'favicon_theme_color' => '#0f172a',
+            'favicon_background_color' => '#ffffff',
+            'favicon_safari_mask_color' => '#0f172a',
+            'favicon_generated_version' => '',
             'default_meta_title' => config('site.name'),
             'default_meta_description' => 'Thiết kế website theo nhu cầu doanh nghiệp, tối ưu SEO và chuyển đổi.',
             'default_meta_keywords' => 'thiết kế website, web Bắc Ninh, website doanh nghiệp',
@@ -87,6 +97,15 @@ if (! function_exists('site_settings')) {
                 'body_start_code' => 'body_start_code',
                 'body_end_code' => 'body_end_code',
             ],
+            FaviconSettings::class => [
+                'favicon_short_name' => 'short_name',
+                'favicon_maskable_icon' => 'maskable_icon',
+                'favicon_safari_mask_icon' => 'safari_mask_icon',
+                'favicon_theme_color' => 'theme_color',
+                'favicon_background_color' => 'background_color',
+                'favicon_safari_mask_color' => 'safari_mask_color',
+                'favicon_generated_version' => 'generated_version',
+            ],
         ];
 
         try {
@@ -119,14 +138,14 @@ if (! function_exists('site_settings')) {
 if (! function_exists('site_asset_url')) {
     function site_asset_url(?string $path, string $fallback = ''): string
     {
-        return app(\App\Domain\Site\Actions\ResolvePublicAssetUrl::class)->execute($path, $fallback);
+        return app(ResolvePublicAssetUrl::class)->execute($path, $fallback);
     }
 }
 
 if (! function_exists('tracking_code')) {
     function tracking_code(string $position): string
     {
-        $tracking = app(\App\Domain\Settings\Actions\RenderTrackingCode::class)->execute();
+        $tracking = app(RenderTrackingCode::class)->execute();
 
         return match ($position) {
             'head' => $tracking->head,

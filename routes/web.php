@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\Auth\CustomerAuthController;
 use App\Http\Controllers\DomainController;
-use App\Http\Controllers\Frontend\LeadController;
 use App\Http\Controllers\Frontend\ArticleController;
+use App\Http\Controllers\Frontend\LeadController;
 use App\Http\Controllers\Frontend\OperationServiceController;
 use App\Http\Controllers\Frontend\ProjectController;
 use App\Http\Controllers\Frontend\ServiceController;
 use App\Http\Controllers\Frontend\SiteController;
+use App\Http\Controllers\Frontend\SiteIconController;
+use App\Http\Controllers\Frontend\SiteManifestController;
 use App\Http\Controllers\Frontend\ThemeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SitemapController;
@@ -49,6 +51,10 @@ Route::get('/dich-vu-van-hanh/{slug}', [OperationServiceController::class, 'deta
 Route::post('/lien-he', [LeadController::class, 'store'])->name('leads.store');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+Route::get('/site.webmanifest', SiteManifestController::class)->name('site.manifest');
+Route::get('/favicon.ico', [SiteIconController::class, 'favicon'])->name('site.favicon');
+Route::get('/apple-touch-icon.png', [SiteIconController::class, 'appleTouchIcon'])->name('site.apple-touch-icon');
+Route::get('/apple-touch-icon-precomposed.png', [SiteIconController::class, 'appleTouchIcon'])->name('site.apple-touch-icon-precomposed');
 Route::redirect('/contact', '/lien-he', 301);
 Route::redirect('/blog', '/kien-thuc', 301);
 Route::get('/blog/{slug}', fn (string $slug) => redirect()->route('articles.show', $slug, 301));

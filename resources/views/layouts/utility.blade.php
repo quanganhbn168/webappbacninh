@@ -28,8 +28,7 @@
     <meta name="twitter:title" content="{{ $utilityTitle }}">
     <meta name="twitter:description" content="{{ $utilityDescription }}">
     <meta name="twitter:image" content="{{ $utilityImage }}">
-    <link rel="icon" href="{{ site_asset_url($site_settings['site_favicon'] ?? '', 'images/webapp.svg') }}" type="image/x-icon">
-    <link rel="apple-touch-icon" href="{{ site_asset_url($site_settings['site_favicon'] ?? '', 'images/webapp.svg') }}">
+    @include('partials.frontend.favicon')
     <link rel="stylesheet" href="{{ asset('fonts/filament/filament/inter/index.css') }}">
     <style>body { font-family: 'Inter Variable', 'Inter', sans-serif !important; } .ls-1 { letter-spacing: 0.5px; }</style>
     @vite('resources/css/app.css')

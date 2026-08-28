@@ -13,6 +13,7 @@ return [
         App\Settings\ContactSettings::class,
         App\Settings\SocialSettings::class,
         App\Settings\TrackingSettings::class,
+        App\Settings\FaviconSettings::class,
     ],
 
     /*

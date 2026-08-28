@@ -5,7 +5,6 @@
     $defaultTitle = site_config('default_meta_title', site_config('name'));
     $defaultDescription = site_config('default_meta_description', '');
     $defaultOgImage = site_config('default_og_image') ?: frontend_asset('assets/images/hero-industrial.webp');
-    $favicon = site_config('site_favicon');
     $resolvedTitle = $pageTitle ?? $defaultTitle;
     $resolvedDescription = $pageDescription ?? $defaultDescription;
     $resolvedCanonical = $canonicalUrl ?? request()->url();
@@ -39,9 +38,7 @@
   <meta name="twitter:title" content="<?= e($twitterTitle ?? $resolvedTitle) ?>">
   <meta name="twitter:description" content="<?= e($twitterDescription ?? $resolvedDescription) ?>">
   <meta name="twitter:image" content="<?= e($twitterImage ?? $resolvedImage) ?>">
-  <?php if ($favicon): ?>
-  <link rel="icon" href="<?= e(site_asset_url($favicon)) ?>">
-  <?php endif; ?>
+  <?= view('partials.frontend.favicon')->render() ?>
   <?php if (site_config('google_site_verification')): ?>
   <meta name="google-site-verification" content="<?= e(site_config('google_site_verification')) ?>">
   <?php endif; ?>

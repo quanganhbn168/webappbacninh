@@ -11,9 +11,10 @@ use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\CodeEditor;
 use Filament\Forms\Components\CodeEditor\Enums\Language;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -72,23 +73,83 @@ class ManageSettings extends Page
                                         TextInput::make('website.site_url')->label('URL chính thức')->required()->url()->maxLength(255),
                                     ])
                                     ->columns(2),
-                                Section::make('Logo và favicon')
+                                Section::make('Logo website')
                                     ->description('Ảnh được lưu trên public disk. Server cần có liên kết storage để hiển thị ngoài website.')
                                     ->schema([
                                         self::brandImage('website.site_logo_wide', 'Logo ngang', 'site/branding/logos', ['3:1', '4:1', '16:5']),
                                         self::brandImage('website.site_logo_white', 'Logo trắng / nền tối', 'site/branding/logos', ['3:1', '4:1', '16:5']),
                                         self::brandImage('website.site_logo_square', 'Logo vuông', 'site/branding/logos', ['1:1']),
+                                    ])
+                                    ->columns(3),
+                                Section::make('Bộ favicon đa nền tảng')
+                                    ->description('Khi lưu, hệ thống tự sinh ICO và PNG cho browser, Apple, Windows và PWA; URL có version để tránh cache favicon cũ.')
+                                    ->schema([
                                         FileUpload::make('website.site_favicon')
-                                            ->label('Favicon')
+                                            ->label('Ảnh favicon nguồn')
                                             ->disk('public')
-                                            ->directory('site/branding/favicon')
+                                            ->directory('site/branding/favicon/sources')
                                             ->visibility('public')
-                                            ->acceptedFileTypes(['image/png', 'image/webp', 'image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon'])
-                                            ->maxSize(2048)
-                                            ->imagePreviewHeight('96')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->imageCropAspectRatio('1:1')
+                                            ->imageResizeTargetWidth('1024')
+                                            ->imageResizeTargetHeight('1024')
+                                            ->imageResizeUpscale(false)
+                                            ->acceptedFileTypes(['image/png', 'image/webp', 'image/jpeg'])
+                                            ->rules(['dimensions:min_width=512,min_height=512'])
+                                            ->maxSize(4096)
+                                            ->imagePreviewHeight('160')
                                             ->openable()
                                             ->downloadable()
-                                            ->helperText('Nên dùng PNG/WebP vuông hoặc SVG; dung lượng tối đa 2 MB.'),
+                                            ->helperText('Bắt buộc ảnh vuông tối thiểu 512x512; tốt nhất 1024x1024 PNG/WebP. Hệ thống sinh 16, 32, 48, 96, 120, 144, 152, 167, 180, 192 và 512 px.'),
+                                        FileUpload::make('favicon.maskable_icon')
+                                            ->label('Maskable icon riêng (không bắt buộc)')
+                                            ->disk('public')
+                                            ->directory('site/branding/favicon/sources')
+                                            ->visibility('public')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->imageCropAspectRatio('1:1')
+                                            ->imageResizeTargetWidth('1024')
+                                            ->imageResizeTargetHeight('1024')
+                                            ->imageResizeUpscale(false)
+                                            ->acceptedFileTypes(['image/png', 'image/webp', 'image/jpeg'])
+                                            ->rules(['dimensions:min_width=512,min_height=512'])
+                                            ->maxSize(4096)
+                                            ->imagePreviewHeight('160')
+                                            ->openable()
+                                            ->downloadable()
+                                            ->helperText('Dùng khi có thiết kế Android adaptive riêng. Nếu để trống, hệ thống tự tạo bản nền kín với logo nằm an toàn trong vùng 80%.'),
+                                        TextInput::make('favicon.short_name')
+                                            ->label('Tên ngắn khi cài lên màn hình')
+                                            ->maxLength(30)
+                                            ->placeholder('WebApp Bắc Ninh'),
+                                        ColorPicker::make('favicon.theme_color')
+                                            ->label('Màu giao diện trình duyệt')
+                                            ->required(),
+                                        ColorPicker::make('favicon.background_color')
+                                            ->label('Màu nền Apple/PWA/maskable')
+                                            ->required(),
+                                        ColorPicker::make('favicon.safari_mask_color')
+                                            ->label('Màu Safari pinned tab')
+                                            ->required(),
+                                        FileUpload::make('favicon.safari_mask_icon')
+                                            ->label('Safari pinned tab SVG (không bắt buộc)')
+                                            ->disk('public')
+                                            ->directory('site/branding/favicon/sources')
+                                            ->visibility('public')
+                                            ->acceptedFileTypes(['image/svg+xml'])
+                                            ->maxSize(512)
+                                            ->openable()
+                                            ->downloadable()
+                                            ->helperText('SVG đơn sắc dành riêng cho rel="mask-icon" trên Safari macOS.'),
+                                        TextInput::make('favicon.generated_version')
+                                            ->label('Phiên bản favicon đang phát hành')
+                                            ->disabled()
+                                            ->dehydrated(false)
+                                            ->placeholder('Chưa sinh bộ favicon')
+                                            ->helperText('Mã này thay đổi theo nội dung ảnh/màu và được gắn vào URL để phá cache trình duyệt.')
+                                            ->columnSpanFull(),
                                     ])
                                     ->columns(2),
                             ]),
@@ -223,6 +284,7 @@ class ManageSettings extends Page
     public function save(): void
     {
         app(SaveSiteSettings::class)->execute($this->form->getState());
+        $this->form->fill(app(LoadSiteSettings::class)->execute());
 
         Notification::make()
             ->title('Đã lưu cấu hình website')

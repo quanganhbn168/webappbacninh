@@ -3,6 +3,7 @@
 namespace App\Domain\Settings\Actions;
 
 use App\Settings\ContactSettings;
+use App\Settings\FaviconSettings;
 use App\Settings\GeneralSettings;
 use App\Settings\SeoSettings;
 use App\Settings\SocialSettings;
@@ -20,6 +21,7 @@ final class LoadSiteSettings
         $contact = app(ContactSettings::class);
         $social = app(SocialSettings::class);
         $tracking = app(TrackingSettings::class);
+        $favicon = app(FaviconSettings::class);
 
         return [
             'general' => [
@@ -64,6 +66,15 @@ final class LoadSiteSettings
                 'head_code' => $tracking->head_code,
                 'body_start_code' => $tracking->body_start_code,
                 'body_end_code' => $tracking->body_end_code,
+            ],
+            'favicon' => [
+                'short_name' => $favicon->short_name,
+                'maskable_icon' => $favicon->maskable_icon,
+                'safari_mask_icon' => $favicon->safari_mask_icon,
+                'theme_color' => $favicon->theme_color,
+                'background_color' => $favicon->background_color,
+                'safari_mask_color' => $favicon->safari_mask_color,
+                'generated_version' => $favicon->generated_version,
             ],
         ];
     }

@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Storage;
 
 final class GenerateFaviconAssets
 {
+    public const DIRECTORY = 'site/branding/favicon/generated';
+
+    public const VERSION_FILE = '.version';
+
     private const GENERATOR_VERSION = 'favicon-set-v1';
 
     /** @var array<int, int> */
@@ -48,10 +52,10 @@ final class GenerateFaviconAssets
             $maskableBytes,
             $backgroundColor,
         ])), 0, 16);
-        $directory = 'site/branding/favicon/generated/'.$version;
+        $directory = self::DIRECTORY;
         $result = new GeneratedFaviconData($version, $directory);
 
-        if (! $force && $this->isComplete($disk, $directory)) {
+        if (! $force && $this->isCurrent($disk, $directory, $version)) {
             return $result;
         }
 
@@ -59,6 +63,8 @@ final class GenerateFaviconAssets
         $maskableSource = $maskableBytes === '' ? null : $this->decode($maskableBytes, 'Maskable icon');
 
         try {
+            $this->clearGeneratedDirectory($disk);
+
             $pngsForIco = [];
 
             foreach (self::BROWSER_SIZES as $size) {
@@ -86,6 +92,7 @@ final class GenerateFaviconAssets
             }
 
             $this->putOrFail($disk, $directory.'/favicon.ico', $this->buildIco($pngsForIco));
+            $this->putOrFail($disk, $directory.'/'.self::VERSION_FILE, $version);
         } finally {
             imagedestroy($source);
 
@@ -99,6 +106,11 @@ final class GenerateFaviconAssets
         }
 
         return $result;
+    }
+
+    public function clear(): void
+    {
+        $this->clearGeneratedDirectory(Storage::disk('public'));
     }
 
     private function readSource(FilesystemAdapter $disk, string $path): string
@@ -244,6 +256,26 @@ final class GenerateFaviconAssets
         if (! $disk->put($path, $contents, ['visibility' => 'public'])) {
             throw new InvalidFaviconSource('Không thể ghi file favicon vào '.$path.'.');
         }
+    }
+
+    private function clearGeneratedDirectory(FilesystemAdapter $disk): void
+    {
+        if (! $disk->directoryExists(self::DIRECTORY)) {
+            return;
+        }
+
+        if (! $disk->deleteDirectory(self::DIRECTORY)) {
+            throw new InvalidFaviconSource('Không thể xóa bộ favicon cũ trong storage/app/public/'.self::DIRECTORY.'.');
+        }
+    }
+
+    private function isCurrent(FilesystemAdapter $disk, string $directory, string $version): bool
+    {
+        $versionPath = $directory.'/'.self::VERSION_FILE;
+
+        return $this->isComplete($disk, $directory)
+            && $disk->exists($versionPath)
+            && hash_equals($version, trim($disk->get($versionPath)));
     }
 
     private function isComplete(FilesystemAdapter $disk, string $directory): bool

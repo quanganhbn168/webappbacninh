@@ -94,6 +94,23 @@ abstract class FrontendController extends Controller
         $siteUrl = rtrim((string) site_config('site_url', config('app.url')), '/');
         $canonicalUrl = $data['canonicalUrl'];
         $organizationId = $siteUrl.'/#organization';
+        $contactPoints = [[
+            '@type' => 'ContactPoint',
+            'telephone' => site_config('phone_href'),
+            'contactType' => 'customer service',
+            'availableLanguage' => ['vi'],
+        ]];
+        $secondaryPhone = trim((string) site_config('phone_secondary'));
+        $secondaryPhoneHref = trim((string) site_config('phone_secondary_href'));
+
+        if ($secondaryPhone !== '' && $secondaryPhoneHref !== '') {
+            $contactPoints[] = [
+                '@type' => 'ContactPoint',
+                'telephone' => $secondaryPhoneHref,
+                'contactType' => 'customer service',
+                'availableLanguage' => ['vi'],
+            ];
+        }
 
         $organization = [
             '@type' => 'ProfessionalService',
@@ -101,6 +118,7 @@ abstract class FrontendController extends Controller
             'name' => site_config('name'),
             'url' => $siteUrl,
             'telephone' => site_config('phone_href'),
+            'contactPoint' => $contactPoints,
             'email' => site_config('email'),
             'address' => [
                 '@type' => 'PostalAddress',

@@ -11,11 +11,11 @@ use App\Settings\TrackingSettings;
 use App\Settings\WebsiteSettings;
 
 if (! function_exists('site_settings')) {
-    function site_settings(): array
+    function site_settings(bool $refresh = false): array
     {
         static $values;
 
-        if ($values !== null) {
+        if (! $refresh && $values !== null) {
             return $values;
         }
 
@@ -45,6 +45,8 @@ if (! function_exists('site_settings')) {
             'body_start_code' => '',
             'body_end_code' => '',
             'page_meta' => [],
+            'phone_secondary' => '',
+            'phone_secondary_href' => '',
             'messenger' => '',
             'telegram' => '',
             'wechat' => '',
@@ -75,6 +77,8 @@ if (! function_exists('site_settings')) {
             ContactSettings::class => [
                 'phone' => 'phone',
                 'phone_href' => 'phone_href',
+                'phone_secondary' => 'phone_secondary',
+                'phone_secondary_href' => 'phone_secondary_href',
                 'email' => 'email',
                 'address' => 'address',
                 'working_time' => 'working_time',

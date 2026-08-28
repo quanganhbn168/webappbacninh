@@ -30,6 +30,8 @@ class SiteSettingsTest extends TestCase
         $this->assertSame($seo->page_meta, site_config('page_meta'));
         $this->assertSame($seo->page_meta['home']['title'], site_page_seo('home')['title']);
         $this->assertSame($contact->email, site_config('email'));
+        $this->assertSame($contact->phone_secondary, site_config('phone_secondary'));
+        $this->assertSame($contact->phone_secondary_href, site_config('phone_secondary_href'));
         $this->assertSame($social->zalo, site_config('zalo'));
         $this->assertSame($tracking->google_tag_id, site_config('google_tag_id'));
         $this->assertTrue(site_config('tracking_enabled'));

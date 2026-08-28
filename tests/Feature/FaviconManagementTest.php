@@ -24,6 +24,9 @@ class FaviconManagementTest extends TestCase
         $generated = app(GenerateFaviconAssets::class)->execute($sourcePath, '', '#123456');
         $disk = Storage::disk('public');
 
+        $this->assertSame(GenerateFaviconAssets::DIRECTORY, $generated->directory);
+        $this->assertSame($generated->version, trim($disk->get($generated->directory.'/'.GenerateFaviconAssets::VERSION_FILE)));
+
         $expectedSizes = [
             'favicon-16x16.png' => 16,
             'favicon-32x32.png' => 32,
@@ -60,6 +63,26 @@ class FaviconManagementTest extends TestCase
         imagedestroy($maskable);
     }
 
+    public function test_generator_deletes_the_previous_set_and_overwrites_one_fixed_directory(): void
+    {
+        Storage::fake('public');
+        $sourcePath = $this->putRasterSource();
+        $disk = Storage::disk('public');
+
+        $first = app(GenerateFaviconAssets::class)->execute($sourcePath, '', '#123456');
+        $disk->put($first->directory.'/obsolete.txt', 'old');
+        $disk->put($first->directory.'/'.$first->version.'/legacy-version.txt', 'old');
+
+        $second = app(GenerateFaviconAssets::class)->execute($sourcePath, '', '#654321');
+
+        $this->assertSame($first->directory, $second->directory);
+        $this->assertNotSame($first->version, $second->version);
+        $disk->assertMissing($second->directory.'/obsolete.txt');
+        $disk->assertMissing($second->directory.'/'.$first->version.'/legacy-version.txt');
+        $this->assertSame([], $disk->allDirectories($second->directory));
+        $this->assertSame($second->version, trim($disk->get($second->directory.'/'.GenerateFaviconAssets::VERSION_FILE)));
+    }
+
     public function test_saving_settings_builds_versioned_head_manifest_and_root_fallbacks(): void
     {
         Storage::fake('public');
@@ -88,6 +111,7 @@ class FaviconManagementTest extends TestCase
         $home->assertSee('rel="manifest"', false);
         $home->assertSee('content="#112233"', false);
         $home->assertSee('?v='.$faviconSettings->generated_version, false);
+        $home->assertSee('/storage/site/branding/favicon/generated/favicon-48x48.png?v='.$faviconSettings->generated_version, false);
 
         $this->get('/login')
             ->assertOk()
@@ -118,6 +142,21 @@ class FaviconManagementTest extends TestCase
             ->assertOk()
             ->assertHeader('Content-Type', 'image/png');
         $this->get('/apple-touch-icon-precomposed.png')->assertOk();
+    }
+
+    public function test_removing_the_source_deletes_the_generated_set(): void
+    {
+        Storage::fake('public');
+        $sourcePath = $this->putRasterSource();
+        app(GenerateFaviconAssets::class)->execute($sourcePath);
+
+        $data = app(LoadSiteSettings::class)->execute();
+        $data['website']['site_favicon'] = '';
+
+        app(SaveSiteSettings::class)->execute($data);
+
+        $this->assertFalse(Storage::disk('public')->directoryExists(GenerateFaviconAssets::DIRECTORY));
+        $this->assertSame('', app(FaviconSettings::class)->generated_version);
     }
 
     public function test_generator_rejects_paths_outside_managed_public_assets(): void

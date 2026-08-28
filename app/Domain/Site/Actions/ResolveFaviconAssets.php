@@ -17,8 +17,11 @@ final class ResolveFaviconAssets
         $website = app(WebsiteSettings::class);
         $favicon = app(FaviconSettings::class);
         $version = trim($favicon->generated_version);
-        $directory = $version === '' ? '' : 'site/branding/favicon/generated/'.$version;
+        $directory = $version === '' ? '' : GenerateFaviconAssets::DIRECTORY;
+        $versionPath = $directory.'/'.GenerateFaviconAssets::VERSION_FILE;
         $generated = $directory !== ''
+            && Storage::disk('public')->exists($versionPath)
+            && hash_equals($version, trim(Storage::disk('public')->get($versionPath)))
             && Storage::disk('public')->exists($directory.'/favicon.ico')
             && Storage::disk('public')->exists($directory.'/favicon-512x512.png')
             && Storage::disk('public')->exists($directory.'/maskable-icon-512x512.png');

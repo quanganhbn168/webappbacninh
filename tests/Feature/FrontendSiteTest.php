@@ -9,6 +9,7 @@ use App\Models\Template;
 use App\Models\Project;
 use App\Models\Post;
 use App\Models\OperationService;
+use App\Settings\ContactSettings;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -29,6 +30,34 @@ class FrontendSiteTest extends TestCase
             ->assertSee('application/ld+json', false)
             ->assertSee('"@type": "WebSite"', false)
             ->assertSee('"@type": "ProfessionalService"', false);
+    }
+
+    public function test_optional_secondary_phone_is_rendered_in_desktop_contact_areas_and_schema(): void
+    {
+        $contact = app(ContactSettings::class);
+        $originalPhone = $contact->phone_secondary;
+        $originalPhoneHref = $contact->phone_secondary_href;
+
+        try {
+            $contact->phone_secondary = '0222 333 444';
+            $contact->phone_secondary_href = '0222333444';
+            $contact->save();
+            site_settings(refresh: true);
+
+            $home = $this->get('/')->assertOk();
+            $home->assertSee('0222 333 444');
+            $home->assertSee('"telephone": "0222333444"', false);
+            $this->assertSame(2, substr_count($home->getContent(), 'tel:0222333444'));
+
+            $contactPage = $this->get('/lien-he')->assertOk();
+            $contactPage->assertSee('Điện thoại thứ hai');
+            $this->assertSame(3, substr_count($contactPage->getContent(), 'tel:0222333444'));
+        } finally {
+            $contact->phone_secondary = $originalPhone;
+            $contact->phone_secondary_href = $originalPhoneHref;
+            $contact->save();
+            site_settings(refresh: true);
+        }
     }
 
     public function test_all_dynamic_pages_render(): void

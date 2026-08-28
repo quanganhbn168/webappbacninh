@@ -47,6 +47,8 @@ final class LoadSiteSettings
             'contact' => [
                 'phone' => $contact->phone,
                 'phone_href' => $contact->phone_href,
+                'phone_secondary' => $contact->phone_secondary,
+                'phone_secondary_href' => $contact->phone_secondary_href,
                 'email' => $contact->email,
                 'address' => $contact->address,
                 'working_time' => $contact->working_time,

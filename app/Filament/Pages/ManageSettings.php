@@ -207,15 +207,32 @@ class ManageSettings extends Page
                             ->schema([
                                 Section::make('Thông tin liên hệ')
                                     ->schema([
-                                        TextInput::make('contact.phone')->label('Số điện thoại hiển thị')->required()->maxLength(50),
+                                        TextInput::make('contact.phone')->label('Số điện thoại chính')->required()->maxLength(50),
                                         TextInput::make('contact.phone_href')
-                                            ->label('Số gọi')
+                                            ->label('Số gọi chính')
                                             ->required()
                                             ->regex('/^\+?[0-9][0-9\s().-]{6,24}$/')
                                             ->maxLength(26)
                                             ->validationMessages([
                                                 'regex' => 'Số gọi chỉ được chứa số, dấu +, khoảng trắng, dấu chấm, ngoặc hoặc gạch ngang.',
                                             ]),
+                                        TextInput::make('contact.phone_secondary')
+                                            ->label('Số điện thoại thứ hai')
+                                            ->requiredWith('contact.phone_secondary_href')
+                                            ->maxLength(50)
+                                            ->validationMessages([
+                                                'required_with' => 'Vui lòng nhập số điện thoại thứ hai để hiển thị.',
+                                            ]),
+                                        TextInput::make('contact.phone_secondary_href')
+                                            ->label('Số gọi thứ hai')
+                                            ->requiredWith('contact.phone_secondary')
+                                            ->regex('/^\+?[0-9][0-9\s().-]{6,24}$/')
+                                            ->maxLength(26)
+                                            ->validationMessages([
+                                                'required_with' => 'Vui lòng nhập số gọi thứ hai.',
+                                                'regex' => 'Số gọi thứ hai chỉ được chứa số, dấu +, khoảng trắng, dấu chấm, ngoặc hoặc gạch ngang.',
+                                            ])
+                                            ->helperText('Để trống cả hai ô nếu website chỉ dùng một số điện thoại.'),
                                         TextInput::make('contact.email')
                                             ->label('Email')
                                             ->required()

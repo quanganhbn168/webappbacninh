@@ -10,6 +10,10 @@ class ContactSettings extends Settings
 
     public string $phone_href;
 
+    public string $phone_secondary;
+
+    public string $phone_secondary_href;
+
     public string $email;
 
     public string $address;

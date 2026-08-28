@@ -34,7 +34,7 @@ final class GenerateFaviconAssets extends Command
         $favicon->generated_version = $result->version;
         $favicon->save();
 
-        $this->info('Đã tạo bộ favicon phiên bản '.$result->version.' tại storage/app/public/'.$result->directory.'.');
+        $this->info('Đã ghi đè bộ favicon hiện tại (cache version '.$result->version.') tại storage/app/public/'.$result->directory.'.');
 
         return self::SUCCESS;
     }

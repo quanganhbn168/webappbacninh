@@ -49,6 +49,8 @@ class SettingsSeeder extends Seeder
         $contact = app(ContactSettings::class);
         $contact->phone = config('site.phone');
         $contact->phone_href = config('site.phone_href');
+        $contact->phone_secondary = config('site.phone_secondary');
+        $contact->phone_secondary_href = config('site.phone_secondary_href');
         $contact->email = config('site.email');
         $contact->address = config('site.address');
         $contact->working_time = config('site.working_time');

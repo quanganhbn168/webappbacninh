@@ -1,3 +1,7 @@
+<?php
+$secondaryPhone = trim((string) site_config('phone_secondary'));
+$secondaryPhoneHref = trim((string) site_config('phone_secondary_href'));
+?>
 <section class="inner-hero inner-hero--contact">
   <div class="container">
     <div class="row align-items-center gy-5">
@@ -10,6 +14,9 @@
       <div class="col-lg-5">
         <div class="contact-methods">
           <a href="tel:<?= e(site_config('phone_href')) ?>"><i class="fa-solid fa-phone"></i><span><small>Hotline / Zalo</small><strong><?= e(site_config('phone')) ?></strong></span></a>
+          <?php if ($secondaryPhone !== '' && $secondaryPhoneHref !== ''): ?>
+          <a href="tel:<?= e($secondaryPhoneHref) ?>"><i class="fa-solid fa-phone"></i><span><small>Điện thoại thứ hai</small><strong><?= e($secondaryPhone) ?></strong></span></a>
+          <?php endif; ?>
           <a href="mailto:<?= e(site_config('email')) ?>"><i class="fa-regular fa-envelope"></i><span><small>Email</small><strong><?= e(site_config('email')) ?></strong></span></a>
           <div><i class="fa-solid fa-clock"></i><span><small>Thời gian làm việc</small><strong><?= e(site_config('working_time')) ?></strong></span></div>
         </div>

@@ -181,6 +181,25 @@ class SettingsManagementTest extends TestCase
             ->assertNotified('Chưa thể lưu cấu hình');
     }
 
+    public function test_secondary_phone_requires_a_complete_display_and_dial_pair(): void
+    {
+        Livewire::actingAs($this->superAdmin(), 'admin')
+            ->test(ManageSettings::class)
+            ->set('data.contact.phone_secondary', '0222 333 444')
+            ->set('data.contact.phone_secondary_href', '')
+            ->call('save')
+            ->assertHasFormErrors(['contact.phone_secondary_href' => 'required_with'])
+            ->assertNotified('Chưa thể lưu cấu hình');
+
+        Livewire::actingAs($this->superAdmin(), 'admin')
+            ->test(ManageSettings::class)
+            ->set('data.contact.phone_secondary', '')
+            ->set('data.contact.phone_secondary_href', '0222333444')
+            ->call('save')
+            ->assertHasFormErrors(['contact.phone_secondary' => 'required_with'])
+            ->assertNotified('Chưa thể lưu cấu hình');
+    }
+
     public function test_favicon_source_must_be_a_square_image_of_at_least_512_pixels(): void
     {
         Storage::fake('public');

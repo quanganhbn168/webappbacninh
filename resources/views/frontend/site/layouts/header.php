@@ -2,6 +2,8 @@
   $topbarAbout = $headerNavigation['topbar'] ?? ['title' => 'Giới thiệu', 'url' => route('about'), 'target' => '_self'];
   $headerLogoUrl = site_asset_url(site_config('site_logo_wide'));
   $mobileLogoUrl = site_asset_url(site_config('site_logo_square') ?: site_config('site_logo_wide'));
+  $secondaryPhone = trim((string) site_config('phone_secondary'));
+  $secondaryPhoneHref = trim((string) site_config('phone_secondary_href'));
 ?>
 
 <div class="topbar d-none d-lg-block">
@@ -14,6 +16,9 @@
       <a href="<?= e($topbarAbout['url']) ?>" target="<?= e($topbarAbout['target'] ?? '_self') ?>"><i class="fa-regular fa-building"></i> <?= e($topbarAbout['title']) ?></a>
       <a href="mailto:<?= e(site_config('email')) ?>"><i class="fa-regular fa-envelope"></i> <?= e(site_config('email')) ?></a>
       <a class="topbar__hotline" href="tel:<?= e(site_config('phone_href')) ?>"><i class="fa-solid fa-phone-volume"></i> <?= e(site_config('phone')) ?></a>
+      <?php if ($secondaryPhone !== '' && $secondaryPhoneHref !== ''): ?>
+      <a class="topbar__hotline" href="tel:<?= e($secondaryPhoneHref) ?>"><i class="fa-solid fa-phone-volume"></i> <?= e($secondaryPhone) ?></a>
+      <?php endif; ?>
     </div>
   </div>
 </div>

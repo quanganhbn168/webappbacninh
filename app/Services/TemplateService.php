@@ -44,7 +44,7 @@ class TemplateService
 
     public function delete(Template $template)
     {
-        // Image is managed by LFM, so we might not want to auto-delete physical file 
+        // Media lifecycle is handled by the configured storage layer.
         // as it might be used elsewhere.
         // User requested: "lưu là lưu cái gì (link hay upload)", implicating simple link storage.
         return $template->delete();

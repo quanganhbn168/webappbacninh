@@ -16,7 +16,7 @@ class UpdateProjectRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'featured_image' => 'nullable|string', // LFM path
+            'featured_image' => 'nullable|string', // Stored media path
             'link' => 'nullable|url',
             'category' => 'nullable|string|max:100',
             'is_featured' => 'boolean',

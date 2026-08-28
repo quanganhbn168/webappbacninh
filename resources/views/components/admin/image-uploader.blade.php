@@ -10,7 +10,6 @@
     $componentId = 'img-uploader-' . Str::slug($name) . '-' . Str::random(6);
     $previewId = $componentId . '-preview';
     $inputId = $componentId . '-input';
-    $lfmId = $componentId . '-lfm';
     $placeholderId = $componentId . '-placeholder';
     
     // Calculate padding-top for aspect ratio
@@ -39,7 +38,7 @@
         {{-- Preview Area --}}
         <div class="mb-2 rounded overflow-hidden bg-light border" 
              style="{{ $height ? "height: {$height}px;" : "padding-top: {$paddingTop};" }} position: relative; cursor: pointer;"
-             onclick="document.getElementById('{{ $lfmId }}').click()">
+             onclick="document.getElementById('{{ $inputId }}').focus()">
             
             {{-- Image Preview --}}
             <img src="{{ $hasValue ? asset($value) : '' }}" 
@@ -57,16 +56,24 @@
             </div>
         </div>
         
-        {{-- Hidden Input --}}
-        <input type="hidden" name="{{ $name }}" id="{{ $inputId }}" value="{{ $value }}">
+        <input
+            type="text"
+            name="{{ $name }}"
+            id="{{ $inputId }}"
+            value="{{ $value }}"
+            class="form-control form-control-sm mb-2"
+            placeholder="/uploads/duong-dan-anh.jpg"
+            data-image-path-input
+            data-preview="{{ $previewId }}"
+            data-placeholder="{{ $placeholderId }}"
+        >
         
         {{-- Buttons --}}
         <div class="d-flex">
-            <button type="button" id="{{ $lfmId }}" 
-                    data-input="{{ $inputId }}" 
-                    data-preview="{{ $previewId }}" 
-                    class="btn btn-outline-primary btn-sm flex-grow-1 mr-1">
-                <i class="fas fa-folder-open mr-1"></i> Chọn từ thư viện
+            <button type="button"
+                    class="btn btn-outline-primary btn-sm flex-grow-1 mr-1"
+                    onclick="updatePreviewImg('{{ $inputId }}', '{{ $previewId }}', '{{ $placeholderId }}')">
+                <i class="fas fa-image mr-1"></i> Cập nhật xem trước
             </button>
             <button type="button" class="btn btn-outline-danger btn-sm" 
                     onclick="clearImageField('{{ $previewId }}', '{{ $inputId }}', '{{ $placeholderId }}')"
@@ -79,56 +86,38 @@
 
 @once
 @push('admin_js')
-<script src="{{ asset('vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>
 <script>
-    // Initialize all LFM buttons
-    $(document).ready(function() {
-        $('[id$="-lfm"]').each(function() {
-            var $btn = $(this);
-            var inputId = $btn.data('input');
-            var previewId = $btn.data('preview');
-            
-            $btn.filemanager('image', {
-                prefix: '{{ route('unisharp.lfm.show') }}',
-            });
-            
-            // Watch for input value changes
-            var $input = $('#' + inputId);
-            var observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
-                        updatePreviewImg(inputId, previewId);
-                    }
-                });
-            });
-            observer.observe($input[0], { attributes: true });
-            
-            // Also handle direct value changes
-            $input.on('change', function() {
-                updatePreviewImg(inputId, previewId);
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[data-image-path-input]').forEach(function (input) {
+            input.addEventListener('input', function () {
+                updatePreviewImg(input.id, input.dataset.preview, input.dataset.placeholder);
             });
         });
     });
-    
-    function updatePreviewImg(inputId, previewId) {
-        var $input = $('#' + inputId);
-        var $preview = $('#' + previewId);
-        var placeholderId = inputId.replace('-input', '-placeholder');
-        var $placeholder = $('#' + placeholderId);
-        
-        if ($input.val()) {
-            $preview.attr('src', $input.val()).removeClass('d-none');
-            $placeholder.addClass('d-none');
+
+    function updatePreviewImg(inputId, previewId, placeholderId) {
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+        const placeholder = document.getElementById(placeholderId);
+        const value = input.value.trim();
+
+        if (value) {
+            const assetBase = @json(rtrim(asset(''), '/'));
+            preview.src = /^https?:\/\//i.test(value)
+                ? value
+                : assetBase + '/' + value.replace(/^\/+/, '');
+            preview.classList.remove('d-none');
+            placeholder.classList.add('d-none');
         } else {
-            $preview.addClass('d-none');
-            $placeholder.removeClass('d-none');
+            preview.removeAttribute('src');
+            preview.classList.add('d-none');
+            placeholder.classList.remove('d-none');
         }
     }
-    
+
     function clearImageField(previewId, inputId, placeholderId) {
-        $('#' + inputId).val('');
-        $('#' + previewId).attr('src', '').addClass('d-none');
-        $('#' + placeholderId).removeClass('d-none');
+        document.getElementById(inputId).value = '';
+        updatePreviewImg(inputId, previewId, placeholderId);
     }
 </script>
 @endpush

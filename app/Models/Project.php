@@ -19,7 +19,7 @@ class Project extends Model implements HasMedia
         'project_category_id',
         'code',
         'description',
-        'image', // LFM path
+        'image', // Stored media path
         'link',
         'category',
         'industry',

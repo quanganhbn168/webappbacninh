@@ -18,7 +18,7 @@ class StoreAdBannerRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'slot' => ['required', new Enum(BannerSlot::class)],
-            'banner_image' => 'nullable|string', // LFM path
+            'banner_image' => 'nullable|string', // Stored media path
             'link' => 'nullable|url',
             'alt_text' => 'nullable|string|max:255',
             'is_active' => 'boolean',

@@ -4,21 +4,28 @@
     'value' => [], // Array of URLs
 ])
 
+@php
+    $componentId = 'multi-image-' . Str::slug($name) . '-' . Str::random(6);
+    $inputId = $componentId . '-input';
+    $holderId = $componentId . '-holder';
+    $templateId = $componentId . '-template';
+@endphp
+
 <div class="form-group">
     @if($label)
         <label class="font-weight-bold">{{ $label }}</label>
     @endif
     
     <div class="input-group mb-3">
-        <span class="input-group-btn">
-            <a id="lfm-{{ $name }}" data-input="thumbnail-{{ $name }}" data-preview="holder-{{ $name }}" class="btn btn-primary text-white">
-                <i class="fas fa-images"></i> Chọn ảnh
-            </a>
-        </span>
-        <input id="thumbnail-{{ $name }}" class="form-control" type="hidden" name="{{ $name }}" value="">
+        <input id="{{ $inputId }}" class="form-control" type="text" placeholder="/uploads/duong-dan-anh.jpg">
+        <div class="input-group-append">
+            <button type="button" class="btn btn-primary" data-add-image-path data-input="{{ $inputId }}" data-holder="{{ $holderId }}" data-template="{{ $templateId }}">
+                <i class="fas fa-plus"></i> Thêm ảnh
+            </button>
+        </div>
     </div>
 
-    <div id="holder-{{ $name }}" class="d-flex flex-wrap" style="gap: 10px;">
+    <div id="{{ $holderId }}" class="d-flex flex-wrap" style="gap: 10px;">
         {{-- Existing Images --}}
         @if($value && count($value) > 0)
             @foreach($value as $img)
@@ -37,11 +44,11 @@
             @endforeach
         @endif
     </div>
-    <small class="text-muted">Kéo thả để sắp xếp lại thứ tự ảnh.</small>
+    <small class="text-muted">Nhập đường dẫn hoặc URL ảnh rồi bấm “Thêm ảnh”.</small>
 </div>
 
 {{-- Template for new image --}}
-<template id="template-image-item-{{ $name }}">
+<template id="{{ $templateId }}">
     <div class="position-relative d-inline-block image-item" style="width: 150px;">
         <input type="hidden" name="{{ $name }}[]" value="">
         <img src="" style="height: 100px; width: 100%; object-fit: cover; border-radius: 5px; border: 1px solid #ddd;">
@@ -54,51 +61,33 @@
 @once
 @push('admin_js')
     <script>
-        $(document).ready(function() {
-            var route_prefix = "{{ route('unisharp.lfm.show') }}";
-            
-            // Define custom callback for LFM
-            $('#lfm-{{ $name }}').filemanager('image', {
-                prefix: route_prefix,
-                multiple: true
-            });
+        document.addEventListener('click', function (event) {
+            const button = event.target.closest('[data-add-image-path]');
 
-            // Override the button click to open window manually to control callback
-            $('#lfm-{{ $name }}').off('click').on('click', function(e) {
-                e.preventDefault();
-                var fullUrl = route_prefix + '?type=Images';
-                
-                window.open(fullUrl, 'FileManager', 'width=900,height=600');
-                
-                window.SetUrl = function (items) {
-                    var target_preview = $('#holder-{{ $name }}');
-                    var template = document.getElementById('template-image-item-{{ $name }}');
-
-                    // Ensure items is array
-                    if (!Array.isArray(items)) {
-                        items = [items];
-                    }
-
-                    items.forEach(function (item) {
-                        var url = item.url;
-                        
-                        // Clone template
-                        var clone = template.content.cloneNode(true);
-                        
-                        // Populate data
-                        clone.querySelector('input').value = url;
-                        clone.querySelector('img').src = url;
-                        
-                        // Append to holder
-                        target_preview.append(clone);
-                    });
-                };
-            });
-
-            // Sortable
-            if (typeof $.fn.sortable !== 'undefined') {
-                $("#holder-{{ $name }}").sortable();
+            if (!button) {
+                return;
             }
+
+            const input = document.getElementById(button.dataset.input);
+            const holder = document.getElementById(button.dataset.holder);
+            const template = document.getElementById(button.dataset.template);
+            const value = input.value.trim();
+
+            if (!value) {
+                input.focus();
+                return;
+            }
+
+            const clone = template.content.cloneNode(true);
+            const assetBase = @json(rtrim(asset(''), '/'));
+            const previewUrl = /^https?:\/\//i.test(value)
+                ? value
+                : assetBase + '/' + value.replace(/^\/+/, '');
+
+            clone.querySelector('input').value = value;
+            clone.querySelector('img').src = previewUrl;
+            holder.append(clone);
+            input.value = '';
         });
     </script>
 @endpush

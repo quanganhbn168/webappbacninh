@@ -17,7 +17,7 @@ class AdBanner extends Model implements HasMedia
     protected $fillable = [
         'name',
         'slot',
-        'image', // LFM path
+        'image', // Stored media path
         'link',
         'alt_text',
         'is_active',

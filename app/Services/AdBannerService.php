@@ -11,7 +11,7 @@ class AdBannerService
         $banner = AdBanner::create([
             'name' => $data['name'],
             'slot' => $data['slot'],
-            'image' => $data['banner_image'] ?? null, // LFM path
+            'image' => $data['banner_image'] ?? null, // Stored media path
             'link' => $data['link'] ?? null,
             'alt_text' => $data['alt_text'] ?? null,
             'is_active' => $data['is_active'] ?? true,

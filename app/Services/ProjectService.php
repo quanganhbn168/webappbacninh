@@ -14,7 +14,7 @@ class ProjectService
         $project = Project::create([
             'title' => $data['title'],
             'description' => $data['description'] ?? null,
-            'image' => $data['featured_image'] ?? null, // LFM path
+            'image' => $data['featured_image'] ?? null, // Stored media path
             'link' => $data['link'] ?? null,
             'category' => $data['category'] ?? null,
             'is_featured' => $data['is_featured'] ?? false,

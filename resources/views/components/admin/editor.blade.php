@@ -46,30 +46,6 @@
         ],
         toolbar_mode: 'wrap',
         image_caption: true,
-        // Laravel FileManager integration
-        file_picker_callback: function (callback, value, meta) {
-            var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
-            var y = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
-
-            var cmsURL = '{{ route('unisharp.lfm.show') }}?editor=' + meta.fieldname;
-            if (meta.filetype == 'image') {
-                cmsURL = cmsURL + "&type=Images";
-            } else {
-                cmsURL = cmsURL + "&type=Files";
-            }
-
-            tinyMCE.activeEditor.windowManager.openUrl({
-                url: cmsURL,
-                title: 'Quản lý File',
-                width: x * 0.8,
-                height: y * 0.8,
-                resizable: "yes",
-                close_previous: "no",
-                onMessage: (api, message) => {
-                    callback(message.content);
-                }
-            });
-        },
         content_style: 'body { font-family:Inter,Helvetica,Arial,sans-serif; font-size:16px }',
         branding: false,
         promotion: false,

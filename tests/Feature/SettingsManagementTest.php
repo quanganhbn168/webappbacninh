@@ -4,12 +4,20 @@ namespace Tests\Feature;
 
 use App\Domain\Services\Actions\MapServiceUploadData;
 use App\Domain\Settings\Actions\RenderTrackingCode;
+use App\Domain\Settings\Actions\SaveSiteSettings;
+use App\Domain\Settings\Rules\ValidPublicLink;
 use App\Filament\Pages\ManageSettings;
 use App\Models\User;
 use App\Settings\TrackingSettings;
 use Filament\Schemas\Components\Form;
 use Filament\Schemas\Schema;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use Livewire\Livewire;
+use RuntimeException;
 use Tests\TestCase;
 
 class SettingsManagementTest extends TestCase
@@ -96,5 +104,116 @@ class SettingsManagementTest extends TestCase
             'image_upload' => 'services/featured/new.webp',
             'secondary_image_upload' => null,
         ]));
+    }
+
+    public function test_standard_validation_opens_the_error_flow_and_shows_a_danger_notification(): void
+    {
+        Livewire::actingAs($this->superAdmin(), 'admin')
+            ->test(ManageSettings::class)
+            ->set('data.social.facebook', '')
+            ->set('data.social.youtube', '')
+            ->set('data.website.site_url', 'not-a-url')
+            ->call('save')
+            ->assertHasFormErrors(['website.site_url' => 'url'])
+            ->assertDispatched('form-validation-error')
+            ->assertNotified('Chưa thể lưu cấu hình');
+    }
+
+    public function test_domain_validation_is_returned_to_the_field_and_reported_to_the_user(): void
+    {
+        $this->app->instance(SaveSiteSettings::class, new class
+        {
+            /** @param array<string, mixed> $data */
+            public function execute(array $data): void
+            {
+                throw ValidationException::withMessages([
+                    'data.website.site_favicon' => 'Không đọc được file favicon nguồn trên public disk.',
+                ]);
+            }
+        });
+
+        Livewire::actingAs($this->superAdmin(), 'admin')
+            ->test(ManageSettings::class)
+            ->set('data.social.facebook', '')
+            ->set('data.social.youtube', '')
+            ->call('save')
+            ->assertHasErrors(['data.website.site_favicon'])
+            ->assertDispatched('form-validation-error')
+            ->assertNotified('Chưa thể lưu cấu hình');
+    }
+
+    public function test_unexpected_save_failures_show_a_safe_persistent_error(): void
+    {
+        $this->app->instance(SaveSiteSettings::class, new class
+        {
+            /** @param array<string, mixed> $data */
+            public function execute(array $data): void
+            {
+                throw new RuntimeException('Sensitive infrastructure detail.');
+            }
+        });
+
+        Livewire::actingAs($this->superAdmin(), 'admin')
+            ->test(ManageSettings::class)
+            ->set('data.social.facebook', '')
+            ->set('data.social.youtube', '')
+            ->call('save')
+            ->assertNotified('Không thể lưu cấu hình')
+            ->assertNotNotified('Đã lưu cấu hình website');
+    }
+
+    public function test_hardened_settings_fields_reject_invalid_public_values(): void
+    {
+        Livewire::actingAs($this->superAdmin(), 'admin')
+            ->test(ManageSettings::class)
+            ->set('data.general.default_language', 'vietnamese')
+            ->set('data.favicon.theme_color', 'navy')
+            ->set('data.contact.phone_href', 'call-me')
+            ->set('data.social.facebook', 'javascript:alert(1)')
+            ->set('data.social.youtube', '')
+            ->call('save')
+            ->assertHasFormErrors([
+                'general.default_language' => 'regex',
+                'favicon.theme_color' => 'regex',
+                'contact.phone_href' => 'regex',
+                'social.facebook' => ValidPublicLink::class,
+            ])
+            ->assertNotified('Chưa thể lưu cấu hình');
+    }
+
+    public function test_favicon_source_must_be_a_square_image_of_at_least_512_pixels(): void
+    {
+        Storage::fake('public');
+
+        Livewire::actingAs($this->superAdmin(), 'admin')
+            ->test(ManageSettings::class)
+            ->fillForm([
+                'website.site_favicon' => UploadedFile::fake()->image('rectangular-favicon.png', 1024, 512),
+                'social.facebook' => '',
+                'social.youtube' => '',
+            ])
+            ->call('save')
+            ->assertHasFormErrors([
+                'website.site_favicon' => 'Ảnh favicon nguồn phải vuông và có kích thước tối thiểu 512x512 px.',
+            ])
+            ->assertNotified('Chưa thể lưu cấu hình');
+    }
+
+    public function test_public_link_rule_accepts_safe_links_and_rejects_placeholders_or_script_schemes(): void
+    {
+        foreach (['', '#contact', '/lien-he', 'https://facebook.com/webappbacninh', 'tel:+84986123168', 'mailto:info@example.com'] as $value) {
+            $this->assertFalse(Validator::make(['link' => $value], ['link' => [new ValidPublicLink]])->fails(), $value);
+        }
+
+        foreach (['#', 'facebook.com/page', '//evil.example', 'javascript:alert(1)', 'data:text/html,test'] as $value) {
+            $this->assertTrue(Validator::make(['link' => $value], ['link' => [new ValidPublicLink]])->fails(), $value);
+        }
+    }
+
+    private function superAdmin(): User
+    {
+        return User::query()
+            ->whereHas('roles', fn ($query) => $query->where('name', 'super_admin'))
+            ->firstOrFail();
     }
 }

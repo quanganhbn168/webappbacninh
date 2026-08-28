@@ -44,7 +44,6 @@ class SettingsSeeder extends Seeder
         $seo->default_meta_keywords = 'thiết kế website, web Bắc Ninh, website doanh nghiệp';
         $seo->default_og_image = '';
         $seo->google_site_verification = '';
-        $seo->google_analytics_id = '';
         $seo->save();
 
         $contact = app(ContactSettings::class);

@@ -39,7 +39,6 @@ if (! function_exists('site_settings')) {
             'default_meta_keywords' => 'thiết kế website, web Bắc Ninh, website doanh nghiệp',
             'default_og_image' => '',
             'google_site_verification' => '',
-            'google_analytics_id' => '',
             'tracking_enabled' => false,
             'google_tag_id' => '',
             'head_code' => '',
@@ -71,7 +70,6 @@ if (! function_exists('site_settings')) {
                 'default_meta_keywords' => 'default_meta_keywords',
                 'default_og_image' => 'default_og_image',
                 'google_site_verification' => 'google_site_verification',
-                'google_analytics_id' => 'google_analytics_id',
                 'page_meta' => 'page_meta',
             ],
             ContactSettings::class => [

@@ -8,7 +8,7 @@ return [
     'email' => 'info@webappbacninh.vn',
     'address' => 'Bắc Ninh, Việt Nam',
     'working_time' => 'Thứ 2 - Thứ 7: 08:00 - 18:00',
-    'facebook' => '#',
-    'youtube' => '#',
+    'facebook' => '',
+    'youtube' => '',
     'zalo' => '#contact',
 ];

@@ -4,6 +4,8 @@ namespace App\Filament\Pages;
 
 use App\Domain\Settings\Actions\LoadSiteSettings;
 use App\Domain\Settings\Actions\SaveSiteSettings;
+use App\Domain\Settings\Rules\SquareRasterImage;
+use App\Domain\Settings\Rules\ValidPublicLink;
 use App\Filament\Resources\OperationServices\OperationServiceResource;
 use App\Filament\Resources\ServiceCategories\ServiceCategoryResource;
 use App\Filament\Resources\Services\ServiceResource;
@@ -26,6 +28,8 @@ use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Validation\ValidationException;
+use Throwable;
 use UnitEnum;
 
 class ManageSettings extends Page
@@ -69,8 +73,22 @@ class ManageSettings extends Page
                                     ->schema([
                                         TextInput::make('general.name')->label('Tên hiển thị website')->required()->maxLength(255),
                                         TextInput::make('general.company_name')->label('Tên pháp lý / doanh nghiệp')->maxLength(255),
-                                        TextInput::make('general.default_language')->label('Ngôn ngữ mặc định')->required()->maxLength(10),
-                                        TextInput::make('website.site_url')->label('URL chính thức')->required()->url()->maxLength(255),
+                                        TextInput::make('general.default_language')
+                                            ->label('Ngôn ngữ mặc định')
+                                            ->required()
+                                            ->regex('/^[a-z]{2,3}(?:-[A-Z]{2})?$/')
+                                            ->maxLength(10)
+                                            ->validationMessages([
+                                                'regex' => 'Ngôn ngữ mặc định phải có dạng vi, en hoặc en-US.',
+                                            ]),
+                                        TextInput::make('website.site_url')
+                                            ->label('URL chính thức')
+                                            ->required()
+                                            ->rules(['url:http,https'])
+                                            ->maxLength(255)
+                                            ->validationMessages([
+                                                'url' => 'URL chính thức phải là địa chỉ http:// hoặc https:// hợp lệ.',
+                                            ]),
                                     ])
                                     ->columns(2),
                                 Section::make('Logo website')
@@ -91,12 +109,12 @@ class ManageSettings extends Page
                                             ->visibility('public')
                                             ->image()
                                             ->imageEditor()
-                                            ->imageCropAspectRatio('1:1')
+                                            ->imageEditorAspectRatioOptions(['1:1'])
                                             ->imageResizeTargetWidth('1024')
                                             ->imageResizeTargetHeight('1024')
                                             ->imageResizeUpscale(false)
                                             ->acceptedFileTypes(['image/png', 'image/webp', 'image/jpeg'])
-                                            ->rules(['dimensions:min_width=512,min_height=512'])
+                                            ->rules([new SquareRasterImage('Ảnh favicon nguồn')])
                                             ->maxSize(4096)
                                             ->imagePreviewHeight('160')
                                             ->openable()
@@ -109,12 +127,12 @@ class ManageSettings extends Page
                                             ->visibility('public')
                                             ->image()
                                             ->imageEditor()
-                                            ->imageCropAspectRatio('1:1')
+                                            ->imageEditorAspectRatioOptions(['1:1'])
                                             ->imageResizeTargetWidth('1024')
                                             ->imageResizeTargetHeight('1024')
                                             ->imageResizeUpscale(false)
                                             ->acceptedFileTypes(['image/png', 'image/webp', 'image/jpeg'])
-                                            ->rules(['dimensions:min_width=512,min_height=512'])
+                                            ->rules([new SquareRasterImage('Maskable icon')])
                                             ->maxSize(4096)
                                             ->imagePreviewHeight('160')
                                             ->openable()
@@ -126,13 +144,19 @@ class ManageSettings extends Page
                                             ->placeholder('WebApp Bắc Ninh'),
                                         ColorPicker::make('favicon.theme_color')
                                             ->label('Màu giao diện trình duyệt')
-                                            ->required(),
+                                            ->required()
+                                            ->regex('/^#[0-9A-Fa-f]{6}$/')
+                                            ->validationMessages(['regex' => 'Màu giao diện phải là mã HEX 6 ký tự, ví dụ #0f172a.']),
                                         ColorPicker::make('favicon.background_color')
                                             ->label('Màu nền Apple/PWA/maskable')
-                                            ->required(),
+                                            ->required()
+                                            ->regex('/^#[0-9A-Fa-f]{6}$/')
+                                            ->validationMessages(['regex' => 'Màu nền phải là mã HEX 6 ký tự, ví dụ #ffffff.']),
                                         ColorPicker::make('favicon.safari_mask_color')
                                             ->label('Màu Safari pinned tab')
-                                            ->required(),
+                                            ->required()
+                                            ->regex('/^#[0-9A-Fa-f]{6}$/')
+                                            ->validationMessages(['regex' => 'Màu Safari phải là mã HEX 6 ký tự, ví dụ #0f172a.']),
                                         FileUpload::make('favicon.safari_mask_icon')
                                             ->label('Safari pinned tab SVG (không bắt buộc)')
                                             ->disk('public')
@@ -160,13 +184,18 @@ class ManageSettings extends Page
                                     ->schema([
                                         TextInput::make('seo.default_meta_title')->label('Meta title mặc định')->maxLength(255),
                                         TextInput::make('seo.default_meta_keywords')->label('Từ khóa mặc định')->maxLength(500),
-                                        Textarea::make('seo.default_meta_description')->label('Meta description mặc định')->rows(3)->columnSpanFull(),
+                                        Textarea::make('seo.default_meta_description')->label('Meta description mặc định')->rows(3)->maxLength(500)->columnSpanFull(),
                                         self::brandImage('seo.default_og_image', 'Ảnh chia sẻ mặc định (OG)', 'site/seo', ['1.91:1', '16:9']),
                                         TextInput::make('seo.google_site_verification')->label('Google Search Console verification')->maxLength(255),
                                         CodeEditor::make('seo.page_meta_json')
                                             ->label('SEO theo từng trang (JSON)')
                                             ->language(Language::Json)
                                             ->json()
+                                            ->rules(['max:30000'])
+                                            ->validationMessages([
+                                                'json' => 'SEO theo từng trang phải là chuỗi JSON hợp lệ.',
+                                                'max' => 'SEO theo từng trang không được vượt quá 30.000 ký tự.',
+                                            ])
                                             ->wrap()
                                             ->columnSpanFull()
                                             ->helperText('Các key hiện dùng: home, about, contact, pricing, agency, services, themes, projects, articles, operations.'),
@@ -179,10 +208,22 @@ class ManageSettings extends Page
                                 Section::make('Thông tin liên hệ')
                                     ->schema([
                                         TextInput::make('contact.phone')->label('Số điện thoại hiển thị')->required()->maxLength(50),
-                                        TextInput::make('contact.phone_href')->label('Số gọi')->required()->maxLength(50),
-                                        TextInput::make('contact.email')->label('Email')->required()->email()->maxLength(255),
+                                        TextInput::make('contact.phone_href')
+                                            ->label('Số gọi')
+                                            ->required()
+                                            ->regex('/^\+?[0-9][0-9\s().-]{6,24}$/')
+                                            ->maxLength(26)
+                                            ->validationMessages([
+                                                'regex' => 'Số gọi chỉ được chứa số, dấu +, khoảng trắng, dấu chấm, ngoặc hoặc gạch ngang.',
+                                            ]),
+                                        TextInput::make('contact.email')
+                                            ->label('Email')
+                                            ->required()
+                                            ->email()
+                                            ->maxLength(255)
+                                            ->validationMessages(['email' => 'Email liên hệ chưa đúng định dạng.']),
                                         TextInput::make('contact.working_time')->label('Thời gian làm việc')->maxLength(255),
-                                        Textarea::make('contact.address')->label('Địa chỉ')->rows(3)->columnSpanFull(),
+                                        Textarea::make('contact.address')->label('Địa chỉ')->rows(3)->maxLength(500)->columnSpanFull(),
                                     ])
                                     ->columns(2),
                             ]),
@@ -191,13 +232,13 @@ class ManageSettings extends Page
                             ->schema([
                                 Section::make('Kênh liên hệ và mạng xã hội')
                                     ->schema([
-                                        TextInput::make('social.facebook')->label('Facebook')->url()->maxLength(2048),
-                                        TextInput::make('social.messenger')->label('Messenger')->maxLength(2048),
-                                        TextInput::make('social.zalo')->label('Zalo')->maxLength(2048),
-                                        TextInput::make('social.telegram')->label('Telegram')->maxLength(2048),
-                                        TextInput::make('social.wechat')->label('WeChat')->maxLength(2048),
-                                        TextInput::make('social.whatsapp')->label('WhatsApp')->maxLength(2048),
-                                        TextInput::make('social.youtube')->label('YouTube')->url()->maxLength(2048),
+                                        self::publicLink('social.facebook', 'Facebook'),
+                                        self::publicLink('social.messenger', 'Messenger'),
+                                        self::publicLink('social.zalo', 'Zalo'),
+                                        self::publicLink('social.telegram', 'Telegram'),
+                                        self::publicLink('social.wechat', 'WeChat'),
+                                        self::publicLink('social.whatsapp', 'WhatsApp'),
+                                        self::publicLink('social.youtube', 'YouTube'),
                                     ])
                                     ->columns(2),
                             ]),
@@ -212,7 +253,10 @@ class ManageSettings extends Page
                                             ->label('Google tag ID')
                                             ->placeholder('G-XXXXXXXXXX')
                                             ->regex('/^(G|GT|GTM|AW|DC)-[A-Z0-9-]+$/i')
-                                            ->maxLength(50),
+                                            ->maxLength(50)
+                                            ->validationMessages([
+                                                'regex' => 'Google tag ID phải có dạng G-, GT-, GTM-, AW- hoặc DC-.',
+                                            ]),
                                     ])
                                     ->columns(2),
                                 Section::make('Mã chèn theo vị trí')
@@ -221,16 +265,22 @@ class ManageSettings extends Page
                                         CodeEditor::make('tracking.head_code')
                                             ->label('Cuối thẻ <head>')
                                             ->language(Language::Html)
+                                            ->rules(['max:100000'])
+                                            ->validationMessages(['max' => 'Mã cuối thẻ <head> không được vượt quá 100.000 ký tự.'])
                                             ->wrap()
                                             ->helperText('Dùng cho verification, pixels hoặc script cần nằm trong head. Không cần dán lại Google tag nếu đã nhập ID ở trên.'),
                                         CodeEditor::make('tracking.body_start_code')
                                             ->label('Ngay sau thẻ <body>')
                                             ->language(Language::Html)
+                                            ->rules(['max:100000'])
+                                            ->validationMessages(['max' => 'Mã đầu thẻ <body> không được vượt quá 100.000 ký tự.'])
                                             ->wrap()
                                             ->helperText('Phù hợp với phần noscript của Google Tag Manager hoặc widget yêu cầu đầu body.'),
                                         CodeEditor::make('tracking.body_end_code')
                                             ->label('Trước thẻ đóng </body>')
                                             ->language(Language::Html)
+                                            ->rules(['max:100000'])
+                                            ->validationMessages(['max' => 'Mã cuối thẻ <body> không được vượt quá 100.000 ký tự.'])
                                             ->wrap()
                                             ->helperText('Phù hợp với widget chat và script tải cuối trang.'),
                                     ])
@@ -283,12 +333,64 @@ class ManageSettings extends Page
 
     public function save(): void
     {
-        app(SaveSiteSettings::class)->execute($this->form->getState());
-        $this->form->fill(app(LoadSiteSettings::class)->execute());
+        $state = $this->form->getState();
+
+        try {
+            app(SaveSiteSettings::class)->execute($state);
+        } catch (ValidationException $exception) {
+            foreach ($exception->errors() as $key => $messages) {
+                foreach ($messages as $message) {
+                    $this->addError($key, $message);
+                }
+            }
+
+            $this->onValidationError($exception);
+            $this->dispatch('form-validation-error', livewireId: $this->getId());
+
+            return;
+        } catch (Throwable $exception) {
+            report($exception);
+
+            Notification::make()
+                ->title('Không thể lưu cấu hình')
+                ->body('Hệ thống gặp lỗi khi ghi dữ liệu. Vui lòng thử lại; nếu lỗi lặp lại, hãy kiểm tra log máy chủ.')
+                ->danger()
+                ->persistent()
+                ->send();
+
+            return;
+        }
+
+        try {
+            $this->form->fill(app(LoadSiteSettings::class)->execute());
+        } catch (Throwable $exception) {
+            report($exception);
+
+            Notification::make()
+                ->title('Đã lưu nhưng chưa thể tải lại dữ liệu')
+                ->body('Cấu hình đã được ghi nhận. Hãy tải lại trang trước khi chỉnh sửa tiếp.')
+                ->warning()
+                ->persistent()
+                ->send();
+
+            return;
+        }
 
         Notification::make()
             ->title('Đã lưu cấu hình website')
             ->success()
+            ->send();
+    }
+
+    protected function onValidationError(ValidationException $exception): void
+    {
+        parent::onValidationError($exception);
+
+        Notification::make()
+            ->title('Chưa thể lưu cấu hình')
+            ->body('Vui lòng kiểm tra các trường đang được đánh dấu lỗi. Hệ thống sẽ mở đúng tab có lỗi đầu tiên.')
+            ->danger()
+            ->persistent()
             ->send();
     }
 
@@ -307,5 +409,14 @@ class ManageSettings extends Page
             ->imagePreviewHeight('140')
             ->openable()
             ->downloadable();
+    }
+
+    private static function publicLink(string $name, string $label): TextInput
+    {
+        return TextInput::make($name)
+            ->label($label)
+            ->rules([new ValidPublicLink])
+            ->maxLength(2048)
+            ->placeholder('https://... hoặc #contact');
     }
 }

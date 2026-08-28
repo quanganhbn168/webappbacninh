@@ -5,7 +5,7 @@
       {{-- Brand Column --}}
       <div class="col-lg-4 col-md-6">
         <a href="{{ url('/') }}" class="d-flex align-items-center text-white text-decoration-none mb-3">
-             <img src="{{ asset(setting('site_logo_wide', 'images/logo-wide.png')) }}" alt="{{ setting('site_name', 'WebApp Bắc Ninh') }}" height="50" class="transition-all hover-scale" style="filter: brightness(0) invert(1);">
+             <img src="{{ site_asset_url(setting('site_logo_white') ?: setting('site_logo_wide'), 'images/webapp-logo.png') }}" alt="{{ setting('site_name', 'WebApp Bắc Ninh') }}" height="50" class="transition-all hover-scale">
         </a>
         <p class="text-white-50 small mb-4 pr-lg-5">
           Nền tảng công nghệ All-in-One giúp doanh nghiệp Bắc Ninh chuyển đổi số thành công. Thiết kế Website, App Mobile, CRM và Marketing tự động.

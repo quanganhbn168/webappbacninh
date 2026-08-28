@@ -14,7 +14,7 @@
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body">
                     <h5 class="mb-3">Chọn tình trạng ví tiền của bạn:</h5>
-                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <div class="btn-group">
                         <label class="btn btn-outline-success active" onclick="setMode('rich')">
                             <input type="radio" name="mode" id="option1" checked> 💰 Đầu tháng (Giàu)
                         </label>
@@ -66,7 +66,7 @@
                     Chúc bạn ngon miệng!
                 </div>
 
-                <button type="button" class="btn btn-outline-primary mt-3" data-dismiss="modal">Quay lại</button>
+                <button type="button" class="btn btn-outline-primary mt-3" data-ui-dismiss="modal">Quay lại</button>
                 <button type="button" class="btn btn-success mt-3 ml-2" onclick="shareResult()">
                     <i class="fab fa-facebook"></i> Khoe ngay
                 </button>
@@ -111,6 +111,7 @@
     let arc = Math.PI / (options.length / 2);
     let spinTimeout = null;
     let spinArcStart = 10;
+    let spinAngleStart = 0;
     let spinTime = 0;
     let spinTimeTotal = 0;
     let ctx;
@@ -192,7 +193,7 @@
         spinTime = 0;
         spinTimeTotal = Math.random() * 3 + 4 * 1000;
         rotateWheel();
-        $('.spin-btn').prop('disabled', true);
+        document.querySelector('.spin-btn')?.setAttribute('disabled', 'disabled');
     }
 
     function rotateWheel() {
@@ -218,7 +219,7 @@
         showResult(options[index]);
         //ctx.fillText(text, 250 - ctx.measureText(text).width / 2, 250 + 10);
         ctx.restore();
-        $('.spin-btn').prop('disabled', false);
+        document.querySelector('.spin-btn')?.removeAttribute('disabled');
     }
 
     function easeOut(t, b, c, d) {
@@ -228,27 +229,28 @@
     }
 
     function showResult(item) {
-        $('#resultName').text(item.text);
+        document.getElementById('resultName').textContent = item.text;
         
         let html = '';
         if(item.meme) {
             html = `<img src="${item.meme}" class="img-fluid rounded" style="max-height: 200px;">`;
-            $('#resultDesc').text(item.text === "Nhịn Ăn" ? "Chia buồn cùng bạn! Nghèo thì phải chấp nhận thôi..." : "Chúc mừng bạn đã quay trúng " + item.text);
+            resultDesc.textContent = item.text === "Nhịn Ăn" ? "Chia buồn cùng bạn! Nghèo thì phải chấp nhận thôi..." : "Chúc mừng bạn đã quay trúng " + item.text;
             if(item.text === "Nhịn Ăn" || item.text === "Mì Tôm") {
-                $('#resultDesc').addClass('alert-danger').removeClass('alert-light');
+                resultDesc.classList.add('alert-danger');
+                resultDesc.classList.remove('alert-light', 'alert-success');
             } else {
-                 $('#resultDesc').addClass('alert-success').removeClass('alert-danger alert-light');
+                resultDesc.classList.add('alert-success');
+                resultDesc.classList.remove('alert-danger', 'alert-light');
             }
         } else {
             html = '<i class="fas fa-utensils fa-5x text-secondary"></i>';
-            $('#resultDesc').removeClass('alert-danger alert-success').addClass('alert-light').text('Hôm nay ăn ' + item.text + ' nhé!');
+            resultDesc.classList.remove('alert-danger', 'alert-success');
+            resultDesc.classList.add('alert-light');
+            resultDesc.textContent = 'Hôm nay ăn ' + item.text + ' nhé!';
         }
-        
-        $('#resultImageContainer').html(html);
-        
-        // Use native Bootstrap 5 Modal
-        var myModal = new bootstrap.Modal(document.getElementById('resultModal'));
-        myModal.show();
+
+        document.getElementById('resultImageContainer').innerHTML = html;
+        window.tailwindUi?.open(document.getElementById('resultModal'));
     }
 
     function shareResult() {
@@ -256,15 +258,7 @@
         alert('Đã copy kết quả vào clipboard! Hãy dán lên Facebook ngay!');
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof $ === 'undefined') {
-            console.error('jQuery is not loaded');
-            return;
-        }
-        $(document).ready(function() {
-            drawRouletteWheel();
-        });
-    });
+    document.addEventListener('DOMContentLoaded', drawRouletteWheel);
 </script>
 @endpush
 @endsection

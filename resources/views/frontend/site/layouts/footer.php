@@ -1,8 +1,9 @@
+<?php $footerLogoUrl = site_asset_url(site_config('site_logo_white') ?: site_config('site_logo_wide')); ?>
 <footer class="site-footer">
   <div class="container">
     <div class="row gy-5">
       <div class="col-lg-4">
-        <a class="brand brand--footer" href="<?= e(frontend_url('index.php')) ?>"><span class="brand__mark"><i class="fa-solid fa-code"></i></span><span class="brand__text"><strong>WEBAPP</strong><small>BẮC NINH</small></span></a>
+        <a class="brand brand--footer" href="<?= e(frontend_url('index.php')) ?>"><?php if ($footerLogoUrl !== ''): ?><img class="brand__image brand__image--footer" src="<?= e($footerLogoUrl) ?>" alt="<?= e(site_config('name')) ?>"><?php else: ?><span class="brand__mark"><i class="fa-solid fa-code"></i></span><span class="brand__text"><strong>WEBAPP</strong><small>BẮC NINH</small></span><?php endif; ?></a>
         <p class="footer-about">Thiết kế website và đồng hành vận hành nội dung cho doanh nghiệp. Tập trung vào giải pháp vừa đủ, dễ dùng và có khả năng phát triển lâu dài.</p>
         <div class="footer-socials"><a href="<?= e(site_config('facebook')) ?>" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a><a href="<?= e(site_config('youtube')) ?>" aria-label="Youtube"><i class="fa-brands fa-youtube"></i></a><a href="<?= e(site_config('zalo')) ?>" aria-label="Zalo"><img class="zalo-icon" src="<?= e(frontend_asset('assets/images/zalo.svg')) ?>" alt="" aria-hidden="true" width="22" height="22"></a></div>
       </div>

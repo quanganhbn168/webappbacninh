@@ -32,7 +32,7 @@ return [
             'Cấu trúc sẵn sàng để phát triển SEO theo nhóm sản phẩm',
         ],
         'deliverables' => ['Trang chủ', 'Giới thiệu', 'Năng lực nhà máy', 'Sản phẩm', 'Dự án', 'Tin tức', 'Liên hệ', 'Quản trị nội dung'],
-        'technologies' => ['PHP', 'Bootstrap 5', 'Responsive', 'SEO nền tảng'],
+        'technologies' => ['PHP', 'Tailwind CSS', 'Responsive', 'SEO nền tảng'],
     ],
     [
         'id' => 2,
@@ -63,7 +63,7 @@ return [
             'Dễ mở rộng thanh toán và vận chuyển khi cần',
         ],
         'deliverables' => ['Danh mục sản phẩm', 'Chi tiết sản phẩm', 'Giỏ hàng', 'Đặt hàng', 'Tin tức', 'Liên hệ', 'Quản lý đơn'],
-        'technologies' => ['PHP', 'Bootstrap 5', 'Giỏ hàng', 'Quản trị đơn hàng'],
+        'technologies' => ['PHP', 'Tailwind CSS', 'Giỏ hàng', 'Quản trị đơn hàng'],
     ],
     [
         'id' => 3,
@@ -94,7 +94,7 @@ return [
             'Có nền tảng phát triển nội dung điểm đến và SEO',
         ],
         'deliverables' => ['Danh mục tour', 'Chi tiết tour', 'Điểm đến', 'Tin du lịch', 'Form tư vấn', 'Bản đồ', 'Quản trị nội dung'],
-        'technologies' => ['PHP', 'Bootstrap 5', 'Form lead', 'SEO nội dung'],
+        'technologies' => ['PHP', 'Tailwind CSS', 'Form lead', 'SEO nội dung'],
     ],
     [
         'id' => 4,
@@ -125,7 +125,7 @@ return [
             'Tạo nguồn nội dung dài hạn cho tìm kiếm',
         ],
         'deliverables' => ['Khóa học', 'Giáo viên', 'Lịch khai giảng', 'Hoạt động', 'Tin tức', 'Form đăng ký'],
-        'technologies' => ['PHP', 'Bootstrap 5', 'Responsive', 'Form đăng ký'],
+        'technologies' => ['PHP', 'Tailwind CSS', 'Responsive', 'Form đăng ký'],
     ],
     [
         'id' => 5,
@@ -156,7 +156,7 @@ return [
             'Có thể nhân bản cho chiến dịch tiếp theo',
         ],
         'deliverables' => ['Hero', 'Vấn đề - giải pháp', 'Lợi ích', 'Quy trình', 'Bảng giá', 'FAQ', 'Form lead', 'Tracking cơ bản'],
-        'technologies' => ['HTML/PHP', 'Bootstrap 5', 'AOS', 'Tracking'],
+        'technologies' => ['HTML/PHP', 'Tailwind CSS', 'AOS', 'Tracking'],
     ],
     [
         'id' => 6,
@@ -187,6 +187,6 @@ return [
             'Có thể mở rộng theo nghiệp vụ thực tế',
         ],
         'deliverables' => ['Khách hàng', 'Người liên hệ', 'Công việc', 'Báo giá', 'Thanh toán', 'Báo cáo', 'Phân quyền'],
-        'technologies' => ['Laravel', 'Bootstrap/React', 'MySQL', 'Phân quyền'],
+        'technologies' => ['Laravel', 'Tailwind/React', 'MySQL', 'Phân quyền'],
     ],
 ];

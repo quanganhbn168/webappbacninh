@@ -130,7 +130,7 @@
         <div class="col-lg-7" data-aos="fade-left">
           <div class="accordion service-faq" id="serviceFaq">
             <?php foreach ($service['faqs'] as $index => $faq): $faqId = 'serviceFaq' . $index; ?>
-              <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button <?= $index > 0 ? 'collapsed' : '' ?>" type="button" data-bs-toggle="collapse" data-bs-target="#<?= e($faqId) ?>" aria-expanded="<?= $index === 0 ? 'true' : 'false' ?>"><?= e($faq['q']) ?></button></h3><div id="<?= e($faqId) ?>" class="accordion-collapse collapse <?= $index === 0 ? 'show' : '' ?>" data-bs-parent="#serviceFaq"><div class="accordion-body"><?= e($faq['a']) ?></div></div></div>
+              <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button <?= $index > 0 ? 'collapsed' : '' ?>" type="button" data-ui-toggle="collapse" data-ui-target="#<?= e($faqId) ?>" aria-expanded="<?= $index === 0 ? 'true' : 'false' ?>"><?= e($faq['q']) ?></button></h3><div id="<?= e($faqId) ?>" class="accordion-collapse collapse <?= $index === 0 ? 'show' : '' ?>" data-ui-parent="#serviceFaq"><div class="accordion-body"><?= e($faq['a']) ?></div></div></div>
             <?php endforeach; ?>
           </div>
         </div>

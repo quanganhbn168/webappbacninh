@@ -1,4 +1,8 @@
-<?php $topbarAbout = $headerNavigation['topbar'] ?? ['title' => 'Giới thiệu', 'url' => route('about'), 'target' => '_self']; ?>
+<?php
+  $topbarAbout = $headerNavigation['topbar'] ?? ['title' => 'Giới thiệu', 'url' => route('about'), 'target' => '_self'];
+  $headerLogoUrl = site_asset_url(site_config('site_logo_wide'));
+  $mobileLogoUrl = site_asset_url(site_config('site_logo_square') ?: site_config('site_logo_wide'));
+?>
 
 <div class="topbar d-none d-lg-block">
   <div class="container d-flex justify-content-between align-items-center">
@@ -18,10 +22,14 @@
   <nav class="navbar navbar-expand-xl navbar-light bg-white">
     <div class="container">
       <a class="navbar-brand brand" href="<?= e(route('home')) ?>" aria-label="WebApp Bắc Ninh">
+        <?php if ($headerLogoUrl !== ''): ?>
+        <img class="brand__image" src="<?= e($headerLogoUrl) ?>" alt="<?= e(site_config('name')) ?>">
+        <?php else: ?>
         <span class="brand__mark"><i class="fa-solid fa-code"></i></span>
         <span class="brand__text"><strong>WEBAPP</strong><small>BẮC NINH</small></span>
+        <?php endif; ?>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-label="Mở menu"><span class="navbar-toggler-icon"></span></button>
+      <button class="navbar-toggler" type="button" data-ui-toggle="offcanvas" data-ui-target="#mobileMenu" aria-controls="mobileMenu" aria-label="Mở menu"><span class="navbar-toggler-icon"></span></button>
 
       <div class="collapse navbar-collapse d-none d-xl-flex">
         <ul class="navbar-nav ms-auto align-items-xl-center">
@@ -95,8 +103,8 @@
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
   <div class="offcanvas-header">
-    <div class="brand" id="mobileMenuLabel"><span class="brand__mark"><i class="fa-solid fa-code"></i></span><span class="brand__text"><strong>WEBAPP</strong><small>BẮC NINH</small></span></div>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Đóng"></button>
+    <div class="brand" id="mobileMenuLabel"><?php if ($mobileLogoUrl !== ''): ?><img class="brand__image brand__image--mobile" src="<?= e($mobileLogoUrl) ?>" alt="<?= e(site_config('name')) ?>"><?php else: ?><span class="brand__mark"><i class="fa-solid fa-code"></i></span><span class="brand__text"><strong>WEBAPP</strong><small>BẮC NINH</small></span><?php endif; ?></div>
+    <button type="button" class="btn-close" data-ui-dismiss="offcanvas" aria-label="Đóng"></button>
   </div>
   <div class="offcanvas-body">
     <nav class="mobile-nav" id="mobileNavigation">
@@ -108,9 +116,9 @@
           <div class="mobile-nav__item">
             <div class="mobile-nav__row">
               <a href="<?= e($item['url']) ?>" target="<?= e($item['target']) ?>"><?= e($item['title']) ?></a>
-              <button class="mobile-nav__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#<?= e($mobileMenuId) ?>" aria-expanded="<?= ($activeMenu ?? '') === ($item['active_key'] ?? '') ? 'true' : 'false' ?>" aria-controls="<?= e($mobileMenuId) ?>" aria-label="Mở <?= e($item['title']) ?>"><i class="fa-solid fa-angle-down"></i></button>
+              <button class="mobile-nav__toggle" type="button" data-ui-toggle="collapse" data-ui-target="#<?= e($mobileMenuId) ?>" aria-expanded="<?= ($activeMenu ?? '') === ($item['active_key'] ?? '') ? 'true' : 'false' ?>" aria-controls="<?= e($mobileMenuId) ?>" aria-label="Mở <?= e($item['title']) ?>"><i class="fa-solid fa-angle-down"></i></button>
             </div>
-            <div class="collapse <?= ($activeMenu ?? '') === ($item['active_key'] ?? '') ? 'show' : '' ?>" id="<?= e($mobileMenuId) ?>" data-bs-parent="#mobileNavigation">
+            <div class="collapse <?= ($activeMenu ?? '') === ($item['active_key'] ?? '') ? 'show' : '' ?>" id="<?= e($mobileMenuId) ?>" data-ui-parent="#mobileNavigation">
               <div class="mobile-nav__submenu">
                 <?php foreach ($mobileChildren as $child): ?>
                   <a href="<?= e($child['url']) ?>" target="<?= e($child['target']) ?>" class="<?= ($activeSubmenu ?? '') === ($child['submenu_key'] ?? '') ? 'active' : '' ?>"><?= e($child['label']) ?></a>

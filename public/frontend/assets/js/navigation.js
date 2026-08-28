@@ -66,16 +66,16 @@
   });
 
   document.querySelectorAll('.mobile-nav__toggle').forEach((button) => {
-    const target = document.querySelector(button.getAttribute('data-bs-target') || '');
+    const target = document.querySelector(button.getAttribute('data-ui-target') || '');
     if (!target) return;
-    target.addEventListener('show.bs.collapse', () => button.setAttribute('aria-expanded', 'true'));
-    target.addEventListener('hide.bs.collapse', () => button.setAttribute('aria-expanded', 'false'));
+    target.addEventListener('ui:show', () => button.setAttribute('aria-expanded', 'true'));
+    target.addEventListener('ui:hide', () => button.setAttribute('aria-expanded', 'false'));
   });
 
   const mobileMenu = document.getElementById('mobileMenu');
   mobileMenu?.querySelectorAll('.mobile-nav a').forEach((link) => {
     link.addEventListener('click', () => {
-      bootstrap.Offcanvas.getInstance(mobileMenu)?.hide();
+      window.tailwindUi?.close(mobileMenu);
     });
   });
 })();

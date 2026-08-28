@@ -20,10 +20,10 @@
     <div class="container">
       {{-- Logo --}}
       <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-        <img src="{{ asset(setting('site_logo_wide', 'images/logo-wide.png')) }}" alt="{{ setting('site_name', 'WebApp Bắc Ninh') }}" height="65" class="transition-all hover-scale">
+        <img src="{{ site_asset_url(setting('site_logo_wide'), 'images/webapp-logo.png') }}" alt="{{ setting('site_name', 'WebApp Bắc Ninh') }}" height="65" class="transition-all hover-scale">
       </a>
 
-      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-ui-toggle="collapse" data-ui-target="#navbarContent">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -39,7 +39,7 @@
             <a class="nav-link text-dark px-2 hvr-underline" href="#ecosystem">Giao diện</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-dark px-2 hvr-underline" href="{{ route('blog.index') }}">Blog</a>
+            <a class="nav-link text-dark px-2 hvr-underline" href="{{ route('articles.index') }}">Blog</a>
           </li>
            <li class="nav-item">
             <a class="nav-link text-dark px-2 hvr-underline" href="{{ route('contact') }}">Liên hệ</a>
@@ -50,7 +50,7 @@
         <div class="d-flex align-items-center gap-2 ms-lg-4">
            @auth
             <div class="dropdown">
-              <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark fw-bold" data-bs-toggle="dropdown">
+              <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark fw-bold" data-ui-toggle="dropdown">
                 <img src="{{ Auth::user()->avatar ?? asset('images/default-avatar.png') }}" class="rounded-circle border border-2 border-primary me-2" width="40" height="40">
                 <span class="d-none d-lg-inline">{{ Auth::user()->name }}</span>
               </a>

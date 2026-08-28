@@ -18,7 +18,10 @@
   const sortSelect = document.getElementById('themeSort');
   const modalEl = document.getElementById('themeQuickView');
   const modalBody = document.getElementById('themeModalBody');
-  const quickViewModal = modalEl ? new bootstrap.Modal(modalEl) : null;
+  const quickViewModal = modalEl ? {
+    show: () => window.tailwindUi?.open(modalEl),
+    hide: () => window.tailwindUi?.close(modalEl),
+  } : null;
   const themes = JSON.parse(document.getElementById('themesJson')?.textContent || '[]');
   const themeMap = new Map(themes.map(theme => [String(theme.id), theme]));
 
@@ -112,7 +115,7 @@
   function openQuickView(id) {
     const theme = themeMap.get(String(id));
     if (!theme || !quickViewModal) return;
-    modalBody.innerHTML = `<div class="theme-modal__layout"><div class="theme-modal__image"><img src="${theme.imageUrl}" alt="${theme.name}"></div><div class="theme-modal__content"><span>${theme.code} · ${theme.industryLabel}</span><h2>${theme.name}</h2><p>${theme.description}</p><div class="theme-modal__specs"><div><small>Loại website</small><strong>${theme.typeLabel}</strong></div><div><small>Chi phí tham khảo</small><strong>Từ ${money(theme.price)}</strong></div><div><small>Thời gian dự kiến</small><strong>${theme.duration}</strong></div><div><small>Tùy chỉnh</small><strong>Màu sắc, nội dung, chức năng</strong></div></div><ul class="theme-modal__features">${theme.tags.map(tag => `<li>${tag}</li>`).join('')}<li>Tối ưu hiển thị mobile</li><li>Trang quản trị nội dung</li><li>SEO nền tảng và form liên hệ</li></ul><div class="theme-modal__buttons"><a href="${theme.detailUrl}" class="btn btn-primary">Xem trang chi tiết</a><a href="#themeContact" class="btn btn-outline-primary" data-theme-select="${theme.code}" data-bs-dismiss="modal">Chọn mẫu ${theme.code}</a></div></div></div>`;
+    modalBody.innerHTML = `<div class="theme-modal__layout"><div class="theme-modal__image"><img src="${theme.imageUrl}" alt="${theme.name}"></div><div class="theme-modal__content"><span>${theme.code} · ${theme.industryLabel}</span><h2>${theme.name}</h2><p>${theme.description}</p><div class="theme-modal__specs"><div><small>Loại website</small><strong>${theme.typeLabel}</strong></div><div><small>Chi phí tham khảo</small><strong>Từ ${money(theme.price)}</strong></div><div><small>Thời gian dự kiến</small><strong>${theme.duration}</strong></div><div><small>Tùy chỉnh</small><strong>Màu sắc, nội dung, chức năng</strong></div></div><ul class="theme-modal__features">${theme.tags.map(tag => `<li>${tag}</li>`).join('')}<li>Tối ưu hiển thị mobile</li><li>Trang quản trị nội dung</li><li>SEO nền tảng và form liên hệ</li></ul><div class="theme-modal__buttons"><a href="${theme.detailUrl}" class="btn btn-primary">Xem trang chi tiết</a><a href="#themeContact" class="btn btn-outline-primary" data-theme-select="${theme.code}" data-ui-dismiss="modal">Chọn mẫu ${theme.code}</a></div></div></div>`;
     quickViewModal.show();
   }
 

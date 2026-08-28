@@ -2,24 +2,29 @@
 
 namespace App\Filament\Pages;
 
-use App\Settings\ContactSettings;
-use App\Settings\GeneralSettings;
-use App\Settings\SeoSettings;
-use App\Settings\SocialSettings;
-use App\Settings\WebsiteSettings;
+use App\Domain\Settings\Actions\LoadSiteSettings;
+use App\Domain\Settings\Actions\SaveSiteSettings;
+use App\Filament\Resources\OperationServices\OperationServiceResource;
+use App\Filament\Resources\ServiceCategories\ServiceCategoryResource;
+use App\Filament\Resources\Services\ServiceResource;
 use BackedEnum;
 use Filament\Actions\Action;
-use Filament\Pages\Page;
+use Filament\Forms\Components\CodeEditor;
+use Filament\Forms\Components\CodeEditor\Enums\Language;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
+use Filament\Pages\Page;
 use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\EmbeddedSchema;
 use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Support\Arr;
 use UnitEnum;
 
 class ManageSettings extends Page
@@ -43,108 +48,157 @@ class ManageSettings extends Page
 
     public function mount(): void
     {
-        $general = app(GeneralSettings::class);
-        $website = app(WebsiteSettings::class);
-        $seo = app(SeoSettings::class);
-        $contact = app(ContactSettings::class);
-        $social = app(SocialSettings::class);
-
-        $this->form->fill([
-            'general' => [
-                'name' => $general->name,
-                'company_name' => $general->company_name,
-                'default_language' => $general->default_language,
-            ],
-            'website' => [
-                'site_url' => $website->site_url,
-                'site_logo_wide' => $website->site_logo_wide,
-                'site_logo_white' => $website->site_logo_white,
-                'site_logo_square' => $website->site_logo_square,
-                'site_favicon' => $website->site_favicon,
-            ],
-            'seo' => [
-                'default_meta_title' => $seo->default_meta_title,
-                'default_meta_description' => $seo->default_meta_description,
-                'default_meta_keywords' => $seo->default_meta_keywords,
-                'default_og_image' => $seo->default_og_image,
-                'google_site_verification' => $seo->google_site_verification,
-                'google_analytics_id' => $seo->google_analytics_id,
-                'page_meta_json' => json_encode($seo->page_meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-            ],
-            'contact' => [
-                'phone' => $contact->phone,
-                'phone_href' => $contact->phone_href,
-                'email' => $contact->email,
-                'address' => $contact->address,
-                'working_time' => $contact->working_time,
-            ],
-            'social' => [
-                'facebook' => $social->facebook,
-                'messenger' => $social->messenger,
-                'zalo' => $social->zalo,
-                'telegram' => $social->telegram,
-                'wechat' => $social->wechat,
-                'whatsapp' => $social->whatsapp,
-                'youtube' => $social->youtube,
-            ],
-        ]);
+        $this->form->fill(app(LoadSiteSettings::class)->execute());
     }
 
     public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Section::make('Cài đặt chung')
-                    ->schema([
-                        TextInput::make('general.name')->label('Tên hiển thị website')->required()->maxLength(255),
-                        TextInput::make('general.company_name')->label('Tên pháp lý / doanh nghiệp')->maxLength(255),
-                        TextInput::make('general.default_language')->label('Ngôn ngữ mặc định')->required()->maxLength(10),
+                Tabs::make('Cài đặt website')
+                    ->id('website-settings-tabs')
+                    ->persistTab()
+                    ->persistTabInQueryString('tab')
+                    ->tabs([
+                        Tab::make('Thương hiệu')
+                            ->icon(Heroicon::OutlinedBuildingOffice)
+                            ->schema([
+                                Section::make('Thông tin chung')
+                                    ->description('Thông tin nền tảng được dùng xuyên suốt website, SEO và dữ liệu cấu trúc.')
+                                    ->schema([
+                                        TextInput::make('general.name')->label('Tên hiển thị website')->required()->maxLength(255),
+                                        TextInput::make('general.company_name')->label('Tên pháp lý / doanh nghiệp')->maxLength(255),
+                                        TextInput::make('general.default_language')->label('Ngôn ngữ mặc định')->required()->maxLength(10),
+                                        TextInput::make('website.site_url')->label('URL chính thức')->required()->url()->maxLength(255),
+                                    ])
+                                    ->columns(2),
+                                Section::make('Logo và favicon')
+                                    ->description('Ảnh được lưu trên public disk. Server cần có liên kết storage để hiển thị ngoài website.')
+                                    ->schema([
+                                        self::brandImage('website.site_logo_wide', 'Logo ngang', 'site/branding/logos', ['3:1', '4:1', '16:5']),
+                                        self::brandImage('website.site_logo_white', 'Logo trắng / nền tối', 'site/branding/logos', ['3:1', '4:1', '16:5']),
+                                        self::brandImage('website.site_logo_square', 'Logo vuông', 'site/branding/logos', ['1:1']),
+                                        FileUpload::make('website.site_favicon')
+                                            ->label('Favicon')
+                                            ->disk('public')
+                                            ->directory('site/branding/favicon')
+                                            ->visibility('public')
+                                            ->acceptedFileTypes(['image/png', 'image/webp', 'image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon'])
+                                            ->maxSize(2048)
+                                            ->imagePreviewHeight('96')
+                                            ->openable()
+                                            ->downloadable()
+                                            ->helperText('Nên dùng PNG/WebP vuông hoặc SVG; dung lượng tối đa 2 MB.'),
+                                    ])
+                                    ->columns(2),
+                            ]),
+                        Tab::make('SEO')
+                            ->icon(Heroicon::OutlinedMagnifyingGlass)
+                            ->schema([
+                                Section::make('SEO mặc định')
+                                    ->schema([
+                                        TextInput::make('seo.default_meta_title')->label('Meta title mặc định')->maxLength(255),
+                                        TextInput::make('seo.default_meta_keywords')->label('Từ khóa mặc định')->maxLength(500),
+                                        Textarea::make('seo.default_meta_description')->label('Meta description mặc định')->rows(3)->columnSpanFull(),
+                                        self::brandImage('seo.default_og_image', 'Ảnh chia sẻ mặc định (OG)', 'site/seo', ['1.91:1', '16:9']),
+                                        TextInput::make('seo.google_site_verification')->label('Google Search Console verification')->maxLength(255),
+                                        CodeEditor::make('seo.page_meta_json')
+                                            ->label('SEO theo từng trang (JSON)')
+                                            ->language(Language::Json)
+                                            ->json()
+                                            ->wrap()
+                                            ->columnSpanFull()
+                                            ->helperText('Các key hiện dùng: home, about, contact, pricing, agency, services, themes, projects, articles, operations.'),
+                                    ])
+                                    ->columns(2),
+                            ]),
+                        Tab::make('Liên hệ')
+                            ->icon(Heroicon::OutlinedPhone)
+                            ->schema([
+                                Section::make('Thông tin liên hệ')
+                                    ->schema([
+                                        TextInput::make('contact.phone')->label('Số điện thoại hiển thị')->required()->maxLength(50),
+                                        TextInput::make('contact.phone_href')->label('Số gọi')->required()->maxLength(50),
+                                        TextInput::make('contact.email')->label('Email')->required()->email()->maxLength(255),
+                                        TextInput::make('contact.working_time')->label('Thời gian làm việc')->maxLength(255),
+                                        Textarea::make('contact.address')->label('Địa chỉ')->rows(3)->columnSpanFull(),
+                                    ])
+                                    ->columns(2),
+                            ]),
+                        Tab::make('Mạng xã hội')
+                            ->icon(Heroicon::OutlinedShare)
+                            ->schema([
+                                Section::make('Kênh liên hệ và mạng xã hội')
+                                    ->schema([
+                                        TextInput::make('social.facebook')->label('Facebook')->url()->maxLength(2048),
+                                        TextInput::make('social.messenger')->label('Messenger')->maxLength(2048),
+                                        TextInput::make('social.zalo')->label('Zalo')->maxLength(2048),
+                                        TextInput::make('social.telegram')->label('Telegram')->maxLength(2048),
+                                        TextInput::make('social.wechat')->label('WeChat')->maxLength(2048),
+                                        TextInput::make('social.whatsapp')->label('WhatsApp')->maxLength(2048),
+                                        TextInput::make('social.youtube')->label('YouTube')->url()->maxLength(2048),
+                                    ])
+                                    ->columns(2),
+                            ]),
+                        Tab::make('Tracking & mã nhúng')
+                            ->icon(Heroicon::OutlinedCodeBracket)
+                            ->schema([
+                                Section::make('Google tag')
+                                    ->description('Chỉ cần nhập Measurement/Tag ID; hệ thống tự sinh đoạn gtag.js đúng vị trí trong head.')
+                                    ->schema([
+                                        Toggle::make('tracking.enabled')->label('Bật tracking và mã nhúng')->default(true),
+                                        TextInput::make('tracking.google_tag_id')
+                                            ->label('Google tag ID')
+                                            ->placeholder('G-XXXXXXXXXX')
+                                            ->regex('/^(G|GT|GTM|AW|DC)-[A-Z0-9-]+$/i')
+                                            ->maxLength(50),
+                                    ])
+                                    ->columns(2),
+                                Section::make('Mã chèn theo vị trí')
+                                    ->description('Chỉ dán mã từ nguồn tin cậy. Các đoạn này được render nguyên bản trên toàn bộ trang public.')
+                                    ->schema([
+                                        CodeEditor::make('tracking.head_code')
+                                            ->label('Cuối thẻ <head>')
+                                            ->language(Language::Html)
+                                            ->wrap()
+                                            ->helperText('Dùng cho verification, pixels hoặc script cần nằm trong head. Không cần dán lại Google tag nếu đã nhập ID ở trên.'),
+                                        CodeEditor::make('tracking.body_start_code')
+                                            ->label('Ngay sau thẻ <body>')
+                                            ->language(Language::Html)
+                                            ->wrap()
+                                            ->helperText('Phù hợp với phần noscript của Google Tag Manager hoặc widget yêu cầu đầu body.'),
+                                        CodeEditor::make('tracking.body_end_code')
+                                            ->label('Trước thẻ đóng </body>')
+                                            ->language(Language::Html)
+                                            ->wrap()
+                                            ->helperText('Phù hợp với widget chat và script tải cuối trang.'),
+                                    ])
+                                    ->columns(1),
+                            ]),
+                        Tab::make('Dịch vụ')
+                            ->icon(Heroicon::OutlinedRectangleStack)
+                            ->schema([
+                                Section::make('Quản trị dịch vụ')
+                                    ->description('Dịch vụ là nội dung có cấu trúc riêng, không lưu lẫn trong settings. Mở đúng Resource để quản lý dữ liệu, hình ảnh, SEO và thứ tự hiển thị.')
+                                    ->schema([
+                                        Actions::make([
+                                            Action::make('manageServices')
+                                                ->label('Dịch vụ thiết kế website')
+                                                ->icon(Heroicon::OutlinedGlobeAlt)
+                                                ->url(ServiceResource::getUrl('index')),
+                                            Action::make('manageOperationServices')
+                                                ->label('Dịch vụ vận hành')
+                                                ->icon(Heroicon::OutlinedChartBarSquare)
+                                                ->url(OperationServiceResource::getUrl('index')),
+                                            Action::make('manageServiceCategories')
+                                                ->label('Danh mục dịch vụ')
+                                                ->icon(Heroicon::OutlinedRectangleStack)
+                                                ->url(ServiceCategoryResource::getUrl('index')),
+                                        ]),
+                                    ]),
+                            ]),
                     ])
-                    ->columns(3),
-                Section::make('Website và nhận diện')
-                    ->schema([
-                        TextInput::make('website.site_url')->label('URL chính thức')->required()->url()->maxLength(255),
-                        TextInput::make('website.site_logo_wide')->label('Logo ngang')->maxLength(2048),
-                        TextInput::make('website.site_logo_white')->label('Logo trắng')->maxLength(2048),
-                        TextInput::make('website.site_logo_square')->label('Logo vuông')->maxLength(2048),
-                        TextInput::make('website.site_favicon')->label('Favicon')->maxLength(2048),
-                    ])
-                    ->columns(2),
-                Section::make('SEO mặc định')
-                    ->schema([
-                        TextInput::make('seo.default_meta_title')->label('Meta title mặc định')->maxLength(255),
-                        TextInput::make('seo.default_meta_keywords')->label('Từ khóa mặc định')->maxLength(500),
-                        Textarea::make('seo.default_meta_description')->label('Meta description mặc định')->rows(3)->columnSpanFull(),
-                        TextInput::make('seo.default_og_image')->label('Ảnh OG mặc định')->maxLength(2048),
-                        TextInput::make('seo.google_site_verification')->label('Google Search Console verification')->maxLength(255),
-                        TextInput::make('seo.google_analytics_id')->label('Google Analytics Measurement ID')->placeholder('G-XXXXXXXXXX')->maxLength(255),
-                        Textarea::make('seo.page_meta_json')
-                            ->label('SEO theo từng trang (JSON)')
-                            ->rows(10)
-                            ->columnSpanFull()
-                            ->helperText('Các key hiện dùng: home, about, contact, pricing, agency, services, themes, projects, articles, operations.'),
-                    ])
-                    ->columns(2),
-                Section::make('Thông tin liên hệ')
-                    ->schema([
-                        TextInput::make('contact.phone')->label('Số điện thoại hiển thị')->required()->maxLength(50),
-                        TextInput::make('contact.phone_href')->label('Số gọi')->required()->maxLength(50),
-                        TextInput::make('contact.email')->label('Email')->required()->email()->maxLength(255),
-                        TextInput::make('contact.address')->label('Địa chỉ')->maxLength(500),
-                        TextInput::make('contact.working_time')->label('Thời gian làm việc')->maxLength(255),
-                    ])
-                    ->columns(2),
-                Section::make('Mạng xã hội')
-                    ->schema([
-                        TextInput::make('social.facebook')->label('Facebook')->url()->maxLength(2048),
-                        TextInput::make('social.messenger')->label('Messenger')->maxLength(2048),
-                        TextInput::make('social.zalo')->label('Zalo')->maxLength(2048),
-                        TextInput::make('social.telegram')->label('Telegram')->maxLength(2048),
-                        TextInput::make('social.wechat')->label('WeChat')->maxLength(2048),
-                        TextInput::make('social.whatsapp')->label('WhatsApp')->maxLength(2048),
-                        TextInput::make('social.youtube')->label('YouTube')->url()->maxLength(2048),
-                    ])
-                    ->columns(2),
+                    ->columnSpanFull(),
             ])
             ->statePath('data');
     }
@@ -168,18 +222,7 @@ class ManageSettings extends Page
 
     public function save(): void
     {
-        $data = $this->form->getState();
-
-        $this->saveSettings(app(GeneralSettings::class), Arr::get($data, 'general', []), ['name', 'company_name', 'default_language']);
-        $this->saveSettings(app(WebsiteSettings::class), Arr::get($data, 'website', []), ['site_url', 'site_logo_wide', 'site_logo_white', 'site_logo_square', 'site_favicon']);
-
-        $seo = Arr::get($data, 'seo', []);
-        $seo['page_meta'] = json_decode((string) ($seo['page_meta_json'] ?? '{}'), true) ?: [];
-        unset($seo['page_meta_json']);
-        $this->saveSettings(app(SeoSettings::class), $seo, ['default_meta_title', 'default_meta_description', 'default_meta_keywords', 'default_og_image', 'google_site_verification', 'google_analytics_id', 'page_meta']);
-
-        $this->saveSettings(app(ContactSettings::class), Arr::get($data, 'contact', []), ['phone', 'phone_href', 'email', 'address', 'working_time']);
-        $this->saveSettings(app(SocialSettings::class), Arr::get($data, 'social', []), ['facebook', 'messenger', 'zalo', 'telegram', 'wechat', 'whatsapp', 'youtube']);
+        app(SaveSiteSettings::class)->execute($this->form->getState());
 
         Notification::make()
             ->title('Đã lưu cấu hình website')
@@ -187,14 +230,20 @@ class ManageSettings extends Page
             ->send();
     }
 
-    /** @param array<string, mixed> $values */
-    private function saveSettings(object $settings, array $values, array $fields): void
+    /** @param array<int, string> $aspectRatios */
+    private static function brandImage(string $name, string $label, string $directory, array $aspectRatios): FileUpload
     {
-        foreach ($fields as $field) {
-            $value = $values[$field] ?? '';
-            $settings->{$field} = is_array($value) ? $value : trim((string) $value);
-        }
-
-        $settings->save();
+        return FileUpload::make($name)
+            ->label($label)
+            ->disk('public')
+            ->directory($directory)
+            ->visibility('public')
+            ->image()
+            ->imageEditor()
+            ->imageEditorAspectRatioOptions($aspectRatios)
+            ->maxSize(4096)
+            ->imagePreviewHeight('140')
+            ->openable()
+            ->downloadable();
     }
 }

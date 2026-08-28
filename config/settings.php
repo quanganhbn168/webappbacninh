@@ -12,6 +12,7 @@ return [
         App\Settings\SeoSettings::class,
         App\Settings\ContactSettings::class,
         App\Settings\SocialSettings::class,
+        App\Settings\TrackingSettings::class,
     ],
 
     /*

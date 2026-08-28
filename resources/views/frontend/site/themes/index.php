@@ -46,7 +46,7 @@
 <span class="section-kicker">TÌM GIAO DIỆN PHÙ HỢP</span>
 <h2>Kho giao diện theo ngành và mục tiêu sử dụng</h2>
 </div>
-<button class="btn btn-outline-primary d-lg-none" data-bs-target="#filterCanvas" data-bs-toggle="offcanvas" type="button"><i class="fa-solid fa-sliders"></i> Bộ lọc</button>
+<button class="btn btn-outline-primary d-lg-none" data-ui-target="#filterCanvas" data-ui-toggle="offcanvas" type="button"><i class="fa-solid fa-sliders"></i> Bộ lọc</button>
 </div>
 <div class="row g-4 align-items-start">
 <aside class="col-lg-3 d-none d-lg-block">

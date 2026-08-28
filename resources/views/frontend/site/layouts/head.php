@@ -9,7 +9,7 @@
     $resolvedTitle = $pageTitle ?? $defaultTitle;
     $resolvedDescription = $pageDescription ?? $defaultDescription;
     $resolvedCanonical = $canonicalUrl ?? request()->url();
-    $resolvedImage = absolute_url($ogImage ?? $defaultOgImage);
+    $resolvedImage = site_asset_url($ogImage ?? $defaultOgImage);
     $resolvedRobots = $robots ?? 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
     $resolvedLanguage = $language ?? site_config('default_language', 'vi');
     $resolvedLocale = $resolvedLanguage === 'vi' ? 'vi_VN' : $resolvedLanguage;
@@ -40,7 +40,7 @@
   <meta name="twitter:description" content="<?= e($twitterDescription ?? $resolvedDescription) ?>">
   <meta name="twitter:image" content="<?= e($twitterImage ?? $resolvedImage) ?>">
   <?php if ($favicon): ?>
-  <link rel="icon" href="<?= e(absolute_url($favicon)) ?>">
+  <link rel="icon" href="<?= e(site_asset_url($favicon)) ?>">
   <?php endif; ?>
   <?php if (site_config('google_site_verification')): ?>
   <meta name="google-site-verification" content="<?= e(site_config('google_site_verification')) ?>">
@@ -50,19 +50,13 @@
   <script type="application/ld+json"><?= json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?></script>
   <?php endif; ?>
 
-  <?php if (site_config('google_analytics_id')): ?>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=<?= e(site_config('google_analytics_id')) ?>"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<?= e(site_config('google_analytics_id')) ?>');</script>
-  <?php endif; ?>
+  <?= tracking_code('head') ?>
 
-  <?= app(\Illuminate\Foundation\Vite::class)('resources/css/app.css') ?>
+  <?= app(\Illuminate\Foundation\Vite::class)(['resources/css/app.css', 'resources/js/app-user.js']) ?>
   <link rel="stylesheet" href="<?= e(asset('fonts/filament/filament/inter/index.css')) ?>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.0/css/all.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
   <link href="<?= e(frontend_asset('assets/css/style.css')) ?>" rel="stylesheet">
   <link href="<?= e(frontend_asset('assets/css/navigation.css')) ?>" rel="stylesheet">
   <?php foreach (($extraStyles ?? []) as $style): ?>
@@ -70,5 +64,6 @@
   <?php endforeach; ?>
 </head>
 <body class="<?= e($bodyClass ?? '') ?>">
+<?= tracking_code('body_start') ?>
 
 

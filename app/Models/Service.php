@@ -53,7 +53,7 @@ class Service extends Model implements HasMedia
             return $this->getFirstMediaUrl('featured');
         }
 
-        return $this->image ? asset($this->image) : asset('frontend/assets/images/hero-industrial.webp');
+        return site_asset_url($this->image, 'frontend/assets/images/hero-industrial.webp');
     }
 
     public function getSecondaryImageUrlAttribute(): string
@@ -62,7 +62,7 @@ class Service extends Model implements HasMedia
             return $this->getFirstMediaUrl('gallery');
         }
 
-        return $this->secondary_image ? asset($this->secondary_image) : $this->image_url;
+        return $this->secondary_image ? site_asset_url($this->secondary_image) : $this->image_url;
     }
 
     public function registerMediaCollections(): void

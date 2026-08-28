@@ -37,8 +37,7 @@
 
   document.querySelectorAll('#mobileMenu a[href^="#"]').forEach((link) => {
     link.addEventListener("click", () => {
-      const instance = bootstrap.Offcanvas.getInstance(mobileMenu);
-      instance?.hide();
+      window.tailwindUi?.close(mobileMenu);
     });
   });
 

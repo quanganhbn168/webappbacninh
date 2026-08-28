@@ -25,6 +25,9 @@ button,input,select,textarea{font:inherit}
 .site-header.is-scrolled{box-shadow:0 8px 24px rgba(11,42,67,.09)}
 .navbar{padding:13px 0}
 .brand{display:inline-flex;align-items:center;gap:10px}
+.brand__image{display:block;width:auto;max-width:210px;max-height:58px;object-fit:contain}
+.brand__image--mobile{max-width:150px;max-height:46px}
+.brand__image--footer{max-width:220px;max-height:64px}
 .brand__mark{width:44px;height:44px;display:grid;place-items:center;background:var(--primary);color:#fff;border-radius:7px;font-size:18px}
 .brand__text{display:flex;flex-direction:column;line-height:1}
 .brand__text strong{font-size:19px;color:var(--navy);font-weight:800;letter-spacing:.02em}

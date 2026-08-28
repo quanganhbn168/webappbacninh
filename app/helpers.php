@@ -4,6 +4,7 @@ use App\Settings\ContactSettings;
 use App\Settings\GeneralSettings;
 use App\Settings\SeoSettings;
 use App\Settings\SocialSettings;
+use App\Settings\TrackingSettings;
 use App\Settings\WebsiteSettings;
 
 if (! function_exists('site_settings')) {
@@ -29,6 +30,11 @@ if (! function_exists('site_settings')) {
             'default_og_image' => '',
             'google_site_verification' => '',
             'google_analytics_id' => '',
+            'tracking_enabled' => false,
+            'google_tag_id' => '',
+            'head_code' => '',
+            'body_start_code' => '',
+            'body_end_code' => '',
             'page_meta' => [],
             'messenger' => '',
             'telegram' => '',
@@ -74,6 +80,13 @@ if (! function_exists('site_settings')) {
                 'whatsapp' => 'whatsapp',
                 'youtube' => 'youtube',
             ],
+            TrackingSettings::class => [
+                'tracking_enabled' => 'enabled',
+                'google_tag_id' => 'google_tag_id',
+                'head_code' => 'head_code',
+                'body_start_code' => 'body_start_code',
+                'body_end_code' => 'body_end_code',
+            ],
         ];
 
         try {
@@ -100,6 +113,27 @@ if (! function_exists('site_settings')) {
         }
 
         return $values;
+    }
+}
+
+if (! function_exists('site_asset_url')) {
+    function site_asset_url(?string $path, string $fallback = ''): string
+    {
+        return app(\App\Domain\Site\Actions\ResolvePublicAssetUrl::class)->execute($path, $fallback);
+    }
+}
+
+if (! function_exists('tracking_code')) {
+    function tracking_code(string $position): string
+    {
+        $tracking = app(\App\Domain\Settings\Actions\RenderTrackingCode::class)->execute();
+
+        return match ($position) {
+            'head' => $tracking->head,
+            'body_start' => $tracking->bodyStart,
+            'body_end' => $tracking->bodyEnd,
+            default => '',
+        };
     }
 }
 

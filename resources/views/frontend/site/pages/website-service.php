@@ -195,7 +195,7 @@
               ['Sau bàn giao có hỗ trợ tiếp không?','Có. Ngoài thời gian bảo hành, doanh nghiệp có thể dùng gói hosting, bảo trì, quản trị nội dung, SEO, Facebook hoặc nâng cấp chức năng theo nhu cầu.'],
             ];
             foreach ($faqs as $index => [$question,$answer]): $id = 'faq' . ($index + 1); ?>
-              <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button <?= $index ? 'collapsed' : '' ?>" type="button" data-bs-toggle="collapse" data-bs-target="#<?= e($id) ?>" aria-expanded="<?= $index ? 'false' : 'true' ?>"><?= e($question) ?></button></h3><div id="<?= e($id) ?>" class="accordion-collapse collapse <?= $index ? '' : 'show' ?>" data-bs-parent="#websiteFaq"><div class="accordion-body"><?= e($answer) ?></div></div></div>
+              <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button <?= $index ? 'collapsed' : '' ?>" type="button" data-ui-toggle="collapse" data-ui-target="#<?= e($id) ?>" aria-expanded="<?= $index ? 'false' : 'true' ?>"><?= e($question) ?></button></h3><div id="<?= e($id) ?>" class="accordion-collapse collapse <?= $index ? '' : 'show' ?>" data-ui-parent="#websiteFaq"><div class="accordion-body"><?= e($answer) ?></div></div></div>
             <?php endforeach; ?>
           </div>
         </div>

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.utility')
 
 @section('title', 'Tạo mã QR Code Online Miễn Phí - WebApp Bắc Ninh')
 @section('meta_description', 'Công cụ tạo mã QR Code online miễn phí. Tạo QR Wifi, URL, Văn bản nhanh chóng, hỗ trợ chèn logo và tùy chỉnh màu sắc.')

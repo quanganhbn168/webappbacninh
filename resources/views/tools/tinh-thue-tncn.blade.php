@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.utility')
 
 @section('title', 'Tính thuế Thu nhập Cá nhân (TNCN) 2026 - WebApp Bắc Ninh')
 @section('meta_description', 'Công cụ tính thuế thu nhập cá nhân (TNCN) miễn phí theo Luật mới 109/2025/QH15. Hỗ trợ biểu thuế 2025 và 2026, tính tự động giảm trừ gia cảnh.')

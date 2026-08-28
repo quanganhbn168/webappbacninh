@@ -54,7 +54,7 @@
           data-name="<?= e($project['title']) ?>"
           data-aos="fade-up">
           <a class="project-showcase-card__media" href="<?= e(project_url($project)) ?>">
-            <img src="<?= e(frontend_asset($project['image'])) ?>" alt="<?= e($project['title']) ?>" width="1200" height="750" loading="lazy">
+            <img src="<?= e($project['image_url']) ?>" alt="<?= e($project['title']) ?>" width="1200" height="750" loading="lazy">
             <span><?= e($project['code']) ?></span>
           </a>
           <div class="project-showcase-card__body">
@@ -109,7 +109,7 @@
             <div class="col-12"><label class="form-label" for="projectMessage">Mô tả nhu cầu</label><textarea class="form-control" id="projectMessage" name="message" rows="4"></textarea></div>
             <div class="col-12"><button class="btn btn-warning btn-lg" type="submit">Gửi yêu cầu tư vấn</button></div>
           </div>
-          <div class="alert alert-success mt-3 d-none" id="projectFormSuccess">Form mẫu đã hợp lệ. Sau này thay bằng route xử lý thật.</div>
+          <div class="alert alert-success mt-3 d-none" id="projectFormSuccess"></div>
         </form>
       </div>
     </div>

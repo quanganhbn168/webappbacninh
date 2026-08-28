@@ -15,7 +15,7 @@ $searchText = implode(' ', [$theme['name'], $theme['code'], $theme['industryLabe
   data-featured="<?= e($theme['featured']) ?>"
   data-name="<?= e($theme['name']) ?>">
   <div class="theme-card__media">
-    <a href="<?= e(theme_url($theme)) ?>"><img src="<?= e(frontend_asset('assets/images/' . $theme['image'])) ?>" alt="<?= e($theme['name']) ?>" width="1200" height="750" loading="lazy"></a>
+    <a href="<?= e(theme_url($theme)) ?>"><img src="<?= e($theme['image_url']) ?>" alt="<?= e($theme['name']) ?>" width="1200" height="750" loading="lazy"></a>
     <div class="theme-card__badges">
       <?php if ($theme['badge'] !== ''): ?><span class="theme-card__badge <?= e($badgeClass) ?>"><?= e($theme['badge']) ?></span><?php endif; ?>
       <span class="theme-card__badge"><?= e($theme['typeLabel']) ?></span>

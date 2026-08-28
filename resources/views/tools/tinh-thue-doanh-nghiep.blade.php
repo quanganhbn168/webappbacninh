@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.utility')
 
 @section('title', 'Tính thuế Doanh nghiệp nhỏ và vừa 2026 - WebApp Bắc Ninh')
 @section('meta_description', 'Công cụ tính thuế TNDN cho doanh nghiệp nhỏ và vừa. Thuế suất ưu đãi 15%, 17%, 20% theo doanh thu, miễn thuế 3 năm đầu cho DN mới.')

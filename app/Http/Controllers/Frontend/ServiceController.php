@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Models\Service;
 use App\Models\ServiceCategory;
+use App\Support\FrontendContent;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
 class ServiceController extends FrontendController
 {
+    public function __construct(private readonly FrontendContent $content)
+    {
+    }
+
     public function index(): View
     {
         return $this->simplePage('frontend.site.pages.website-service', 'Dịch vụ thiết kế website tại Bắc Ninh | WebApp Bắc Ninh', 'Thiết kế website doanh nghiệp, website bán hàng, landing page và website theo ngành tại Bắc Ninh. Giao diện phù hợp, dễ quản trị, SEO nền tảng và hỗ trợ lâu dài.', 'website-service', ['website-service.css'], 'page-website-service', [], '#websiteConsult');
@@ -20,20 +25,23 @@ class ServiceController extends FrontendController
             return $this->dynamicDetail($service);
         }
 
-        $landing = collect(config('website_services'))->firstWhere('slug', $service);
+        $landing = $this->content->websiteServiceBySlug($service);
         abort_if($landing === null, 404);
 
         return $this->page('frontend.site.services.show', [
             'service' => $landing,
             'pageTitle' => $landing['meta_title'],
             'pageDescription' => $landing['meta_description'],
+            'pageKeywords' => $landing['meta_keywords'],
+            'canonicalUrl' => $landing['canonical_url'] ?: request()->url(),
+            'robots' => $landing['robots'],
             'activeMenu' => 'website-service',
             'activeSubmenu' => $landing['menu_key'],
             'headerCta' => '#serviceContact',
             'floatingCta' => '#serviceContact',
             'extraStyles' => ['website-service-detail.css'],
             'bodyClass' => 'page-service-detail page-service-'.$landing['menu_key'],
-            'ogImage' => frontend_asset($landing['image']),
+            'ogImage' => $landing['og_image_url'],
             'schemaType' => 'Service',
             'schemaData' => ['serviceType' => $landing['title']],
             'schemaFaqs' => $landing['faqs'],
@@ -83,18 +91,19 @@ class ServiceController extends FrontendController
         abort_unless($service->is_active, 404);
 
         $service->loadMissing('category');
-        $image = $service->image_url;
-
         return $this->page('frontend.site.services.dynamic', [
             'service' => $service,
             'pageTitle' => $service->meta_title ?: $service->title.' | '.site_config('name'),
             'pageDescription' => $service->meta_description ?: ($service->description ?: ''),
+            'pageKeywords' => $service->meta_keywords ?? '',
+            'canonicalUrl' => data_get($service->data, 'seo.canonical_url') ?: request()->url(),
+            'robots' => data_get($service->data, 'seo.robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'),
             'activeMenu' => 'website-service',
             'headerCta' => '#serviceContact',
             'floatingCta' => '#serviceContact',
             'extraStyles' => ['content-pages.css'],
             'bodyClass' => 'page-dynamic-service',
-            'ogImage' => $image,
+            'ogImage' => $service->image_url,
             'schemaType' => 'Service',
             'schemaData' => ['serviceType' => $service->title],
             'breadcrumbs' => [

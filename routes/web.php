@@ -48,6 +48,7 @@ Route::get('/dich-vu-van-hanh/{slug}', [OperationServiceController::class, 'deta
 
 Route::post('/lien-he', [LeadController::class, 'store'])->name('leads.store');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 Route::redirect('/contact', '/lien-he', 301);
 Route::redirect('/blog', '/kien-thuc', 301);
 Route::get('/blog/{slug}', fn (string $slug) => redirect()->route('articles.show', $slug, 301));

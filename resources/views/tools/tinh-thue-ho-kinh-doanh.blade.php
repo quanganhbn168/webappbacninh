@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.utility')
 
 @section('title', 'Tính thuế Hộ kinh doanh 2026 - WebApp Bắc Ninh')
 @section('meta_description', 'Công cụ tính thuế hộ kinh doanh cá nhân theo Luật mới 2026. Ngưỡng miễn thuế 500 triệu, tính thuế GTGT và TNCN theo ngành nghề.')

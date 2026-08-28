@@ -26,7 +26,7 @@
         </div>
         <div class="col-lg-6">
           <div class="service-detail-hero__visual" data-aos="fade-left">
-            <img src="<?= e(frontend_asset($service['image'])) ?>" alt="<?= e($service['title']) ?>" width="1200" height="750">
+            <img src="<?= e($service['image_url']) ?>" alt="<?= e($service['title']) ?>" width="1200" height="750">
             <div class="service-detail-hero__badge"><i class="<?= e($service['icon']) ?>"></i><span><small>Giải pháp</small><strong><?= e($service['eyebrow']) ?></strong></span></div>
           </div>
         </div>
@@ -49,7 +49,7 @@
       <div class="row align-items-center gy-5">
         <div class="col-lg-5" data-aos="fade-right">
           <div class="service-intro-media">
-            <img src="<?= e(frontend_asset($service['secondary_image'])) ?>" alt="Minh họa <?= e($service['eyebrow']) ?>" width="1200" height="800">
+            <img src="<?= e($service['secondary_image_url']) ?>" alt="Minh họa <?= e($service['eyebrow']) ?>" width="1200" height="800">
             <div><i class="fa-solid fa-lightbulb"></i><span><strong>Không làm theo cảm tính</strong><small>Cấu trúc được xác định từ mục tiêu, dữ liệu và hành vi khách hàng.</small></span></div>
           </div>
         </div>

@@ -9,27 +9,46 @@ abstract class FrontendController extends Controller
 {
     protected function simplePage(string $view, string $title, string $description, string $menu, array $styles = [], string $bodyClass = '', array $scripts = [], ?string $cta = null): View
     {
-        return $this->page($view, [
-            'pageTitle' => $title,
-            'pageDescription' => $description,
+        $seoKey = match ($menu) {
+            'website-service' => 'services',
+            'knowledge' => 'articles',
+            default => $menu,
+        };
+        $seo = site_page_seo($seoKey, ['title' => $title, 'description' => $description]);
+        $data = [
+            'pageTitle' => $seo['title'],
+            'pageDescription' => $seo['description'],
             'activeMenu' => $menu,
             'headerCta' => $cta ?? route('contact'),
             'floatingCta' => $cta ?? route('contact'),
             'extraStyles' => $styles,
             'extraScripts' => $scripts,
             'bodyClass' => $bodyClass,
-        ]);
+        ];
+
+        foreach (['keywords' => 'pageKeywords', 'canonical_url' => 'canonicalUrl', 'og_image' => 'ogImage', 'robots' => 'robots'] as $seoKey => $dataKey) {
+            if (filled($seo[$seoKey] ?? null)) {
+                $data[$dataKey] = $seo[$seoKey];
+            }
+        }
+
+        return $this->page($view, $data);
     }
 
     protected function page(string $contentView, array $data): View
     {
         $data += [
             'contentView' => $contentView,
-            'pageTitle' => site_config('name'),
-            'pageDescription' => '',
+            'pageTitle' => site_config('default_meta_title', site_config('name')),
+            'pageDescription' => site_config('default_meta_description', ''),
+            'pageKeywords' => site_config('default_meta_keywords', ''),
             'canonicalUrl' => request()->url(),
-            'ogImage' => frontend_asset('assets/images/hero-industrial.webp'),
+            'ogImage' => absolute_url(site_config('default_og_image') ?: frontend_asset('assets/images/hero-industrial.webp')),
             'ogType' => 'website',
+            'ogImageAlt' => site_config('name'),
+            'robots' => 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+            'language' => site_config('default_language', 'vi'),
+            'alternateLinks' => [],
             'extraStyles' => [],
             'extraScripts' => [],
             'bodyClass' => '',
@@ -46,9 +65,11 @@ abstract class FrontendController extends Controller
         ];
 
         $data['schemaType'] ??= $this->schemaTypeFor($contentView);
+        $data['canonicalUrl'] = filled($data['canonicalUrl']) ? $data['canonicalUrl'] : request()->url();
+        $data['ogImage'] = absolute_url((string) $data['ogImage']);
         $data['jsonLd'] ??= $this->buildJsonLd($data);
 
-        return view('frontend.site.layout', $data);
+        return view('layouts.master', $data);
     }
 
     private function schemaTypeFor(string $contentView): string
@@ -101,6 +122,7 @@ abstract class FrontendController extends Controller
             'name' => $data['pageTitle'],
             'description' => $data['pageDescription'],
             'image' => $data['ogImage'],
+            'inLanguage' => $data['language'] ?? 'vi',
             'publisher' => ['@id' => $organizationId],
             'isPartOf' => ['@id' => $siteUrl.'/#website'],
         ], $data['schemaData']);

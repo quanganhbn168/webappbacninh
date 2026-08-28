@@ -46,6 +46,7 @@ class SettingController extends Controller
             'seo.default_og_image' => ['nullable', 'string', 'max:2048'],
             'seo.google_site_verification' => ['nullable', 'string', 'max:255'],
             'seo.google_analytics_id' => ['nullable', 'string', 'max:255'],
+            'seo.page_meta_json' => ['nullable', 'json', 'max:30000'],
 
             'contact.phone' => ['required', 'string', 'max:50'],
             'contact.phone_href' => ['required', 'string', 'max:50'],
@@ -64,7 +65,10 @@ class SettingController extends Controller
 
         $this->save(app(GeneralSettings::class), $data['general'], ['name', 'company_name', 'default_language']);
         $this->save(app(WebsiteSettings::class), $data['website'], ['site_url', 'site_logo_wide', 'site_logo_white', 'site_logo_square', 'site_favicon']);
-        $this->save(app(SeoSettings::class), $data['seo'], ['default_meta_title', 'default_meta_description', 'default_meta_keywords', 'default_og_image', 'google_site_verification', 'google_analytics_id']);
+        $seoData = $data['seo'];
+        $seoData['page_meta'] = json_decode((string) ($seoData['page_meta_json'] ?? '{}'), true) ?: [];
+        unset($seoData['page_meta_json']);
+        $this->save(app(SeoSettings::class), $seoData, ['default_meta_title', 'default_meta_description', 'default_meta_keywords', 'default_og_image', 'google_site_verification', 'google_analytics_id', 'page_meta']);
         $this->save(app(ContactSettings::class), $data['contact'], ['phone', 'phone_href', 'email', 'address', 'working_time']);
         $this->save(app(SocialSettings::class), $data['social'], ['facebook', 'messenger', 'zalo', 'telegram', 'wechat', 'whatsapp', 'youtube']);
 
@@ -93,7 +97,8 @@ class SettingController extends Controller
     private function save(Settings $settings, array $values, array $fields): void
     {
         foreach ($fields as $field) {
-            $settings->{$field} = trim((string) ($values[$field] ?? ''));
+            $value = $values[$field] ?? '';
+            $settings->{$field} = is_array($value) ? $value : trim((string) $value);
         }
 
         $settings->save();

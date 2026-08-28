@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.utility')
 
 @section('title', 'Vòng Quay Ăn Trưa - Hôm nay ăn gì? - WebApp Bắc Ninh')
 @section('meta_description', 'Vòng quay may mắn chọn món ăn trưa. Chế độ "Đầu tháng sang chảnh" và "Cuối tháng bần hàn". Quay ngay để biết trưa nay ăn gì!')

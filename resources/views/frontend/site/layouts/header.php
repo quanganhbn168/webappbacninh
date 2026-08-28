@@ -1,7 +1,4 @@
-<?php
-  $websiteMenuItems = array_values(config('website_services', []));
-  $operationMenuItems = array_values(config('operation_services', []));
-?>
+<?php $topbarAbout = $headerNavigation['topbar'] ?? ['title' => 'Giới thiệu', 'url' => route('about'), 'target' => '_self']; ?>
 
 <div class="topbar d-none d-lg-block">
   <div class="container d-flex justify-content-between align-items-center">
@@ -10,6 +7,7 @@
       <span><i class="fa-regular fa-clock"></i> <?= e(site_config('working_time')) ?></span>
     </div>
     <div class="topbar__right">
+      <a href="<?= e($topbarAbout['url']) ?>" target="<?= e($topbarAbout['target'] ?? '_self') ?>"><i class="fa-regular fa-building"></i> <?= e($topbarAbout['title']) ?></a>
       <a href="mailto:<?= e(site_config('email')) ?>"><i class="fa-regular fa-envelope"></i> <?= e(site_config('email')) ?></a>
       <a class="topbar__hotline" href="tel:<?= e(site_config('phone_href')) ?>"><i class="fa-solid fa-phone-volume"></i> <?= e(site_config('phone')) ?></a>
     </div>
@@ -27,10 +25,10 @@
 
       <div class="collapse navbar-collapse d-none d-xl-flex">
         <ul class="navbar-nav ms-auto align-items-xl-center">
-          <li class="nav-item"><a class="nav-link <?= ($activeMenu ?? '') === 'home' ? 'active' : '' ?>" href="<?= e(route('home')) ?>">Trang chủ</a></li>
-
+          <?php foreach (($headerNavigation['top'] ?? []) as $item): ?>
+          <?php if (($item['mega'] ?? null) === 'website'): ?>
           <li class="nav-item dropdown desktop-dropdown desktop-mega-dropdown">
-            <a class="nav-link dropdown-toggle <?= ($activeMenu ?? '') === 'website-service' ? 'active' : '' ?>" href="<?= e(route('services.index')) ?>" aria-haspopup="true" aria-expanded="false">Thiết kế website</a>
+            <a class="nav-link dropdown-toggle <?= ($activeMenu ?? '') === ($item['active_key'] ?? '') ? 'active' : '' ?>" href="<?= e($item['url']) ?>" target="<?= e($item['target']) ?>" aria-haspopup="true" aria-expanded="false"><?= e($item['title']) ?></a>
             <div class="dropdown-menu mega-menu mega-menu--services">
               <div class="mega-menu__intro">
                 <span class="mega-menu__eyebrow">GIẢI PHÁP WEBSITE</span>
@@ -39,10 +37,10 @@
                 <a class="mega-menu__overview" href="<?= e(route('services.index')) ?>">Xem toàn bộ dịch vụ <i class="fa-solid fa-arrow-right"></i></a>
               </div>
               <div class="mega-menu__links" aria-label="Dịch vụ thiết kế website">
-                <?php foreach ($websiteMenuItems as $service): ?>
-                  <a class="mega-menu__link <?= ($activeSubmenu ?? '') === ($service['menu_key'] ?? '') ? 'active' : '' ?>" href="<?= e(route('services.show', $service['slug'])) ?>">
+                <?php foreach (($headerNavigation['website'] ?? []) as $service): ?>
+                  <a class="mega-menu__link <?= ($activeSubmenu ?? '') === ($service['submenu_key'] ?? '') ? 'active' : '' ?>" href="<?= e($service['url']) ?>" target="<?= e($service['target']) ?>">
                     <span class="mega-menu__icon"><i class="<?= e($service['icon']) ?>"></i></span>
-                    <span><strong><?= e($service['eyebrow']) ?></strong><small><?= e($service['highlight']) ?></small></span>
+                    <span><strong><?= e($service['label']) ?></strong><small><?= e($service['description']) ?></small></span>
                   </a>
                 <?php endforeach; ?>
                 <a class="mega-menu__link mega-menu__link--anchor" href="<?= e(route('services.index')) ?>#theo-nganh">
@@ -58,11 +56,9 @@
               </aside>
             </div>
           </li>
-
-          <li class="nav-item"><a class="nav-link <?= ($activeMenu ?? '') === 'themes' ? 'active' : '' ?>" href="<?= e(route('themes.index')) ?>">Kho giao diện</a></li>
-
+          <?php elseif (($item['mega'] ?? null) === 'operations'): ?>
           <li class="nav-item dropdown desktop-dropdown desktop-mega-dropdown">
-            <a class="nav-link dropdown-toggle <?= ($activeMenu ?? '') === 'operations' ? 'active' : '' ?>" href="<?= e(route('operations.index')) ?>" aria-haspopup="true" aria-expanded="false">Dịch vụ vận hành</a>
+            <a class="nav-link dropdown-toggle <?= ($activeMenu ?? '') === ($item['active_key'] ?? '') ? 'active' : '' ?>" href="<?= e($item['url']) ?>" target="<?= e($item['target']) ?>" aria-haspopup="true" aria-expanded="false"><?= e($item['title']) ?></a>
             <div class="dropdown-menu mega-menu mega-menu--operations">
               <div class="mega-menu__intro">
                 <span class="mega-menu__eyebrow">ĐỒNG HÀNH SAU BÀN GIAO</span>
@@ -71,11 +67,10 @@
                 <a class="mega-menu__overview" href="<?= e(route('operations.index')) ?>">Xem dịch vụ vận hành <i class="fa-solid fa-arrow-right"></i></a>
               </div>
               <div class="mega-menu__links" aria-label="Dịch vụ vận hành website">
-                <?php foreach ($operationMenuItems as $service): ?>
-                  <?php $operationSlug = pathinfo($service['route'], PATHINFO_FILENAME); ?>
-                  <a class="mega-menu__link <?= ($activeSubmenu ?? '') === ($service['menu_key'] ?? '') ? 'active' : '' ?>" href="<?= e(route('operations.show', $operationSlug)) ?>">
+                <?php foreach (($headerNavigation['operations'] ?? []) as $service): ?>
+                  <a class="mega-menu__link <?= ($activeSubmenu ?? '') === ($service['submenu_key'] ?? '') ? 'active' : '' ?>" href="<?= e($service['url']) ?>" target="<?= e($service['target']) ?>">
                     <span class="mega-menu__icon"><i class="<?= e($service['icon']) ?>"></i></span>
-                    <span><strong><?= e($service['eyebrow']) ?></strong><small><?= e($service['highlight']) ?></small></span>
+                    <span><strong><?= e($service['label']) ?></strong><small><?= e($service['description']) ?></small></span>
                   </a>
                 <?php endforeach; ?>
               </div>
@@ -87,11 +82,10 @@
               </aside>
             </div>
           </li>
-
-          <li class="nav-item"><a class="nav-link <?= ($activeMenu ?? '') === 'projects' ? 'active' : '' ?>" href="<?= e(route('projects.index')) ?>">Dự án</a></li>
-          <li class="nav-item"><a class="nav-link <?= ($activeMenu ?? '') === 'pricing' ? 'active' : '' ?>" href="<?= e(route('pricing')) ?>">Bảng giá</a></li>
-          <li class="nav-item"><a class="nav-link <?= ($activeMenu ?? '') === 'agency' ? 'active' : '' ?>" href="<?= e(route('agency')) ?>">Hợp tác Agency</a></li>
-          <li class="nav-item"><a class="nav-link <?= ($activeMenu ?? '') === 'knowledge' ? 'active' : '' ?>" href="<?= e(route('articles.index')) ?>">Kiến thức</a></li>
+          <?php else: ?>
+          <li class="nav-item"><a class="nav-link <?= ($activeMenu ?? '') === ($item['active_key'] ?? '') ? 'active' : '' ?>" href="<?= e($item['url']) ?>" target="<?= e($item['target']) ?>"><?= e($item['title']) ?></a></li>
+          <?php endif; ?>
+          <?php endforeach; ?>
         </ul>
         <a class="btn btn-primary btn-header ms-xl-3" href="<?= e($headerCta ?? route('contact')) ?>">Nhận tư vấn</a>
       </div>
@@ -106,46 +100,31 @@
   </div>
   <div class="offcanvas-body">
     <nav class="mobile-nav" id="mobileNavigation">
-      <a class="mobile-nav__single" href="<?= e(route('home')) ?>">Trang chủ</a>
-
-      <div class="mobile-nav__item">
-        <div class="mobile-nav__row">
-          <a href="<?= e(route('services.index')) ?>">Thiết kế website</a>
-          <button class="mobile-nav__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#mobileWebsiteMenu" aria-expanded="<?= ($activeMenu ?? '') === 'website-service' ? 'true' : 'false' ?>" aria-controls="mobileWebsiteMenu" aria-label="Mở menu thiết kế website"><i class="fa-solid fa-angle-down"></i></button>
-        </div>
-        <div class="collapse <?= ($activeMenu ?? '') === 'website-service' ? 'show' : '' ?>" id="mobileWebsiteMenu" data-bs-parent="#mobileNavigation">
-          <div class="mobile-nav__submenu">
-            <?php foreach ($websiteMenuItems as $service): ?>
-              <a href="<?= e(route('services.show', $service['slug'])) ?>" class="<?= ($activeSubmenu ?? '') === ($service['menu_key'] ?? '') ? 'active' : '' ?>"><?= e($service['eyebrow']) ?></a>
-            <?php endforeach; ?>
-            <a href="<?= e(route('services.index')) ?>#theo-nganh">Website theo ngành</a>
+      <a class="mobile-nav__single" href="<?= e($topbarAbout['url']) ?>" target="<?= e($topbarAbout['target'] ?? '_self') ?>"><?= e($topbarAbout['title']) ?></a>
+      <?php foreach (($headerNavigation['top'] ?? []) as $index => $item): ?>
+        <?php if (($item['mega'] ?? null) === 'website' || ($item['mega'] ?? null) === 'operations'): ?>
+          <?php $mobileMenuId = ($item['mega'] ?? '') === 'website' ? 'mobileWebsiteMenu' : 'mobileOperationMenu'; ?>
+          <?php $mobileChildren = ($item['mega'] ?? '') === 'website' ? ($headerNavigation['website'] ?? []) : ($headerNavigation['operations'] ?? []); ?>
+          <div class="mobile-nav__item">
+            <div class="mobile-nav__row">
+              <a href="<?= e($item['url']) ?>" target="<?= e($item['target']) ?>"><?= e($item['title']) ?></a>
+              <button class="mobile-nav__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#<?= e($mobileMenuId) ?>" aria-expanded="<?= ($activeMenu ?? '') === ($item['active_key'] ?? '') ? 'true' : 'false' ?>" aria-controls="<?= e($mobileMenuId) ?>" aria-label="Mở <?= e($item['title']) ?>"><i class="fa-solid fa-angle-down"></i></button>
+            </div>
+            <div class="collapse <?= ($activeMenu ?? '') === ($item['active_key'] ?? '') ? 'show' : '' ?>" id="<?= e($mobileMenuId) ?>" data-bs-parent="#mobileNavigation">
+              <div class="mobile-nav__submenu">
+                <?php foreach ($mobileChildren as $child): ?>
+                  <a href="<?= e($child['url']) ?>" target="<?= e($child['target']) ?>" class="<?= ($activeSubmenu ?? '') === ($child['submenu_key'] ?? '') ? 'active' : '' ?>"><?= e($child['label']) ?></a>
+                <?php endforeach; ?>
+                <?php if (($item['mega'] ?? null) === 'website'): ?>
+                  <a href="<?= e($item['url']) ?>#theo-nganh">Website theo ngành</a>
+                <?php endif; ?>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <a class="mobile-nav__single" href="<?= e(route('themes.index')) ?>">Kho giao diện</a>
-
-      <div class="mobile-nav__item">
-        <div class="mobile-nav__row">
-          <a href="<?= e(route('operations.index')) ?>">Dịch vụ vận hành</a>
-          <button class="mobile-nav__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#mobileOperationMenu" aria-expanded="<?= ($activeMenu ?? '') === 'operations' ? 'true' : 'false' ?>" aria-controls="mobileOperationMenu" aria-label="Mở menu dịch vụ vận hành"><i class="fa-solid fa-angle-down"></i></button>
-        </div>
-        <div class="collapse <?= ($activeMenu ?? '') === 'operations' ? 'show' : '' ?>" id="mobileOperationMenu" data-bs-parent="#mobileNavigation">
-          <div class="mobile-nav__submenu">
-            <?php foreach ($operationMenuItems as $service): ?>
-              <?php $operationSlug = pathinfo($service['route'], PATHINFO_FILENAME); ?>
-              <a href="<?= e(route('operations.show', $operationSlug)) ?>" class="<?= ($activeSubmenu ?? '') === ($service['menu_key'] ?? '') ? 'active' : '' ?>"><?= e($service['eyebrow']) ?></a>
-            <?php endforeach; ?>
-          </div>
-        </div>
-      </div>
-
-      <a class="mobile-nav__single" href="<?= e(route('projects.index')) ?>">Dự án</a>
-      <a class="mobile-nav__single" href="<?= e(route('pricing')) ?>">Bảng giá</a>
-      <a class="mobile-nav__single" href="<?= e(route('agency')) ?>">Hợp tác Agency</a>
-      <a class="mobile-nav__single" href="<?= e(route('articles.index')) ?>">Kiến thức</a>
-      <a class="mobile-nav__single" href="<?= e(route('about')) ?>">Giới thiệu</a>
-      <a class="mobile-nav__single" href="<?= e(route('contact')) ?>">Liên hệ</a>
+        <?php else: ?>
+          <a class="mobile-nav__single" href="<?= e($item['url']) ?>" target="<?= e($item['target']) ?>"><?= e($item['title']) ?></a>
+        <?php endif; ?>
+      <?php endforeach; ?>
     </nav>
     <div class="mobile-contact">
       <a class="btn btn-primary w-100" href="<?= e($headerCta ?? route('contact')) ?>">Yêu cầu tư vấn</a>

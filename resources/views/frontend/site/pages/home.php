@@ -54,64 +54,16 @@
 <p>Tập trung vào những loại website có nhu cầu rõ, triển khai được nhanh và tạo giá trị trực tiếp cho hoạt động bán hàng.</p>
 </div>
 <div class="website-grid">
-<article class="website-card website-card--featured" data-aos="fade-up">
-<div class="website-card__image">
-<img alt="Website doanh nghiệp" height="750" src="/frontend/assets/images/project-corporate.webp" width="1200"/>
-</div>
+<?php foreach ($featuredServices as $index => $service): ?>
+<article class="website-card <?= $index === 0 ? 'website-card--featured' : '' ?>" data-aos="fade-up" data-aos-delay="<?= e((string) ($index * 60)) ?>">
+<div class="website-card__image"><img alt="<?= e($service['title']) ?>" height="750" src="<?= e($service['image_url']) ?>" width="1200"/></div>
 <div class="website-card__content">
-<span class="website-card__number">01</span>
-<h3>Website doanh nghiệp</h3>
-<p>Giới thiệu năng lực, sản phẩm, dịch vụ, dự án và tạo điểm tiếp nhận khách hàng chuyên nghiệp.</p>
-<ul>
-<li>Giao diện theo nhận diện thương hiệu</li>
-<li>Trang dịch vụ, dự án, bài viết, liên hệ</li>
-<li>Quản trị nội dung và SEO cơ bản</li>
-</ul>
-<a href="#contact">Nhận tư vấn website doanh nghiệp <i class="fa-solid fa-arrow-right"></i></a>
-</div>
-</article>
-<article class="website-card" data-aos="fade-up" data-aos-delay="80">
-<div class="website-card__image">
-<img alt="Website bán hàng" height="750" src="/frontend/assets/images/project-ecommerce.webp" width="1200"/>
-</div>
-<div class="website-card__content">
-<span class="website-card__number">02</span>
-<h3>Website bán hàng</h3>
-<p>Trưng bày sản phẩm, quản lý đơn hàng và hỗ trợ bán hàng trên nhiều thiết bị.</p>
-<a href="#contact">Trao đổi nhu cầu <i class="fa-solid fa-arrow-right"></i></a>
-</div>
-</article>
-<article class="website-card" data-aos="fade-up" data-aos-delay="120">
-<div class="website-card__image">
-<img alt="Landing page" height="750" src="/frontend/assets/images/project-landing.webp" width="1200"/>
-</div>
-<div class="website-card__content">
-<span class="website-card__number">03</span>
-<h3>Landing page</h3>
-<p>Trang đích cho quảng cáo, tuyển sinh, sự kiện, ra mắt sản phẩm hoặc một dịch vụ trọng điểm.</p>
-<a href="#contact">Làm landing page <i class="fa-solid fa-arrow-right"></i></a>
-</div>
-</article>
-<article class="website-card" data-aos="fade-up" data-aos-delay="160">
-<div class="website-card__image">
-<img alt="Website theo ngành" height="750" src="/frontend/assets/images/project-tour.webp" width="1200"/>
-</div>
-<div class="website-card__content">
-<span class="website-card__number">04</span>
-<h3>Website theo ngành</h3>
-<p>Sản xuất, giáo dục, du lịch, xây dựng, nội thất, nhà hàng, dịch vụ kỹ thuật và nhiều lĩnh vực khác.</p>
-<a href="#contact">Xem giải pháp theo ngành <i class="fa-solid fa-arrow-right"></i></a>
-</div>
-</article>
-<article class="website-card website-card--repair" data-aos="fade-up" data-aos-delay="200">
-<div class="website-card__icon"><i class="fa-solid fa-arrows-rotate"></i></div>
-<div class="website-card__content">
-<span class="website-card__number">05</span>
-<h3>Thiết kế lại website cũ</h3>
-<p>Giao diện lỗi thời, tải chậm, khó cập nhật, không hiển thị tốt trên điện thoại hoặc không còn phù hợp hoạt động hiện tại.</p>
-<a href="#contact">Yêu cầu kiểm tra website <i class="fa-solid fa-arrow-right"></i></a>
-</div>
-</article>
+<span class="website-card__number"><?= e(str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT)) ?></span>
+<h3><?= e($service['eyebrow']) ?></h3><p><?= e($service['description']) ?></p>
+<?php if ($index === 0 && !empty($service['pages'])): ?><ul><?php foreach (array_slice($service['pages'], 0, 3) as $page): ?><li><?= e($page) ?></li><?php endforeach; ?></ul><?php endif; ?>
+<a href="<?= e(route('services.show', $service['slug'])) ?>"><?= e($service['cta']) ?> <i class="fa-solid fa-arrow-right"></i></a>
+</div></article>
+<?php endforeach; ?>
 </div>
 </div>
 </section>
@@ -153,47 +105,13 @@
 </div>
 </div>
 <div class="project-grid">
-<article class="project-card project-card--wide" data-aos="fade-up">
-<img alt="Dự án website doanh nghiệp sản xuất" height="750" src="/frontend/assets/images/project-corporate.webp" width="1200"/>
-<div class="project-card__body">
-<span>WEBSITE DOANH NGHIỆP</span>
-<h3>Website giới thiệu năng lực cho doanh nghiệp sản xuất</h3>
-<p>Tổ chức lại nhóm sản phẩm, năng lực nhà máy, chứng nhận và dự án để hỗ trợ đội kinh doanh gửi khách hàng.</p>
-<ul><li>Giao diện đa thiết bị</li><li>Quản trị nội dung</li><li>SEO nền tảng</li></ul>
-</div>
+<?php foreach ($featuredProjects as $index => $project): ?>
+<article class="project-card <?= $index === 0 ? 'project-card--wide' : '' ?>" data-aos="fade-up" data-aos-delay="<?= e((string) ($index * 60)) ?>">
+<a href="<?= e(project_url($project)) ?>"><img alt="<?= e($project['title']) ?>" height="750" src="<?= e($project['image_url']) ?>" width="1200"/></a>
+<div class="project-card__body"><span><?= e(strtoupper($project['category_label'])) ?></span><h3><a href="<?= e(project_url($project)) ?>"><?= e($project['title']) ?></a></h3><p><?= e($project['excerpt']) ?></p>
+<?php if ($index === 0 && !empty($project['deliverables'])): ?><ul><?php foreach (array_slice($project['deliverables'], 0, 3) as $item): ?><li><?= e($item) ?></li><?php endforeach; ?></ul><?php endif; ?></div>
 </article>
-<article class="project-card" data-aos="fade-up" data-aos-delay="60">
-<img alt="Dự án website du lịch" height="750" src="/frontend/assets/images/project-tour.webp" width="1200"/>
-<div class="project-card__body">
-<span>WEBSITE DU LỊCH</span>
-<h3>Trình bày tour rõ và nhận yêu cầu nhanh</h3>
-<p>Danh mục tour, lịch trình, điểm đến và form tư vấn.</p>
-</div>
-</article>
-<article class="project-card" data-aos="fade-up" data-aos-delay="100">
-<img alt="Dự án website giáo dục" height="750" src="/frontend/assets/images/project-school.webp" width="1200"/>
-<div class="project-card__body">
-<span>GIÁO DỤC</span>
-<h3>Website tuyển sinh và cập nhật hoạt động</h3>
-<p>Khóa học, lịch học, thông báo và nội dung tư vấn.</p>
-</div>
-</article>
-<article class="project-card" data-aos="fade-up" data-aos-delay="140">
-<img alt="Dự án website bán hàng" height="750" src="/frontend/assets/images/project-ecommerce.webp" width="1200"/>
-<div class="project-card__body">
-<span>WEBSITE BÁN HÀNG</span>
-<h3>Danh mục sản phẩm và đơn hàng tập trung</h3>
-<p>Sản phẩm, giỏ hàng, liên hệ và quản lý đơn.</p>
-</div>
-</article>
-<article class="project-card" data-aos="fade-up" data-aos-delay="180">
-<img alt="Dự án landing page" height="750" src="/frontend/assets/images/project-landing.webp" width="1200"/>
-<div class="project-card__body">
-<span>LANDING PAGE</span>
-<h3>Trang chiến dịch tập trung chuyển đổi</h3>
-<p>Nội dung bán hàng, form lead và tracking cơ bản.</p>
-</div>
-</article>
+<?php endforeach; ?>
 </div>
 </div>
 </section>
@@ -277,26 +195,12 @@
 </div>
 <div class="operation-layout">
 <div class="operation-list">
-<article data-aos="fade-up">
-<span class="operation-list__icon"><i class="fa-solid fa-server"></i></span>
-<div><h3>Hosting, tên miền và bảo trì</h3><p>Backup, SSL, theo dõi hoạt động, cập nhật hệ thống, xử lý lỗi và hỗ trợ kỹ thuật.</p></div>
+<?php foreach ($featuredOperations as $index => $service): ?>
+<article data-aos="fade-up" data-aos-delay="<?= e((string) ($index * 50)) ?>">
+<span class="operation-list__icon"><i class="<?= e($service['icon']) ?>"></i></span>
+<div><h3><a href="<?= e(route('operations.show', $service['slug'])) ?>"><?= e($service['title']) ?></a></h3><p><?= e($service['description']) ?></p></div>
 </article>
-<article data-aos="fade-up" data-aos-delay="50">
-<span class="operation-list__icon"><i class="fa-solid fa-file-pen"></i></span>
-<div><h3>Quản trị website và đăng bài</h3><p>Cập nhật dịch vụ, sản phẩm, banner, bài viết và các trang nội dung mới.</p></div>
-</article>
-<article data-aos="fade-up" data-aos-delay="100">
-<span class="operation-list__icon"><i class="fa-solid fa-magnifying-glass-chart"></i></span>
-<div><h3>SEO nền tảng và SEO định kỳ</h3><p>Technical SEO, từ khóa, tối ưu trang dịch vụ, bài viết, internal link và Search Console.</p></div>
-</article>
-<article data-aos="fade-up" data-aos-delay="150">
-<span class="operation-list__icon"><i class="fa-brands fa-facebook-f"></i></span>
-<div><h3>Nội dung Facebook cơ bản</h3><p>Lên chủ đề, viết nội dung và đồng bộ bài phù hợp giữa website với fanpage.</p></div>
-</article>
-<article data-aos="fade-up" data-aos-delay="200">
-<span class="operation-list__icon"><i class="fa-solid fa-puzzle-piece"></i></span>
-<div><h3>Nâng cấp và tích hợp</h3><p>Thêm landing page, form lead, Zalo OA, thanh toán, API hoặc chức năng phát sinh.</p></div>
-</article>
+<?php endforeach; ?>
 </div>
 <div class="operation-plans" data-aos="fade-left">
 <div class="operation-plans__head">
@@ -386,18 +290,12 @@
 </div>
 </div>
 <div class="article-grid">
-<article class="article-card" data-aos="fade-up">
-<div class="article-card__thumb article-card__thumb--one"><i class="fa-solid fa-building"></i></div>
-<div class="article-card__body"><span>THIẾT KẾ WEBSITE</span><h3>Website doanh nghiệp cần những trang nào để không bị thừa hoặc thiếu?</h3><p>Gợi ý cấu trúc thực dụng cho doanh nghiệp sản xuất, thương mại và dịch vụ.</p><a href="#">Đọc bài viết <i class="fa-solid fa-arrow-right"></i></a></div>
+<?php foreach ($featuredArticles as $index => $article): ?>
+<article class="article-card" data-aos="fade-up" data-aos-delay="<?= e((string) ($index * 70)) ?>">
+<a class="article-card__thumb article-card__thumb--<?= e(['one', 'two', 'three'][$index] ?? 'one') ?>" href="<?= e(article_url($article)) ?>" style="background-image:url('<?= e($article['image_url']) ?>')"><i class="fa-solid fa-file-lines"></i></a>
+<div class="article-card__body"><span><?= e(strtoupper($article['category_label'])) ?></span><h3><a href="<?= e(article_url($article)) ?>"><?= e($article['title']) ?></a></h3><p><?= e($article['excerpt']) ?></p><a href="<?= e(article_url($article)) ?>">Đọc bài viết <i class="fa-solid fa-arrow-right"></i></a></div>
 </article>
-<article class="article-card" data-aos="fade-up" data-aos-delay="80">
-<div class="article-card__thumb article-card__thumb--two"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
-<div class="article-card__body"><span>SEO WEBSITE</span><h3>SEO nền tảng gồm những gì và tại sao không nên đợi làm xong mới nghĩ tới?</h3><p>Cấu trúc URL, heading, tốc độ, schema, sitemap và nội dung dịch vụ.</p><a href="#">Đọc bài viết <i class="fa-solid fa-arrow-right"></i></a></div>
-</article>
-<article class="article-card" data-aos="fade-up" data-aos-delay="140">
-<div class="article-card__thumb article-card__thumb--three"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-<div class="article-card__body"><span>BẢO TRÌ WEBSITE</span><h3>Sau khi bàn giao website, doanh nghiệp cần duy trì những công việc nào?</h3><p>Backup, cập nhật, nội dung, bảo mật cơ bản và theo dõi hiệu quả.</p><a href="#">Đọc bài viết <i class="fa-solid fa-arrow-right"></i></a></div>
-</article>
+<?php endforeach; ?>
 </div>
 </div>
 </section>
@@ -410,9 +308,9 @@
 <span class="section-kicker section-kicker--gold">NHẬN TƯ VẤN</span>
 <h2>Cho chúng tôi biết doanh nghiệp đang cần website như thế nào.</h2>
 <p>WebApp Bắc Ninh sẽ làm rõ nhu cầu, đề xuất cấu trúc và gửi mức đầu tư phù hợp thay vì báo một con số chung cho mọi dự án.</p>
-<div class="contact__item"><i class="fa-solid fa-phone"></i><span><small>Hotline / Zalo</small><a href="tel:0986123168">0986 123 168</a></span></div>
-<div class="contact__item"><i class="fa-regular fa-envelope"></i><span><small>Email</small><a href="mailto:info@webappbacninh.vn">info@webappbacninh.vn</a></span></div>
-<div class="contact__item"><i class="fa-solid fa-location-dot"></i><span><small>Khu vực phục vụ</small><strong>Bắc Ninh và các tỉnh lân cận</strong></span></div>
+<div class="contact__item"><i class="fa-solid fa-phone"></i><span><small>Hotline / Zalo</small><a href="tel:<?= e(site_config('phone_href')) ?>"><?= e(site_config('phone')) ?></a></span></div>
+<div class="contact__item"><i class="fa-regular fa-envelope"></i><span><small>Email</small><a href="mailto:<?= e(site_config('email')) ?>"><?= e(site_config('email')) ?></a></span></div>
+<div class="contact__item"><i class="fa-solid fa-location-dot"></i><span><small>Khu vực phục vụ</small><strong><?= e(site_config('address')) ?></strong></span></div>
 </div>
 </div>
 <div class="col-lg-7">
@@ -477,7 +375,6 @@
 </div>
 </div>
 <div class="alert alert-success mt-4 d-none" id="formSuccess" role="alert">
-                  Form mẫu đã kiểm tra hợp lệ. Khi đưa vào Laravel, thay phần xử lý JavaScript bằng route lưu dữ liệu hoặc gửi email.
                 </div>
 </form>
 </div>

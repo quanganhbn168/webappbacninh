@@ -25,6 +25,8 @@ class SiteSettingsTest extends TestCase
         $this->assertSame($general->name, site_config('name'));
         $this->assertSame($website->site_url, site_config('site_url'));
         $this->assertSame($seo->default_meta_title, site_config('default_meta_title'));
+        $this->assertSame($seo->page_meta, site_config('page_meta'));
+        $this->assertSame($seo->page_meta['home']['title'], site_page_seo('home')['title']);
         $this->assertSame($contact->email, site_config('email'));
         $this->assertSame($social->zalo, site_config('zalo'));
     }

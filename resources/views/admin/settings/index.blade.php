@@ -89,6 +89,11 @@
                     <label for="seo-description">SEO description mặc định</label>
                     <textarea id="seo-description" class="form-control" name="seo[default_meta_description]" rows="3">{{ old('seo.default_meta_description', $seo->default_meta_description) }}</textarea>
                 </div>
+                <div class="form-group">
+                    <label for="seo-page-meta">SEO từng trang (JSON)</label>
+                    <textarea id="seo-page-meta" class="form-control font-monospace" name="seo[page_meta_json]" rows="10" spellcheck="false">{{ old('seo.page_meta_json', json_encode($seo->page_meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) }}</textarea>
+                    <small class="form-text text-muted">Có thể chỉnh title, description, keywords, og_image, canonical_url và robots theo các key: home, about, contact, pricing, agency, services, themes, projects, articles, operations.</small>
+                </div>
                 <div class="row">
                     <div class="col-md-8">
                         <div class="form-group">

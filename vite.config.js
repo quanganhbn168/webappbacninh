@@ -1,17 +1,18 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [
     laravel({
       input: [
-        'resources/scss/app-admin.scss',
+        'resources/css/app.css',
         'resources/scss/app-user.scss',
-        'resources/js/app-admin.js',
         'resources/js/app-user.js',
       ],
       refresh: true,
     }),
+    tailwindcss(),
   ],
   css: {
     scss: {

@@ -37,6 +37,13 @@
     });
     menu?.addEventListener('pointerleave', scheduleClose);
 
+    trigger?.addEventListener('click', (event) => {
+      if (!supportsHover() || dropdown.classList.contains('is-open')) return;
+
+      event.preventDefault();
+      open();
+    });
+
     trigger?.addEventListener('focus', open);
     trigger?.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowDown') {

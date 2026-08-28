@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.utility')
 
 @section('title', $result['success'] ? 'Thanh toán thành công' : 'Thanh toán thất bại')
 

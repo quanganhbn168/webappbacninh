@@ -7,9 +7,9 @@ use App\Observers\SlugObserver;
 
 trait HasSlug
 {
-    public static function bootHasSlug()
+    public static function bootHasSlug(): void
     {
-        static::observe(SlugObserver::class);
+        static::whenBooted(fn (): mixed => static::observe(SlugObserver::class));
     }
 
     public function slugEntry()

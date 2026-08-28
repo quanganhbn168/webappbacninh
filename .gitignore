@@ -1,7 +1,11 @@
 /.phpunit.cache
 /node_modules
+/.pnpm-store
 /public/build
+/public/css/filament
+/public/fonts/filament
 /public/hot
+/public/js/filament
 /public/storage
 /storage/*.key
 /storage/pail
@@ -14,6 +18,7 @@
 Homestead.json
 Homestead.yaml
 npm-debug.log
+pnpm-debug.log
 yarn-error.log
 /auth.json
 /.fleet

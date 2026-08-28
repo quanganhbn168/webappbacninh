@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.utility')
 
 @section('title', 'Lịch Vạn Niên 2026 - Xem Lịch Âm Dương, Ngày Tốt Xấu - WebApp Bắc Ninh')
 @section('meta_description', 'Xem lịch vạn niên, lịch âm dương hôm nay, đổi ngày âm dương, xem ngày tốt xấu, giờ hoàng đạo chuẩn xác nhất.')

@@ -139,7 +139,7 @@
 <div class="col-12"><label class="form-label" for="themeMessage">Nhu cầu bổ sung</label><textarea class="form-control" id="themeMessage" name="message" placeholder="Mô tả màu sắc, trang cần có hoặc website tham khảo..." rows="3"></textarea></div>
 <div class="col-12"><button class="btn btn-light btn-lg" type="submit">Gửi yêu cầu tư vấn</button></div>
 </div>
-<div class="alert alert-success mt-3 d-none" id="themeFormSuccess">Đã kiểm tra dữ liệu mẫu. Khi đưa vào Laravel, thay phần demo bằng route xử lý form.</div>
+<div class="alert alert-success mt-3 d-none" id="themeFormSuccess"></div>
 </form>
 </div>
 </div>
@@ -156,7 +156,7 @@
     'duration' => $theme['duration'],
     'description' => $theme['description'],
     'tags' => $theme['tags'],
-    'imageUrl' => frontend_asset('assets/images/' . $theme['image']),
+    'imageUrl' => $theme['image_url'],
     'detailUrl' => theme_url($theme),
   ];
 }, $themes), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>

@@ -17,9 +17,9 @@
           <div class="project-detail-actions" data-aos="fade-up" data-aos-delay="240"><a class="btn btn-primary btn-lg" href="#projectConsult">Làm dự án tương tự</a><a class="btn btn-outline-dark btn-lg" href="<?= e(frontend_url('du-an.php')) ?>">Xem dự án khác</a></div>
         </div>
         <div class="col-lg-6">
-          <div class="project-detail-cover" data-aos="fade-left"><img id="projectMainImage" src="<?= e(frontend_asset($project['gallery'][0])) ?>" alt="<?= e($project['title']) ?>" width="1200" height="750"></div>
+          <div class="project-detail-cover" data-aos="fade-left"><img id="projectMainImage" src="<?= e($project['gallery_urls'][0]) ?>" alt="<?= e($project['title']) ?>" width="1200" height="750"></div>
           <div class="project-detail-thumbs" data-project-gallery data-aos="fade-up">
-            <?php foreach ($project['gallery'] as $index => $image): ?><button type="button" class="<?= $index === 0 ? 'is-active' : '' ?>" data-gallery-image="<?= e(frontend_asset($image)) ?>"><img src="<?= e(frontend_asset($image)) ?>" alt="Ảnh dự án <?= $index + 1 ?>" width="1200" height="750"></button><?php endforeach; ?>
+            <?php foreach ($project['gallery_urls'] as $index => $imageUrl): ?><button type="button" class="<?= $index === 0 ? 'is-active' : '' ?>" data-gallery-image="<?= e($imageUrl) ?>"><img src="<?= e($imageUrl) ?>" alt="Ảnh dự án <?= $index + 1 ?>" width="1200" height="750"></button><?php endforeach; ?>
           </div>
         </div>
       </div>
@@ -66,7 +66,7 @@
     <div class="container">
       <div class="row align-items-end gy-3 mb-5"><div class="col-lg-8"><span class="section-kicker">DỰ ÁN LIÊN QUAN</span><h2 class="section-title mb-0">Tham khảo thêm các hướng triển khai khác</h2></div><div class="col-lg-4 text-lg-end"><a class="text-link" href="<?= e(frontend_url('du-an.php')) ?>">Xem toàn bộ dự án <i class="fa-solid fa-arrow-right"></i></a></div></div>
       <div class="related-projects__grid">
-        <?php foreach ($relatedItems as $item): ?><article><a href="<?= e(project_url($item)) ?>"><img src="<?= e(frontend_asset($item['image'])) ?>" alt="<?= e($item['title']) ?>" width="1200" height="750" loading="lazy"></a><div><span><?= e($item['category_label']) ?></span><h3><a href="<?= e(project_url($item)) ?>"><?= e($item['title']) ?></a></h3><a class="text-link" href="<?= e(project_url($item)) ?>">Xem dự án <i class="fa-solid fa-arrow-right"></i></a></div></article><?php endforeach; ?>
+        <?php foreach ($relatedItems as $item): ?><article><a href="<?= e(project_url($item)) ?>"><img src="<?= e($item['image_url']) ?>" alt="<?= e($item['title']) ?>" width="1200" height="750" loading="lazy"></a><div><span><?= e($item['category_label']) ?></span><h3><a href="<?= e(project_url($item)) ?>"><?= e($item['title']) ?></a></h3><a class="text-link" href="<?= e(project_url($item)) ?>">Xem dự án <i class="fa-solid fa-arrow-right"></i></a></div></article><?php endforeach; ?>
       </div>
     </div>
   </section>
@@ -79,7 +79,7 @@
         <form action="<?= e(route('leads.store')) ?>" method="POST" data-lead-form class="project-consult__form needs-validation" novalidate id="detailProjectForm">
           <input type="hidden" value="<?= e($project['code']) ?>" name="need" id="detailProjectCode">
           <div class="row g-3"><div class="col-md-6"><label class="form-label" for="detailName">Họ và tên *</label><input class="form-control" id="detailName" name="name" required></div><div class="col-md-6"><label class="form-label" for="detailPhone">Số điện thoại *</label><input class="form-control" id="detailPhone" name="phone" type="tel" required></div><div class="col-12"><label class="form-label" for="detailMessage">Nhu cầu</label><textarea class="form-control" id="detailMessage" name="message" rows="4" placeholder="Tôi quan tâm dự án <?= e($project['code']) ?> và cần..."></textarea></div><div class="col-12"><button class="btn btn-warning btn-lg" type="submit">Gửi yêu cầu tư vấn</button></div></div>
-          <div class="alert alert-success mt-3 d-none" id="detailProjectSuccess">Form mẫu đã hợp lệ. Sau này thay bằng route xử lý thật.</div>
+          <div class="alert alert-success mt-3 d-none" id="detailProjectSuccess"></div>
         </form>
       </div>
     </div>

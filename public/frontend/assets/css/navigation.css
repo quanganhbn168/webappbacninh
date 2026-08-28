@@ -1,3 +1,9 @@
+/* Tailwind 4's .collapse utility conflicts with Bootstrap's .collapse component. */
+.navbar-collapse.collapse,
+.offcanvas .collapse {
+  visibility: visible;
+}
+
 @media (min-width:1200px){
   .desktop-dropdown{position:relative}
   .desktop-dropdown>.dropdown-menu{display:block;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(10px);transition:opacity .18s ease,transform .18s ease,visibility .18s;margin-top:0}

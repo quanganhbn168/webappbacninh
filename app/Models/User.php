@@ -6,10 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
@@ -52,21 +54,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function adminlte_image()
+    public function canAccessPanel(Panel $panel): bool
     {
-        if ($this->avatar) {
-            return $this->avatar;
-        }
-        return asset('images/logo.png');
+        return $this->hasRole('super_admin');
     }
 
-    public function adminlte_desc()
-    {
-        return $this->getRoleNames()->first() ?? 'User';
-    }
-
-    public function adminlte_profile_url()
-    {
-        return 'admin/profile';
-    }
 }

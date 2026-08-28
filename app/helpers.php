@@ -29,6 +29,7 @@ if (! function_exists('site_settings')) {
             'default_og_image' => '',
             'google_site_verification' => '',
             'google_analytics_id' => '',
+            'page_meta' => [],
             'messenger' => '',
             'telegram' => '',
             'wechat' => '',
@@ -55,6 +56,7 @@ if (! function_exists('site_settings')) {
                 'default_og_image' => 'default_og_image',
                 'google_site_verification' => 'google_site_verification',
                 'google_analytics_id' => 'google_analytics_id',
+                'page_meta' => 'page_meta',
             ],
             ContactSettings::class => [
                 'phone' => 'phone',
@@ -111,6 +113,17 @@ if (! function_exists('site_config')) {
         }
 
         return data_get($settings, $key, $default);
+    }
+}
+
+if (! function_exists('site_page_seo')) {
+    /** @return array<string, string> */
+    function site_page_seo(string $key, array $fallback = []): array
+    {
+        $pages = site_config('page_meta', []);
+        $configured = is_array($pages) && is_array($pages[$key] ?? null) ? $pages[$key] : [];
+
+        return array_replace($fallback, array_filter($configured, static fn (mixed $value): bool => is_string($value) && trim($value) !== ''));
     }
 }
 

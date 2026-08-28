@@ -55,7 +55,7 @@
                 <span class="d-none d-lg-inline">{{ Auth::user()->name }}</span>
               </a>
               <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2">
-                <li><a class="dropdown-item rounded" href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt me-2 text-primary"></i> Dashboard</a></li>
+                <li><a class="dropdown-item rounded" href="{{ route('filament.admin.pages.dashboard') }}"><i class="fas fa-tachometer-alt me-2 text-primary"></i> Dashboard</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
                   <form action="{{ route('logout') }}" method="POST">

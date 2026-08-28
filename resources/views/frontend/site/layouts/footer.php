@@ -4,7 +4,7 @@
       <div class="col-lg-4">
         <a class="brand brand--footer" href="<?= e(frontend_url('index.php')) ?>"><span class="brand__mark"><i class="fa-solid fa-code"></i></span><span class="brand__text"><strong>WEBAPP</strong><small>BẮC NINH</small></span></a>
         <p class="footer-about">Thiết kế website và đồng hành vận hành nội dung cho doanh nghiệp. Tập trung vào giải pháp vừa đủ, dễ dùng và có khả năng phát triển lâu dài.</p>
-        <div class="footer-socials"><a href="<?= e(site_config('facebook')) ?>" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a><a href="<?= e(site_config('youtube')) ?>" aria-label="Youtube"><i class="fa-brands fa-youtube"></i></a><a href="<?= e(site_config('zalo')) ?>" aria-label="Zalo"><i class="fa-solid fa-comment-dots"></i></a></div>
+        <div class="footer-socials"><a href="<?= e(site_config('facebook')) ?>" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a><a href="<?= e(site_config('youtube')) ?>" aria-label="Youtube"><i class="fa-brands fa-youtube"></i></a><a href="<?= e(site_config('zalo')) ?>" aria-label="Zalo"><img class="zalo-icon" src="<?= e(frontend_asset('assets/images/zalo.svg')) ?>" alt="" aria-hidden="true" width="22" height="22"></a></div>
       </div>
       <div class="col-6 col-lg-2"><h3>Thiết kế website</h3><ul><li><a href="<?= e(frontend_url('website-doanh-nghiep.php')) ?>">Website doanh nghiệp</a></li><li><a href="<?= e(frontend_url('website-ban-hang.php')) ?>">Website bán hàng</a></li><li><a href="<?= e(frontend_url('landing-page.php')) ?>">Landing page</a></li><li><a href="<?= e(frontend_url('thiet-ke-lai-website.php')) ?>">Thiết kế lại website</a></li><li><a href="<?= e(frontend_url('kho-giao-dien.php')) ?>">Kho giao diện</a></li></ul></div>
       <div class="col-6 col-lg-2"><h3>Dịch vụ duy trì</h3><ul><li><a href="<?= e(frontend_url('hosting-bao-tri-website.php')) ?>">Hosting và bảo trì</a></li><li><a href="<?= e(frontend_url('quan-tri-dang-bai-website.php')) ?>">Quản trị website</a></li><li><a href="<?= e(frontend_url('seo-website.php')) ?>">SEO website</a></li><li><a href="<?= e(frontend_url('noi-dung-facebook.php')) ?>">Nội dung Facebook</a></li><li><a href="<?= e(frontend_url('nang-cap-tich-hop-website.php')) ?>">Nâng cấp và tích hợp</a></li><li><a href="<?= e(frontend_url('do-luong-bao-cao-website.php')) ?>">Đo lường và báo cáo</a></li></ul></div>
@@ -16,7 +16,7 @@
 </footer>
 
 <div class="floating-actions">
-  <a class="floating-actions__zalo" href="<?= e($floatingCta ?? frontend_url('lien-he.php')) ?>" aria-label="Liên hệ Zalo"><i class="fa-solid fa-comment-dots"></i></a>
+  <a class="floating-actions__zalo" href="<?= e($floatingCta ?? frontend_url('lien-he.php')) ?>" aria-label="Liên hệ Zalo"><img class="zalo-icon" src="<?= e(frontend_asset('assets/images/zalo.svg')) ?>" alt="" aria-hidden="true" width="28" height="28"></a>
   <a class="floating-actions__phone" href="tel:<?= e(site_config('phone_href')) ?>" aria-label="Gọi điện"><i class="fa-solid fa-phone"></i></a>
   <button class="floating-actions__top" id="backToTop" aria-label="Lên đầu trang"><i class="fa-solid fa-arrow-up"></i></button>
 </div>

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.utility')
 
 @section('title', 'Tạo mã QR Ngân Hàng - VietQR Chuyển Khoản Nhanh - WebApp Bắc Ninh')
 @section('meta_description', 'Công cụ tạo mã QR chuyển khoản ngân hàng VietQR tự động. Hỗ trợ tất cả ngân hàng Việt Nam (VCB, MB, Tech... - VietQR). Chính xác, an toàn, có logo.')

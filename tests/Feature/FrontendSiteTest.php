@@ -5,6 +5,10 @@ namespace Tests\Feature;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\Slug;
+use App\Models\Template;
+use App\Models\Project;
+use App\Models\Post;
+use App\Models\OperationService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -143,5 +147,48 @@ class FrontendSiteTest extends TestCase
         ])->assertCreated();
 
         $this->assertDatabaseHas('leads', ['phone' => '0986123168', 'status' => 'new']);
+    }
+
+    public function test_public_frontend_uses_content_from_the_admin_models(): void
+    {
+        $suffix = Str::lower((string) Str::uuid());
+
+        $theme = Template::active()->firstOrFail();
+        $theme->update(['name' => 'Giao diện quản trị '.$suffix]);
+        $this->get('/kho-giao-dien')->assertOk()->assertSee($theme->name);
+
+        $project = Project::query()->where('is_active', true)->firstOrFail();
+        $project->update(['title' => 'Dự án quản trị '.$suffix]);
+        $this->get('/du-an')->assertOk()->assertSee($project->title);
+
+        $post = Post::published()->firstOrFail();
+        $post->update(['title' => 'Bài viết quản trị '.$suffix]);
+        $this->get('/kien-thuc')->assertOk()->assertSee($post->title);
+
+        $operation = OperationService::query()->where('is_active', true)->firstOrFail();
+        $operation->update(['title' => 'Vận hành quản trị '.$suffix]);
+        $this->get('/dich-vu-van-hanh')->assertOk()->assertSee($operation->title);
+        $this->get('/dich-vu-van-hanh/'.$operation->slug)->assertOk()->assertSee($operation->title);
+
+        $landing = Service::active()->firstOrFail();
+        $landing->update(['title' => 'Dịch vụ quản trị '.$suffix]);
+        $this->get('/thiet-ke-website/'.$landing->slug)->assertOk()->assertSee($landing->title);
+    }
+
+    public function test_public_seo_endpoints_use_current_named_routes(): void
+    {
+        $this->get('/robots.txt')
+            ->assertOk()
+            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
+            ->assertSee('Sitemap: '.route('sitemap'), false);
+
+        $this->get('/sitemap.xml')
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/xml; charset=UTF-8')
+            ->assertSee('<urlset', false)
+            ->assertSee(route('articles.index'), false)
+            ->assertSee(route('themes.index'), false)
+            ->assertSee(route('services.index'), false)
+            ->assertDontSee('/templates', false);
     }
 }

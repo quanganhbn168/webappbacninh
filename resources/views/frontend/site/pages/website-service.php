@@ -220,7 +220,7 @@
                 <div class="col-12"><label for="message" class="form-label">Mô tả ngắn nhu cầu</label><textarea class="form-control" id="message" name="message" rows="4" placeholder="Ví dụ: Công ty sản xuất cần website giới thiệu 6 nhóm sản phẩm, có tiếng Việt và tiếng Anh..."></textarea></div>
                 <div class="col-12 d-flex flex-column flex-sm-row align-items-sm-center gap-3"><button class="btn btn-primary btn-lg" type="submit">Gửi yêu cầu tư vấn</button><small class="form-note"><i class="fa-solid fa-lock"></i> Thông tin chỉ dùng để tư vấn dự án.</small></div>
               </div>
-              <div class="alert alert-success mt-4 d-none" id="formSuccess" role="alert">Form mẫu đã hợp lệ. Khi chuyển sang Laravel, thay phần xử lý demo bằng route POST.</div>
+              <div class="alert alert-success mt-4 d-none" id="formSuccess" role="alert"></div>
             </form>
           </div>
         </div>

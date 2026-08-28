@@ -1,22 +1,3 @@
-:root{
-  --primary:#0d4f8b;
-  --primary-dark:#08375f;
-  --primary-soft:#eaf3fb;
-  --navy:#06243e;
-  --navy-2:#0a3153;
-  --red:#d83b32;
-  --gold:#f0b84c;
-  --cream:#f7f3ec;
-  --light:#f5f7f9;
-  --white:#fff;
-  --text:#425466;
-  --heading:#102a43;
-  --muted:#748495;
-  --line:#dfe7ed;
-  --shadow:0 18px 50px rgba(11,42,67,.11);
-  --radius:10px;
-}
-
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:92px}
 body{font-family:"Be Vietnam Pro",sans-serif;color:var(--text);font-size:15px;line-height:1.7;background:#fff;overflow-x:hidden}
@@ -257,6 +238,8 @@ textarea.form-control{min-height:120px}
 .footer-about{font-size:11px;max-width:390px;margin:18px 0}
 .footer-socials{display:flex;gap:8px}
 .footer-socials a{width:36px;height:36px;display:grid;place-items:center;background:rgba(255,255,255,.08);color:#fff;border-radius:4px}
+.footer-socials .zalo-icon,.floating-actions__zalo .zalo-icon{display:block;object-fit:contain}
+.footer-socials .zalo-icon{width:22px;height:22px}
 .footer-socials a:hover{background:var(--primary)}
 .site-footer h3{font-size:13px;color:#fff;font-weight:800;margin-bottom:17px}
 .site-footer ul{list-style:none;padding:0;margin:0}
@@ -270,6 +253,7 @@ textarea.form-control{min-height:120px}
 .floating-actions{position:fixed;right:18px;bottom:18px;z-index:1020;display:flex;flex-direction:column;gap:8px}
 .floating-actions a,.floating-actions button{width:46px;height:46px;display:grid;place-items:center;border:0;border-radius:50%;color:#fff;box-shadow:0 8px 20px rgba(4,28,47,.18)}
 .floating-actions__zalo{background:#1578d3}
+.floating-actions__zalo .zalo-icon{width:28px;height:28px}
 .floating-actions__phone{background:#21a366}
 .floating-actions__top{background:var(--navy);opacity:0;visibility:hidden;transform:translateY(8px);transition:.2s}
 .floating-actions__top.is-visible{opacity:1;visibility:visible;transform:none}

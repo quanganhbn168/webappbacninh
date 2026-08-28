@@ -22,27 +22,26 @@ class SettingsServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (Schema::hasTable('settings')) {
-            try {
-                $settings = Setting::all();
-
-                // Share settings globally with all views
-                \Illuminate\Support\Facades\View::share('settings', $settings->keyBy('key'));
-
-                foreach ($settings as $setting) {
-                    if ($setting->key === 'site_short_name' && !empty($setting->value)) {
-                        Config::set('adminlte.logo', '<b>' . $setting->value . '</b>');
-                    }
-                    if ($setting->group === 'mail') {
-                        $this->setConfigMail($setting);
-                    }
-                    if ($setting->group === 'payment') {
-                        $this->setConfigPayment($setting);
-                    }
-                }
-            } catch (\Exception $e) {
-                // Settings table might not exist in fresh migrations or some other error
+        try {
+            if (! Schema::hasTable('settings')) {
+                return;
             }
+
+            $settings = Setting::all();
+
+            // Share settings globally with all views
+            \Illuminate\Support\Facades\View::share('settings', $settings->keyBy('key'));
+
+            foreach ($settings as $setting) {
+                if ($setting->group === 'mail') {
+                    $this->setConfigMail($setting);
+                }
+                if ($setting->group === 'payment') {
+                    $this->setConfigPayment($setting);
+                }
+            }
+        } catch (\Throwable $e) {
+            // Settings table might not exist in fresh migrations or the database may be unavailable.
         }
     }
 

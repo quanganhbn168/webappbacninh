@@ -6,23 +6,39 @@
     $defaultDescription = site_config('default_meta_description', '');
     $defaultOgImage = site_config('default_og_image') ?: frontend_asset('assets/images/hero-industrial.webp');
     $favicon = site_config('site_favicon');
+    $resolvedTitle = $pageTitle ?? $defaultTitle;
+    $resolvedDescription = $pageDescription ?? $defaultDescription;
+    $resolvedCanonical = $canonicalUrl ?? request()->url();
+    $resolvedImage = absolute_url($ogImage ?? $defaultOgImage);
+    $resolvedRobots = $robots ?? 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+    $resolvedLanguage = $language ?? site_config('default_language', 'vi');
+    $resolvedLocale = $resolvedLanguage === 'vi' ? 'vi_VN' : $resolvedLanguage;
   ?>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
-  <title><?= e($pageTitle ?? $defaultTitle) ?></title>
-  <meta name="description" content="<?= e($pageDescription ?? $defaultDescription) ?>">
-  <meta name="keywords" content="<?= e(site_config('default_meta_keywords', '')) ?>">
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-  <link rel="canonical" href="<?= e($canonicalUrl ?? site_config('site_url')) ?>">
-  <meta property="og:locale" content="vi_VN">
+  <meta name="language" content="<?= e($resolvedLanguage) ?>">
+  <meta name="author" content="<?= e(site_config('name')) ?>">
+  <title><?= e($resolvedTitle) ?></title>
+  <meta name="description" content="<?= e($resolvedDescription) ?>">
+  <meta name="keywords" content="<?= e($pageKeywords ?? site_config('default_meta_keywords', '')) ?>">
+  <meta name="robots" content="<?= e($resolvedRobots) ?>">
+  <link rel="canonical" href="<?= e($resolvedCanonical) ?>">
+  <?php foreach (($alternateLinks ?? []) as $alternateLanguage => $alternateUrl): ?>
+  <link rel="alternate" hreflang="<?= e($alternateLanguage) ?>" href="<?= e($alternateUrl) ?>">
+  <?php endforeach; ?>
+  <meta property="og:locale" content="<?= e($resolvedLocale) ?>">
   <meta property="og:type" content="<?= e($ogType ?? 'website') ?>">
-  <meta property="og:title" content="<?= e($pageTitle ?? $defaultTitle) ?>">
-  <meta property="og:description" content="<?= e($pageDescription ?? $defaultDescription) ?>">
-  <meta property="og:url" content="<?= e($canonicalUrl ?? site_config('site_url')) ?>">
+  <meta property="og:title" content="<?= e($resolvedTitle) ?>">
+  <meta property="og:description" content="<?= e($resolvedDescription) ?>">
+  <meta property="og:url" content="<?= e($resolvedCanonical) ?>">
   <meta property="og:site_name" content="<?= e(site_config('name')) ?>">
-  <meta property="og:image" content="<?= e($ogImage ?? absolute_url($defaultOgImage)) ?>">
+  <meta property="og:image" content="<?= e($resolvedImage) ?>">
+  <meta property="og:image:alt" content="<?= e($ogImageAlt ?? $resolvedTitle) ?>">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<?= e($twitterTitle ?? $resolvedTitle) ?>">
+  <meta name="twitter:description" content="<?= e($twitterDescription ?? $resolvedDescription) ?>">
+  <meta name="twitter:image" content="<?= e($twitterImage ?? $resolvedImage) ?>">
   <?php if ($favicon): ?>
   <link rel="icon" href="<?= e(absolute_url($favicon)) ?>">
   <?php endif; ?>
@@ -31,9 +47,16 @@
   <?php endif; ?>
 
   <?php if (!empty($jsonLd)): ?>
-  <script type="application/ld+json"><?= json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?></script>
+  <script type="application/ld+json"><?= json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?></script>
   <?php endif; ?>
 
+  <?php if (site_config('google_analytics_id')): ?>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=<?= e(site_config('google_analytics_id')) ?>"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<?= e(site_config('google_analytics_id')) ?>');</script>
+  <?php endif; ?>
+
+  <?= app(\Illuminate\Foundation\Vite::class)('resources/css/app.css') ?>
+  <link rel="stylesheet" href="<?= e(asset('fonts/filament/filament/inter/index.css')) ?>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">

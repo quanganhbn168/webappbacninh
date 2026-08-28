@@ -15,10 +15,10 @@
           <p class="theme-detail__lead" data-aos="fade-up" data-aos-delay="120"><?= e($theme['description']) ?></p>
 
           <div class="theme-gallery" data-aos="fade-up" data-aos-delay="170">
-            <div class="theme-gallery__main"><img id="themeMainImage" src="<?= e(frontend_asset('assets/images/' . $theme['gallery'][0])) ?>" alt="<?= e($theme['name']) ?>"></div>
+            <div class="theme-gallery__main"><img id="themeMainImage" src="<?= e($theme['gallery_urls'][0]) ?>" alt="<?= e($theme['name']) ?>"></div>
             <div class="theme-gallery__thumbs">
-              <?php foreach ($theme['gallery'] as $index => $image): ?>
-              <button type="button" class="theme-gallery__thumb <?= $index === 0 ? 'is-active' : '' ?>" data-gallery-image="<?= e(frontend_asset('assets/images/' . $image)) ?>"><img src="<?= e(frontend_asset('assets/images/' . $image)) ?>" alt="Ảnh <?= e($index + 1) ?> của <?= e($theme['name']) ?>"></button>
+              <?php foreach ($theme['gallery_urls'] as $index => $imageUrl): ?>
+              <button type="button" class="theme-gallery__thumb <?= $index === 0 ? 'is-active' : '' ?>" data-gallery-image="<?= e($imageUrl) ?>"><img src="<?= e($imageUrl) ?>" alt="Ảnh <?= e($index + 1) ?> của <?= e($theme['name']) ?>"></button>
               <?php endforeach; ?>
             </div>
           </div>
@@ -81,7 +81,7 @@
   <section class="detail-section">
     <div class="container">
       <div class="row align-items-center gy-5">
-        <div class="col-lg-6" data-aos="fade-right"><img class="detail-showcase-image" src="<?= e(frontend_asset('assets/images/' . $theme['gallery'][1])) ?>" alt="Tùy chỉnh <?= e($theme['name']) ?>"></div>
+        <div class="col-lg-6" data-aos="fade-right"><img class="detail-showcase-image" src="<?= e($theme['gallery_urls'][1] ?? $theme['gallery_urls'][0]) ?>" alt="Tùy chỉnh <?= e($theme['name']) ?>"></div>
         <div class="col-lg-6" data-aos="fade-left">
           <span class="section-kicker">TÙY CHỈNH THEO DOANH NGHIỆP</span>
           <h2 class="section-title">Không phải mua một mẫu đóng khung.</h2>
@@ -125,7 +125,7 @@
             <div class="col-12"><label class="form-label" for="detailMessage">Nhu cầu bổ sung</label><textarea class="form-control" id="detailMessage" name="message" rows="4" placeholder="Ví dụ: cần thêm tiếng Anh, danh mục sản phẩm, form báo giá..."></textarea></div>
             <div class="col-12"><button class="btn btn-light btn-lg" type="submit">Gửi yêu cầu tư vấn</button></div>
           </div>
-          <div class="alert alert-success mt-3 d-none" id="themeDetailSuccess">Dữ liệu mẫu đã hợp lệ. Sau này thay phần demo bằng route xử lý form trong Laravel.</div>
+          <div class="alert alert-success mt-3 d-none" id="themeDetailSuccess"></div>
         </form>
       </div>
     </div>

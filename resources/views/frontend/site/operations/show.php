@@ -26,7 +26,7 @@
         </div>
         <div class="col-lg-6" data-aos="fade-left">
           <div class="operation-detail-hero__media">
-            <img src="<?= e(frontend_asset($service['image'])) ?>" alt="<?= e($service['title']) ?>" width="1200" height="800">
+            <img src="<?= e($service['image_url']) ?>" alt="<?= e($service['title']) ?>" width="1200" height="800">
             <div class="operation-detail-hero__badge"><i class="<?= e($service['icon']) ?>"></i><span><small>Dịch vụ vận hành</small><strong>WebApp Bắc Ninh</strong></span></div>
           </div>
         </div>
@@ -91,7 +91,7 @@
       <div class="row align-items-center gy-5">
         <div class="col-lg-6" data-aos="fade-right">
           <div class="operation-deliverables__media">
-            <img src="<?= e(frontend_asset($service['secondary_image'])) ?>" alt="Phạm vi bàn giao <?= e($service['eyebrow']) ?>" width="1200" height="800">
+            <img src="<?= e($service['secondary_image_url']) ?>" alt="Phạm vi bàn giao <?= e($service['eyebrow']) ?>" width="1200" height="800">
           </div>
         </div>
         <div class="col-lg-6" data-aos="fade-left">

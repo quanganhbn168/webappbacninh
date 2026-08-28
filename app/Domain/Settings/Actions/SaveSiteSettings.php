@@ -54,7 +54,7 @@ final class SaveSiteSettings
             $this->persist(app(SeoSettings::class), $seo, ['default_meta_title', 'default_meta_description', 'default_meta_keywords', 'default_og_image', 'google_site_verification', 'page_meta']);
 
             $this->persist(app(ContactSettings::class), Arr::get($data, 'contact', []), ['phone', 'phone_href', 'phone_secondary', 'phone_secondary_href', 'email', 'address', 'working_time']);
-            $this->persist(app(SocialSettings::class), Arr::get($data, 'social', []), ['facebook', 'messenger', 'zalo', 'telegram', 'wechat', 'whatsapp', 'youtube']);
+            $this->persist(app(SocialSettings::class), Arr::get($data, 'social', []), ['facebook', 'messenger', 'zalo', 'telegram', 'wechat_id', 'wechat_qr', 'whatsapp', 'youtube']);
             $this->persist(app(TrackingSettings::class), Arr::get($data, 'tracking', []), ['enabled', 'google_tag_id', 'head_code', 'body_start_code', 'body_end_code']);
             $this->persist(app(FaviconSettings::class), $faviconData, ['short_name', 'maskable_icon', 'safari_mask_icon', 'theme_color', 'background_color', 'safari_mask_color', 'generated_version']);
         });

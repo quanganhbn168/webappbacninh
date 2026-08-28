@@ -14,7 +14,9 @@ class SocialSettings extends Settings
 
     public string $telegram;
 
-    public string $wechat;
+    public string $wechat_id;
+
+    public string $wechat_qr;
 
     public string $whatsapp;
 

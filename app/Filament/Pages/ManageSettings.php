@@ -5,7 +5,7 @@ namespace App\Filament\Pages;
 use App\Domain\Settings\Actions\LoadSiteSettings;
 use App\Domain\Settings\Actions\SaveSiteSettings;
 use App\Domain\Settings\Rules\SquareRasterImage;
-use App\Domain\Settings\Rules\ValidPublicLink;
+use App\Domain\Settings\Rules\ValidSocialLink;
 use App\Filament\Resources\OperationServices\OperationServiceResource;
 use App\Filament\Resources\ServiceCategories\ServiceCategoryResource;
 use App\Filament\Resources\Services\ServiceResource;
@@ -248,14 +248,38 @@ class ManageSettings extends Page
                             ->icon(Heroicon::OutlinedShare)
                             ->schema([
                                 Section::make('Kênh liên hệ và mạng xã hội')
+                                    ->description('Chỉ các kênh có dữ liệu hợp lệ mới xuất hiện ở footer và cụm nút liên hệ nổi.')
                                     ->schema([
                                         self::publicLink('social.facebook', 'Facebook'),
                                         self::publicLink('social.messenger', 'Messenger'),
                                         self::publicLink('social.zalo', 'Zalo'),
                                         self::publicLink('social.telegram', 'Telegram'),
-                                        self::publicLink('social.wechat', 'WeChat'),
                                         self::publicLink('social.whatsapp', 'WhatsApp'),
                                         self::publicLink('social.youtube', 'YouTube'),
+                                        TextInput::make('social.wechat_id')
+                                            ->label('WeChat ID')
+                                            ->requiredWith('social.wechat_qr')
+                                            ->maxLength(100)
+                                            ->placeholder('WeChat ID của doanh nghiệp')
+                                            ->validationMessages([
+                                                'required_with' => 'Vui lòng nhập WeChat ID khi có ảnh QR.',
+                                            ]),
+                                        FileUpload::make('social.wechat_qr')
+                                            ->label('Ảnh QR WeChat')
+                                            ->disk('public')
+                                            ->directory('site/social/wechat')
+                                            ->visibility('public')
+                                            ->image()
+                                            ->acceptedFileTypes(['image/png', 'image/webp', 'image/jpeg'])
+                                            ->maxSize(2048)
+                                            ->imagePreviewHeight('180')
+                                            ->openable()
+                                            ->downloadable()
+                                            ->requiredWith('social.wechat_id')
+                                            ->validationMessages([
+                                                'required_with' => 'Vui lòng tải ảnh QR khi có WeChat ID.',
+                                            ])
+                                            ->helperText('Tải ảnh My QR Code từ WeChat. Xóa ảnh hoặc ID thì biểu tượng WeChat sẽ tự ẩn.'),
                                     ])
                                     ->columns(2),
                             ]),
@@ -432,8 +456,9 @@ class ManageSettings extends Page
     {
         return TextInput::make($name)
             ->label($label)
-            ->rules([new ValidPublicLink])
+            ->rules([new ValidSocialLink])
             ->maxLength(2048)
-            ->placeholder('https://... hoặc #contact');
+            ->placeholder('https://...')
+            ->helperText('Để trống nếu không sử dụng; chỉ URL https:// hợp lệ mới được hiển thị.');
     }
 }

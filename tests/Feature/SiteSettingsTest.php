@@ -33,6 +33,8 @@ class SiteSettingsTest extends TestCase
         $this->assertSame($contact->phone_secondary, site_config('phone_secondary'));
         $this->assertSame($contact->phone_secondary_href, site_config('phone_secondary_href'));
         $this->assertSame($social->zalo, site_config('zalo'));
+        $this->assertSame($social->wechat_id, site_config('wechat_id'));
+        $this->assertSame($social->wechat_qr, site_config('wechat_qr'));
         $this->assertSame($tracking->google_tag_id, site_config('google_tag_id'));
         $this->assertTrue(site_config('tracking_enabled'));
     }

@@ -6,6 +6,7 @@ use App\Domain\Services\Actions\MapServiceUploadData;
 use App\Domain\Settings\Actions\RenderTrackingCode;
 use App\Domain\Settings\Actions\SaveSiteSettings;
 use App\Domain\Settings\Rules\ValidPublicLink;
+use App\Domain\Settings\Rules\ValidSocialLink;
 use App\Filament\Pages\ManageSettings;
 use App\Models\User;
 use App\Settings\TrackingSettings;
@@ -176,8 +177,19 @@ class SettingsManagementTest extends TestCase
                 'general.default_language' => 'regex',
                 'favicon.theme_color' => 'regex',
                 'contact.phone_href' => 'regex',
-                'social.facebook' => ValidPublicLink::class,
+                'social.facebook' => ValidSocialLink::class,
             ])
+            ->assertNotified('Chưa thể lưu cấu hình');
+    }
+
+    public function test_wechat_profile_requires_both_an_id_and_a_qr_image(): void
+    {
+        Livewire::actingAs($this->superAdmin(), 'admin')
+            ->test(ManageSettings::class)
+            ->set('data.social.wechat_id', 'webappbacninh')
+            ->set('data.social.wechat_qr', null)
+            ->call('save')
+            ->assertHasFormErrors(['social.wechat_qr' => 'required_with'])
             ->assertNotified('Chưa thể lưu cấu hình');
     }
 
@@ -226,6 +238,17 @@ class SettingsManagementTest extends TestCase
 
         foreach (['#', 'facebook.com/page', '//evil.example', 'javascript:alert(1)', 'data:text/html,test'] as $value) {
             $this->assertTrue(Validator::make(['link' => $value], ['link' => [new ValidPublicLink]])->fails(), $value);
+        }
+    }
+
+    public function test_social_link_rule_only_accepts_secure_public_urls(): void
+    {
+        foreach (['', 'https://wa.me/84986123168', 'https://zalo.me/84986123168', 'https://t.me/webappbacninh'] as $value) {
+            $this->assertFalse(Validator::make(['link' => $value], ['link' => [new ValidSocialLink]])->fails(), $value);
+        }
+
+        foreach (['#contact', '/lien-he', 'http://example.com', 'tel:+84986123168', 'javascript:alert(1)'] as $value) {
+            $this->assertTrue(Validator::make(['link' => $value], ['link' => [new ValidSocialLink]])->fails(), $value);
         }
     }
 

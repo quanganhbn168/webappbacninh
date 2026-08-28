@@ -2,11 +2,8 @@
 $footerLogoUrl = site_asset_url(site_config('site_logo_white') ?: site_config('site_logo_wide'));
 $secondaryPhone = trim((string) site_config('phone_secondary'));
 $secondaryPhoneHref = trim((string) site_config('phone_secondary_href'));
-$footerSocials = array_values(array_filter([
-    ['label' => 'Facebook', 'url' => trim((string) site_config('facebook')), 'icon' => 'fa-brands fa-facebook-f'],
-    ['label' => 'YouTube', 'url' => trim((string) site_config('youtube')), 'icon' => 'fa-brands fa-youtube'],
-    ['label' => 'Zalo', 'url' => trim((string) site_config('zalo')), 'icon' => null],
-], static fn (array $social): bool => $social['url'] !== ''));
+$socialChannels = app(\App\Domain\Site\Actions\ResolveSocialChannels::class)->execute();
+$wechat = $socialChannels['wechat'];
 ?>
 <footer class="site-footer">
   <div class="container">
@@ -14,13 +11,16 @@ $footerSocials = array_values(array_filter([
       <div class="col-lg-4">
         <a class="brand brand--footer" href="<?= e(frontend_url('index.php')) ?>"><?php if ($footerLogoUrl !== ''): ?><img class="brand__image brand__image--footer" src="<?= e($footerLogoUrl) ?>" alt="<?= e(site_config('name')) ?>"><?php else: ?><span class="brand__mark"><i class="fa-solid fa-code"></i></span><span class="brand__text"><strong>WEBAPP</strong><small>BẮC NINH</small></span><?php endif; ?></a>
         <p class="footer-about">Thiết kế website và đồng hành vận hành nội dung cho doanh nghiệp. Tập trung vào giải pháp vừa đủ, dễ dùng và có khả năng phát triển lâu dài.</p>
-        <?php if ($footerSocials !== []): ?>
+        <?php if ($socialChannels['footer'] !== [] || $wechat !== null): ?>
         <div class="footer-socials">
-          <?php foreach ($footerSocials as $social): ?>
-          <a href="<?= e($social['url']) ?>" aria-label="<?= e($social['label']) ?>">
-            <?php if ($social['icon'] !== null): ?><i class="<?= e($social['icon']) ?>"></i><?php else: ?><img class="zalo-icon" src="<?= e(frontend_asset('assets/images/zalo.svg')) ?>" alt="" aria-hidden="true" width="22" height="22"><?php endif; ?>
+          <?php foreach ($socialChannels['footer'] as $social): ?>
+          <a class="footer-socials__<?= e($social['key']) ?>" href="<?= e($social['url']) ?>" target="_blank" rel="noopener noreferrer" aria-label="<?= e($social['label']) ?>" title="<?= e($social['label']) ?>">
+            <?php if ($social['icon'] === 'zalo'): ?><img class="zalo-icon" src="<?= e(frontend_asset('assets/images/zalo.svg')) ?>" alt="" aria-hidden="true" width="22" height="22"><?php else: ?><i class="<?= e($social['icon']) ?>"></i><?php endif; ?>
           </a>
           <?php endforeach; ?>
+          <?php if ($wechat !== null): ?>
+          <button class="footer-socials__wechat" type="button" data-ui-toggle="modal" data-ui-target="#wechatContactModal" aria-controls="wechatContactModal" aria-haspopup="dialog" aria-label="WeChat" title="WeChat"><i class="fa-brands fa-weixin"></i></button>
+          <?php endif; ?>
         </div>
         <?php endif; ?>
       </div>
@@ -44,9 +44,33 @@ $footerSocials = array_values(array_filter([
 </footer>
 
 <div class="floating-actions">
-  <a class="floating-actions__zalo" href="<?= e($floatingCta ?? frontend_url('lien-he.php')) ?>" aria-label="Liên hệ Zalo"><img class="zalo-icon" src="<?= e(frontend_asset('assets/images/zalo.svg')) ?>" alt="" aria-hidden="true" width="28" height="28"></a>
+  <?php foreach ($socialChannels['floating'] as $social): ?>
+  <a class="floating-actions__channel floating-actions__<?= e($social['key']) ?>" href="<?= e($social['url']) ?>" target="_blank" rel="noopener noreferrer" aria-label="Liên hệ qua <?= e($social['label']) ?>" title="<?= e($social['label']) ?>">
+    <?php if ($social['icon'] === 'zalo'): ?><img class="zalo-icon" src="<?= e(frontend_asset('assets/images/zalo.svg')) ?>" alt="" aria-hidden="true" width="28" height="28"><?php else: ?><i class="<?= e($social['icon']) ?>"></i><?php endif; ?>
+  </a>
+  <?php endforeach; ?>
+  <?php if ($wechat !== null): ?>
+  <button class="floating-actions__channel floating-actions__wechat" type="button" data-ui-toggle="modal" data-ui-target="#wechatContactModal" aria-controls="wechatContactModal" aria-haspopup="dialog" aria-label="Liên hệ qua WeChat" title="WeChat"><i class="fa-brands fa-weixin"></i></button>
+  <?php endif; ?>
   <a class="floating-actions__phone" href="tel:<?= e(site_config('phone_href')) ?>" aria-label="Gọi điện"><i class="fa-solid fa-phone"></i></a>
   <button class="floating-actions__top" id="backToTop" aria-label="Lên đầu trang"><i class="fa-solid fa-arrow-up"></i></button>
 </div>
+
+<?php if ($wechat !== null): ?>
+<div class="modal wechat-contact-modal" id="wechatContactModal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="wechatContactTitle">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <button class="btn-close wechat-contact-modal__close" type="button" data-ui-dismiss="modal" aria-label="Đóng"></button>
+      <div class="wechat-contact-modal__body">
+        <span class="wechat-contact-modal__icon"><i class="fa-brands fa-weixin"></i></span>
+        <h2 id="wechatContactTitle">Quét mã QR để kết nối WeChat</h2>
+        <img src="<?= e($wechat['qr_url']) ?>" alt="Mã QR WeChat <?= e($wechat['id']) ?>" width="320" height="320">
+        <small>WeChat ID</small>
+        <strong><?= e($wechat['id']) ?></strong>
+      </div>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
 
 

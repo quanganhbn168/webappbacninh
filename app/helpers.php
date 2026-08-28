@@ -49,7 +49,8 @@ if (! function_exists('site_settings')) {
             'phone_secondary_href' => '',
             'messenger' => '',
             'telegram' => '',
-            'wechat' => '',
+            'wechat_id' => '',
+            'wechat_qr' => '',
             'whatsapp' => '',
         ]);
 
@@ -88,7 +89,8 @@ if (! function_exists('site_settings')) {
                 'messenger' => 'messenger',
                 'zalo' => 'zalo',
                 'telegram' => 'telegram',
-                'wechat' => 'wechat',
+                'wechat_id' => 'wechat_id',
+                'wechat_qr' => 'wechat_qr',
                 'whatsapp' => 'whatsapp',
                 'youtube' => 'youtube',
             ],

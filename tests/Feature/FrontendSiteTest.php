@@ -10,7 +10,9 @@ use App\Models\Project;
 use App\Models\Post;
 use App\Models\OperationService;
 use App\Settings\ContactSettings;
+use App\Settings\SocialSettings;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -21,7 +23,7 @@ class FrontendSiteTest extends TestCase
     public function test_all_static_and_listing_pages_render(): void
     {
         foreach (['/', '/gioi-thieu', '/lien-he', '/bang-gia', '/hop-tac-agency', '/thiet-ke-website', '/kho-giao-dien', '/du-an', '/kien-thuc', '/dich-vu-van-hanh'] as $uri) {
-            $this->get($uri)->assertOk()->assertSee('WEBAPP', false);
+            $this->get($uri)->assertOk()->assertSee(site_config('name'));
         }
 
         $this->get('/')
@@ -57,6 +59,59 @@ class FrontendSiteTest extends TestCase
             $contact->phone_secondary_href = $originalPhoneHref;
             $contact->save();
             site_settings(refresh: true);
+        }
+    }
+
+    public function test_social_channels_and_wechat_qr_follow_saved_settings(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('site/social/wechat/contact-qr.png', 'qr');
+
+        $social = app(SocialSettings::class);
+        $original = [
+            'facebook' => $social->facebook,
+            'messenger' => $social->messenger,
+            'zalo' => $social->zalo,
+            'telegram' => $social->telegram,
+            'wechat_id' => $social->wechat_id,
+            'wechat_qr' => $social->wechat_qr,
+            'whatsapp' => $social->whatsapp,
+            'youtube' => $social->youtube,
+        ];
+
+        try {
+            $social->facebook = '';
+            $social->messenger = '';
+            $social->zalo = '#contact';
+            $social->telegram = '';
+            $social->wechat_id = 'webappbacninh';
+            $social->wechat_qr = 'site/social/wechat/contact-qr.png';
+            $social->whatsapp = 'https://wa.me/84986123168';
+            $social->youtube = '';
+            $social->save();
+
+            $visible = $this->get('/')->assertOk();
+            $visible->assertSee('floating-actions__whatsapp', false);
+            $visible->assertSee('https://wa.me/84986123168', false);
+            $visible->assertSee('wechatContactModal', false);
+            $visible->assertSee('/storage/site/social/wechat/contact-qr.png', false);
+            $visible->assertSee('webappbacninh');
+            $visible->assertDontSee('floating-actions__zalo', false);
+
+            $social->wechat_id = '';
+            $social->wechat_qr = '';
+            $social->whatsapp = '';
+            $social->save();
+
+            $hidden = $this->get('/')->assertOk();
+            $hidden->assertDontSee('floating-actions__whatsapp', false);
+            $hidden->assertDontSee('wechatContactModal', false);
+        } finally {
+            foreach ($original as $field => $value) {
+                $social->{$field} = $value;
+            }
+
+            $social->save();
         }
     }
 

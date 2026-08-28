@@ -12,5 +12,5 @@ return [
     'working_time' => 'Thứ 2 - Thứ 7: 08:00 - 18:00',
     'facebook' => '',
     'youtube' => '',
-    'zalo' => '#contact',
+    'zalo' => '',
 ];

@@ -61,7 +61,8 @@ class SettingsSeeder extends Seeder
         $social->messenger = '';
         $social->zalo = config('site.zalo');
         $social->telegram = '';
-        $social->wechat = '';
+        $social->wechat_id = '';
+        $social->wechat_qr = '';
         $social->whatsapp = '';
         $social->youtube = config('site.youtube');
         $social->save();

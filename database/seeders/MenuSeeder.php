@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Support\FrontendMenuCache;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -57,6 +58,10 @@ class MenuSeeder extends Seeder
         foreach ($footerGroups as $location => $groupItems) {
             $menuId = DB::table('menus')->where('location', $location)->value('id');
             $this->seedItems($menuId, $groupItems, null, $now);
+        }
+
+        foreach (array_keys($menus) as $location) {
+            app(FrontendMenuCache::class)->forget($location);
         }
     }
 

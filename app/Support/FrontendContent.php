@@ -144,7 +144,7 @@ class FrontendContent
     /** @return array<int, array<string, mixed>> */
     private function menuTree(string $location): array
     {
-        return Cache::rememberForever('frontend.menu.'.$location.'.v1', function () use ($location): array {
+        return Cache::rememberForever(app(FrontendMenuCache::class)->key($location), function () use ($location): array {
             try {
                 $menu = DB::table('menus')
                     ->where('location', $location)

@@ -28,6 +28,11 @@ class FrontendSiteTest extends TestCase
 
         $this->get('/')
             ->assertSee('/frontend/assets/images/hero-industrial.webp', false)
+            ->assertSee('/build/assets/style-', false)
+            ->assertSee('/build/assets/navigation-', false)
+            ->assertDontSee('/frontend/assets/css/', false)
+            ->assertDontSee('fonts.googleapis.com', false)
+            ->assertDontSee('fonts/filament/filament/inter', false)
             ->assertDontSee('src="public/assets/', false)
             ->assertSee('application/ld+json', false)
             ->assertSee('"@type": "WebSite"', false)

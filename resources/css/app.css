@@ -1,19 +1,45 @@
+@import './fonts.css';
 @import '@fortawesome/fontawesome-free/css/all.min.css';
 @import 'tailwindcss';
 @import './public-ui.css';
 
-@source '../../vendor/filament/**/*.blade.php';
-@source '../../Modules/**/*.blade.php';
-@source '../../resources/**/*.blade.php';
-@source '../../resources/**/*.php';
-@source '../../resources/**/*.js';
+@source '../views/frontend/**/*.php';
+@source '../views/partials/frontend/**/*.blade.php';
+@source '../views/layouts/master.blade.php';
+@source '../views/layouts/utility.blade.php';
+@source '../js/app-user.js';
 
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Be Vietnam Pro', 'Inter Variable', Inter, ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Be Vietnam Pro', 'Inter Variable', Inter, ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+
+    --text-caption: 0.75rem;
+    --text-caption--line-height: 1.5;
+    --text-small: 0.8125rem;
+    --text-small--line-height: 1.6;
+    --text-body-sm: 0.875rem;
+    --text-body-sm--line-height: 1.65;
+    --text-body: 0.9375rem;
+    --text-body--line-height: 1.7;
+    --text-body-lg: 1rem;
+    --text-body-lg--line-height: 1.7;
+    --text-lead: 1.125rem;
+    --text-lead--line-height: 1.7;
+    --text-title-sm: 1.25rem;
+    --text-title-sm--line-height: 1.45;
+    --text-title: 1.5rem;
+    --text-title--line-height: 1.4;
+    --text-heading-sm: clamp(1.625rem, 2.5vw, 1.875rem);
+    --text-heading-sm--line-height: 1.35;
+    --text-heading: clamp(1.875rem, 3.2vw, 2.375rem);
+    --text-heading--line-height: 1.3;
+    --text-heading-lg: clamp(2rem, 4vw, 2.75rem);
+    --text-heading-lg--line-height: 1.2;
+    --text-display: clamp(2.1875rem, 5vw, 3.375rem);
+    --text-display--line-height: 1.16;
 
     --color-brand-50: #eaf3fb;
     --color-brand-100: #d8eaf8;
@@ -36,51 +62,30 @@
     --color-ink: #425466;
     --color-heading: #102a43;
     --color-muted: #748495;
+    --color-copy-muted: #687b8a;
     --color-line: #dfe7ed;
+    --color-control-border: #d5e0e7;
 
     --radius-card: 0.75rem;
     --radius-control: 0.375rem;
     --shadow-card: 0 18px 50px rgb(11 42 67 / 11%);
     --shadow-float: 0 22px 48px rgb(12 48 77 / 18%);
-}
-
-:root {
-    --font-family-sans: 'Be Vietnam Pro', 'Inter Variable', Inter, ui-sans-serif, system-ui, sans-serif;
-    --font-family-display: 'Be Vietnam Pro', 'Inter Variable', Inter, ui-sans-serif, system-ui, sans-serif;
-    --content-width: 1180px;
-    --header-offset: 92px;
-
-    /* Shared public-site design tokens. */
-    --primary: #0d4f8b;
-    --primary-dark: #08375f;
-    --primary-soft: #eaf3fb;
-    --navy: #06243e;
-    --navy-2: #0a3153;
-    --red: #d83b32;
-    --gold: #f0b84c;
-    --cream: #f7f3ec;
-    --light: #f5f7f9;
-    --white: #fff;
-    --text: #425466;
-    --heading: #102a43;
-    --muted: #748495;
-    --line: #dfe7ed;
-    --shadow: 0 18px 50px rgb(11 42 67 / 11%);
-    --radius: 10px;
-    --transition: 180ms ease;
+    --container-site: 73.75rem;
+    --spacing-header-offset: 5.75rem;
+    --ease-site: 180ms ease;
 }
 
 @layer base {
     html {
-        font-family: var(--font-family-sans);
+        font-family: var(--font-sans);
         scroll-behavior: smooth;
-        scroll-padding-top: var(--header-offset);
+        scroll-padding-top: var(--spacing-header-offset);
     }
 
     body {
-        font-family: var(--font-family-sans);
-        color: var(--text);
-        background: #fff;
+        font-family: var(--font-sans);
+        color: var(--color-ink);
+        background: var(--color-white);
         font-synthesis: none;
         text-rendering: optimizeLegibility;
     }

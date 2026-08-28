@@ -49,16 +49,18 @@
 
   <?= tracking_code('head') ?>
 
-  <?= app(\Illuminate\Foundation\Vite::class)(['resources/css/app.css', 'resources/js/app-user.js']) ?>
-  <link rel="stylesheet" href="<?= e(asset('fonts/filament/filament/inter/index.css')) ?>">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="<?= e(frontend_asset('assets/css/style.css')) ?>" rel="stylesheet">
-  <link href="<?= e(frontend_asset('assets/css/navigation.css')) ?>" rel="stylesheet">
-  <?php foreach (($extraStyles ?? []) as $style): ?>
-  <link href="<?= e(frontend_asset('assets/css/' . $style)) ?>" rel="stylesheet">
-  <?php endforeach; ?>
+  <?php
+    $styleEntries = array_map(
+        static fn (string $style): string => 'resources/css/frontend/' . basename($style),
+        $extraStyles ?? [],
+    );
+  ?>
+  <?= app(\Illuminate\Foundation\Vite::class)(array_merge([
+      'resources/css/app.css',
+      'resources/css/frontend/style.css',
+      'resources/css/frontend/navigation.css',
+      'resources/js/app-user.js',
+  ], $styleEntries)) ?>
 </head>
 <body class="<?= e($bodyClass ?? '') ?>">
 <?= tracking_code('body_start') ?>

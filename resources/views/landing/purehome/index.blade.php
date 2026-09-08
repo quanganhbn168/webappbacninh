@@ -7,6 +7,24 @@
     <meta name="description" content="PureHome A3 với hệ thống lọc 4 lớp, màng lọc HEPA H13, vận hành êm ái. Không khí sạch hơn, cuộc sống xanh hơn. Giá ưu đãi 3.990.000đ.">
     <meta name="theme-color" content="#074e7d">
     <link rel="canonical" href="{{ route('landing.purehome') }}">
+    <link rel="image_src" href="{{ asset('landing/purehome/hero.webp') }}">
+    <meta property="og:locale" content="vi_VN">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="PureHome">
+    <meta property="og:title" content="PureHome A3 — Không khí trong lành cho cả gia đình">
+    <meta property="og:description" content="Máy lọc không khí PureHome A3, giá ưu đãi 3.990.000đ. Miễn phí giao hàng toàn quốc, bảo hành 24 tháng.">
+    <meta property="og:url" content="{{ route('landing.purehome') }}">
+    <meta property="og:image" content="{{ asset('landing/purehome/hero.webp') }}">
+    <meta property="og:image:secure_url" content="{{ secure_asset('landing/purehome/hero.webp') }}">
+    <meta property="og:image:type" content="image/webp">
+    <meta property="og:image:width" content="1774">
+    <meta property="og:image:height" content="887">
+    <meta property="og:image:alt" content="Máy lọc không khí PureHome A3 trong không gian sống xanh">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PureHome A3 — Không khí trong lành cho cả gia đình">
+    <meta name="twitter:description" content="Giá ưu đãi 3.990.000đ. Miễn phí giao hàng toàn quốc, bảo hành 24 tháng.">
+    <meta name="twitter:image" content="{{ asset('landing/purehome/hero.webp') }}">
+    <meta name="twitter:image:alt" content="Máy lọc không khí PureHome A3 trong không gian sống xanh">
     <link rel="icon" type="image/svg+xml" href="{{ asset('landing/purehome/leaf.svg') }}">
     <link rel="preload" as="image" href="{{ asset('landing/purehome/hero.webp') }}" fetchpriority="high">
     @vite(['resources/css/landing/purehome.css', 'resources/js/landing/purehome.js'])

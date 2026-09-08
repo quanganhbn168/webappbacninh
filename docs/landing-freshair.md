@@ -4,6 +4,7 @@
 - Nội dung, thông số, giá, ưu đãi, đánh giá và thông tin liên hệ là dữ liệu giao diện mẫu được viết cố định theo hai ảnh tham chiếu. Không truy vấn CMS, không tạo bảng hoặc bản ghi.
 - Bố cục kết hợp hero lớn và dải lợi ích, khối mua hàng ba cột, thư viện ảnh sáu góc, công nghệ/thông số/tư vấn, quà tặng, đánh giá, FAQ và thanh mua cố định.
 - View: `resources/views/landing/freshair/index.blade.php`. CSS và JS riêng: `resources/{css,js}/landing/freshair.*`.
+- Icon giao diện dùng SVG Font Awesome Free 6.7.2 (Solid) từ dependency có sẵn, materialize trong `resources/views/components/landing/freshair-icon.blade.php`. Giữ attribution CC BY 4.0, không đọc `node_modules` khi chạy và không tải thêm icon font/CDN. Giữ hình lá thương hiệu; icon thanh toán, thông số, tư vấn, chia sẻ, đánh giá và điều khiển có khung/căn giữa đồng nhất.
 - Giỏ hàng là bản mẫu lưu số lượng trong localStorage, tối đa 10 sản phẩm. Đặt mua và yêu cầu tư vấn cần người dùng xác nhận gửi qua email hoặc gọi hotline. Không tạo đơn hàng, gửi email tự động, thu tiền hoặc báo thành công giả.
 - Voucher được sao chép để cung cấp khi đặt mua, không tự trừ thêm vào giá sale.
 - Tìm kiếm nội dung trong trang, gallery/zoom/chuyển ảnh bằng bàn phím, FAQ, giỏ hàng, chia sẻ và xem trước ảnh chia sẻ đều hoạt động phía trình duyệt.
@@ -26,6 +27,7 @@ Tận dụng `public/landing/purehome/filters.webp`, `foliage.webp`, `customers.
 - Gọi HTTP kernel kiểm tra cả hai mẫu: HTTP 200, canonical, OG/Twitter metadata render sẵn; kích thước và MIME ảnh chia sẻ khớp tệp thật.
 - Chrome local: kiểm tra bố cục desktop, 944px và mobile 390px, không tràn ngang, không lỗi console. Kiểm tra gallery, FAQ, giỏ hàng 3 sản phẩm tổng 10.770.000đ, xóa giỏ, nút mua nhanh, form bắt buộc/số điện thoại, bản nháp tư vấn, xem đánh giá, tìm kiếm và sao chép liên kết.
 - Kiểm tra cập nhật Swiper: không còn nav/breadcrumb trong HTML; Chrome desktop/mobile không tràn ngang hoặc lỗi console; ảnh lớn/thumbnail/lightbox đồng bộ, ArrowRight/Escape, kéo ảnh mobile và chấm điều hướng bộ sưu tập hoạt động.
+- Kiểm tra cập nhật icon: HTTP 200, toàn bộ tên icon render được và SVG có `viewBox`, path, `aria-hidden`; build/view cache đạt; Chrome desktop/mobile kiểm tra căn icon, sao đánh giá, CTA và chevron FAQ.
 - Chỉ xác nhận giao diện và hành vi tại local; chưa triển khai hoặc kiểm tra bot chia sẻ trên server công khai. Không gửi đơn hàng/email trong quá trình kiểm tra.
 
 ## Prompt tạo ảnh

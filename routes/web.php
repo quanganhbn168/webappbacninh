@@ -20,6 +20,10 @@ use App\Http\Controllers\ToolController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+Route::view('/landing/mau-may-loc-khong-khi-mau-1', 'landing.purehome.index')
+    ->name('landing.purehome');
+Route::redirect('/landing/mau-may-loc-khong khi-mau-1', '/landing/mau-may-loc-khong-khi-mau-1', 301);
+
 Route::controller(SiteController::class)->group(function (): void {
     Route::get('/', 'home')->name('home');
     Route::get('/gioi-thieu', 'about')->name('about');

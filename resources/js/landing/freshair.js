@@ -73,63 +73,85 @@ document.querySelectorAll('dialog').forEach((dialog) => {
     });
 });
 
-const productImage = document.getElementById('fa-product-image');
-const mainPhoto = document.querySelector('.fa-main-photo');
-const scenes = ['living', 'display', 'filter', 'bedroom', 'family', 'office'];
-const captions = [...document.querySelectorAll('.fa-gallery-caption strong')].map((element) => element.textContent);
-const galleryDialog = document.getElementById('fa-gallery-dialog');
-const lightboxImage = document.querySelector('.fa-lightbox-image');
-let galleryIndex = -1;
-function renderGallery() {
-    lightboxImage.className = 'fa-lightbox-image';
-    lightboxImage.style.backgroundImage = '';
-    if (galleryIndex === -1) {
-        lightboxImage.style.backgroundImage = `url("${productImage.src}")`;
-    } else {
-        lightboxImage.classList.add('fa-scene', `fa-scene-${scenes[galleryIndex]}`);
-    }
-    lightboxImage.setAttribute('role', 'img');
-    const caption = galleryIndex === -1 ? 'Máy lọc không khí FreshAir S8' : captions[galleryIndex];
-    lightboxImage.setAttribute('aria-label', caption);
-    document.getElementById('fa-gallery-caption').textContent = `${caption} · ${galleryIndex + 2}/7`;
-}
-document.querySelectorAll('[data-photo]').forEach((button) => {
-    button.addEventListener('click', () => {
-        document.querySelectorAll('[data-photo]').forEach((thumbnail) => {
-            const selected = thumbnail === button;
-            thumbnail.classList.toggle('is-selected', selected);
-            thumbnail.setAttribute('aria-pressed', String(selected));
-        });
-        mainPhoto.querySelector('.fa-main-sprite')?.remove();
-        const scene = button.dataset.photo;
-        productImage.hidden = scene !== 'product';
-        if (scene !== 'product') {
-            const sprite = document.createElement('span');
-            sprite.className = `fa-main-sprite fa-scene fa-scene-${scene}`;
-            sprite.setAttribute('role', 'img');
-            sprite.setAttribute('aria-label', captions[scenes.indexOf(scene)]);
-            mainPhoto.prepend(sprite);
-        }
-        mainPhoto.dataset.galleryOpen = scene === 'product' ? 'product' : String(scenes.indexOf(scene));
+const sliderSpeed = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 350;
+const sliderA11y = {
+    prevSlideMessage: 'Ảnh trước',
+    nextSlideMessage: 'Ảnh tiếp theo',
+    firstSlideMessage: 'Đây là ảnh đầu tiên',
+    lastSlideMessage: 'Đây là ảnh cuối cùng',
+    paginationBulletMessage: 'Xem nhóm ảnh {{index}}',
+    slideLabelMessage: 'Ảnh {{index}} / {{slidesLength}}',
+};
+const thumbnails = new window.Swiper('.fa-thumbnails', {
+    slidesPerView: 4.5,
+    spaceBetween: 8,
+    watchSlidesProgress: true,
+    speed: sliderSpeed,
+    a11y: sliderA11y,
+});
+function updateSelectedThumbnail(swiper) {
+    swiper.slides.forEach((slide, index) => { slide.inert = index !== swiper.activeIndex; });
+    document.querySelectorAll('[data-photo-index]').forEach((button) => {
+        button.setAttribute('aria-pressed', String(Number(button.dataset.photoIndex) === swiper.activeIndex));
     });
+}
+const productSlider = new window.Swiper('.fa-product-slider', {
+    speed: sliderSpeed,
+    rewind: true,
+    grabCursor: true,
+    keyboard: { enabled: true, onlyInViewport: true, pageUpDown: false },
+    navigation: { prevEl: '.fa-product-prev', nextEl: '.fa-product-next', addIcons: false },
+    pagination: { el: '.fa-product-pagination', type: 'fraction' },
+    thumbs: { swiper: thumbnails, multipleActiveThumbs: false },
+    a11y: { ...sliderA11y, prevSlideMessage: 'Ảnh sản phẩm trước', nextSlideMessage: 'Ảnh sản phẩm tiếp theo' },
+    on: { init: updateSelectedThumbnail, slideChange: updateSelectedThumbnail },
+});
+document.querySelectorAll('[data-photo-index]').forEach((button) => {
+    button.addEventListener('click', () => productSlider.slideTo(Number(button.dataset.photoIndex)));
+});
+new window.Swiper('.fa-gallery-grid', {
+    slidesPerView: 1.8,
+    spaceBetween: 12,
+    speed: sliderSpeed,
+    grabCursor: true,
+    watchOverflow: true,
+    pagination: { el: '.fa-gallery-pagination', clickable: true },
+    breakpoints: { 701: { slidesPerView: 3.2 }, 1100: { slidesPerView: 6 } },
+    a11y: sliderA11y,
+});
+
+const galleryDialog = document.getElementById('fa-gallery-dialog');
+function updateGalleryCaption(swiper) {
+    swiper.slides.forEach((slide, index) => { slide.inert = index !== swiper.activeIndex; });
+    const slide = swiper.slides[swiper.activeIndex];
+    document.getElementById('fa-gallery-caption').textContent = `${slide.dataset.caption} · ${swiper.activeIndex + 1}/${swiper.slides.length}`;
+    productSlider.slideTo(swiper.activeIndex, 0);
+}
+const lightboxSlider = new window.Swiper('.fa-lightbox-slider', {
+    init: false,
+    speed: sliderSpeed,
+    rewind: true,
+    grabCursor: true,
+    keyboard: { enabled: false, onlyInViewport: true, pageUpDown: false },
+    navigation: { prevEl: '.fa-lightbox-prev', nextEl: '.fa-lightbox-next', addIcons: false },
+    a11y: sliderA11y,
+    on: { slideChange: updateGalleryCaption },
 });
 document.addEventListener('click', (event) => {
     const trigger = event.target.closest('[data-gallery-open]');
-    if (!trigger) return;
-    galleryIndex = trigger.dataset.galleryOpen === 'product' ? -1 : Number(trigger.dataset.galleryOpen);
-    renderGallery();
+    if (!trigger || trigger.closest('.swiper')?.swiper?.allowClick === false) return;
+    const index = trigger.dataset.galleryOpen === 'product' ? 0 : Number(trigger.dataset.galleryOpen) + 1;
     if (!galleryDialog.open) galleryDialog.showModal();
+    if (!lightboxSlider.initialized) lightboxSlider.init();
+    lightboxSlider.update();
+    lightboxSlider.slideTo(index, 0);
+    updateGalleryCaption(lightboxSlider);
+    productSlider.keyboard.disable();
+    lightboxSlider.keyboard.enable();
 });
-function stepGallery(step) {
-    galleryIndex = ((galleryIndex + 1 + step + 7) % 7) - 1;
-    renderGallery();
-}
-document.querySelectorAll('[data-gallery-step]').forEach((button) => button.addEventListener('click', () => stepGallery(Number(button.dataset.galleryStep))));
-galleryDialog.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-        event.preventDefault();
-        stepGallery(event.key === 'ArrowRight' ? 1 : -1);
-    }
+galleryDialog.addEventListener('close', () => {
+    lightboxSlider.keyboard.disable();
+    productSlider.keyboard.enable();
 });
 
 document.querySelectorAll('[data-voucher]').forEach((button) => {
@@ -138,24 +160,6 @@ document.querySelectorAll('[data-voucher]').forEach((button) => {
         try { await navigator.clipboard.writeText(code); notify(`Đã sao chép mã ${code}. Xác nhận điều kiện ưu đãi khi đặt hàng.`); }
         catch { notify(`Mã ưu đãi của bạn: ${code}. Cung cấp mã khi đặt hàng.`); }
     });
-});
-
-const menuButton = document.querySelector('.fa-menu-button');
-const navBar = document.querySelector('.fa-nav-bar');
-function closeMenu() {
-    navBar.classList.remove('is-open');
-    menuButton.setAttribute('aria-expanded', 'false');
-    menuButton.setAttribute('aria-label', 'Mở menu');
-}
-menuButton.addEventListener('click', () => {
-    const open = navBar.classList.toggle('is-open');
-    menuButton.setAttribute('aria-expanded', String(open));
-    menuButton.setAttribute('aria-label', open ? 'Đóng menu' : 'Mở menu');
-});
-document.querySelectorAll('.fa-nav a').forEach((link) => link.addEventListener('click', closeMenu));
-document.addEventListener('click', (event) => { if (!event.target.closest('.fa-header')) closeMenu(); });
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && navBar.classList.contains('is-open')) { closeMenu(); menuButton.focus(); }
 });
 
 const normalizeText = (text) => text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').trim();

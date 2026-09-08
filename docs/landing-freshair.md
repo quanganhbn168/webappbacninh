@@ -6,7 +6,9 @@
 - View: `resources/views/landing/freshair/index.blade.php`. CSS và JS riêng: `resources/{css,js}/landing/freshair.*`.
 - Giỏ hàng là bản mẫu lưu số lượng trong localStorage, tối đa 10 sản phẩm. Đặt mua và yêu cầu tư vấn cần người dùng xác nhận gửi qua email hoặc gọi hotline. Không tạo đơn hàng, gửi email tự động, thu tiền hoặc báo thành công giả.
 - Voucher được sao chép để cung cấp khi đặt mua, không tự trừ thêm vào giá sale.
-- Tìm kiếm nội dung trong trang, gallery/zoom/chuyển ảnh bằng bàn phím, FAQ, menu mobile, giỏ hàng, chia sẻ và xem trước ảnh chia sẻ đều hoạt động phía trình duyệt.
+- Tìm kiếm nội dung trong trang, gallery/zoom/chuyển ảnh bằng bàn phím, FAQ, giỏ hàng, chia sẻ và xem trước ảnh chia sẻ đều hoạt động phía trình duyệt.
+- Mẫu 2 bỏ thanh menu điều hướng, nút menu mobile và breadcrumb. Header thương hiệu/tìm kiếm/giỏ hàng tiếp nối trực tiếp hero.
+- Dùng Swiper 14.0.2 có sẵn tại `public/vendor/swiper`, không thêm dependency hay CDN. Ảnh lớn và thumbnail đồng bộ 7 ảnh; lightbox dùng Swiper, hỗ trợ kéo/vuốt, mũi tên và bàn phím; bộ sưu tập hiển thị 6 ảnh desktop, trượt ngang trên mobile.
 - Mẫu 1 được bổ sung OG/Twitter metadata, tận dụng ảnh hero đã có.
 
 ## Ảnh và chia sẻ
@@ -22,7 +24,8 @@ Tận dụng `public/landing/purehome/filters.webp`, `foliage.webp`, `customers.
 - `pnpm run build`, `node --check resources/js/landing/freshair.js`, `php artisan view:cache`, `git diff --check`: đạt.
 - `php artisan test tests/Feature/FrontendSiteTest.php --filter=test_all_static_and_listing_pages_render --colors=never`: 1 test, 30 assertions đạt.
 - Gọi HTTP kernel kiểm tra cả hai mẫu: HTTP 200, canonical, OG/Twitter metadata render sẵn; kích thước và MIME ảnh chia sẻ khớp tệp thật.
-- Chrome local: kiểm tra bố cục desktop, 944px và mobile 390px, không tràn ngang, không lỗi console. Kiểm tra gallery, menu, FAQ, giỏ hàng 3 sản phẩm tổng 10.770.000đ, xóa giỏ, nút mua nhanh, form bắt buộc/số điện thoại, bản nháp tư vấn, xem đánh giá, tìm kiếm và sao chép liên kết.
+- Chrome local: kiểm tra bố cục desktop, 944px và mobile 390px, không tràn ngang, không lỗi console. Kiểm tra gallery, FAQ, giỏ hàng 3 sản phẩm tổng 10.770.000đ, xóa giỏ, nút mua nhanh, form bắt buộc/số điện thoại, bản nháp tư vấn, xem đánh giá, tìm kiếm và sao chép liên kết.
+- Kiểm tra cập nhật Swiper: không còn nav/breadcrumb trong HTML; Chrome desktop/mobile không tràn ngang hoặc lỗi console; ảnh lớn/thumbnail/lightbox đồng bộ, ArrowRight/Escape, kéo ảnh mobile và chấm điều hướng bộ sưu tập hoạt động.
 - Chỉ xác nhận giao diện và hành vi tại local; chưa triển khai hoặc kiểm tra bot chia sẻ trên server công khai. Không gửi đơn hàng/email trong quá trình kiểm tra.
 
 ## Prompt tạo ảnh

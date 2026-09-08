@@ -27,6 +27,7 @@
     <meta name="twitter:image" content="{{ asset('landing/freshair/share.jpg') }}">
     <meta name="twitter:image:alt" content="Máy lọc không khí FreshAir S8 và ưu đãi 3.590.000đ">
     <link rel="preload" as="image" href="{{ asset('landing/freshair/hero.webp') }}" fetchpriority="high">
+    <link rel="stylesheet" href="{{ asset('vendor/swiper/swiper-bundle.min.css') }}">
     @vite(['resources/css/landing/freshair.css', 'resources/js/landing/freshair.js'])
 </head>
 <body class="freshair">
@@ -39,6 +40,7 @@
             ['family', 'Gia đình sử dụng', 'Không khí sạch cho cả nhà'],
             ['office', 'Góc làm việc sạch thoáng', 'Tập trung hơn, thoải mái hơn'],
         ];
+        $productGallery = array_merge([['product', 'Máy lọc không khí FreshAir S8', '']], $gallery);
     @endphp
     <a class="fa-skip" href="#noi-dung">Đến nội dung chính</a>
     <div class="fa-sale-banner" id="trang-chu"><div class="fa-container"><x-landing.purehome-icon name="bolt" /><strong>SIÊU SALE HÔM NAY</strong><span class="fa-sale-dot">•</span><b>GIẢM ĐẾN <em>40%</em></b><span class="fa-sale-dot">•</span><b><em>FREESHIP</em> TOÀN QUỐC</b><a href="#uu-dai">Khám phá ưu đãi <x-landing.purehome-icon name="arrow" /></a></div></div>
@@ -48,12 +50,9 @@
             <form class="fa-search" role="search"><label class="fa-sr-only" for="fa-search-input">Tìm thông tin về FreshAir S8</label><input id="fa-search-input" type="search" placeholder="Bạn muốn tìm thông tin gì về FreshAir S8?" autocomplete="off"><button type="submit" aria-label="Tìm kiếm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 6 6"/></svg></button></form>
             <a class="fa-hotline" href="tel:1900636888"><x-landing.purehome-icon name="phone" /><span><small>Hotline tư vấn</small><strong>1900 636 888</strong><small>(8:00 - 22:00)</small></span></a>
             <button class="fa-cart-button" type="button" data-open-cart aria-label="Mở giỏ hàng"><x-landing.purehome-icon name="cart" /><span>Giỏ hàng</span><b data-cart-count>0</b></button>
-            <button class="fa-menu-button fa-icon-button" type="button" aria-label="Mở menu" aria-expanded="false" aria-controls="fa-navigation"><x-landing.purehome-icon name="menu" /></button>
         </div>
-        <div class="fa-nav-bar"><nav class="fa-container fa-nav" id="fa-navigation" aria-label="Điều hướng FreshAir"><a class="fa-category" href="#san-pham"><x-landing.purehome-icon name="menu" /><strong>Danh mục sản phẩm</strong></a><a href="#trang-chu">Trang chủ</a><a href="#san-pham">Máy lọc không khí</a><a href="#cong-nghe">Công nghệ lọc</a><a href="#uu-dai">Khuyến mãi</a><a href="#danh-gia">Đánh giá</a><a href="#hoi-dap">Hỏi đáp</a><span class="fa-nav-green"><x-landing.purehome-icon name="leaf" />Vì một bầu không khí xanh</span></nav></div>
     </header>
     <main id="noi-dung">
-        <nav class="fa-container fa-breadcrumb" aria-label="Đường dẫn"><a href="#trang-chu">Trang chủ</a><span>›</span><a href="#san-pham">Thiết bị gia đình</a><span>›</span><a href="#san-pham">Máy lọc không khí</a><span>›</span><strong>Máy lọc không khí FreshAir S8</strong></nav>
         <section class="fa-hero" aria-labelledby="fa-hero-title">
             <div class="fa-container fa-hero-layout">
                 <div class="fa-hero-scene">
@@ -68,7 +67,30 @@
         </section>
 
         <section class="fa-container fa-shop" id="san-pham" aria-labelledby="fa-product-title" data-search-section="sản phẩm máy lọc freshair giá mua hàng">
-            <div class="fa-product-gallery"><div class="fa-thumbnails" role="group" aria-label="Chọn ảnh sản phẩm"><button class="is-selected" data-photo="product" type="button" aria-label="Ảnh sản phẩm FreshAir S8" aria-pressed="true"><img src="{{ asset('landing/freshair/product.webp') }}" alt="FreshAir S8" width="100" height="100"></button>@foreach (array_slice($gallery, 0, 3) as [$scene, $title])<button type="button" data-photo="{{ $scene }}" aria-label="{{ $title }}" aria-pressed="false"><span class="fa-scene fa-scene-{{ $scene }}"></span></button>@endforeach<button type="button" data-gallery-open="0" aria-label="Xem tất cả 6 hình ảnh"><span class="fa-scene fa-scene-family"></span><span class="fa-more-photos">+3<small>hình ảnh</small></span></button></div><button class="fa-main-photo" type="button" data-gallery-open="product" aria-label="Phóng to ảnh sản phẩm"><img src="{{ asset('landing/freshair/product.webp') }}" alt="Máy lọc không khí FreshAir S8 màu trắng" width="1024" height="1024" id="fa-product-image"><span class="fa-photo-zoom">＋ Xem ảnh lớn</span></button></div>
+            <div class="fa-product-gallery">
+                <div class="swiper fa-thumbnails" aria-label="Chọn ảnh sản phẩm">
+                    <div class="swiper-wrapper">
+                        @foreach ($productGallery as [$scene, $title])
+                            <div class="swiper-slide"><button data-photo-index="{{ $loop->index }}" type="button" aria-label="{{ $title }}" aria-pressed="{{ $loop->first ? 'true' : 'false' }}">
+                                @if ($scene === 'product')<img src="{{ asset('landing/freshair/product.webp') }}" alt="" width="100" height="100">@else<span class="fa-scene fa-scene-{{ $scene }}"></span>@endif
+                            </button></div>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="swiper fa-product-slider" aria-label="Ảnh sản phẩm FreshAir S8">
+                    <div class="swiper-wrapper">
+                        @foreach ($productGallery as [$scene, $title])
+                            <div class="swiper-slide"><button class="fa-main-photo" type="button" data-gallery-open="{{ $scene === 'product' ? 'product' : $loop->index - 1 }}" aria-label="Phóng to: {{ $title }}">
+                                @if ($scene === 'product')<img src="{{ asset('landing/freshair/product.webp') }}" alt="{{ $title }}" width="1254" height="1254">@else<span class="fa-main-sprite fa-scene fa-scene-{{ $scene }}" role="img" aria-label="{{ $title }}"></span>@endif
+                                <span class="fa-photo-zoom">＋ Xem ảnh lớn</span>
+                            </button></div>
+                        @endforeach
+                    </div>
+                    <button class="fa-slider-arrow fa-product-prev" type="button" aria-label="Ảnh sản phẩm trước">‹</button>
+                    <button class="fa-slider-arrow fa-product-next" type="button" aria-label="Ảnh sản phẩm tiếp theo">›</button>
+                </div>
+                <div class="fa-slider-footer"><span>Kéo để xem thêm ảnh</span><span class="fa-product-pagination"></span></div>
+            </div>
             <div class="fa-product-info"><div class="fa-product-badges"><span>Bán chạy</span><span>✧ Thương hiệu được tin chọn</span></div><h2 id="fa-product-title">Máy lọc không khí FreshAir S8</h2><p class="fa-product-tagline">Không khí sạch hơn · Cuộc sống khỏe mạnh hơn</p><div class="fa-rating"><span class="fa-stars" aria-label="4,9 trên 5 sao">★★★★★</span><strong>4.9/5</strong><span>|</span><a href="#danh-gia">2.4k đánh giá</a><span>|</span><span>Đã bán <b>8.7k</b></span></div><div class="fa-price-box"><div><x-landing.purehome-icon name="bolt" /><strong>GIÁ SIÊU SALE HÔM NAY</strong><span>Ưu đãi độc quyền</span></div><div class="fa-price-content"><div><del>5.990.000đ</del><strong class="fa-price">3.590.000đ</strong></div><b class="fa-discount">Giảm 40%</b><span class="fa-price-note">Giá tốt cho<br>cuộc sống xanh</span></div></div><h3 class="fa-small-heading">Voucher ưu đãi</h3><div class="fa-vouchers"><button type="button" data-voucher="FRESH300"><x-landing.purehome-icon name="gift" /><span><strong>Giảm 300K</strong><small>Đơn từ 3.5 triệu</small></span></button><button type="button" data-voucher="FRESH10"><x-landing.purehome-icon name="gift" /><span><strong>Giảm 10%</strong><small>Tối đa 200K</small></span></button><button type="button" data-voucher="FREESHIP"><x-landing.purehome-icon name="truck" /><span><strong>FREESHIP</strong><small>Toàn quốc</small></span></button></div><p class="fa-voucher-help">Chạm để lấy mã · Áp dụng theo điều kiện từng ưu đãi</p><h3 class="fa-small-heading">Hình thức thanh toán</h3><div class="fa-payment-options"><span><x-landing.purehome-icon name="shield" /><span><b>Thanh toán an toàn</b><small>Xác nhận trực tiếp khi đặt mua</small></span></span><span><x-landing.purehome-icon name="truck" /><span><b>Thanh toán khi nhận hàng</b><small>(COD)</small></span></span></div><div class="fa-quantity-line"><label for="fa-quantity">Số lượng:</label><div class="fa-quantity"><button type="button" data-quantity-step="-1" aria-label="Giảm số lượng">−</button><input id="fa-quantity" type="number" value="1" min="1" max="10" inputmode="numeric" aria-label="Số lượng sản phẩm"><button type="button" data-quantity-step="1" aria-label="Tăng số lượng">+</button></div><span class="fa-stock">● Sẵn hàng · Giao ngay</span></div></div>
             <div class="fa-buy-panel"><button class="fa-button fa-button-red" type="button" data-buy><x-landing.purehome-icon name="cart" /><span><strong>MUA NGAY</strong><small>Giao nhanh tận nhà</small></span></button><button class="fa-button fa-button-outline" type="button" data-add-cart><x-landing.purehome-icon name="cart" /><span><strong>Thêm vào giỏ</strong><small>Tiện lợi, mua thêm sản phẩm khác</small></span></button><div class="fa-buy-perks"><span><x-landing.purehome-icon name="truck" /><span><b>Giao nhanh toàn quốc</b><small>Nhận hàng 1 - 3 ngày</small></span></span><span><x-landing.purehome-icon name="rotate" /><span><b>Đổi trả 7 ngày</b><small>Nếu có lỗi từ nhà sản xuất</small></span></span><span><x-landing.purehome-icon name="shield" /><span><b>Hàng chính hãng 100%</b><small>Có đầy đủ hóa đơn, bảo hành</small></span></span></div><a class="fa-consult-link" href="#tu-van"><x-landing.purehome-icon name="phone" />Cần tư vấn? Để FreshAir giúp bạn</a><button class="fa-share-button" type="button" data-share><x-landing.purehome-icon name="arrow" />Chia sẻ sản phẩm</button></div>
         </section>
@@ -77,7 +99,7 @@
 
         <section class="fa-container fa-section" id="hinh-anh" aria-labelledby="fa-gallery-title" data-search-section="hình ảnh thực tế bộ sưu tập phòng ngủ phòng khách văn phòng gia đình">
             <div class="fa-section-heading"><span class="fa-heading-icon fa-coral"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M5 9h5l2-4h8l2 4h5a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V12a3 3 0 0 1 3-3Z"/><circle cx="16" cy="18" r="6" fill="none" stroke="white" stroke-width="2"/></svg></span><div><h2 id="fa-gallery-title">Bộ ảnh sưu tầm / Hình ảnh thực tế</h2><p>Khám phá máy lọc không khí FreshAir S8 trong không gian sống</p></div><button type="button" class="fa-text-button" data-gallery-open="0">Xem tất cả hình ảnh <span>→</span></button></div>
-            <div class="fa-gallery-grid">@foreach ($gallery as [$scene, $title, $caption])<button class="fa-gallery-card" type="button" data-gallery-open="{{ $loop->index }}"><span class="fa-scene fa-scene-{{ $scene }}" role="img" aria-label="{{ $title }}"></span><span class="fa-gallery-caption"><strong>{{ $title }}</strong><small>{{ $caption }}</small></span></button>@endforeach</div>
+            <div class="swiper fa-gallery-grid" aria-label="Hình ảnh FreshAir trong không gian sống"><div class="swiper-wrapper">@foreach ($gallery as [$scene, $title, $caption])<button class="swiper-slide fa-gallery-card" type="button" data-gallery-open="{{ $loop->index }}"><span class="fa-scene fa-scene-{{ $scene }}" role="img" aria-label="{{ $title }}"></span><span class="fa-gallery-caption"><strong>{{ $title }}</strong><small>{{ $caption }}</small></span></button>@endforeach</div><div class="fa-gallery-pagination"></div></div>
         </section>
 
         <section class="fa-container fa-technology-grid" id="cong-nghe" aria-label="Công nghệ, thông số và tư vấn" data-search-section="công nghệ thông số diện tích cadr hepa màng lọc công suất điện ồn kích thước trọng lượng">
@@ -103,9 +125,22 @@
 
     <div class="fa-toast" role="status" aria-live="polite" hidden></div>
     <dialog class="fa-dialog" id="fa-cart-dialog" aria-labelledby="fa-cart-title"><button class="fa-dialog-close fa-icon-button" type="button" data-close-dialog aria-label="Đóng"><x-landing.purehome-icon name="close" /></button><h2 id="fa-cart-title">Giỏ hàng của bạn</h2><div class="fa-cart-empty"><x-landing.purehome-icon name="cart" /><p>Giỏ hàng đang trống.</p><button class="fa-button fa-button-green" type="button" data-close-dialog>Tiếp tục xem sản phẩm</button></div><div class="fa-cart-content" hidden><div class="fa-cart-product"><img src="{{ asset('landing/freshair/product.webp') }}" alt="FreshAir S8" width="120" height="120"><div><h3>Máy lọc không khí FreshAir S8</h3><p>Màu trắng · Số lượng: <b data-cart-quantity>1</b></p><strong class="fa-price">3.590.000đ</strong></div></div><div class="fa-cart-total"><span>Tạm tính</span><strong data-cart-total>3.590.000đ</strong></div><p class="fa-dialog-description">Miễn phí giao hàng toàn quốc. Liên hệ FreshAir để xác nhận ưu đãi, địa chỉ và thời gian nhận hàng.</p><a class="fa-button fa-button-red" href="tel:1900636888"><x-landing.purehome-icon name="phone" />Gọi đặt hàng: 1900 636 888</a><a class="fa-email-order" href="mailto:cskh@freshair.vn" data-order-email>Gửi yêu cầu đặt hàng qua email</a><button class="fa-remove-cart" type="button" data-clear-cart>Xóa sản phẩm khỏi giỏ</button></div></dialog>
-    <dialog class="fa-dialog fa-lightbox" id="fa-gallery-dialog" aria-labelledby="fa-gallery-caption"><button class="fa-dialog-close fa-icon-button" type="button" data-close-dialog aria-label="Đóng ảnh"><x-landing.purehome-icon name="close" /></button><div class="fa-lightbox-image"></div><div class="fa-lightbox-controls"><button type="button" data-gallery-step="-1" aria-label="Ảnh trước">←</button><p id="fa-gallery-caption"></p><button type="button" data-gallery-step="1" aria-label="Ảnh tiếp theo">→</button></div></dialog>
+    <dialog class="fa-dialog fa-lightbox" id="fa-gallery-dialog" aria-labelledby="fa-gallery-caption">
+        <button class="fa-dialog-close fa-icon-button" type="button" data-close-dialog aria-label="Đóng ảnh"><x-landing.purehome-icon name="close" /></button>
+        <div class="swiper fa-lightbox-slider" aria-label="Xem ảnh phóng to">
+            <div class="swiper-wrapper">
+                @foreach ($productGallery as [$scene, $title])
+                    <div class="swiper-slide" data-caption="{{ $title }}">
+                        @if ($scene === 'product')<img class="fa-lightbox-image" src="{{ asset('landing/freshair/product.webp') }}" alt="{{ $title }}" width="1254" height="1254" loading="lazy">@else<div class="fa-lightbox-image fa-scene fa-scene-{{ $scene }}" role="img" aria-label="{{ $title }}"></div>@endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        <div class="fa-lightbox-controls"><button class="fa-lightbox-prev" type="button" aria-label="Ảnh trước">←</button><p id="fa-gallery-caption" aria-live="polite">Máy lọc không khí FreshAir S8 · 1/7</p><button class="fa-lightbox-next" type="button" aria-label="Ảnh tiếp theo">→</button></div>
+    </dialog>
     <dialog class="fa-dialog fa-reviews-dialog" id="fa-reviews-dialog" aria-labelledby="fa-all-reviews-title"><button class="fa-dialog-close fa-icon-button" type="button" data-close-dialog aria-label="Đóng đánh giá"><x-landing.purehome-icon name="close" /></button><h2 id="fa-all-reviews-title">Khách hàng nói về FreshAir S8</h2><p class="fa-dialog-description"><span class="fa-stars">★★★★★</span> Những trải nghiệm được chia sẻ</p><div class="fa-reviews-dialog-list"></div></dialog>
     <dialog class="fa-dialog" id="fa-consult-dialog" aria-labelledby="fa-consult-dialog-title"><button class="fa-dialog-close fa-icon-button" type="button" data-close-dialog aria-label="Đóng tư vấn"><x-landing.purehome-icon name="close" /></button><h2 id="fa-consult-dialog-title">Thông tin tư vấn của bạn</h2><p class="fa-dialog-description">Kiểm tra thông tin bên dưới, rồi chọn gửi yêu cầu qua email hoặc gọi hotline FreshAir.</p><dl class="fa-consult-summary"></dl><a class="fa-button fa-button-red" data-consult-email href="mailto:cskh@freshair.vn"><x-landing.purehome-icon name="mail" />Gửi yêu cầu qua email</a><a class="fa-email-order" href="tel:1900636888">Gọi tư vấn: 1900 636 888</a></dialog>
     <dialog class="fa-dialog" id="fa-share-dialog" aria-labelledby="fa-share-title"><button class="fa-dialog-close fa-icon-button" type="button" data-close-dialog aria-label="Đóng chia sẻ"><x-landing.purehome-icon name="close" /></button><h2 id="fa-share-title">Chia sẻ không khí trong lành</h2><img class="fa-share-preview" src="{{ asset('landing/freshair/share.jpg') }}" alt="Ảnh chia sẻ FreshAir S8" width="1200" height="630" loading="lazy"><p class="fa-dialog-description">Gửi FreshAir S8 tới người thân và bạn bè.</p><label class="fa-share-url"><span>Đường dẫn sản phẩm</span><input readonly value="{{ route('landing.freshair') }}" aria-label="Đường dẫn chia sẻ sản phẩm"></label><button class="fa-button fa-button-green" type="button" data-copy-share>Sao chép đường dẫn</button><button class="fa-native-share" type="button" data-native-share hidden>Chia sẻ bằng ứng dụng trên thiết bị</button></dialog>
+    <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}"></script>
 </body>
 </html>

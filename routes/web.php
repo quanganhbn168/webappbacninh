@@ -47,7 +47,8 @@ Route::get('/kien-thuc/{slug}', [ArticleController::class, 'detail'])->name('art
 
 Route::get('/dich-vu-van-hanh', [OperationServiceController::class, 'index'])->name('operations.index');
 Route::get('/dich-vu-van-hanh/{slug}', [OperationServiceController::class, 'detail'])->name('operations.show');
-
+Route::view('/profile/bac-be-bong', 'profile.bacbebong')
+    ->name('profile.bacbebong');
 Route::post('/lien-he', [LeadController::class, 'store'])->name('leads.store');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');

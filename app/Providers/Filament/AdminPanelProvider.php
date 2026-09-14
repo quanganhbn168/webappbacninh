@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Domain\Site\Actions\ResolveFaviconAssets;
+use Awcodes\Curator\CuratorPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -29,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->authGuard('admin')
             ->login()
             ->favicon(function (): string {
@@ -64,6 +66,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
+                CuratorPlugin::make()->label('Tệp')->pluralLabel('Thư viện ảnh')->navigationGroup('Nội dung')->navigationSort(90),
             ])
             ->authMiddleware([
                 Authenticate::class,

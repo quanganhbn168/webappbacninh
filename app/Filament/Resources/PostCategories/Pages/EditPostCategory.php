@@ -8,6 +8,8 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditPostCategory extends EditRecord
 {
+    protected ?bool $hasDatabaseTransactions = true;
+
     protected static string $resource = PostCategoryResource::class;
 
     protected function getHeaderActions(): array

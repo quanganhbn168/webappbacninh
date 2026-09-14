@@ -7,5 +7,7 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreatePostCategory extends CreateRecord
 {
+    protected ?bool $hasDatabaseTransactions = true;
+
     protected static string $resource = PostCategoryResource::class;
 }

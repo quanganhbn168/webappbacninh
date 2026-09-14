@@ -6,9 +6,10 @@ export default defineConfig({
   plugins: [
     laravel({
       input: [
-        'resources/css/interface.css',
+        'resources/css/frontend.css',
+        'resources/css/filament/admin/theme.css',
         'resources/css/managed-content.css',
-        'resources/js/interface.js',
+        'resources/js/frontend.js',
         'resources/css/app.css',
         'resources/css/landing/purehome.css',
         'resources/js/landing/purehome.js',

@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Traits\HasSlug;
 use App\Traits\ImportsLegacyMedia;
+use Awcodes\Curator\Models\Media;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -21,6 +23,9 @@ class Post extends Model implements HasMedia
         'summary',
         'content',
         'featured_image',
+        'featured_media_id',
+        'curator_managed',
+        'og_media_id',
         'meta_title',
         'meta_description',
         'meta_keywords',
@@ -34,6 +39,7 @@ class Post extends Model implements HasMedia
 
     protected $casts = [
         'is_published' => 'boolean',
+        'curator_managed' => 'boolean',
         'published_at' => 'datetime',
         'is_featured' => 'boolean',
         'data' => 'array',
@@ -46,7 +52,17 @@ class Post extends Model implements HasMedia
         return $this->belongsTo(PostCategory::class, 'category_id');
     }
 
-    public function tags(): \Illuminate\Database\Eloquent\Relations\MorphToMany
+    public function featuredMedia(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'featured_media_id');
+    }
+
+    public function ogMedia(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'og_media_id');
+    }
+
+    public function tags(): MorphToMany
     {
         return $this->morphToMany(Tag::class, 'taggable');
     }
@@ -58,6 +74,12 @@ class Post extends Model implements HasMedia
 
     public function getFeaturedImageUrlAttribute(): string
     {
+        if ($this->featuredMedia) {
+            return $this->featuredMedia->url;
+        }
+        if ($this->curator_managed) {
+            return asset('images/placeholder.jpg');
+        }
         if ($this->hasMedia('featured')) {
             return $this->getFirstMediaUrl('featured');
         }
@@ -70,6 +92,12 @@ class Post extends Model implements HasMedia
 
     public function getOgImageUrlAttribute(): string
     {
+        if ($this->ogMedia) {
+            return $this->ogMedia->url;
+        }
+        if ($this->curator_managed) {
+            return $this->featured_image_url;
+        }
         if ($this->hasMedia('og')) {
             return $this->getFirstMediaUrl('og');
         }
@@ -85,7 +113,7 @@ class Post extends Model implements HasMedia
 
     public function scopePublished($query)
     {
-        return $query->where('is_published', true)->whereNotNull('published_at');
+        return $query->where('is_published', true)->where('published_at', '<=', now());
     }
 
     public function scopeInCategory($query, $categoryId)

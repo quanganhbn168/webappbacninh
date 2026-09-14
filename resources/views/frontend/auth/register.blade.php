@@ -1,4 +1,4 @@
-@extends('layouts.utility')
+@extends('layouts.plain')
 
 @section('title', 'Đăng ký - WebApp Bắc Ninh')
 

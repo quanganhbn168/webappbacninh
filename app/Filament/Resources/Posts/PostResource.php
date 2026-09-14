@@ -21,7 +21,7 @@ class PostResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|UnitEnum|null $navigationGroup = 'Blog';
 
     protected static ?string $navigationLabel = 'Tin tức';
 

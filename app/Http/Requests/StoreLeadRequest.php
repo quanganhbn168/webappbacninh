@@ -6,6 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreLeadRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if (! $this->filled('need') && $this->filled('service')) {
+            $this->merge(['need' => $this->input('service')]);
+        }
+    }
+
     public function authorize(): bool
     {
         return true;

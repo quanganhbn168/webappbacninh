@@ -21,13 +21,13 @@ class PostCategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|UnitEnum|null $navigationGroup = 'Blog';
 
-    protected static ?string $navigationLabel = 'Danh mục tin';
+    protected static ?string $navigationLabel = 'Danh mục tin tức';
 
     protected static ?string $modelLabel = 'danh mục tin';
 
-    protected static ?string $pluralModelLabel = 'Danh mục tin';
+    protected static ?string $pluralModelLabel = 'Danh mục tin tức';
 
     protected static ?int $navigationSort = 41;
 

@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\HasSlug;
+use Awcodes\Curator\Models\Media;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Traits\HasSlug;
 
 class PostCategory extends Model
 {
@@ -13,6 +15,10 @@ class PostCategory extends Model
 
     protected $fillable = [
         'name',
+        'image_id',
+        'og_media_id',
+        'meta_title',
+        'meta_description',
         'slug',
         'description',
         'color',
@@ -26,6 +32,16 @@ class PostCategory extends Model
 
     // ==================== SLUG ====================
     // Removed Spatie implementation in favor of centralized system
+
+    public function image(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'image_id');
+    }
+
+    public function ogMedia(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'og_media_id');
+    }
 
     public function posts(): HasMany
     {

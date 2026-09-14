@@ -26,8 +26,8 @@ class FrontendSiteTest extends TestCase
         }
 
         $this->get('/')
-            ->assertSee('/frontend/interface/images/hero-home.webp', false)
-            ->assertSee('/build/assets/interface-', false)
+            ->assertSee('/frontend/images/hero-home.webp', false)
+            ->assertSee('/build/assets/frontend-', false)
             ->assertDontSee('/frontend/assets/css/', false)
             ->assertDontSee('fonts.googleapis.com', false)
             ->assertDontSee('fonts/filament/filament/inter', false)

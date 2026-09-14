@@ -1,4 +1,4 @@
-@extends('layouts.utility')
+@extends('layouts.plain')
 
 @section('title', 'Lấy Ảnh Cover Hàng Loạt (Bulk Thumbnail) - WebApp Bắc Ninh')
 

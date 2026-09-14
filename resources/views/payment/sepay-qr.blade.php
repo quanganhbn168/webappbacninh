@@ -1,4 +1,4 @@
-@extends('layouts.utility')
+@extends('layouts.plain')
 
 @section('title', 'Thanh toán SePay - WebApp Bắc Ninh')
 @section('meta_description', 'Thanh toán qua chuyển khoản ngân hàng với SePay')

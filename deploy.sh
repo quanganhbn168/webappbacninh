@@ -11,9 +11,11 @@ run_step() {
 }
 
 run_step "Pull source" git pull --ff-only
+run_step "Install PHP dependencies" composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
 run_step "Install frontend dependencies" pnpm install --frozen-lockfile
 run_step "Build versioned frontend assets" pnpm run build
 run_step "Run database migrations" php artisan migrate --force
+run_step "Import existing blog images without overwriting Curator selections" php artisan blog:import-media
 run_step "Clear application cache" php artisan cache:clear
 run_step "Clear compiled Laravel state" php artisan optimize:clear
 run_step "Build production Laravel caches" php artisan optimize

@@ -1,4 +1,4 @@
-@reference './interface.css';
+@reference './frontend.css';
 @reference './app.css';
 @source '../views/frontend/site';
 @import '@fortawesome/fontawesome-free/css/all.min.css';

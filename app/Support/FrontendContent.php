@@ -39,7 +39,6 @@ class FrontendContent
     {
         return Project::query()
             ->where('is_active', true)
-            ->orderByDesc('is_featured')
             ->orderBy('order')
             ->get()
             ->map(fn (Project $project): array => $this->project($project))
@@ -59,8 +58,7 @@ class FrontendContent
     {
         return Post::query()
             ->published()
-            ->with('category')
-            ->orderByDesc('is_featured')
+            ->with(['category', 'featuredMedia', 'ogMedia', 'media'])
             ->orderByDesc('published_at')
             ->get()
             ->map(fn (Post $post): array => $this->article($post))
@@ -70,7 +68,7 @@ class FrontendContent
     /** @return array<string, mixed>|null */
     public function articleBySlug(string $slug): ?array
     {
-        $article = Post::query()->published()->with('category')->where('slug', $slug)->first();
+        $article = Post::query()->published()->with(['category', 'featuredMedia', 'ogMedia', 'media'])->where('slug', $slug)->first();
 
         return $article ? $this->article($article) : null;
     }
@@ -106,8 +104,8 @@ class FrontendContent
     }
 
     /** @param array<int, array<string, mixed>> $websiteServices
-     *  @param array<int, array<string, mixed>> $operationServices
-     *  @return array{top: array<int, array<string, mixed>>, topbar: array<string, mixed>, website: array<int, array<string, mixed>>, operations: array<int, array<string, mixed>>}
+     * @param  array<int, array<string, mixed>>  $operationServices
+     * @return array{top: array<int, array<string, mixed>>, topbar: array<string, mixed>, website: array<int, array<string, mixed>>, operations: array<int, array<string, mixed>>}
      */
     public function headerNavigation(array $websiteServices = [], array $operationServices = []): array
     {
@@ -186,8 +184,8 @@ class FrontendContent
     }
 
     /** @param array<string, array<string, mixed>> $serviceIndex
-     *  @param array<string, array<string, mixed>> $operationIndex
-     *  @return array<string, mixed>
+     * @param  array<string, array<string, mixed>>  $operationIndex
+     * @return array<string, mixed>
      */
     private function normalizeMenuItem(array $item, array $serviceIndex, array $operationIndex): array
     {
@@ -438,7 +436,7 @@ class FrontendContent
         $sections = $this->jsonList($post->content);
         $htmlContent = null;
         if ($sections === [] && filled($post->content)) {
-            $htmlContent = $post->content;
+            $htmlContent = (string) str($post->content)->sanitizeHtml();
         } elseif ($sections === []) {
             $sections = Arr::get($data, 'sections', []);
         }
@@ -474,7 +472,7 @@ class FrontendContent
             'category_label' => $post->category?->name ?: Arr::get($data, 'category_label', $this->label($category)),
             'published_at' => $post->published_at?->format('d/m/Y') ?: Arr::get($data, 'published_at', ''),
             'read_time' => $post->read_time ? $post->read_time.' phút đọc' : Arr::get($data, 'read_time', 'Đang cập nhật'),
-            'featured' => $post->is_featured ? max(1, (int) Arr::get($data, 'featured', 0)) : (int) Arr::get($data, 'featured', 0),
+            'featured' => $post->is_featured ? 1 : 0,
             'sections' => $sections,
             'html_content' => $htmlContent,
             'image_url' => $post->featured_image_url,
@@ -511,8 +509,8 @@ class FrontendContent
         return $this->serviceData($service, $service->data ?? [], $service->image_url, $service->secondary_image_url, 'Theo gói hoặc theo tháng');
     }
 
-    /** @param Service|OperationService $service
-     *  @return array<string, mixed>
+    /**
+     * @return array<string, mixed>
      */
     private function serviceData(Service|OperationService $service, array $data, string $imageUrl, string $secondaryImageUrl, string $defaultTimeline = 'Liên hệ để tư vấn'): array
     {
@@ -575,7 +573,9 @@ class FrontendContent
     {
         $data = $model->getAttribute('data');
         $seo = is_array($data) && is_array(Arr::get($data, 'seo')) ? Arr::get($data, 'seo') : [];
-        $ogImage = $model->getAttribute('og_image') ?: Arr::get($seo, 'og_image');
+        $ogImage = $model instanceof Post && ($model->curator_managed || $model->og_media_id)
+            ? $model->og_image_url
+            : ($model->getAttribute('og_image') ?: Arr::get($seo, 'og_image'));
 
         if (blank($ogImage) && isset($model->og_image_url)) {
             $ogImage = $model->og_image_url;
@@ -592,7 +592,7 @@ class FrontendContent
     }
 
     /** @param array<int, string> $fallbackGallery
-     *  @return array<int, string>
+     * @return array<int, string>
      */
     private function galleryUrls(object $model, array $fallbackGallery, string $fallbackImage): array
     {

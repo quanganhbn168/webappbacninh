@@ -1,4 +1,4 @@
-@extends('layouts.utility')
+@extends('layouts.plain')
 
 @section('title', 'Thanh toán - WebApp Bắc Ninh')
 @section('meta_description', 'Chọn phương thức thanh toán phù hợp: VNPay, MoMo, ZaloPay')

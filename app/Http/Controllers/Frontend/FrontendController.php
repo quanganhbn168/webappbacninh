@@ -71,7 +71,7 @@ abstract class FrontendController extends Controller
         $data['jsonLd'] ??= $this->buildJsonLd($data);
 
         $data['socialChannels'] = app(ResolveSocialChannels::class)->execute();
-        $data['interfaceSettings'] = [
+        $data['frontendSettings'] = [
             'contact' => [
                 'phone' => site_config('phone'),
                 'email' => site_config('email'),
@@ -83,7 +83,7 @@ abstract class FrontendController extends Controller
             'termsUrl' => route('legal.terms'),
         ];
 
-        return view('layouts.interface', $data);
+        return view('layouts.master', $data);
 
     }
 

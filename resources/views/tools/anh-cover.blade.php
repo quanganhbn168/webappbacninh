@@ -1,4 +1,4 @@
-@extends('layouts.utility')
+@extends('layouts.plain')
 
 @section('title', 'Công cụ lấy ảnh Cover Video (Thumbnail) - WebApp Bắc Ninh')
 @section('meta_description', 'Công cụ miễn phí giúp lấy ảnh cover (thumbnail) chất lượng cao từ video YouTube, TikTok. Hỗ trợ tải về nhanh chóng.')

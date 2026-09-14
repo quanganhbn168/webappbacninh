@@ -2,12 +2,23 @@
 
 namespace App\Observers;
 
-use App\Models\Slug;
+use App\Domain\Content\ResolveUniqueSlug;
+use App\Models\Post;
+use App\Models\PostCategory;
 use App\Models\Service;
+use App\Models\Slug;
 use Illuminate\Database\Eloquent\Model;
 
 class SlugObserver
 {
+    public function saving(Model $model): void
+    {
+        if ($model instanceof Post || $model instanceof PostCategory) {
+            $value = $model->slug ?: ($model->title ?? $model->name ?? 'bai-viet');
+            $model->slug = app(ResolveUniqueSlug::class)->execute($model, $value);
+        }
+    }
+
     public function saved(Model $model)
     {
         if ($this->isDedicatedServiceLanding($model)) {
@@ -16,23 +27,17 @@ class SlugObserver
             return;
         }
 
-        // If the model has a 'slug' attribute and it has changed (or is new)
-        // Note: We sync even if not dirty to ensure it exists in slugs table if missing
+        // Keep the central registry synchronized, including records missing an entry.
         if ($model->getAttribute('slug')) {
             $slugValue = $model->getAttribute('slug');
-            
-            // Check if this slug is already taken by ANOTHER entity in the slugs table
-            // This is a safety check. Real validation should happen on Request validation level.
-            // Here we might just auto-increment if strictly needed, or assume it's validated.
-            // For now, let's updateOrInsert.
-            
+
             Slug::updateOrCreate(
                 [
                     'reference_id' => $model->getKey(),
                     'reference_type' => $model->getMorphClass(),
                 ],
                 [
-                    'key' => $slugValue
+                    'key' => $slugValue,
                 ]
             );
         }

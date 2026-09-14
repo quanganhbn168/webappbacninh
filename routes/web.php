@@ -3,9 +3,9 @@
 use App\Http\Controllers\Auth\CustomerAuthController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\Frontend\ArticleController;
-use App\Http\Controllers\Frontend\InterfaceController;
 use App\Http\Controllers\Frontend\LeadController;
 use App\Http\Controllers\Frontend\OperationServiceController;
+use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\ProjectController;
 use App\Http\Controllers\Frontend\ServiceController;
 use App\Http\Controllers\Frontend\SiteController;
@@ -27,7 +27,7 @@ Route::redirect('/landing/mau-may-loc-khong khi-mau-1', '/landing/mau-may-loc-kh
 Route::view('/landing/mau-may-loc-khong-khi-mau-2', 'landing.freshair.index')
     ->name('landing.freshair');
 
-Route::get('/', [InterfaceController::class, 'show'])->name('home');
+Route::get('/', [PageController::class, 'show'])->name('home');
 foreach ([
     'dich-vu' => 'services.overview',
     'hosting-domain-email' => 'hosting',
@@ -37,9 +37,9 @@ foreach ([
     'bang-gia' => 'pricing',
     'lien-he' => 'contact',
 ] as $page => $routeName) {
-    Route::get('/'.$page, [InterfaceController::class, 'show'])->defaults('page', $page)->name($routeName);
+    Route::get('/'.$page, [PageController::class, 'show'])->defaults('page', $page)->name($routeName);
 }
-Route::get('/kien-thuc', [InterfaceController::class, 'show'])->defaults('page', 'tin-tuc')->name('articles.index');
+Route::get('/kien-thuc', [PageController::class, 'show'])->defaults('page', 'tin-tuc')->name('articles.index');
 Route::redirect('/tin-tuc', '/kien-thuc', 301);
 
 Route::controller(SiteController::class)->group(function (): void {
@@ -60,6 +60,7 @@ Route::get('/kho-giao-dien/{slug}', [ThemeController::class, 'detail'])->name('t
 
 Route::get('/du-an/{slug}', [ProjectController::class, 'detail'])->name('projects.show');
 
+Route::get('/kien-thuc/danh-muc/{slug}', [ArticleController::class, 'category'])->name('articles.category');
 Route::get('/kien-thuc/{slug}', [ArticleController::class, 'detail'])->name('articles.show');
 
 Route::get('/dich-vu-van-hanh', [OperationServiceController::class, 'index'])->name('operations.index');

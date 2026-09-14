@@ -1,76 +1,195 @@
-<header class="shadow-sm-soft transition-all" id="mainHeader" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);">
-  
-  {{-- Top Bar (Premium Slim) --}}
-  <div class="bg-dark text-white py-1 small shadow-sm">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center gap-3">
-            <span class="fw-bold"><i class="fas fa-phone-alt me-1 text-primary"></i> {{ setting('contact_phone', '0856 843 891') }}</span>
-            <span class="d-none d-md-inline border-start border-white-25 ps-3"><i class="fas fa-envelope me-1 text-primary"></i> {{ setting('contact_email', 'webappbacninh@gmail.com') }}</span>
-        </div>
-        <div class="d-flex align-items-center gap-3">
-             <a href="{{ setting('social_facebook', '#') }}" class="text-white-50 hover-text-white transition" target="_blank"><i class="fab fa-facebook-f"></i></a>
-             <a href="{{ setting('social_youtube', '#') }}" class="text-white-50 hover-text-white transition" target="_blank"><i class="fab fa-youtube"></i></a>
-             <span class="d-none d-lg-inline text-white-50 ms-2">#ChuyênNghiệp #TậnTâm</span>
-        </div>
-    </div>
-  </div>
-
-  {{-- Main Navbar --}}
-  <nav class="navbar navbar-expand-lg py-3">
-    <div class="container">
-      {{-- Logo --}}
-      <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-        <img src="{{ site_asset_url(setting('site_logo_wide'), 'images/webapp-logo.png') }}" alt="{{ setting('site_name', 'WebApp Bắc Ninh') }}" height="65" class="transition-all hover-scale">
-      </a>
-
-      <button class="navbar-toggler border-0 shadow-none" type="button" data-ui-toggle="collapse" data-ui-target="#navbarContent">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarContent">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 fw-bold gap-lg-3 text-uppercase small">
-          <li class="nav-item">
-            <a class="nav-link text-dark px-2 {{ Request::is('/') ? 'active border-bottom border-primary border-3' : '' }}" href="{{ url('/') }}">Trang chủ</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark px-2 hvr-underline" href="#services">Dịch vụ</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark px-2 hvr-underline" href="#ecosystem">Giao diện</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark px-2 hvr-underline" href="{{ route('articles.index') }}">Blog</a>
-          </li>
-           <li class="nav-item">
-            <a class="nav-link text-dark px-2 hvr-underline" href="{{ route('contact') }}">Liên hệ</a>
-          </li>
-        </ul>
-
-        {{-- Action Buttons --}}
-        <div class="d-flex align-items-center gap-2 ms-lg-4">
-           @auth
-            <div class="dropdown">
-              <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark fw-bold" data-ui-toggle="dropdown">
-                <img src="{{ Auth::user()->avatar ?? asset('images/default-avatar.png') }}" class="rounded-circle border border-2 border-primary me-2" width="40" height="40">
-                <span class="d-none d-lg-inline">{{ Auth::user()->name }}</span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2">
-                <li><a class="dropdown-item rounded" href="{{ route('filament.admin.pages.dashboard') }}"><i class="fas fa-tachometer-alt me-2 text-primary"></i> Dashboard</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                  <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button class="dropdown-item rounded text-danger"><i class="fas fa-sign-out-alt me-2"></i> Đăng xuất</button>
-                  </form>
-                </li>
-              </ul>
-            </div>
-          @else
-            <a href="{{ route('login') }}" class="btn btn-outline-dark btn-sm px-4 fw-bold transition">Đăng nhập</a>
-            <a href="{{ route('register') }}" class="btn btn-primary btn-sm px-4 fw-bold shadow-sm transition">Đăng ký</a>
-          @endauth
-        </div>
+<header class="site-header">
+   <div class="container header-inner">
+    <a aria-label="WebApp Bắc Ninh - Trang chủ" class="brand" href="/">
+     @if(site_config('site_logo_wide'))
+<img class="brand__logo" src="{{ site_asset_url(site_config('site_logo_wide')) }}" alt="{{ site_config('name') }}" width="230" height="64">
+@else
+<span class="brand__name">
+      WEBAPP
+      <b>
+       BẮC NINH
+      </b>
+     </span>
+     <span class="brand__tagline">
+      <i>
+      </i>
+      WEBSITE - PHẦN MỀM - VẬN HÀNH SỐ
+      <i>
+      </i>
+     </span>
+    @endif
+</a>
+    <nav aria-label="Điều hướng chính" class="main-nav" id="main-nav">
+     <a class="nav-link" href="/">
+      Trang chủ
+     </a>
+     <div class="nav-dropdown">
+      <div class="nav-dropdown__trigger">
+       <a class="nav-link" href="/dich-vu">
+        Dịch vụ
+       </a>
+       <button aria-expanded="false" aria-label="Mở danh sách dịch vụ" class="dropdown-toggle" type="button">
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="m6 9 6 6 6-6">
+         </path>
+        </svg>
+       </button>
       </div>
+      <div class="dropdown-panel">
+       <a href="/dich-vu#thiet-ke-website">
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <rect height="13" rx="1.5" width="18" x="3" y="3">
+         </rect>
+         <path d="M8 21h8m-4-5v5">
+         </path>
+        </svg>
+        <span>
+         Thiết kế Website
+        </span>
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="m9 5 7 7-7 7">
+         </path>
+        </svg>
+       </a>
+       <a href="/dich-vu#phan-mem">
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="M12 5a3 3 0 0 0-5-2 3 3 0 0 0-3 5 4 4 0 0 0 0 7 3 3 0 0 0 3 5 3 3 0 0 0 5-1V5Zm0 0a3 3 0 0 1 5-2 3 3 0 0 1 3 5 4 4 0 0 1 0 7 3 3 0 0 1-3 5 3 3 0 0 1-5-1M7 7v4m10-4v4M7 16v1m10-1v1">
+         </path>
+        </svg>
+        <span>
+         Phần mềm doanh nghiệp
+        </span>
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="m9 5 7 7-7 7">
+         </path>
+        </svg>
+       </a>
+       <a href="/dich-vu#crm-booking">
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <rect height="16" rx="2" width="18" x="3" y="5">
+         </rect>
+         <path d="M7 3v4m10-4v4">
+         </path>
+         <circle cx="12" cy="12" r="2">
+         </circle>
+         <path d="M8 19v-1a4 4 0 0 1 8 0v1">
+         </path>
+        </svg>
+        <span>
+         CRM &amp; Booking
+        </span>
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="m9 5 7 7-7 7">
+         </path>
+        </svg>
+       </a>
+       <a href="/dich-vu#bang-gia">
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <rect height="18" rx="1.5" width="18" x="3" y="3">
+         </rect>
+         <path d="M3 8h18M8 8v13m4-9h5m-5 4h5">
+         </path>
+        </svg>
+        <span>
+         Landing Page
+        </span>
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="m9 5 7 7-7 7">
+         </path>
+        </svg>
+       </a>
+       <a href="/dich-vu#seo-quang-cao">
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="M14 4c3-2 6-2 7-1 1 1 1 4-1 7l-8 8-6-6 8-8Zm-8 8-3 1v6l5-2m4 1 1 3h6l-2-5M6 19l-3 3">
+         </path>
+         <circle cx="16" cy="8" r="2">
+         </circle>
+        </svg>
+        <span>
+         SEO &amp; Nội dung
+        </span>
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="m9 5 7 7-7 7">
+         </path>
+        </svg>
+       </a>
+       <a href="/dich-vu#seo-quang-cao">
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="m4 10 16-6v16L4 14v-4Zm0 0H2v4h2m5 2 1 5H6l-2-6m16-5h2">
+         </path>
+        </svg>
+        <span>
+         Quảng cáo &amp; Tracking
+        </span>
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="m9 5 7 7-7 7">
+         </path>
+        </svg>
+       </a>
+       <a href="/hosting-domain-email">
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <rect height="20" rx="2" width="18" x="3" y="2">
+         </rect>
+         <rect height="14" rx="1" width="12" x="6" y="5">
+         </rect>
+         <path d="M10 15a4 4 0 0 1 0-7m4 0a4 4 0 0 1 0 7m-2-7v9">
+         </path>
+        </svg>
+        <span>
+         Hosting / Domain / Email
+        </span>
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="m9 5 7 7-7 7">
+         </path>
+        </svg>
+       </a>
+       <a href="/dich-vu#quy-trinh">
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="m10 2-.5 3-2 .8L5 4 2 7l1.8 2.5-.8 2-3 .5v4l3 .5.8 2L2 21l3 3 2.5-1.8 2 .8.5 3h4l.5-3 2-.8L19 24l3-3-1.8-2.5.8-2 3-.5v-4l-3-.5-.8-2L22 7l-3-3-2.5 1.8-2-.8L14 2z" transform="translate(2 0) scale(.83)">
+         </path>
+         <circle cx="12" cy="12" r="3">
+         </circle>
+        </svg>
+        <span>
+         Chăm sóc &amp; Vận hành Website
+        </span>
+        <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+         <path d="m9 5 7 7-7 7">
+         </path>
+        </svg>
+       </a>
+      </div>
+     </div>
+     <a class="nav-link" href="/giai-phap">Giải pháp</a>
+<a class="nav-link" href="/san-pham">
+      Sản phẩm
+     </a>
+     <a class="nav-link" href="/du-an">
+      Dự án
+     </a>
+     <a class="nav-link" href="/bang-gia">
+      Bảng giá
+     </a>
+     <a class="nav-link" href="/kien-thuc">
+      Blog
+     </a>
+     <a class="nav-link" href="/lien-he">
+      Liên hệ
+     </a>
+    </nav>
+    <div class="header-actions">
+     <a class="btn btn--outline" href="/san-pham">
+      Xem Demo
+     </a>
+     <button class="btn btn--primary" data-consult="Tư vấn dự án" type="button">
+      Nhận tư vấn
+     </button>
+     <button aria-controls="main-nav" aria-expanded="false" aria-label="Mở menu" class="btn btn--icon mobile-toggle" data-menu-toggle="" type="button">
+      <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
+       <path d="M3 6h18M3 12h18M3 18h18">
+       </path>
+      </svg>
+     </button>
     </div>
-  </nav>
-</header>
+   </div>
+  </header>

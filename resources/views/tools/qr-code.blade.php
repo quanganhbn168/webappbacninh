@@ -88,7 +88,7 @@
 
 @push('scripts')
 <!-- EasyQRCodeJS Library -->
-<script src="https://cdn.jsdelivr.net/npm/easyqrcodejs@4.5.0/dist/easy.qrcode.min.js"></script>
+<script src="/vendor/easy-qrcode-4.5.0.min.js"></script>
 <script>
     var qrcode = null;
     var logoFile = null;

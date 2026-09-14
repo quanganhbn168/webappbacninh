@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Site\Actions\ResolveSocialChannels;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
 
@@ -69,7 +70,21 @@ abstract class FrontendController extends Controller
         $data['ogImage'] = absolute_url((string) $data['ogImage']);
         $data['jsonLd'] ??= $this->buildJsonLd($data);
 
-        return view('layouts.master', $data);
+        $data['socialChannels'] = app(ResolveSocialChannels::class)->execute();
+        $data['interfaceSettings'] = [
+            'contact' => [
+                'phone' => site_config('phone'),
+                'email' => site_config('email'),
+                'zalo' => site_config('zalo'),
+            ],
+            'socialLinks' => ['Facebook' => site_config('facebook'), 'YouTube' => site_config('youtube')],
+            'socials' => ['facebook' => site_config('facebook'), 'youtube' => site_config('youtube')],
+            'privacyUrl' => route('legal.privacy'),
+            'termsUrl' => route('legal.terms'),
+        ];
+
+        return view('layouts.interface', $data);
+
     }
 
     private function schemaTypeFor(string $contentView): string

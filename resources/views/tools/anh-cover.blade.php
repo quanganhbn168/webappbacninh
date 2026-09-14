@@ -5,7 +5,7 @@
 @section('meta_keywords', 'get thumbnail youtube, lấy ảnh cover tiktok, youtube thumbnail downloader, công cụ mmo')
 
 @push('head')
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
     </style>

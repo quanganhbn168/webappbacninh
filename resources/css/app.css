@@ -5,7 +5,7 @@
 
 @source '../views/frontend/**/*.php';
 @source '../views/partials/frontend/**/*.blade.php';
-@source '../views/layouts/master.blade.php';
+@source '../views/layouts/interface.blade.php';
 @source '../views/layouts/utility.blade.php';
 @source '../js/app-user.js';
 

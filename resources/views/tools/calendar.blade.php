@@ -102,7 +102,7 @@
 @push('scripts')
 <!-- Lunar Calendar Library from CDN -->
 <!-- Lunar Calendar Library -->
-<script src="https://unpkg.com/lunar-javascript/lunar.js"></script>
+<script src="/vendor/lunar-1.7.7.js"></script>
 
 <script>
     // Init dates

@@ -7,38 +7,7 @@ use Illuminate\Contracts\View\View;
 
 class ArticleController extends FrontendController
 {
-    public function __construct(private readonly FrontendContent $content)
-    {
-    }
-
-    public function index(): View
-    {
-        $articles = $this->content->articles();
-        $seo = site_page_seo('articles', [
-            'title' => 'Kiến thức website, SEO và vận hành | WebApp Bắc Ninh',
-            'description' => 'Bài viết thực dụng về thiết kế website, SEO nền tảng, hosting, bảo trì, quản trị nội dung và vận hành số cho doanh nghiệp.',
-        ]);
-
-        return $this->page('frontend.site.articles.index', [
-            'articleItems' => $articles,
-            'pageTitle' => $seo['title'],
-            'pageDescription' => $seo['description'],
-            'pageKeywords' => $seo['keywords'] ?? '',
-            'canonicalUrl' => $seo['canonical_url'] ?? request()->url(),
-            'robots' => $seo['robots'] ?? 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
-            'activeMenu' => 'knowledge',
-            'headerCta' => route('contact'),
-            'floatingCta' => route('contact'),
-            'extraStyles' => ['knowledge.css'],
-            'extraScripts' => ['knowledge.js'],
-            'bodyClass' => 'page-knowledge',
-            'ogImage' => $seo['og_image'] ?? frontend_asset('assets/images/seo-operation.webp'),
-            'schemaItems' => collect($articles)->map(fn (array $article): array => [
-                'name' => $article['title'],
-                'url' => route('articles.show', $article['slug']),
-            ])->all(),
-        ]);
-    }
+    public function __construct(private readonly FrontendContent $content) {}
 
     public function detail(string $slug): View
     {

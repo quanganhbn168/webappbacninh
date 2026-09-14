@@ -5,7 +5,7 @@
 @section('meta_keywords', 'tính thuế doanh nghiệp, thuế TNDN, DNNVV, thuế doanh nghiệp nhỏ, miễn thuế 3 năm')
 
 @push('head')
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
         .version-toggle { 

@@ -2,13 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Models\OperationService;
+use App\Models\Post;
+use App\Models\Project;
 use App\Models\Service;
 use App\Models\ServiceCategory;
-use App\Models\Slug;
 use App\Models\Template;
-use App\Models\Project;
-use App\Models\Post;
-use App\Models\OperationService;
 use App\Settings\ContactSettings;
 use App\Settings\SocialSettings;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -27,9 +26,8 @@ class FrontendSiteTest extends TestCase
         }
 
         $this->get('/')
-            ->assertSee('/frontend/assets/images/hero-industrial.webp', false)
-            ->assertSee('/build/assets/style-', false)
-            ->assertSee('/build/assets/navigation-', false)
+            ->assertSee('/frontend/interface/images/hero-home.webp', false)
+            ->assertSee('/build/assets/interface-', false)
             ->assertDontSee('/frontend/assets/css/', false)
             ->assertDontSee('fonts.googleapis.com', false)
             ->assertDontSee('fonts/filament/filament/inter', false)
@@ -54,11 +52,11 @@ class FrontendSiteTest extends TestCase
             $home = $this->get('/')->assertOk();
             $home->assertSee('0222 333 444');
             $home->assertSee('"telephone": "0222333444"', false);
-            $this->assertSame(2, substr_count($home->getContent(), 'tel:0222333444'));
+            $this->assertSame(1, substr_count($home->getContent(), 'tel:0222333444'));
 
             $contactPage = $this->get('/lien-he')->assertOk();
             $contactPage->assertSee('Điện thoại thứ hai');
-            $this->assertSame(3, substr_count($contactPage->getContent(), 'tel:0222333444'));
+            $this->assertSame(2, substr_count($contactPage->getContent(), 'tel:0222333444'));
         } finally {
             $contact->phone_secondary = $originalPhone;
             $contact->phone_secondary_href = $originalPhoneHref;
@@ -153,18 +151,15 @@ class FrontendSiteTest extends TestCase
         $this->get('/kien-thuc/khong-ton-tai')->assertNotFound();
     }
 
-    public function test_navigation_uses_named_routes_and_renders_mega_menus(): void
+    public function test_navigation_connects_the_approved_pages(): void
     {
-        $this->get('/')
-            ->assertOk()
-            ->assertSee('mega-menu--services', false)
-            ->assertSee('mega-menu--operations', false)
-            ->assertSee(route('services.index'), false)
-            ->assertSee(route('services.show', 'website-doanh-nghiep'), false)
-            ->assertSee(route('operations.index'), false)
-            ->assertSee(route('operations.show', 'hosting-bao-tri-website'), false)
-            ->assertDontSee('href="website-doanh-nghiep.php"', false)
-            ->assertDontSee('href="hosting-bao-tri-website.php"', false);
+        $response = $this->get('/')->assertOk();
+        foreach (['/dich-vu', '/giai-phap', '/san-pham', '/du-an', '/bang-gia', '/kien-thuc', '/lien-he'] as $path) {
+            $response->assertSee('href="'.$path.'"', false);
+        }
+        $response->assertSee('aria-label="Mở danh sách dịch vụ"', false)
+            ->assertDontSee('adminlte', false)
+            ->assertDontSee('cdn.tailwindcss.com', false);
     }
 
     public function test_service_categories_and_non_landing_services_resolve_through_the_slug_registry(): void

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\CustomerAuthController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\Frontend\ArticleController;
+use App\Http\Controllers\Frontend\InterfaceController;
 use App\Http\Controllers\Frontend\LeadController;
 use App\Http\Controllers\Frontend\OperationServiceController;
 use App\Http\Controllers\Frontend\ProjectController;
@@ -26,11 +27,23 @@ Route::redirect('/landing/mau-may-loc-khong khi-mau-1', '/landing/mau-may-loc-kh
 Route::view('/landing/mau-may-loc-khong-khi-mau-2', 'landing.freshair.index')
     ->name('landing.freshair');
 
+Route::get('/', [InterfaceController::class, 'show'])->name('home');
+foreach ([
+    'dich-vu' => 'services.overview',
+    'hosting-domain-email' => 'hosting',
+    'giai-phap' => 'solutions',
+    'san-pham' => 'products',
+    'du-an' => 'projects.index',
+    'bang-gia' => 'pricing',
+    'lien-he' => 'contact',
+] as $page => $routeName) {
+    Route::get('/'.$page, [InterfaceController::class, 'show'])->defaults('page', $page)->name($routeName);
+}
+Route::get('/kien-thuc', [InterfaceController::class, 'show'])->defaults('page', 'tin-tuc')->name('articles.index');
+Route::redirect('/tin-tuc', '/kien-thuc', 301);
+
 Route::controller(SiteController::class)->group(function (): void {
-    Route::get('/', 'home')->name('home');
     Route::get('/gioi-thieu', 'about')->name('about');
-    Route::get('/lien-he', 'contact')->name('contact');
-    Route::get('/bang-gia', 'pricing')->name('pricing');
     Route::get('/hop-tac-agency', 'agency')->name('agency');
 
     Route::get('/chinh-sach-bao-mat', 'legal')->defaults('slug', 'chinh-sach-bao-mat')->name('legal.privacy');
@@ -45,17 +58,12 @@ Route::get('/thiet-ke-website/{slug}', [ServiceController::class, 'detail'])->na
 Route::get('/kho-giao-dien', [ThemeController::class, 'index'])->name('themes.index');
 Route::get('/kho-giao-dien/{slug}', [ThemeController::class, 'detail'])->name('themes.show');
 
-Route::get('/du-an', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/du-an/{slug}', [ProjectController::class, 'detail'])->name('projects.show');
 
-Route::get('/kien-thuc', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('/kien-thuc/{slug}', [ArticleController::class, 'detail'])->name('articles.show');
 
 Route::get('/dich-vu-van-hanh', [OperationServiceController::class, 'index'])->name('operations.index');
 Route::get('/dich-vu-van-hanh/{slug}', [OperationServiceController::class, 'detail'])->name('operations.show');
-Route::get('/profile/bac-be-bong', function () {
-    return view('profile.bacbebong');
-})->name('profile.bacbebong');
 Route::post('/lien-he', [LeadController::class, 'store'])->name('leads.store');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');

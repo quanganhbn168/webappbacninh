@@ -5,7 +5,7 @@
 @section('meta_keywords', 'tính thuế hộ kinh doanh, thuế GTGT, thuế TNCN hộ kinh doanh, ngưỡng 500 triệu')
 
 @push('head')
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
         .version-toggle { 

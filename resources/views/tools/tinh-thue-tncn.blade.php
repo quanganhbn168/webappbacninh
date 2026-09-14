@@ -5,7 +5,7 @@
 @section('meta_keywords', 'tính thuế tncn, thuế thu nhập cá nhân 2026, biểu thuế lũy tiến, giảm trừ gia cảnh, công cụ tính thuế')
 
 @push('head')
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
         .version-toggle { 

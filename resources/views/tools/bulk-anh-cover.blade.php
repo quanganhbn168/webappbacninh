@@ -3,7 +3,7 @@
 @section('title', 'Lấy Ảnh Cover Hàng Loạt (Bulk Thumbnail) - WebApp Bắc Ninh')
 
 @push('head')
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs.min.js"></script>
     <style>[x-cloak]{display:none!important}</style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @endpush

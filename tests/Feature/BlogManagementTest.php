@@ -39,7 +39,8 @@ class BlogManagementTest extends TestCase
         foreach (['posts/create', 'post-categories/create', 'leads', 'media'] as $path) {
             $this->actingAs($this->admin(), 'admin')->get('/admin/'.$path)->assertOk();
         }
-        $this->get('/admin/posts/create')->assertSee('og:image')->assertSee('Chỉnh sửa')
+        $this->get('/admin/posts/create')->assertSee('Ảnh chia sẻ')->assertSee('Chỉnh sửa')
+            ->assertDontSee('Thời gian đọc (phút)')
             ->assertDontSee('Từ khóa SEO')->assertDontSee('Dữ liệu bổ sung');
     }
 

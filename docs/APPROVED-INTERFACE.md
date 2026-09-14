@@ -60,3 +60,11 @@ Các thư viện được tải về và phục vụ tại local; không còn t�
 - `/admin/leads`: xem thông tin yêu cầu tư vấn, tìm kiếm và cập nhật trạng thái Mới / Đã liên hệ / Đã xử lý. Chưa gửi email thông báo tự động.
 - `/admin/settings` → **Thương hiệu**: logo ngang dùng cho header/footer; favicon nguồn giữ quy trình sinh bộ favicon/manifest hiện có. Logo/favicon hiện dùng upload cấu hình riêng; Curator áp dụng cho blog.
 - **Liên hệ**: số điện thoại, email, địa chỉ, giờ làm việc. **Mạng xã hội**: nút Zalo/Messenger/Telegram/WhatsApp chỉ hiện khi có URL hợp lệ; nút gọi và tư vấn dùng cấu hình thật.
+
+## Form blog 2:1
+
+Form bài viết và danh mục dùng 3 cột từ breakpoint `lg`: vùng nội dung chiếm 2, thiết lập và ảnh chiếm 1. Trên điện thoại các vùng xếp thành một cột. Tiêu đề, permalink, mô tả, nội dung nằm liên tiếp bên trái; SEO bên dưới, mỗi trường một hàng. Danh mục bài viết, lịch xuất bản, toggle và hai ảnh nằm bên phải. Nhãn ảnh Open Graph trên form là **Ảnh chia sẻ**.
+
+RichEditor dùng bộ công cụ mặc định của Filament, thay nút tải tệp bằng Curator. CSS giới hạn vùng `.blog-content-editor .tiptap` ở 520px, cuộn nội dung riêng và giữ toolbar ngoài vùng cuộn, theo cách tổ chức tham khảo ở cnetpos, rubyqueennew và kingda.
+
+Không còn trường nhập số phút đọc. `Post::read_time` tự ước tính từ nội dung hiển thị với 200 từ/phút, tối thiểu 1 phút, hỗ trợ HTML và JSON sections cũ. Không dùng giá trị nhập tay trước đây; không cần migration hoặc cập nhật lại bài cũ.

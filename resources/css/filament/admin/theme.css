@@ -3,3 +3,12 @@
 @source '../../../../app/Filament';
 @source '../../../../resources/views/filament';
 @source '../../../../vendor/awcodes/filament-curator/resources/**/*.blade.php';
+
+/* Keep long blog content scrollable while the native toolbar stays visible. */
+.blog-content-editor .tiptap {
+    min-height: 320px;
+    max-height: 520px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+}

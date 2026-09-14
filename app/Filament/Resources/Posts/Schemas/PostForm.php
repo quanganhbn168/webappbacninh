@@ -13,6 +13,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
@@ -24,9 +25,10 @@ class PostForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(['default' => 1, 'lg' => 3])
             ->components([
-                Section::make('Thông tin bài viết')
-                    ->schema([
+                Group::make([
+                    Section::make('Nội dung bài viết')->schema([
                         TextInput::make('title')->label('Tiêu đề')->required()->maxLength(255)->live(onBlur: true)
                             ->afterStateUpdated(function (Set $set, Get $get, ?Post $record, ?string $state): void {
                                 if (! $record && ! $get('slug_manually_edited')) {
@@ -34,32 +36,35 @@ class PostForm
                                 }
                             }),
                         Hidden::make('slug_manually_edited')->default(false)->dehydrated(false),
-                        PermalinkInput::make('slug')->prefix(url('/kien-thuc').'/')->afterStateUpdated(fn (Set $set) => $set('slug_manually_edited', true)),
-                        Select::make('category_id')
-                            ->label('Danh mục')
-                            ->relationship('category', 'name')
-                            ->searchable()
-                            ->preload(),
-                        TextInput::make('read_time')->label('Thời gian đọc (phút)')->numeric()->minValue(1),
-                        CuratorPicker::make('featured_media_id')->label('Ảnh đại diện'),
+                        PermalinkInput::make('slug')->prefix(url('/kien-thuc').'/')
+                            ->afterStateUpdated(fn (Set $set) => $set('slug_manually_edited', true)),
+                        Textarea::make('summary')->label('Mô tả ngắn')->rows(4),
+                        RichEditor::make('content')->label('Nội dung')->required()
+                            ->plugins([AttachCuratorMediaPlugin::make()])
+                            ->disableToolbarButtons(['attachFiles'])
+                            ->enableToolbarButtons(['attachCuratorMedia'])
+                            ->extraAttributes(['class' => 'blog-content-editor'])
+                            ->helperText('Thời gian đọc được ước tính tự động từ nội dung bài viết.'),
+                    ])->columns(1),
+                    Section::make('SEO')->schema([
+                        TextInput::make('meta_title')->label('Tiêu đề SEO')->maxLength(255),
+                        Textarea::make('meta_description')->label('Mô tả SEO')->rows(3),
+                    ])->columns(1),
+                ])->columnSpan(['default' => 1, 'lg' => 2]),
+                Group::make([
+                    Section::make('Thiết lập bài viết')->schema([
+                        Select::make('category_id')->label('Danh mục')
+                            ->relationship('category', 'name')->searchable()->preload(),
                         DateTimePicker::make('published_at')->label('Ngày xuất bản')->seconds(false)->default(now()),
                         Toggle::make('is_published')->label('Đã xuất bản')->default(true),
                         Toggle::make('is_featured')->label('Nổi bật'),
-                        Textarea::make('summary')->label('Tóm tắt')->rows(4)->columnSpanFull(),
-                        RichEditor::make('content')->label('Nội dung')->required()->columnSpanFull()
-                            ->plugins([AttachCuratorMediaPlugin::make()])
-                            ->toolbarButtons([['bold', 'italic', 'link'], ['h2', 'h3'], ['bulletList', 'orderedList', 'blockquote'], ['attachCuratorMedia'], ['undo', 'redo']]),
-                    ])
-                    ->columns(2)
-                    ->columnSpanFull(),
-                Section::make('SEO')
-                    ->schema([
-                        TextInput::make('meta_title')->label('Meta title')->maxLength(255),
-                        Textarea::make('meta_description')->label('Meta description')->rows(3),
-                        CuratorPicker::make('og_media_id')->label('og:image')->helperText('Ảnh khi chia sẻ bài viết. Để trống sẽ dùng ảnh đại diện.')->columnSpanFull(),
-                    ])
-                    ->columns(2)
-                    ->columnSpanFull(),
+                    ])->columns(1),
+                    Section::make('Hình ảnh')->schema([
+                        CuratorPicker::make('featured_media_id')->label('Ảnh đại diện')->constrained(),
+                        CuratorPicker::make('og_media_id')->label('Ảnh chia sẻ')->constrained()
+                            ->helperText('Ảnh hiển thị khi chia sẻ liên kết. Để trống sẽ dùng ảnh đại diện.'),
+                    ])->columns(1),
+                ])->columnSpan(['default' => 1, 'lg' => 1]),
             ]);
     }
 }

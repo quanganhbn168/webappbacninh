@@ -431,6 +431,7 @@ class FrontendContent
     /** @return array<string, mixed> */
     private function article(Post $post): array
     {
+        $readingTime = $post->read_time.' phút đọc';
         $data = $post->data ?? [];
         $category = $post->category?->slug ?: Arr::get($data, 'category', 'kien-thuc');
         $sections = $this->jsonList($post->content);
@@ -458,7 +459,7 @@ class FrontendContent
             'category' => $category,
             'category_label' => $post->category?->name ?: $this->label($category),
             'published_at' => $post->published_at?->format('d/m/Y') ?: '',
-            'read_time' => $post->read_time ? $post->read_time.' phút đọc' : 'Đang cập nhật',
+            'read_time' => $readingTime,
             'featured' => $post->is_featured ? 100 : 0,
             'sections' => $sections,
             'html_content' => $htmlContent,
@@ -471,7 +472,7 @@ class FrontendContent
             'category' => $category,
             'category_label' => $post->category?->name ?: Arr::get($data, 'category_label', $this->label($category)),
             'published_at' => $post->published_at?->format('d/m/Y') ?: Arr::get($data, 'published_at', ''),
-            'read_time' => $post->read_time ? $post->read_time.' phút đọc' : Arr::get($data, 'read_time', 'Đang cập nhật'),
+            'read_time' => $readingTime,
             'featured' => $post->is_featured ? 1 : 0,
             'sections' => $sections,
             'html_content' => $htmlContent,

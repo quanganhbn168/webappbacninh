@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Domain\Content\EstimateReadingTime;
 use App\Traits\HasSlug;
 use App\Traits\ImportsLegacyMedia;
 use Awcodes\Curator\Models\Media;
@@ -71,6 +72,11 @@ class Post extends Model implements HasMedia
     // Removed Spatie implementation in favor of centralized system
 
     // ==================== ACCESSORS ====================
+
+    public function getReadTimeAttribute(): int
+    {
+        return app(EstimateReadingTime::class)->execute($this->content);
+    }
 
     public function getFeaturedImageUrlAttribute(): string
     {

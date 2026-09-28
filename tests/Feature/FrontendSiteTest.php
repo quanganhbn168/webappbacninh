@@ -121,8 +121,8 @@ class FrontendSiteTest extends TestCase
 
     public function test_all_dynamic_pages_render(): void
     {
-        foreach (config('website_services') as $item) {
-            $this->get('/thiet-ke-website/'.$item['slug'])->assertOk();
+        foreach (Service::query()->active()->where('is_landing', true)->pluck('slug') as $slug) {
+            $this->get('/thiet-ke-website/'.$slug)->assertOk();
         }
         foreach (Template::query()->active()->pluck('slug') as $slug) {
             $this->get('/kho-giao-dien/'.$slug)->assertOk();
@@ -133,8 +133,8 @@ class FrontendSiteTest extends TestCase
         foreach (Post::query()->published()->pluck('slug') as $slug) {
             $this->get('/kien-thuc/'.$slug)->assertOk();
         }
-        foreach (config('operation_services') as $item) {
-            $this->get('/dich-vu-van-hanh/'.pathinfo($item['route'], PATHINFO_FILENAME))->assertOk();
+        foreach (OperationService::query()->active()->pluck('slug') as $slug) {
+            $this->get('/dich-vu-van-hanh/'.$slug)->assertOk();
         }
         foreach (Page::query()->active()->pluck('slug') as $slug) {
             $this->get('/'.$slug)->assertOk();

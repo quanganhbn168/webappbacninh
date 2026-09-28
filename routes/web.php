@@ -8,9 +8,9 @@ use App\Http\Controllers\Frontend\OperationServiceController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\ProjectController;
 use App\Http\Controllers\Frontend\ServiceController;
-use App\Http\Controllers\Frontend\StaticPageController;
 use App\Http\Controllers\Frontend\SiteIconController;
 use App\Http\Controllers\Frontend\SiteManifestController;
+use App\Http\Controllers\Frontend\StaticPageController;
 use App\Http\Controllers\Frontend\ThemeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SitemapController;
@@ -137,12 +137,12 @@ foreach ($legacyRedirects as $uri => $routeName) {
     Route::get('/'.$uri, fn () => redirect()->route($routeName, status: 301));
 }
 
-foreach (config('website_services') as $service) {
-    Route::get('/'.$service['route'], fn () => redirect()->route('services.show', $service['slug'], 301));
+// Addresses of the old static PHP site.
+foreach (['website-doanh-nghiep', 'website-ban-hang', 'landing-page', 'thiet-ke-lai-website'] as $slug) {
+    Route::get('/'.$slug.'.php', fn () => redirect()->route('services.show', $slug, 301));
 }
-foreach (config('operation_services') as $service) {
-    $slug = pathinfo($service['route'], PATHINFO_FILENAME);
-    Route::get('/'.$service['route'], fn () => redirect()->route('operations.show', $slug, 301));
+foreach (['hosting-bao-tri-website', 'quan-tri-dang-bai-website', 'seo-website', 'noi-dung-facebook', 'nang-cap-tich-hop-website', 'do-luong-bao-cao-website'] as $slug) {
+    Route::get('/'.$slug.'.php', fn () => redirect()->route('operations.show', $slug, 301));
 }
 $legalRoutes = [
     'chinh-sach-bao-mat' => 'legal.privacy',

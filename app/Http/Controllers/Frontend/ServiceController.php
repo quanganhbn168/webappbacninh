@@ -4,16 +4,11 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Models\Service;
 use App\Models\ServiceCategory;
-use App\Support\FrontendContent;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
 class ServiceController extends FrontendController
 {
-    public function __construct(private readonly FrontendContent $content)
-    {
-    }
-
     public function index(): View
     {
         return $this->simplePage('frontend.site.pages.website-service', 'Dịch vụ thiết kế website tại Bắc Ninh | WebApp Bắc Ninh', 'Thiết kế website doanh nghiệp, website bán hàng, landing page và website theo ngành tại Bắc Ninh. Giao diện phù hợp, dễ quản trị, SEO nền tảng và hỗ trợ lâu dài.', 'website-service', ['website-service.css'], 'page-website-service', [], '#websiteConsult');
@@ -25,30 +20,26 @@ class ServiceController extends FrontendController
             return $this->dynamicDetail($service);
         }
 
-        $landing = $this->content->websiteServiceBySlug($service);
-        abort_if($landing === null, 404);
+        $landing = Service::query()->active()->where('is_landing', true)->with(['image', 'secondaryImage'])->where('slug', $service)->firstOrFail();
 
         return $this->page('frontend.site.services.show', [
             'service' => $landing,
-            'pageTitle' => $landing['meta_title'],
-            'pageDescription' => $landing['meta_description'],
-            'pageKeywords' => $landing['meta_keywords'],
-            'canonicalUrl' => $landing['canonical_url'] ?: request()->url(),
-            'robots' => $landing['robots'],
+            'pageTitle' => $landing->meta_title ?: $landing->title.' | '.site_config('name'),
+            'pageDescription' => $landing->meta_description ?: (string) $landing->description,
             'activeMenu' => 'website-service',
-            'activeSubmenu' => $landing['menu_key'],
+            'activeSubmenu' => $landing->menu_key ?: $landing->slug,
             'headerCta' => '#serviceContact',
             'floatingCta' => '#serviceContact',
             'extraStyles' => ['website-service-detail.css'],
-            'bodyClass' => 'page-service-detail page-service-'.$landing['menu_key'],
-            'ogImage' => $landing['og_image_url'],
+            'bodyClass' => 'page-service-detail page-service-'.($landing->menu_key ?: $landing->slug),
+            'ogImage' => $landing->image_url,
             'schemaType' => 'Service',
-            'schemaData' => ['serviceType' => $landing['title']],
-            'schemaFaqs' => $landing['faqs'],
+            'schemaData' => ['serviceType' => $landing->title],
+            'schemaFaqs' => $landing->faqs ?? [],
             'breadcrumbs' => [
                 ['name' => 'Trang chủ', 'url' => route('home')],
                 ['name' => 'Thiết kế website', 'url' => route('services.index')],
-                ['name' => $landing['title'], 'url' => request()->url()],
+                ['name' => $landing->title, 'url' => $landing->url],
             ],
         ]);
     }
@@ -72,7 +63,7 @@ class ServiceController extends FrontendController
             'schemaType' => 'CollectionPage',
             'schemaItems' => $services->map(fn (Service $service): array => [
                 'name' => $service->title,
-                'url' => route('slug.handle', ['slug' => $service->slug]),
+                'url' => $service->url,
             ])->all(),
             'breadcrumbs' => [
                 ['name' => 'Trang chủ', 'url' => route('home')],
@@ -83,21 +74,19 @@ class ServiceController extends FrontendController
 
     private function dynamicDetail(Service $service): View|RedirectResponse
     {
-        $landing = collect(config('website_services'))->firstWhere('slug', $service->slug);
-        if ($landing !== null) {
-            return redirect()->route('services.show', $landing['slug'], 301);
+        if ($service->is_landing) {
+            return redirect()->to($service->url, 301);
         }
 
         abort_unless($service->is_active, 404);
 
         $service->loadMissing('category');
+
         return $this->page('frontend.site.services.dynamic', [
             'service' => $service,
             'pageTitle' => $service->meta_title ?: $service->title.' | '.site_config('name'),
             'pageDescription' => $service->meta_description ?: ($service->description ?: ''),
-            'pageKeywords' => $service->meta_keywords ?? '',
-            'canonicalUrl' => data_get($service->data, 'seo.canonical_url') ?: request()->url(),
-            'robots' => data_get($service->data, 'seo.robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'),
+            'canonicalUrl' => $service->url,
             'activeMenu' => 'website-service',
             'headerCta' => '#serviceContact',
             'floatingCta' => '#serviceContact',
@@ -109,7 +98,7 @@ class ServiceController extends FrontendController
             'breadcrumbs' => [
                 ['name' => 'Trang chủ', 'url' => route('home')],
                 ['name' => $service->category?->name ?? 'Dịch vụ', 'url' => $service->category ? route('slug.handle', ['slug' => $service->category->slug]) : route('services.index')],
-                ['name' => $service->title, 'url' => request()->url()],
+                ['name' => $service->title, 'url' => $service->url],
             ],
         ]);
     }

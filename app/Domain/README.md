@@ -7,7 +7,7 @@ commands stay thin and call into these classes.
 |---|---|
 | `Content/` | Shared content helpers (slugs, reading time, blog content) |
 | `Pages/` | Pages managed in the admin (about, legal, custom pages) |
-| `Services/` | Website and operation services |
+| `Media/` | Importing existing images into the Curator library |
 | `Settings/` | Site settings |
 | `Site/` | Favicon, manifest, public assets, social channels |
 

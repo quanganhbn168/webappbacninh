@@ -2,72 +2,81 @@
 
 namespace App\Models;
 
+use App\Traits\HasServiceContent;
 use App\Traits\HasSlug;
-use App\Traits\ImportsLegacyMedia;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Service extends Model implements HasMedia
+class Service extends Model
 {
-    use HasFactory, HasSlug, ImportsLegacyMedia, InteractsWithMedia;
+    use HasFactory;
+    use HasServiceContent;
+    use HasSlug;
 
     protected $fillable = [
+        'service_category_id',
         'title',
         'slug',
+        'is_landing',
+        'menu_key',
+        'eyebrow',
+        'highlight',
         'icon',
         'description',
         'content',
+        'image_id',
+        'secondary_image_id',
+        'price_from',
+        'timeline',
+        'cta',
+        'need_value',
+        'audiences',
+        'problems',
+        'pages',
+        'features',
+        'packages',
+        'faqs',
+        'meta_title',
+        'meta_description',
         'order',
         'is_active',
-        'menu_key', 'eyebrow', 'highlight', 'image', 'secondary_image', 'price_from',
-        'timeline', 'meta_title', 'meta_description', 'data',
-        'service_category_id',
+    ];
+
+    protected $attributes = [
+        'is_landing' => false,
     ];
 
     protected $casts = [
+        'is_landing' => 'boolean',
         'is_active' => 'boolean',
-        'data' => 'array',
+        'audiences' => 'array',
+        'problems' => 'array',
+        'pages' => 'array',
+        'features' => 'array',
+        'packages' => 'array',
+        'faqs' => 'array',
     ];
-
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-    public function scopeOrdered($query)
-    {
-        return $query->orderBy('order', 'asc');
-    }
 
     public function category(): BelongsTo
     {
         return $this->belongsTo(ServiceCategory::class, 'service_category_id');
     }
 
-    public function getImageUrlAttribute(): string
+    /**
+     * Landing services have a designed page under /thiet-ke-website; the
+     * others are simple pages served from the site root.
+     */
+    protected function url(): Attribute
     {
-        if ($this->hasMedia('featured')) {
-            return $this->getFirstMediaUrl('featured');
-        }
-
-        return site_asset_url($this->image, 'frontend/assets/images/hero-industrial.webp');
+        return Attribute::get(fn (): string => $this->is_landing
+            ? route('services.show', $this->slug)
+            : route('slug.handle', $this->slug));
     }
 
-    public function getSecondaryImageUrlAttribute(): string
+    protected function timelineLabel(): Attribute
     {
-        if ($this->hasMedia('gallery')) {
-            return $this->getFirstMediaUrl('gallery');
-        }
-
-        return $this->secondary_image ? site_asset_url($this->secondary_image) : $this->image_url;
-    }
-
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('featured')->singleFile();
-        $this->addMediaCollection('gallery');
+        return Attribute::get(fn (): string => $this->timeline ?: 'Liên hệ để tư vấn');
     }
 }

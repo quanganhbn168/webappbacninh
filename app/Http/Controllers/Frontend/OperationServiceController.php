@@ -2,24 +2,21 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Support\FrontendContent;
+use App\Models\OperationService;
 use Illuminate\Contracts\View\View;
 
 class OperationServiceController extends FrontendController
 {
-    public function __construct(private readonly FrontendContent $content)
-    {
-    }
-
     public function index(): View
     {
+        $services = OperationService::query()->active()->ordered()->get();
         $seo = site_page_seo('operations', [
             'title' => 'Dịch vụ vận hành website, SEO và nội dung | WebApp Bắc Ninh',
             'description' => 'Hosting, bảo trì, quản trị website, đăng bài, SEO, nội dung Facebook và nâng cấp chức năng theo nhu cầu doanh nghiệp.',
         ]);
 
         return $this->page('frontend.site.pages.operations', [
-            'operationServices' => $this->content->operationServices(),
+            'operationServices' => $services,
             'pageTitle' => $seo['title'],
             'pageDescription' => $seo['description'],
             'pageKeywords' => $seo['keywords'] ?? '',
@@ -32,40 +29,35 @@ class OperationServiceController extends FrontendController
             'bodyClass' => 'page-operations',
             'ogImage' => $seo['og_image'] ?? frontend_asset('assets/images/seo-operation.webp'),
             'schemaType' => 'CollectionPage',
-            'schemaItems' => collect($this->content->operationServices())->map(fn (array $service): array => [
-                'name' => $service['title'],
-                'url' => route('operations.show', $service['slug']),
+            'schemaItems' => $services->map(fn (OperationService $service): array => [
+                'name' => $service->title,
+                'url' => $service->url,
             ])->all(),
         ]);
     }
 
     public function detail(string $slug): View
     {
-        $service = $this->content->operationServiceBySlug($slug);
-        abort_if($service === null, 404);
+        $service = OperationService::query()->active()->with(['image', 'secondaryImage'])->where('slug', $slug)->firstOrFail();
 
         return $this->page('frontend.site.operations.show', [
             'service' => $service,
-            'pageTitle' => $service['meta_title'],
-            'pageDescription' => $service['meta_description'],
-            'pageKeywords' => $service['meta_keywords'],
-            'canonicalUrl' => $service['canonical_url'] ?: request()->url(),
-            'robots' => $service['robots'],
+            'pageTitle' => $service->meta_title ?: $service->title.' | '.site_config('name'),
+            'pageDescription' => $service->meta_description ?: (string) $service->description,
             'activeMenu' => 'operations',
-            'activeSubmenu' => $service['menu_key'],
+            'activeSubmenu' => $service->menu_key ?: $service->slug,
             'headerCta' => '#operationServiceContact',
             'floatingCta' => '#operationServiceContact',
             'extraStyles' => ['content-pages.css', 'operation-service-detail.css'],
-            'extraScripts' => [],
-            'bodyClass' => 'page-operation-service page-operation-'.$service['menu_key'],
-            'ogImage' => $service['og_image_url'],
+            'bodyClass' => 'page-operation-service page-operation-'.($service->menu_key ?: $service->slug),
+            'ogImage' => $service->image_url,
             'schemaType' => 'Service',
-            'schemaData' => ['serviceType' => $service['title']],
-            'schemaFaqs' => $service['faqs'],
+            'schemaData' => ['serviceType' => $service->title],
+            'schemaFaqs' => $service->faqs ?? [],
             'breadcrumbs' => [
                 ['name' => 'Trang chủ', 'url' => route('home')],
                 ['name' => 'Dịch vụ vận hành', 'url' => route('operations.index')],
-                ['name' => $service['title'], 'url' => request()->url()],
+                ['name' => $service->title, 'url' => $service->url],
             ],
         ]);
     }

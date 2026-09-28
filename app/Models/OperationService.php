@@ -2,40 +2,57 @@
 
 namespace App\Models;
 
-use App\Traits\ImportsLegacyMedia;
+use App\Traits\HasServiceContent;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 
-class OperationService extends Model implements HasMedia
+class OperationService extends Model
 {
-    use ImportsLegacyMedia, InteractsWithMedia;
+    use HasServiceContent;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'title',
+        'slug',
+        'menu_key',
+        'eyebrow',
+        'highlight',
+        'icon',
+        'description',
+        'image_id',
+        'secondary_image_id',
+        'price_from',
+        'cadence',
+        'cta',
+        'need_value',
+        'audiences',
+        'scope',
+        'deliverables',
+        'process',
+        'packages',
+        'faqs',
+        'meta_title',
+        'meta_description',
+        'order',
+        'is_active',
+    ];
 
-    protected $casts = ['data' => 'array', 'is_active' => 'boolean'];
+    protected $casts = [
+        'is_active' => 'boolean',
+        'audiences' => 'array',
+        'scope' => 'array',
+        'deliverables' => 'array',
+        'process' => 'array',
+        'packages' => 'array',
+        'faqs' => 'array',
+    ];
 
-    public function getImageUrlAttribute(): string
+    protected function url(): Attribute
     {
-        if ($this->hasMedia('featured')) {
-            return $this->getFirstMediaUrl('featured');
-        }
-
-        return site_asset_url($this->image, 'images/no-image.jpg');
+        return Attribute::get(fn (): string => route('operations.show', $this->slug));
     }
 
-    public function getSecondaryImageUrlAttribute(): string
+    protected function cadenceLabel(): Attribute
     {
-        if ($this->hasMedia('gallery')) {
-            return $this->getFirstMediaUrl('gallery');
-        }
-
-        return $this->secondary_image ? site_asset_url($this->secondary_image) : $this->image_url;
-    }
-
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('featured')->singleFile();
-        $this->addMediaCollection('gallery');
+        return Attribute::get(fn (): string => $this->cadence ?: 'Theo gói hoặc theo tháng');
     }
 }

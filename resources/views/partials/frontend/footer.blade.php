@@ -23,9 +23,9 @@
      <p>
       Đồng hành cùng doanh nghiệp trong hành trình chuyển đổi số với những giải pháp website, phần mềm và vận hành hiệu quả.
      </p>
-     <div class="flex flex-wrap gap-3 mt-4">
+     <div class="d-flex flex-wrap gap-3 mt-4">
 @foreach ($socialChannels['footer'] as $channel)
-<a href="{{ $channel['url'] }}" target="_blank" rel="noopener noreferrer" class="text-sm font-semibold">{{ $channel['label'] }}</a>
+<a href="{{ $channel['url'] }}" target="_blank" rel="noopener noreferrer" class="small fw-semibold">{{ $channel['label'] }}</a>
 @endforeach
 </div>
     </div>

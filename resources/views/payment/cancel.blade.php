@@ -1,4 +1,4 @@
-@extends('layouts.plain')
+@extends('layouts.basic')
 
 @section('title', 'Đã hủy thanh toán')
 

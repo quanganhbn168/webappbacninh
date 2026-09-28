@@ -1,4 +1,4 @@
-@extends('layouts.plain')
+@extends('layouts.basic')
 
 @section('title', 'Kết quả kiểm tra tên miền - WebAppBacNinh')
 

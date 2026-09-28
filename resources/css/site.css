@@ -1,0 +1,14 @@
+/*
+ * Public site styles, loaded after Bootstrap (resources/scss/bootstrap.scss).
+ * - site/pages.css      approved design: base elements and the new pages
+ * - site/secondary.css  pages wrapped in .secondary-content
+ * - site/managed.css    content pages wrapped in .managed-content
+ * - site/base.css       shared chrome: container width, header logo, floating actions
+ */
+@import '@fontsource-variable/roboto';
+@import '@fontsource-variable/caveat';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+@import './site/pages.css';
+@import './site/secondary.css';
+@import './site/managed.css';
+@import './site/base.css';

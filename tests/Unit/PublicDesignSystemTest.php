@@ -10,7 +10,7 @@ class PublicDesignSystemTest extends TestCase
     {
         $files = array_merge(
             [dirname(__DIR__, 2).'/resources/css/public-ui.css'],
-            glob(dirname(__DIR__, 2).'/resources/css/frontend/*.css') ?: [],
+            [dirname(__DIR__, 2).'/resources/css/site/pages.css', dirname(__DIR__, 2).'/resources/css/site/secondary.css'],
         );
 
         foreach ($files as $file) {
@@ -36,7 +36,8 @@ class PublicDesignSystemTest extends TestCase
     {
         $head = (string) file_get_contents(dirname(__DIR__, 2).'/resources/views/layouts/master.blade.php');
 
-        $this->assertStringContainsString('resources/css/frontend.css', $head);
+        $this->assertStringContainsString('resources/scss/bootstrap.scss', $head);
+        $this->assertStringContainsString('resources/css/site.css', $head);
         $this->assertStringNotContainsString('frontend/assets/css/', $head);
         $this->assertStringNotContainsString('fonts.googleapis.com', $head);
         $this->assertStringNotContainsString('fonts/filament/filament/inter', $head);

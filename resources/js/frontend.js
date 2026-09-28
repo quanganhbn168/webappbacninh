@@ -1,4 +1,6 @@
-import Alpine from 'alpinejs';
+import * as bootstrap from 'bootstrap';
+
+window.bootstrap = bootstrap;
 
 const settings = JSON.parse(document.getElementById('frontend-settings')?.textContent || '{}');
 async function submitConsultation(payload) {
@@ -22,8 +24,6 @@ window.WEBAPP_SITE_CONFIG = { ...settings, submitConsultation };
 async function initialize() {
 await import('./frontend/primary.js');
 await import('./frontend/secondary.js');
-window.Alpine = Alpine;
-Alpine.start();
 
 // Both source packages use this event to initialize their page interactions.
 // Vite modules can complete after the browser has already dispatched it.

@@ -1,4 +1,4 @@
-<article class="card {{ $catalogType === 'projects' ? 'project-card' : 'article' }}" data-catalog-item data-cat="{{ $item->category_slug }}" data-title="{{ $item->title }}" x-show="matches($el)" :style="{order: rank($el)}">
+<article class="card {{ $catalogType === 'projects' ? 'project-card' : 'article' }}" data-catalog-item data-cat="{{ $item->category_slug }}" data-title="{{ $item->title }}">
     <a class="card-media" href="{{ $item->url }}">
         <img src="{{ $item->image_url }}" alt="{{ $item->title }}" loading="lazy" decoding="async">
         <span class="image-tag">{{ $item->category_label }}</span>

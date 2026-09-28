@@ -6,10 +6,12 @@ export default defineConfig({
   plugins: [
     laravel({
       input: [
-        'resources/css/frontend.css',
-        'resources/css/filament/admin/theme.css',
-        'resources/css/managed-content.css',
+        'resources/scss/bootstrap.scss',
+        'resources/css/site.css',
         'resources/js/frontend.js',
+        'resources/css/basic.css',
+        'resources/js/basic.js',
+        'resources/css/filament/admin/theme.css',
         'resources/css/app.css',
         'resources/css/landing/purehome.css',
         'resources/js/landing/purehome.js',
@@ -21,4 +23,10 @@ export default defineConfig({
     }),
     tailwindcss(),
   ],
+  css: {
+    preprocessorOptions: {
+      // Bootstrap 5.3 still uses Sass @import and global functions.
+      scss: { quietDeps: true, silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'] },
+    },
+  },
 });

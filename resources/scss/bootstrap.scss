@@ -1,0 +1,51 @@
+// Bootstrap 5 for the public site, tuned to the approved WebApp Bắc Ninh design.
+// Page styles live in resources/css/site.css and load after this file.
+
+$primary: #ffac00;
+$secondary: #342219;
+$dark: #342219;
+$light: #fcf7ef;
+$success: #40b77c;
+$danger: #d83b32;
+
+$body-color: #242a31;
+$body-bg: #fff;
+$headings-color: #342219;
+$link-color: #985e00;
+$link-decoration: none;
+$link-hover-decoration: none;
+$border-color: #eeeae5;
+
+$font-family-sans-serif: 'Roboto Variable', Arial, sans-serif;
+$font-weight-bold: 700;
+$headings-font-weight: 800;
+$line-height-base: 1.5;
+
+$border-radius: .43rem;
+$border-radius-sm: .3rem;
+$border-radius-lg: .65rem;
+
+$btn-font-weight: 650;
+$btn-padding-x: 1.25rem;
+$btn-padding-y: .75rem;
+$btn-padding-x-lg: 1.4rem;
+$btn-padding-y-lg: .9rem;
+$btn-box-shadow: none;
+$btn-focus-box-shadow: 0 0 0 .2rem rgba(255, 172, 0, .35);
+
+$input-border-color: #d5d9df;
+$input-focus-border-color: #ffac00;
+$input-focus-box-shadow: 0 0 0 .2rem rgba(255, 172, 0, .25);
+$input-padding-y: .65rem;
+$input-padding-x: .9rem;
+
+$breadcrumb-divider-color: #727780;
+$breadcrumb-active-color: #727780;
+
+// The approved layout uses its own content width (see .container in site.css).
+$container-max-widths: (sm: 540px, md: 720px, lg: 960px, xl: 1140px, xxl: 1260px);
+
+$enable-shadows: false;
+$enable-negative-margins: true;
+
+@import 'bootstrap/scss/bootstrap';

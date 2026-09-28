@@ -1,12 +1,12 @@
-@extends('layouts.plain')
+@extends('layouts.basic')
 @section('error-page', '1')
 @section('title', 'Không tìm thấy trang | WebApp Bắc Ninh')
 @section('content')
-<section class="flex min-h-screen flex-col items-center justify-center px-6 py-16 text-center">
-    <a href="/" class="mb-12 text-lg font-bold">WEBAPP BẮC NINH</a>
-    <p class="text-8xl font-bold text-amber-500">404</p>
-    <h1 class="mt-6 text-3xl font-bold">Không tìm thấy trang</h1>
-    <p class="mt-4 max-w-lg text-gray-600">Trang bạn tìm có thể đã được chuyển hoặc không còn tồn tại.</p>
-    <a href="/" class="mt-8 rounded-xl bg-amber-400 px-6 py-3 font-semibold text-gray-900">Về trang chủ →</a>
+<section class="min-vh-100 d-flex flex-column align-items-center justify-content-center px-4 py-5 text-center">
+    <a href="/" class="mb-5 fs-5 fw-bold text-dark">WEBAPP BẮC NINH</a>
+    <p class="error-page__code fw-bold text-primary mb-0">404</p>
+    <h1 class="mt-4 h2 fw-bold">Không tìm thấy trang</h1>
+    <p class="mt-3 text-secondary" style="max-width: 32rem">Trang bạn tìm có thể đã được chuyển hoặc không còn tồn tại.</p>
+    <a href="/" class="btn btn-primary btn-lg mt-4">Về trang chủ →</a>
 </section>
 @endsection

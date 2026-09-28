@@ -119,7 +119,9 @@ Route::prefix('payment')->group(function (): void {
 });
 
 Route::post('/subscribe', fn () => back()->with('success', 'Cảm ơn bạn đã để lại email, chúng tôi sẽ liên hệ sớm!'))->name('subscribe.email');
-Route::post('/create-tenant', [TenantRegisterController::class, 'store']);
+// Each call creates and migrates a database, so only signed-in admins may use it
+// until public sign-up for the SaaS plan is designed.
+Route::post('/create-tenant', [TenantRegisterController::class, 'store'])->middleware(['auth:admin', 'throttle:5,1']);
 
 $legacyRedirects = [
     'index.php' => 'home',

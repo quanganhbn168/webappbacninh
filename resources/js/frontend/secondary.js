@@ -44,16 +44,14 @@
   document.addEventListener('frontend:ready',()=>{
     initInteractions();
     document.querySelectorAll('[data-scroll-top]').forEach(button=>button.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'})));
-    const dialog=document.getElementById('detail-dialog');let lastFocus;
+    const dialog=document.getElementById('detail-dialog');
     document.addEventListener('click',e=>{
       const detail=e.target.closest('[data-detail],[data-demo]');
-      if(detail){const card=detail.closest('.card');if(!card)return;const title=(card.querySelector('h3,h2')?.textContent||'Thông tin dự án').trim();const url=(detail.hasAttribute('data-demo')?config().demoUrls:config().detailUrls)?.[title];if(url){location.assign(url);return;}if(!dialog)return;lastFocus=detail;document.getElementById('detail-title').textContent=title;document.getElementById('detail-description').textContent=card.querySelector('.card-body>p,p')?.textContent||'Bản xem trước giao diện sản phẩm.';const holder=document.getElementById('detail-image');holder.replaceChildren();const original=card.querySelector('img');if(original){const image=document.createElement('img');image.src=original.src;image.alt=original.alt;holder.appendChild(image);}dialog.showModal();}
-      if(e.target.closest('[data-close]')&&dialog)dialog.close();
+      if(detail){const card=detail.closest('.card');if(!card)return;const title=(card.querySelector('h3,h2')?.textContent||'Thông tin dự án').trim();const url=(detail.hasAttribute('data-demo')?config().demoUrls:config().detailUrls)?.[title];if(url){location.assign(url);return;}if(!dialog)return;document.getElementById('detail-title').textContent=title;document.getElementById('detail-description').textContent=card.querySelector('.card-body>p,p')?.textContent||'Bản xem trước giao diện sản phẩm.';const holder=document.getElementById('detail-image');holder.replaceChildren();const original=card.querySelector('img');if(original){const image=document.createElement('img');image.src=original.src;image.alt=original.alt;holder.appendChild(image);}window.bootstrap.Modal.getOrCreateInstance(dialog).show();}
       const contact=e.target.closest('[data-contact]');if(contact){const kind=contact.dataset.contact;const value=config().contact?.[kind];if(!value){toast('Kênh liên hệ này đang được cập nhật. Vui lòng gọi số điện thoại ở cuối trang.');return;}if(kind==='phone')location.href='tel:'+String(value).replace(/[^+0-9]/g,'');else if(kind==='email')location.href='mailto:'+encodeURIComponent(value);else window.open(value,'_blank','noopener,noreferrer');}
       const social=e.target.closest('[data-social]');if(social){const url=config().socials?.[social.dataset.social];url?window.open(url,'_blank','noopener,noreferrer'):toast('Kênh mạng xã hội đang được cập nhật.');}
       const policy=e.target.closest('[data-policy]');if(policy){const url=config()[policy.dataset.policy==='privacy'?'privacyUrl':'termsUrl'];url?location.assign(url):toast('Nội dung chính sách đang được cập nhật.');}
     });
-    if(dialog){dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});dialog.addEventListener('close',()=>lastFocus?.focus());}
     document.querySelectorAll('[data-newsletter]').forEach(form=>form.addEventListener('submit',async e=>{
       e.preventDefault();if(!form.reportValidity())return;const adapter=config().subscribeNewsletter;
       if(typeof adapter!=='function'){setStatus(form,'Đăng ký nhận tin đang tạm dừng. Bạn có thể liên hệ để nhận tư vấn trực tiếp.');return;}

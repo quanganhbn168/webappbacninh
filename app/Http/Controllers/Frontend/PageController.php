@@ -22,10 +22,6 @@ class PageController extends FrontendController
             'page' => $page,
             'pageTitle' => $page->meta_title ?: $page->title.' | '.site_config('name'),
             'pageDescription' => $page->meta_description ?: (string) $page->summary,
-            'activeMenu' => $page->template->value,
-            'headerCta' => $template->value === 'agency' ? '#agencyContact' : route('contact'),
-            'floatingCta' => $template->value === 'agency' ? '#agencyContact' : route('contact'),
-            'extraStyles' => [$template->usesBlocks() ? 'legal-pages.css' : 'content-pages.css'],
             'bodyClass' => 'page-'.$template->value.' page-'.$page->slug,
             'breadcrumbs' => [
                 ['name' => 'Trang chủ', 'url' => route('home')],

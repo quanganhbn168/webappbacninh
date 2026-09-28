@@ -20,10 +20,7 @@
   const sortSelect = document.getElementById('themeSort');
   const modalEl = document.getElementById('themeQuickView');
   const modalBody = document.getElementById('themeModalBody');
-  const quickViewModal = modalEl ? {
-    show: () => window.tailwindUi?.open(modalEl),
-    hide: () => window.tailwindUi?.close(modalEl),
-  } : null;
+  const quickViewModal = modalEl && window.bootstrap ? window.bootstrap.Modal.getOrCreateInstance(modalEl) : null;
   const themes = JSON.parse(document.getElementById('themesJson')?.textContent || '[]');
   const themeMap = new Map(themes.map(theme => [String(theme.id), theme]));
 

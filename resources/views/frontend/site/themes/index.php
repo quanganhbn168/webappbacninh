@@ -46,45 +46,11 @@
 <span class="section-kicker">TÌM GIAO DIỆN PHÙ HỢP</span>
 <h2>Kho giao diện theo ngành và mục tiêu sử dụng</h2>
 </div>
-<button class="btn btn-outline-primary d-lg-none" data-ui-target="#filterCanvas" data-ui-toggle="offcanvas" type="button"><i class="fa-solid fa-sliders"></i> Bộ lọc</button>
+<button class="btn btn-outline-primary d-lg-none" data-bs-target="#filterCanvas" data-bs-toggle="offcanvas" aria-controls="filterCanvas" type="button"><i class="fa-solid fa-sliders"></i> Bộ lọc</button>
 </div>
 <div class="row g-4 align-items-start">
 <aside class="col-lg-3 d-none d-lg-block">
-<div class="theme-filter theme-filter--sticky" id="desktopFilters">
-<div class="theme-filter__head"><strong>Bộ lọc giao diện</strong><button class="filter-reset" data-reset-filters="" type="button">Đặt lại</button></div>
-<div class="theme-filter__group">
-<label for="themeSearchDesktop">Tìm kiếm</label>
-<div class="theme-search"><i class="fa-solid fa-magnifying-glass"></i><input data-filter-search="" id="themeSearchDesktop" placeholder="Tên mẫu, ngành nghề..." type="search"/></div>
-</div>
-<div class="theme-filter__group">
-<label>Loại website</label>
-<div class="filter-checks">
-<?php foreach (\App\Enums\TemplateType::cases() as $type): ?><label><input data-filter-type="" type="checkbox" value="<?= e($type->value) ?>"/> <?= e($type->label()) ?></label><?php endforeach; ?>
-</div>
-</div>
-<div class="theme-filter__group">
-<label for="industryDesktop">Ngành nghề</label>
-<select class="form-select" data-filter-industry="" id="industryDesktop">
-<option value="all">Tất cả ngành nghề</option>
-<?php foreach ($industries as $industry): ?><option value="<?= e($industry->slug) ?>"><?= e($industry->name) ?></option><?php endforeach; ?>
-</select>
-</div>
-<div class="theme-filter__group">
-<label>Mức đầu tư</label>
-<div class="filter-checks">
-<label><input checked="" data-filter-price="" name="priceDesktop" type="radio" value="all"/> Tất cả</label>
-<label><input data-filter-price="" name="priceDesktop" type="radio" value="under10"/> Dưới 10 triệu</label>
-<label><input data-filter-price="" name="priceDesktop" type="radio" value="10to20"/> 10 - 20 triệu</label>
-<label><input data-filter-price="" name="priceDesktop" type="radio" value="over20"/> Trên 20 triệu</label>
-</div>
-</div>
-<div class="theme-filter__group">
-<label>Tính năng</label>
-<div class="filter-checks">
-<?php foreach ($features as $feature): ?><label><input data-filter-feature="" type="checkbox" value="<?= e($feature->slug) ?>"/> <?= e($feature->name) ?></label><?php endforeach; ?>
-</div>
-</div>
-</div>
+<?php echo view('frontend.site.themes.filters', ['suffix' => 'Desktop', 'industries' => $industries, 'features' => $features]); ?>
 </aside>
 <div class="col-lg-9">
 <div class="theme-resultbar">
@@ -132,6 +98,13 @@
 </div>
 </section>
 
+<div class="offcanvas offcanvas-start" tabindex="-1" id="filterCanvas" aria-labelledby="filterCanvasTitle">
+<div class="offcanvas-header"><h2 class="offcanvas-title h5" id="filterCanvasTitle">Bộ lọc giao diện</h2><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Đóng"></button></div>
+<div class="offcanvas-body"><?php echo view('frontend.site.themes.filters', ['suffix' => 'Mobile', 'industries' => $industries, 'features' => $features]); ?></div>
+</div>
+<div class="modal fade" id="themeQuickView" tabindex="-1" aria-label="Xem nhanh giao diện" aria-hidden="true">
+<div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0 pb-0"><button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Đóng"></button></div><div class="modal-body" id="themeModalBody"></div></div></div>
+</div>
 <script type="application/json" id="themesJson"><?= json_encode($themes->map(static function (\App\Models\Template $theme): array {
   return [
     'id' => $theme->id,

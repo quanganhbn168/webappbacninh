@@ -26,13 +26,18 @@
     if (nav && window.bootstrap) window.bootstrap.Offcanvas.getInstance(nav)?.hide();
   }
 
-  function showModal(dialog, trigger = document.activeElement) {
-    if (!dialog) return;
+  const modal = element => window.bootstrap.Modal.getOrCreateInstance(element);
+
+  function showModal(element, trigger = document.activeElement) {
+    if (!element) return;
     closeMenu();
-    $$('dialog[open]').forEach(item => item.close());
+    $$('.modal.show').forEach(open => { if (open !== element) modal(open).hide(); });
     modalTrigger = trigger;
-    dialog.showModal();
-    dialog.scrollTop = 0;
+    modal(element).show();
+  }
+
+  function hideModal(element) {
+    if (element) modal(element).hide();
   }
 
   function openConsult(service, trigger) {
@@ -54,19 +59,9 @@
     showModal(previewModal, trigger);
   }
 
-  $$('dialog').forEach(dialog => {
-    // Only clicks outside the content bounds dismiss the dialog.
-    dialog.addEventListener('click', event => {
-      if (event.target !== dialog) return;
-      const rect = dialog.getBoundingClientRect();
-      if (event.clientX < rect.left || event.clientX > rect.right ||
-          event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
-    });
-    dialog.addEventListener('close', () => {
-      if (!$('dialog[open]') && modalTrigger instanceof HTMLElement) {
-        modalTrigger.focus({ preventScroll: true });
-      }
-    });
+  // Return focus to the element that opened a modal.
+  document.addEventListener('hidden.bs.modal', () => {
+    if (!$('.modal.show') && modalTrigger instanceof HTMLElement) modalTrigger.focus({ preventScroll: true });
   });
 
   document.addEventListener('keydown', event => {
@@ -76,8 +71,6 @@
   document.addEventListener('click', event => {
     const target = event.target instanceof Element ? event.target : null;
     if (!target) return;
-    const close = target.closest('[data-close]');
-    if (close) { close.closest('dialog')?.close(); return; }
     const consult = target.closest('[data-consult]');
     if (consult) { openConsult(consult.dataset.consult, consult); return; }
     const preview = target.closest('[data-preview]');
@@ -158,7 +151,7 @@
         const response = await config.submitConsultation(payload);
         if (!response || response.ok !== true) throw new Error(response?.message || 'Máy chủ chưa xác nhận gửi thành công.');
         toast(response.message || 'Yêu cầu đã được máy chủ tiếp nhận.');
-        form.reset(); consultModal.close();
+        form.reset(); hideModal(consultModal);
       } catch (e) {
         error.textContent = e instanceof Error ? e.message : 'Không thể kết nối. Vui lòng thử lại.';
         error.hidden = false;

@@ -11,7 +11,7 @@ class ServiceController extends FrontendController
 {
     public function index(): View
     {
-        return $this->simplePage('frontend.site.pages.website-service', 'Dịch vụ thiết kế website tại Bắc Ninh | WebApp Bắc Ninh', 'Thiết kế website doanh nghiệp, website bán hàng, landing page và website theo ngành tại Bắc Ninh. Giao diện phù hợp, dễ quản trị, SEO nền tảng và hỗ trợ lâu dài.', 'website-service', ['website-service.css'], 'page-website-service', [], '#websiteConsult');
+        return $this->simplePage('frontend.site.pages.website-service', 'Dịch vụ thiết kế website tại Bắc Ninh | WebApp Bắc Ninh', 'Thiết kế website doanh nghiệp, website bán hàng, landing page và website theo ngành tại Bắc Ninh. Giao diện phù hợp, dễ quản trị, SEO nền tảng và hỗ trợ lâu dài.', 'services', 'page-website-service');
     }
 
     public function detail(string|Service $service): View|RedirectResponse
@@ -26,11 +26,6 @@ class ServiceController extends FrontendController
             'service' => $landing,
             'pageTitle' => $landing->meta_title ?: $landing->title.' | '.site_config('name'),
             'pageDescription' => $landing->meta_description ?: (string) $landing->description,
-            'activeMenu' => 'website-service',
-            'activeSubmenu' => $landing->menu_key ?: $landing->slug,
-            'headerCta' => '#serviceContact',
-            'floatingCta' => '#serviceContact',
-            'extraStyles' => ['website-service-detail.css'],
             'bodyClass' => 'page-service-detail page-service-'.($landing->menu_key ?: $landing->slug),
             'ogImage' => $landing->image_url,
             'schemaType' => 'Service',
@@ -55,10 +50,6 @@ class ServiceController extends FrontendController
             'services' => $services,
             'pageTitle' => $category->meta_title ?: $category->name.' | '.site_config('name'),
             'pageDescription' => $category->meta_description ?: ($category->description ?: ''),
-            'activeMenu' => 'website-service',
-            'headerCta' => '#categoryContact',
-            'floatingCta' => '#categoryContact',
-            'extraStyles' => ['content-pages.css'],
             'bodyClass' => 'page-service-category',
             'schemaType' => 'CollectionPage',
             'schemaItems' => $services->map(fn (Service $service): array => [
@@ -87,10 +78,6 @@ class ServiceController extends FrontendController
             'pageTitle' => $service->meta_title ?: $service->title.' | '.site_config('name'),
             'pageDescription' => $service->meta_description ?: ($service->description ?: ''),
             'canonicalUrl' => $service->url,
-            'activeMenu' => 'website-service',
-            'headerCta' => '#serviceContact',
-            'floatingCta' => '#serviceContact',
-            'extraStyles' => ['content-pages.css'],
             'bodyClass' => 'page-dynamic-service',
             'ogImage' => $service->image_url,
             'schemaType' => 'Service',

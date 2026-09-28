@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             SettingsSeeder::class,
             MenuSeeder::class,
             FrontendDataSeeder::class,
+            PageSeeder::class,
             MediaSeeder::class,
             MiniAppSeeder::class,
             AdBannerSeeder::class,

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\OperationService;
+use App\Models\Page;
 use App\Models\Post;
 use App\Models\Project;
 use App\Models\Service;
@@ -135,8 +136,8 @@ class FrontendSiteTest extends TestCase
         foreach (config('operation_services') as $item) {
             $this->get('/dich-vu-van-hanh/'.pathinfo($item['route'], PATHINFO_FILENAME))->assertOk();
         }
-        foreach (config('legal_pages') as $item) {
-            $this->get('/'.$item['slug'])->assertOk();
+        foreach (Page::query()->active()->pluck('slug') as $slug) {
+            $this->get('/'.$slug)->assertOk();
         }
 
         $this->get(route('services.show', 'website-doanh-nghiep'))

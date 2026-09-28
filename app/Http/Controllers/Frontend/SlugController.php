@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Page;
 use App\Models\Post;
 use App\Models\PostCategory;
 use App\Models\Service;
@@ -23,6 +24,7 @@ class SlugController extends Controller
         return match ($slugEntry->reference_type) {
             Template::class => app(TemplateController::class)->show($slugEntry->reference),
             TemplateCategory::class => app(TemplateController::class)->index(new Request(['category' => $slugEntry->reference->slug])),
+            Page::class => app(PageController::class)->render($slugEntry->reference),
             Post::class => redirect()->route('articles.show', $slugEntry->key, 301),
             PostCategory::class => redirect()->route('articles.category', $slugEntry->key, 301),
             Service::class => app(ServiceController::class)->detail($slugEntry->reference),

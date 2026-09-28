@@ -8,7 +8,7 @@ use App\Http\Controllers\Frontend\OperationServiceController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\ProjectController;
 use App\Http\Controllers\Frontend\ServiceController;
-use App\Http\Controllers\Frontend\SiteController;
+use App\Http\Controllers\Frontend\StaticPageController;
 use App\Http\Controllers\Frontend\SiteIconController;
 use App\Http\Controllers\Frontend\SiteManifestController;
 use App\Http\Controllers\Frontend\ThemeController;
@@ -27,7 +27,7 @@ Route::redirect('/landing/mau-may-loc-khong khi-mau-1', '/landing/mau-may-loc-kh
 Route::view('/landing/mau-may-loc-khong-khi-mau-2', 'landing.freshair.index')
     ->name('landing.freshair');
 
-Route::get('/', [PageController::class, 'show'])->name('home');
+Route::get('/', [StaticPageController::class, 'show'])->name('home');
 foreach ([
     'dich-vu' => 'services.overview',
     'hosting-domain-email' => 'hosting',
@@ -37,20 +37,21 @@ foreach ([
     'bang-gia' => 'pricing',
     'lien-he' => 'contact',
 ] as $page => $routeName) {
-    Route::get('/'.$page, [PageController::class, 'show'])->defaults('page', $page)->name($routeName);
+    Route::get('/'.$page, [StaticPageController::class, 'show'])->defaults('page', $page)->name($routeName);
 }
-Route::get('/kien-thuc', [PageController::class, 'show'])->defaults('page', 'tin-tuc')->name('articles.index');
+Route::get('/kien-thuc', [StaticPageController::class, 'show'])->defaults('page', 'tin-tuc')->name('articles.index');
 Route::redirect('/tin-tuc', '/kien-thuc', 301);
 
-Route::controller(SiteController::class)->group(function (): void {
-    Route::get('/gioi-thieu', 'about')->name('about');
-    Route::get('/hop-tac-agency', 'agency')->name('agency');
-
-    Route::get('/chinh-sach-bao-mat', 'legal')->defaults('slug', 'chinh-sach-bao-mat')->name('legal.privacy');
-    Route::get('/dieu-khoan-su-dung', 'legal')->defaults('slug', 'dieu-khoan-su-dung')->name('legal.terms');
-    Route::get('/chinh-sach-bao-hanh', 'legal')->defaults('slug', 'chinh-sach-bao-hanh')->name('legal.warranty');
-    Route::get('/quy-trinh-thanh-toan', 'legal')->defaults('slug', 'quy-trinh-thanh-toan')->name('legal.payment');
-});
+foreach ([
+    'gioi-thieu' => 'about',
+    'hop-tac-agency' => 'agency',
+    'chinh-sach-bao-mat' => 'legal.privacy',
+    'dieu-khoan-su-dung' => 'legal.terms',
+    'chinh-sach-bao-hanh' => 'legal.warranty',
+    'quy-trinh-thanh-toan' => 'legal.payment',
+] as $slug => $routeName) {
+    Route::get('/'.$slug, [PageController::class, 'show'])->defaults('slug', $slug)->name($routeName);
+}
 
 Route::get('/thiet-ke-website', [ServiceController::class, 'index'])->name('services.index');
 Route::get('/thiet-ke-website/{slug}', [ServiceController::class, 'detail'])->name('services.show');

@@ -81,14 +81,6 @@ class FrontendDataSeeder extends Seeder
                 'is_active' => true, 'created_at' => $now, 'updated_at' => $now,
             ]);
         }
-
-        foreach (config('legal_pages') as $page) {
-            DB::table('legal_pages')->updateOrInsert(['slug' => $page['slug']], [
-                'title' => $page['title'], 'short_title' => $page['short_title'], 'description' => $page['description'],
-                'icon' => $page['icon'], 'content_updated_at' => Carbon::createFromFormat('d/m/Y', $page['updated_at']),
-                'data' => $this->json($page), 'is_active' => true, 'created_at' => $now, 'updated_at' => $now,
-            ]);
-        }
     }
 
     private function category(string $table, string $slug, string $name, int $order, mixed $now): int

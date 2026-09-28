@@ -1,12 +1,10 @@
 <?php
 
+use App\Support\ShieldPermissions;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 
 return new class extends Migration
 {
@@ -56,34 +54,13 @@ return new class extends Migration
             Schema::drop('legal_pages');
         }
 
-        $this->grantSuperAdmin();
+        ShieldPermissions::grantToSuperAdmin(['Page']);
     }
 
     public function down(): void
     {
         Schema::dropIfExists('pages');
-        Permission::query()->where('guard_name', 'admin')->whereIn('name', self::permissions())->delete();
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-    }
-
-    private function grantSuperAdmin(): void
-    {
-        $permissions = collect(self::permissions())
-            ->map(fn (string $name): Permission => Permission::findOrCreate($name, 'admin'));
-
-        Role::findOrCreate('super_admin', 'admin')->givePermissionTo($permissions);
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-    }
-
-    /**
-     * @return array<int, string>
-     */
-    private static function permissions(): array
-    {
-        return array_map(
-            fn (string $ability): string => $ability.':Page',
-            ['ViewAny', 'View', 'Create', 'Update', 'Delete', 'DeleteAny', 'Restore', 'ForceDelete', 'ForceDeleteAny', 'RestoreAny', 'Replicate', 'Reorder'],
-        );
+        ShieldPermissions::revoke(['Page']);
     }
 
     /**

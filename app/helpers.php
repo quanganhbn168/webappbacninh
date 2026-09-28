@@ -247,48 +247,7 @@ if (! function_exists('absolute_url')) {
     }
 }
 
-if (! function_exists('projects')) {
-    function projects(): array
-    {
-        return config('projects', []);
-    }
-    function articles(): array
-    {
-        return config('articles', []);
-    }
-
-    function project_by_slug(string $slug): ?array
-    {
-        return collect(projects())->firstWhere('slug', $slug);
-    }
-    function article_by_slug(string $slug): ?array
-    {
-        return collect(articles())->firstWhere('slug', $slug);
-    }
-
-    function project_url(array $project): string
-    {
-        return route('projects.show', $project['slug']);
-    }
-    function article_url(array $article): string
-    {
-        return route('articles.show', $article['slug']);
-    }
-
-    function related_projects(array $current, int $limit = 3): array
-    {
-        return collect(projects())->reject(fn (array $item) => $item['slug'] === $current['slug'])
-            ->sortByDesc(fn (array $item) => (($item['industry'] === $current['industry']) ? 2 : 0) + (($item['category'] === $current['category']) ? 1 : 0) + (($item['featured'] ?? 0) / 100))
-            ->take($limit)->values()->all();
-    }
-
-    function related_articles(array $current, int $limit = 3): array
-    {
-        return collect(articles())->reject(fn (array $item) => $item['slug'] === $current['slug'])
-            ->sortByDesc(fn (array $item) => (($item['category'] === $current['category']) ? 2 : 0) + (($item['featured'] ?? 0) / 100))
-            ->take($limit)->values()->all();
-    }
-
+if (! function_exists('money')) {
     function money(int|float $value): string
     {
         return number_format((float) $value, 0, ',', '.').'đ';

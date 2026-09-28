@@ -2,81 +2,115 @@
 
 namespace App\Models;
 
-use App\Traits\ImportsLegacyMedia;
+use App\Traits\HasCuratorGallery;
+use Awcodes\Curator\Models\Media;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class Project extends Model implements HasMedia
+class Project extends Model
 {
-    use HasSlug, ImportsLegacyMedia, InteractsWithMedia;
+    use HasCuratorGallery;
+    use HasSlug;
 
     protected $fillable = [
-        'title',
-        'slug',
         'project_category_id',
         'code',
-        'description',
-        'image', // Stored media path
+        'title',
+        'slug',
+        'image_id',
+        'gallery',
+        'excerpt',
         'link',
-        'category',
         'industry',
         'year',
-        'excerpt',
         'client',
         'duration',
         'website_type',
         'challenge',
         'solution',
-        'gallery',
         'results',
         'deliverables',
         'technologies',
-        'data',
+        'meta_title',
+        'meta_description',
         'is_featured',
         'is_active',
         'order',
     ];
 
     protected $casts = [
-        'is_featured' => 'boolean',
-        'is_active' => 'boolean',
         'gallery' => 'array',
         'results' => 'array',
         'deliverables' => 'array',
         'technologies' => 'array',
-        'data' => 'array',
+        'year' => 'integer',
+        'is_featured' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('title')
-            ->saveSlugsTo('slug');
+            ->saveSlugsTo('slug')
+            ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function scopeFeatured($query)
+    public function category(): BelongsTo
     {
-        return $query->where('is_featured', true)->orderBy('order');
+        return $this->belongsTo(ProjectCategory::class, 'project_category_id');
+    }
+
+    public function image(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'image_id');
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
+
+    public function scopeForCatalog(Builder $query): Builder
+    {
+        return $query->active()->with(['category', 'image'])->orderByDesc('is_featured')->orderBy('order')->orderBy('id');
     }
 
     /**
-     * Get the image URL.
+     * Other active projects, same group first, then featured ones.
+     *
+     * @return Collection<int, self>
      */
-    public function getImageUrlAttribute(): string
+    public function related(int $limit = 3): Collection
     {
-        if ($this->hasMedia('featured')) {
-            return $this->getFirstMediaUrl('featured');
-        }
-
-        return $this->image ? asset($this->image) : asset('images/project-placeholder.jpg');
+        return self::query()->forCatalog()->whereKeyNot($this->getKey())->get()
+            ->sortByDesc(fn (self $project): int => ($project->project_category_id === $this->project_category_id ? 2 : 0) + (int) $project->is_featured)
+            ->take($limit)
+            ->values();
     }
 
-    public function registerMediaCollections(): void
+    protected function url(): Attribute
     {
-        $this->addMediaCollection('featured')->singleFile();
-        $this->addMediaCollection('gallery');
+        return Attribute::get(fn (): string => route('projects.show', $this->slug));
+    }
+
+    protected function categorySlug(): Attribute
+    {
+        return Attribute::get(fn (): string => $this->category?->slug ?? 'du-an');
+    }
+
+    protected function categoryLabel(): Attribute
+    {
+        return Attribute::get(fn (): string => $this->category?->name ?? 'Dự án');
+    }
+
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::get(fn (): string => $this->image?->url ?? frontend_asset('assets/images/project-corporate.webp'));
     }
 }

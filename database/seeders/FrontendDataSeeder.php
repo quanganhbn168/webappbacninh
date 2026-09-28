@@ -13,33 +13,6 @@ class FrontendDataSeeder extends Seeder
     {
         $now = now();
 
-        foreach (config('projects') as $order => $project) {
-            $categoryId = $this->category('project_categories', $project['industry'], $project['industry_label'], $order, $now);
-            DB::table('projects')->updateOrInsert(['slug' => $project['slug']], [
-                'project_category_id' => $categoryId, 'code' => $project['code'], 'title' => $project['title'],
-                'description' => $project['excerpt'], 'excerpt' => $project['excerpt'], 'image' => 'frontend/'.$project['image'],
-                'category' => $project['category'], 'industry' => $project['industry'], 'year' => $project['year'],
-                'client' => $project['client'], 'duration' => $project['duration'], 'website_type' => $project['website_type'],
-                'challenge' => $project['challenge'], 'solution' => $project['solution'], 'gallery' => $this->json($project['gallery']),
-                'results' => $this->json($project['results']), 'deliverables' => $this->json($project['deliverables']),
-                'technologies' => $this->json($project['technologies']), 'data' => $this->json($project),
-                'is_featured' => (bool) $project['featured'], 'is_active' => true, 'order' => $order,
-                'created_at' => $now, 'updated_at' => $now,
-            ]);
-        }
-
-        foreach (config('articles') as $article) {
-            $categoryId = $this->category('post_categories', $article['category'], $article['category_label'], 0, $now);
-            DB::table('posts')->updateOrInsert(['slug' => $article['slug']], [
-                'category_id' => $categoryId, 'title' => $article['title'], 'summary' => $article['excerpt'],
-                'content' => $this->json($article['sections']), 'featured_image' => 'frontend/'.$article['image'],
-                'meta_title' => $article['title'].' | WebApp Bắc Ninh', 'meta_description' => $article['excerpt'],
-                'read_time' => (int) $article['read_time'], 'is_featured' => (bool) $article['featured'],
-                'is_published' => true, 'published_at' => Carbon::createFromFormat('d/m/Y', $article['published_at'])->startOfDay(),
-                'data' => $this->json($article), 'created_at' => $now, 'updated_at' => $now,
-            ]);
-        }
-
         foreach (array_values(config('website_services')) as $order => $service) {
             DB::table('services')->updateOrInsert(['slug' => $service['slug']], [
                 'title' => $service['title'], 'menu_key' => $service['menu_key'], 'eyebrow' => $service['eyebrow'],

@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Support\FrontendContent;
+use App\Models\Post;
+use App\Models\Project;
 use Illuminate\Contracts\View\View;
 
 class StaticPageController extends FrontendController
@@ -26,11 +27,10 @@ class StaticPageController extends FrontendController
             'title' => $title.' | '.site_config('name'),
             'description' => 'WebApp Bắc Ninh đồng hành cùng doanh nghiệp với giải pháp thiết kế website, phát triển phần mềm và vận hành số.',
         ]);
-        $content = app(FrontendContent::class);
         $catalogItems = match ($page) {
-            'du-an' => $content->projects(),
-            'tin-tuc', 'index' => $content->articles(),
-            default => [],
+            'du-an' => Project::query()->forCatalog()->get(),
+            'tin-tuc', 'index' => Post::query()->forCatalog()->get(),
+            default => collect(),
         };
 
         return $this->page('frontend.pages.'.$page, [
@@ -40,8 +40,8 @@ class StaticPageController extends FrontendController
             'ogImage' => $seo['og_image'] ?? asset('frontend/images/hero-home.webp'),
             'bodyClass' => 'page-'.($page === 'index' ? 'home' : $page),
             'catalogItems' => $catalogItems,
-            'featuredArticles' => collect($catalogItems)->sortByDesc('featured')->take(4)->values()->all(),
-            'catalogCategories' => collect($catalogItems)->unique('category')->map(fn (array $item): array => ['slug' => $item['category'], 'label' => $item['category_label']])->values()->all(),
+            'featuredArticles' => $catalogItems->sortByDesc('is_featured')->take(4)->values(),
+            'catalogCategories' => $catalogItems->unique('category_slug')->map(fn (Post|Project $item): array => ['slug' => $item->category_slug, 'label' => $item->category_label])->values()->all(),
         ]);
     }
 }

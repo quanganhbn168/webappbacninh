@@ -127,11 +127,11 @@ class FrontendSiteTest extends TestCase
         foreach (Template::query()->active()->pluck('slug') as $slug) {
             $this->get('/kho-giao-dien/'.$slug)->assertOk();
         }
-        foreach (config('projects') as $item) {
-            $this->get('/du-an/'.$item['slug'])->assertOk();
+        foreach (Project::query()->active()->pluck('slug') as $slug) {
+            $this->get('/du-an/'.$slug)->assertOk();
         }
-        foreach (config('articles') as $item) {
-            $this->get('/kien-thuc/'.$item['slug'])->assertOk();
+        foreach (Post::query()->published()->pluck('slug') as $slug) {
+            $this->get('/kien-thuc/'.$slug)->assertOk();
         }
         foreach (config('operation_services') as $item) {
             $this->get('/dich-vu-van-hanh/'.pathinfo($item['route'], PATHINFO_FILENAME))->assertOk();

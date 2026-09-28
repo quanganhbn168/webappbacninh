@@ -55,7 +55,12 @@ final class ImportLocalImage
             $path = (string) parse_url($path, PHP_URL_PATH);
         }
 
-        $candidate = str_starts_with($path, base_path()) ? realpath($path) : realpath(public_path(ltrim($path, '/')));
+        $relative = ltrim($path, '/');
+        $candidate = match (true) {
+            str_starts_with($path, base_path()) => realpath($path),
+            str_starts_with($relative, 'storage/') => realpath(storage_path('app/public/'.substr($relative, 8))),
+            default => realpath(public_path($relative)),
+        };
 
         if (! $candidate) {
             return null;

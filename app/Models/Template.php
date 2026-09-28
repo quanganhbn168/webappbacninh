@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\TemplateType;
+use App\Traits\HasCuratorGallery;
 use App\Traits\HasSlug;
 use Awcodes\Curator\Models\Media;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,6 +16,7 @@ use Illuminate\Support\Collection;
 
 class Template extends Model
 {
+    use HasCuratorGallery;
     use HasFactory;
     use HasSlug;
 
@@ -131,20 +133,6 @@ class Template extends Model
     protected function imageUrl(): Attribute
     {
         return Attribute::get(fn (): string => $this->image?->url ?? frontend_asset('assets/images/project-corporate.webp'));
-    }
-
-    /**
-     * The gallery images, or the cover image when the gallery is empty.
-     */
-    protected function galleryUrls(): Attribute
-    {
-        return Attribute::get(function (): array {
-            $ids = array_values(array_filter($this->gallery ?? []));
-            $media = $ids === [] ? collect() : Media::query()->whereKey($ids)->get()->keyBy('id');
-            $urls = collect($ids)->map(fn (int|string $id): ?string => $media->get((int) $id)?->url)->filter()->values()->all();
-
-            return $urls !== [] ? $urls : [$this->image_url];
-        });
     }
 
     /**

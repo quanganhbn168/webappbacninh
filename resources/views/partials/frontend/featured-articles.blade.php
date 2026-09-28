@@ -1,23 +1,23 @@
-@if(count($featuredArticles))
+@if($featuredArticles->isNotEmpty())
 <div class="news-featured" data-featured-articles>
-    @php($featuredMain = $featuredArticles[0])
+    @php($featuredMain = $featuredArticles->first())
     <article class="card article featured-main">
-        <a href="{{ route('articles.show', $featuredMain['slug']) }}"><img src="{{ $featuredMain['image_url'] }}" alt="{{ $featuredMain['title'] }}" loading="lazy"></a>
+        <a href="{{ $featuredMain->url }}"><img src="{{ $featuredMain->image_url }}" alt="{{ $featuredMain->title }}" loading="lazy"></a>
         <div class="card-body">
-            <span class="image-tag">{{ $featuredMain['category_label'] }}</span>
-            <h2><a href="{{ route('articles.show', $featuredMain['slug']) }}">{{ $featuredMain['title'] }}</a></h2>
-            <p>{{ $featuredMain['excerpt'] }}</p>
-            <a class="text-link" href="{{ route('articles.show', $featuredMain['slug']) }}">Đọc bài viết →</a>
+            <span class="image-tag">{{ $featuredMain->category_label }}</span>
+            <h2><a href="{{ $featuredMain->url }}">{{ $featuredMain->title }}</a></h2>
+            <p>{{ $featuredMain->excerpt }}</p>
+            <a class="text-link" href="{{ $featuredMain->url }}">Đọc bài viết →</a>
         </div>
     </article>
     <div class="featured-side">
-        @foreach(array_slice($featuredArticles, 1, 3) as $article)
+        @foreach($featuredArticles->slice(1, 3) as $article)
         <article class="card side-article">
-            <a class="side-article__image" href="{{ route('articles.show', $article['slug']) }}"><img src="{{ $article['image_url'] }}" alt="{{ $article['title'] }}" loading="lazy"></a>
+            <a class="side-article__image" href="{{ $article->url }}"><img src="{{ $article->image_url }}" alt="{{ $article->title }}" loading="lazy"></a>
             <div class="card-body">
-                <span class="image-tag">{{ $article['category_label'] }}</span>
-                <h3><a href="{{ route('articles.show', $article['slug']) }}">{{ $article['title'] }}</a></h3>
-                <small>{{ $article['published_at'] }} · {{ $article['read_time'] }}</small>
+                <span class="image-tag">{{ $article->category_label }}</span>
+                <h3><a href="{{ $article->url }}">{{ $article->title }}</a></h3>
+                <small>{{ $article->published_label }} · {{ $article->read_time_label }}</small>
             </div>
         </article>
         @endforeach

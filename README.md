@@ -1,7 +1,7 @@
 # WebApp Bắc Ninh
 
 Website giới thiệu dịch vụ của WebApp Bắc Ninh, kèm trang quản trị tự xây trên Filament.
-Nền tảng: Laravel 13, Filament 5, Livewire 4, Tailwind CSS 4 + Alpine (giao diện public), Curator (thư viện ảnh), Filament Shield (phân quyền).
+Nền tảng: Laravel 13, Filament 5, Livewire 4, Bootstrap 5.3 (giao diện public, Sass trong `resources/scss/bootstrap.scss`), Curator (thư viện ảnh), Filament Shield (phân quyền).
 
 Hướng dẫn triển khai: [DEPLOYMENT.md](DEPLOYMENT.md). Giao diện đã duyệt: [docs/APPROVED-INTERFACE.md](docs/APPROVED-INTERFACE.md).
 
@@ -15,6 +15,7 @@ Hướng dẫn triển khai: [DEPLOYMENT.md](DEPLOYMENT.md). Giao diện đã du
 | Nội dung → Dự án, Nhóm dự án | `Project`, `ProjectCategory` | `/du-an`, `/du-an/{slug}` |
 | Kho giao diện → Giao diện, Ngành, Tính năng | `Template`, `TemplateCategory`, `ThemeFeature` | `/kho-giao-dien`, `/kho-giao-dien/{slug}` |
 | Blog → Bài viết, Danh mục | `Post`, `PostCategory` | `/kien-thuc`, `/kien-thuc/{slug}` |
+| Nội dung → Menu | `Menu`, `MenuItem` | menu header và 3 cột link ở footer |
 | Nội dung → Liên hệ | `Lead` | form liên hệ trên các trang |
 | Cài đặt | `App\Settings\*` | logo, liên hệ, mạng xã hội, SEO, mã theo dõi, favicon |
 
@@ -25,7 +26,7 @@ Database là nguồn dữ liệu duy nhất. `config/` chỉ chứa cấu hình 
 ```
 app/
   Domain/            nghiệp vụ theo mảng (xem app/Domain/README.md)
-    Content/  Identity/  Media/  Pages/  Settings/  Site/
+    Content/  Identity/  Media/  Navigation/  Pages/  Settings/  Site/
   Enums/             kiểu dữ liệu cố định (PageTemplate, TemplateType, SocialProvider)
   Filament/          trang quản trị: Resources/<Tên>/{Schemas,Tables,Pages}
   Http/Controllers/  controller mỏng: lấy model, trả view
@@ -35,6 +36,8 @@ app/
 Modules/             gói tính năng bật/tắt (Ecommerce, RealEstate) — để dành cho tenant
 database/seeders/    dữ liệu mẫu cho bản cài mới (không ghi đè dữ liệu đã sửa trong admin)
 ```
+
+Giao diện public: Bootstrap 5 (`resources/scss/bootstrap.scss`, biến màu và font theo thiết kế đã duyệt) nạp trước, sau đó là CSS thiết kế `resources/css/site.css` (các file trong `resources/css/site/`). JavaScript dùng Bootstrap (modal, offcanvas, dropdown, collapse) và JS thuần trong `resources/js/frontend/`. Trang đăng nhập, lỗi, thanh toán dùng `layouts.basic`. Riêng trang công cụ (`resources/views/tools`) vẫn dùng layout cũ với Tailwind.
 
 Luồng một request: `Route → Controller → Model (scope/accessor) → View`. Logic dùng lại ở nhiều nơi (admin, controller, lệnh artisan) đặt trong `app/Domain/<Mảng>/Actions`, mỗi class làm một việc.
 

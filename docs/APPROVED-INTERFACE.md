@@ -9,7 +9,8 @@ Trang chủ, dịch vụ và hosting lấy từ `webappbacninh-new-interface-hom
 - Phần dùng chung: `resources/views/partials/frontend/`.
 - Trang lỗi: `resources/views/errors/404.blade.php`, `500.blade.php`; trang 500 dùng khi `APP_DEBUG=false`.
 - Các trang mới: `resources/views/frontend/pages/`.
-- CSS/JS: `resources/css/frontend.css`, `resources/js/frontend.js`; Tailwind 4 + Alpine, build bằng Vite.
+- CSS/JS: `resources/scss/bootstrap.scss` (Bootstrap 5.3) + `resources/css/site.css`, `resources/js/frontend.js` (Bootstrap JS và JS thuần); build bằng Vite.
+- Header và footer lấy menu từ admin (Nội dung → Menu).
 - Ảnh: `public/frontend/images/`.
 - Roboto Variable và Caveat Variable lấy từ package Fontsource, tự host qua Vite.
 - Trang chi tiết CMS dùng layout chung và `managed-content.css`; các rule nội dung được giới hạn bằng CSS scope để không ảnh hưởng header/footer.

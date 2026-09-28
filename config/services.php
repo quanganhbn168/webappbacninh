@@ -2,15 +2,21 @@
 
 return [
     'postmark' => ['token' => env('POSTMARK_TOKEN')],
+    // Social sign-in: a provider's button only appears once its keys are set.
     'google' => [
-        'client_id' => env('GOOGLE_CLIENT_ID', 'placeholder-google-client-id'),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET', 'placeholder-google-client-secret'),
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('APP_URL').'/auth/google/callback',
     ],
     'facebook' => [
-        'client_id' => env('FACEBOOK_CLIENT_ID', 'placeholder-facebook-client-id'),
-        'client_secret' => env('FACEBOOK_CLIENT_SECRET', 'placeholder-facebook-client-secret'),
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
         'redirect' => env('APP_URL').'/auth/facebook/callback',
+    ],
+    'zalo' => [
+        'client_id' => env('ZALO_CLIENT_ID'),
+        'client_secret' => env('ZALO_CLIENT_SECRET'),
+        'redirect' => env('APP_URL').'/auth/zalo/callback',
     ],
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),

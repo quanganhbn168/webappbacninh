@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\SocialProvider;
 use App\Http\Controllers\Auth\CustomerAuthController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\Frontend\ArticleController;
@@ -83,8 +84,8 @@ Route::post('/login', [CustomerAuthController::class, 'login']);
 Route::get('/register', [CustomerAuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [CustomerAuthController::class, 'register']);
 Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('logout');
-Route::get('/auth/{provider}', [CustomerAuthController::class, 'redirectToProvider'])->name('social.login');
-Route::get('/auth/{provider}/callback', [CustomerAuthController::class, 'handleProviderCallback']);
+Route::get('/auth/{provider}', [CustomerAuthController::class, 'redirectToProvider'])->name('social.login')->whereIn('provider', array_column(SocialProvider::cases(), 'value'));
+Route::get('/auth/{provider}/callback', [CustomerAuthController::class, 'handleProviderCallback'])->name('social.callback')->whereIn('provider', array_column(SocialProvider::cases(), 'value'));
 Route::get('/domain-check', [DomainController::class, 'check'])->name('domain.check');
 
 Route::get('/anh-cover', [ThumbnailController::class, 'showCoverPage'])->name('cover.page');

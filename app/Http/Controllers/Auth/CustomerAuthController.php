@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Domain\Identity\Actions\LoginWithSocial;
+use App\Domain\Identity\Exceptions\SocialLoginRefused;
+use App\Enums\SocialProvider;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use Laravel\Socialite\Facades\Socialite;
+use Throwable;
 
 class CustomerAuthController extends Controller
 {
@@ -24,6 +30,7 @@ class CustomerAuthController extends Controller
 
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
+
             return redirect()->intended(route('home'));
         }
 
@@ -53,7 +60,7 @@ class CustomerAuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        
+
         // TODO: Assign 'customer' role if Roles are implemented
         // $user->assignRole('customer');
 
@@ -67,48 +74,33 @@ class CustomerAuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/');
     }
 
-    // Social Login
-    public function redirectToProvider($provider)
+    public function redirectToProvider(SocialProvider $provider): RedirectResponse
     {
-        return \Laravel\Socialite\Facades\Socialite::driver($provider)->redirect();
+        abort_unless($provider->isConfigured(), 404);
+
+        return Socialite::driver($provider->value)->redirect();
     }
 
-    public function handleProviderCallback($provider)
+    public function handleProviderCallback(SocialProvider $provider, LoginWithSocial $login): RedirectResponse
     {
+        abort_unless($provider->isConfigured(), 404);
+
         try {
-            $socialUser = \Laravel\Socialite\Facades\Socialite::driver($provider)->user();
-        } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Lỗi đăng nhập qua ' . $provider . ': ' . $e->getMessage());
+            $user = $login->execute($provider, Socialite::driver($provider->value)->user());
+        } catch (SocialLoginRefused $exception) {
+            return redirect()->route('login')->with('error', $exception->getMessage());
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return redirect()->route('login')->with('error', 'Không thể đăng nhập bằng '.$provider->label().'. Vui lòng thử lại.');
         }
 
-        $user = User::where('email', $socialUser->getEmail())->first();
-
-        if (!$user) {
-            // Create new user
-            $user = User::create([
-                'name' => $socialUser->getName() ?? $socialUser->getNickname(),
-                'email' => $socialUser->getEmail(),
-                'password' => Hash::make(uniqid()), // Random password
-                'avatar' => $socialUser->getAvatar(), // Save avatar
-                'email_verified_at' => now(),
-            ]);
-        } else {
-            // Update existing user avatar/info if needed
-            // $user->update(['avatar' => $socialUser->getAvatar()]);
-        }
-
-        // Link Social ID
-        if ($provider == 'google') {
-            $user->google_id = $socialUser->getId();
-        } elseif ($provider == 'facebook') {
-            $user->facebook_id = $socialUser->getId();
-        }
-        $user->save();
-
-        Auth::login($user);
+        Auth::login($user, remember: true);
+        request()->session()->regenerate();
 
         return redirect()->intended(route('home'));
     }

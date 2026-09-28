@@ -2,7 +2,7 @@
 <section class="theme-hero">
 <div class="container">
 <nav aria-label="breadcrumb" class="theme-breadcrumb" data-aos="fade-up">
-<ol class="breadcrumb mb-0"><li class="breadcrumb-item"><a href="index.php">Trang chủ</a></li><li aria-current="page" class="breadcrumb-item active">Kho giao diện</li></ol>
+<ol class="breadcrumb mb-0"><li class="breadcrumb-item"><a href="<?= e(route('home')) ?>">Trang chủ</a></li><li aria-current="page" class="breadcrumb-item active">Kho giao diện</li></ol>
 </nav>
 <div class="row align-items-center gy-4">
 <div class="col-lg-7">
@@ -16,8 +16,8 @@
 </div>
 <div class="col-lg-5">
 <div class="theme-hero__stats" data-aos="fade-left">
-<div><strong>12+</strong><span>Mẫu minh họa</span></div>
-<div><strong>10</strong><span>Nhóm ngành nghề</span></div>
+<div><strong><?= e((string) $themes->count()) ?></strong><span>Mẫu minh họa</span></div>
+<div><strong><?= e((string) $industries->count()) ?></strong><span>Nhóm ngành nghề</span></div>
 <div><strong>100%</strong><span>Tùy chỉnh nội dung</span></div>
 <div><strong>Mobile</strong><span>Tối ưu responsive</span></div>
 </div>
@@ -59,24 +59,14 @@
 <div class="theme-filter__group">
 <label>Loại website</label>
 <div class="filter-checks">
-<label><input data-filter-type="" type="checkbox" value="doanh-nghiep"/> Website doanh nghiệp</label>
-<label><input data-filter-type="" type="checkbox" value="ban-hang"/> Website bán hàng</label>
-<label><input data-filter-type="" type="checkbox" value="landing-page"/> Landing page</label>
-<label><input data-filter-type="" type="checkbox" value="dich-vu"/> Website dịch vụ</label>
+<?php foreach (\App\Enums\TemplateType::cases() as $type): ?><label><input data-filter-type="" type="checkbox" value="<?= e($type->value) ?>"/> <?= e($type->label()) ?></label><?php endforeach; ?>
 </div>
 </div>
 <div class="theme-filter__group">
 <label for="industryDesktop">Ngành nghề</label>
 <select class="form-select" data-filter-industry="" id="industryDesktop">
 <option value="all">Tất cả ngành nghề</option>
-<option value="san-xuat">Sản xuất</option>
-<option value="thuong-mai">Thương mại</option>
-<option value="du-lich">Du lịch</option>
-<option value="giao-duc">Giáo dục</option>
-<option value="noi-that">Nội thất - xây dựng</option>
-<option value="nha-hang">Nhà hàng - ẩm thực</option>
-<option value="spa">Spa - làm đẹp</option>
-<option value="ky-thuat">Thiết bị - kỹ thuật</option>
+<?php foreach ($industries as $industry): ?><option value="<?= e($industry->slug) ?>"><?= e($industry->name) ?></option><?php endforeach; ?>
 </select>
 </div>
 <div class="theme-filter__group">
@@ -91,10 +81,7 @@
 <div class="theme-filter__group">
 <label>Tính năng</label>
 <div class="filter-checks">
-<label><input data-filter-feature="" type="checkbox" value="multilang"/> Đa ngôn ngữ</label>
-<label><input data-filter-feature="" type="checkbox" value="ecommerce"/> Giỏ hàng - đặt hàng</label>
-<label><input data-filter-feature="" type="checkbox" value="booking"/> Đặt lịch - booking</label>
-<label><input data-filter-feature="" type="checkbox" value="lead"/> Form thu lead</label>
+<?php foreach ($features as $feature): ?><label><input data-filter-feature="" type="checkbox" value="<?= e($feature->slug) ?>"/> <?= e($feature->name) ?></label><?php endforeach; ?>
 </div>
 </div>
 </div>
@@ -145,21 +132,21 @@
 </div>
 </section>
 
-<script type="application/json" id="themesJson"><?= json_encode(array_map(static function (array $theme): array {
+<script type="application/json" id="themesJson"><?= json_encode($themes->map(static function (\App\Models\Template $theme): array {
   return [
-    'id' => $theme['id'],
-    'code' => $theme['code'],
-    'name' => $theme['name'],
-    'typeLabel' => $theme['typeLabel'],
-    'industryLabel' => $theme['industryLabel'],
-    'price' => $theme['price'],
-    'duration' => $theme['duration'],
-    'description' => $theme['description'],
-    'tags' => $theme['tags'],
-    'imageUrl' => $theme['image_url'],
-    'detailUrl' => theme_url($theme),
+    'id' => $theme->id,
+    'code' => $theme->code,
+    'name' => $theme->name,
+    'typeLabel' => $theme->type_label,
+    'industryLabel' => $theme->industry_label,
+    'price' => $theme->price,
+    'duration' => $theme->duration,
+    'description' => $theme->description,
+    'tags' => $theme->tags ?? [],
+    'imageUrl' => $theme->image_url,
+    'detailUrl' => $theme->url,
   ];
-}, $themes), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>
+})->all(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>
 
 </main>
 

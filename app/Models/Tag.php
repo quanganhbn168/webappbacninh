@@ -28,9 +28,4 @@ class Tag extends Model
     {
         return $this->morphedByMany(Post::class, 'taggable');
     }
-
-    public function templates(): \Illuminate\Database\Eloquent\Relations\MorphedByMany
-    {
-        return $this->morphedByMany(Template::class, 'taggable');
-    }
 }

@@ -247,11 +247,7 @@ if (! function_exists('absolute_url')) {
     }
 }
 
-if (! function_exists('themes')) {
-    function themes(): array
-    {
-        return config('themes', []);
-    }
+if (! function_exists('projects')) {
     function projects(): array
     {
         return config('projects', []);
@@ -261,10 +257,6 @@ if (! function_exists('themes')) {
         return config('articles', []);
     }
 
-    function theme_by_slug(string $slug): ?array
-    {
-        return collect(themes())->firstWhere('slug', $slug);
-    }
     function project_by_slug(string $slug): ?array
     {
         return collect(projects())->firstWhere('slug', $slug);
@@ -274,10 +266,6 @@ if (! function_exists('themes')) {
         return collect(articles())->firstWhere('slug', $slug);
     }
 
-    function theme_url(array $theme): string
-    {
-        return route('themes.show', $theme['slug']);
-    }
     function project_url(array $project): string
     {
         return route('projects.show', $project['slug']);
@@ -285,13 +273,6 @@ if (! function_exists('themes')) {
     function article_url(array $article): string
     {
         return route('articles.show', $article['slug']);
-    }
-
-    function related_themes(array $current, int $limit = 3): array
-    {
-        return collect(themes())->reject(fn (array $item) => $item['slug'] === $current['slug'])
-            ->sortByDesc(fn (array $item) => (($item['industry'] === $current['industry']) ? 2 : 0) + (($item['type'] === $current['type']) ? 1 : 0) + (($item['featured'] ?? 0) / 100))
-            ->take($limit)->values()->all();
     }
 
     function related_projects(array $current, int $limit = 3): array

@@ -7,7 +7,6 @@ use App\Models\OperationService;
 use App\Models\Post;
 use App\Models\Project;
 use App\Models\Service;
-use App\Models\Template;
 use App\Models\TemplateCategory;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
@@ -31,7 +30,6 @@ class ImportLegacyMedia extends Command
             'og_image' => 'og',
         ]);
         $imported += $this->importFor(Project::class, ['image' => 'featured']);
-        $imported += $this->importFor(Template::class, ['image' => 'featured']);
         $imported += $this->importFor(AdBanner::class, ['image' => 'featured']);
         $imported += $this->importFor(TemplateCategory::class, [
             'image' => 'featured',

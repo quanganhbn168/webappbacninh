@@ -2,91 +2,156 @@
 
 namespace App\Models;
 
-use App\Traits\ImportsLegacyMedia;
+use App\Enums\TemplateType;
+use App\Traits\HasSlug;
+use Awcodes\Curator\Models\Media;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 
-class Template extends Model implements HasMedia
+class Template extends Model
 {
-    use \App\Traits\HasSlug;
     use HasFactory;
-    use ImportsLegacyMedia;
-    use InteractsWithMedia;
+    use HasSlug;
 
     protected $fillable = [
+        'template_category_id',
+        'code',
         'name',
         'slug',
-        'image',
-        'category', // Legacy
-        'template_category_id', // New Relation
+        'type',
+        'image_id',
+        'gallery',
         'demo_url',
-        'is_premium',
         'price',
         'sale_price',
-        'is_free',
+        'year',
+        'description',
+        'badge',
+        'duration',
+        'tags',
+        'audiences',
+        'pages',
+        'included_features',
+        'customizations',
+        'meta_title',
+        'meta_description',
+        'is_featured',
         'order',
         'is_active',
-        'is_active',
-        // 'tags', // Removed
-        'content',
-        'code', 'type', 'industry', 'year', 'description', 'badge', 'duration', 'data', 'is_featured',
     ];
 
     protected $casts = [
-        'is_premium' => 'boolean',
-        'is_free' => 'boolean',
-        'is_active' => 'boolean',
-        // 'tags' => 'array', // Removed
-        'price' => 'decimal:0',
-        'sale_price' => 'decimal:0',
-        'data' => 'array',
+        'type' => TemplateType::class,
+        'gallery' => 'array',
+        'tags' => 'array',
+        'audiences' => 'array',
+        'pages' => 'array',
+        'included_features' => 'array',
+        'customizations' => 'array',
+        'price' => 'integer',
+        'sale_price' => 'integer',
+        'year' => 'integer',
         'is_featured' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
-    public function templateCategory()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(TemplateCategory::class, 'template_category_id');
     }
 
-    public function tags(): \Illuminate\Database\Eloquent\Relations\MorphToMany
+    public function features(): BelongsToMany
     {
-        return $this->morphToMany(Tag::class, 'taggable');
+        return $this->belongsToMany(ThemeFeature::class, 'template_theme_feature');
     }
 
-    public function scopeActive($query)
+    public function image(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'image_id');
+    }
+
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }
 
-    public function scopeOrdered($query)
+    public function scopeOrdered(Builder $query): Builder
     {
-        return $query->orderBy('order', 'asc');
+        return $query->orderBy('order')->orderBy('id');
     }
 
-    public function getImageUrlAttribute()
+    public function scopeForCatalog(Builder $query): Builder
     {
-        if ($this->hasMedia('featured')) {
-            return $this->getFirstMediaUrl('featured');
-        }
-        if ($this->image) {
-            // Check if it's a storage path (new method)
-            if (str_starts_with($this->image, 'storage/')) {
-                return asset($this->image);
-            }
-            // Check legacy path
-            if (file_exists(public_path($this->image))) {
-                return asset($this->image);
-            }
-        }
-
-        return asset('images/no-image.jpg'); // Fallback
+        return $query->active()->ordered()->with(['category', 'features', 'image']);
     }
 
-    public function registerMediaCollections(): void
+    /**
+     * Other active templates, same industry first, then featured ones.
+     *
+     * @return Collection<int, self>
+     */
+    public function related(int $limit = 3): Collection
     {
-        $this->addMediaCollection('featured')->singleFile();
-        $this->addMediaCollection('gallery');
+        return self::query()->forCatalog()->whereKeyNot($this->getKey())->get()
+            ->sortByDesc(fn (self $template): int => ($template->template_category_id === $this->template_category_id ? 2 : 0) + (int) $template->is_featured)
+            ->take($limit)
+            ->values();
+    }
+
+    protected function url(): Attribute
+    {
+        return Attribute::get(fn (): string => route('themes.show', $this->slug));
+    }
+
+    protected function typeLabel(): Attribute
+    {
+        return Attribute::get(fn (): string => $this->type?->label() ?? TemplateType::Service->label());
+    }
+
+    protected function industrySlug(): Attribute
+    {
+        return Attribute::get(fn (): string => $this->category?->slug ?? 'khac');
+    }
+
+    protected function industryLabel(): Attribute
+    {
+        return Attribute::get(fn (): string => $this->category?->name ?? 'Khác');
+    }
+
+    protected function featureKeys(): Attribute
+    {
+        return Attribute::get(fn (): array => $this->features->pluck('slug')->all());
+    }
+
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::get(fn (): string => $this->image?->url ?? frontend_asset('assets/images/project-corporate.webp'));
+    }
+
+    /**
+     * The gallery images, or the cover image when the gallery is empty.
+     */
+    protected function galleryUrls(): Attribute
+    {
+        return Attribute::get(function (): array {
+            $ids = array_values(array_filter($this->gallery ?? []));
+            $media = $ids === [] ? collect() : Media::query()->whereKey($ids)->get()->keyBy('id');
+            $urls = collect($ids)->map(fn (int|string $id): ?string => $media->get((int) $id)?->url)->filter()->values()->all();
+
+            return $urls !== [] ? $urls : [$this->image_url];
+        });
+    }
+
+    /**
+     * Sort weight for the "Nổi bật" order in the public catalog.
+     */
+    protected function featuredScore(): Attribute
+    {
+        return Attribute::get(fn (): int => ($this->is_featured ? 1000 : 0) - (int) $this->order);
     }
 }

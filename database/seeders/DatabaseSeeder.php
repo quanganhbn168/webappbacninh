@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             MenuSeeder::class,
             FrontendDataSeeder::class,
             PageSeeder::class,
+            TemplateSeeder::class,
             MediaSeeder::class,
             MiniAppSeeder::class,
             AdBannerSeeder::class,

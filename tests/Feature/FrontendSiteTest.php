@@ -124,8 +124,8 @@ class FrontendSiteTest extends TestCase
         foreach (config('website_services') as $item) {
             $this->get('/thiet-ke-website/'.$item['slug'])->assertOk();
         }
-        foreach (config('themes') as $item) {
-            $this->get('/kho-giao-dien/'.$item['slug'])->assertOk();
+        foreach (Template::query()->active()->pluck('slug') as $slug) {
+            $this->get('/kho-giao-dien/'.$slug)->assertOk();
         }
         foreach (config('projects') as $item) {
             $this->get('/du-an/'.$item['slug'])->assertOk();

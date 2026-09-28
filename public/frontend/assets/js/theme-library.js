@@ -6,9 +6,11 @@
 
   const pageSize = 6;
   const state = { search:'', types:[], industry:'all', price:'all', features:[], sort:'featured', page:1, quick:'all' };
-  const typeLabels = {'doanh-nghiep':'Website doanh nghiệp','ban-hang':'Website bán hàng','landing-page':'Landing page','dich-vu':'Website dịch vụ'};
-  const featureLabels = {multilang:'Đa ngôn ngữ',ecommerce:'Giỏ hàng',booking:'Booking',lead:'Form lead'};
-  const industryLabels = {'san-xuat':'Sản xuất','thuong-mai':'Thương mại','du-lich':'Du lịch','giao-duc':'Giáo dục','noi-that':'Nội thất - xây dựng','nha-hang':'Nhà hàng - ẩm thực','spa':'Spa - làm đẹp','ky-thuat':'Thiết bị - kỹ thuật'};
+  // Labels come from the rendered filter controls, which are built from the admin data.
+  const labelsFrom = (selector, text) => Object.fromEntries([...document.querySelectorAll(selector)].filter(el => el.value !== 'all').map(el => [el.value, text(el).trim()]));
+  const typeLabels = labelsFrom('[data-filter-type]', el => el.parentElement.textContent);
+  const featureLabels = labelsFrom('[data-filter-feature]', el => el.parentElement.textContent);
+  const industryLabels = labelsFrom('[data-filter-industry] option', el => el.textContent);
   const themeList = document.getElementById('themeList');
   const resultCount = document.getElementById('resultCount');
   const activeFilterText = document.getElementById('activeFilterText');

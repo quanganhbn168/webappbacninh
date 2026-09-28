@@ -13,25 +13,6 @@ class FrontendDataSeeder extends Seeder
     {
         $now = now();
 
-        foreach (config('themes') as $order => $theme) {
-            $categoryId = $this->category('template_categories', $theme['industry'], $theme['industryLabel'], $order, $now);
-            DB::table('templates')->updateOrInsert(['slug' => $theme['slug']], [
-                'template_category_id' => $categoryId, 'code' => $theme['code'], 'name' => $theme['name'],
-                'image' => 'frontend/assets/images/'.$theme['image'], 'category' => $theme['industryLabel'],
-                'type' => $theme['type'], 'industry' => $theme['industry'], 'price' => $theme['price'],
-                'year' => $theme['year'], 'description' => $theme['description'], 'content' => json_encode($theme['includedFeatures'], JSON_UNESCAPED_UNICODE),
-                'badge' => $theme['badge'], 'duration' => $theme['duration'], 'data' => $this->json($theme),
-                'is_featured' => (bool) $theme['featured'], 'is_premium' => $theme['price'] > 0, 'is_free' => $theme['price'] === 0,
-                'order' => $order, 'is_active' => true, 'created_at' => $now, 'updated_at' => $now,
-            ]);
-            $templateId = DB::table('templates')->where('slug', $theme['slug'])->value('id');
-            foreach ($theme['featureKeys'] as $feature) {
-                DB::table('theme_features')->updateOrInsert(['slug' => $feature], ['name' => Str::headline($feature), 'created_at' => $now, 'updated_at' => $now]);
-                $featureId = DB::table('theme_features')->where('slug', $feature)->value('id');
-                DB::table('template_theme_feature')->updateOrInsert(['template_id' => $templateId, 'theme_feature_id' => $featureId]);
-            }
-        }
-
         foreach (config('projects') as $order => $project) {
             $categoryId = $this->category('project_categories', $project['industry'], $project['industry_label'], $order, $now);
             DB::table('projects')->updateOrInsert(['slug' => $project['slug']], [

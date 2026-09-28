@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Settings\SiteDefaults;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,7 +17,7 @@ class SiteServiceProvider extends ServiceProvider
             $values = collect(site_settings());
             View::share('site_settings', $values);
         } catch (\Throwable) {
-            View::share('site_settings', collect(config('site')));
+            View::share('site_settings', collect(SiteDefaults::all()));
         }
     }
 }

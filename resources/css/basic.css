@@ -1,0 +1,5 @@
+/* Standalone Bootstrap pages without the site header and footer: sign-in, errors, payment. */
+@import '@fontsource-variable/roboto';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
+.error-page__code { font-size: clamp(5rem, 14vw, 8rem); line-height: 1; }

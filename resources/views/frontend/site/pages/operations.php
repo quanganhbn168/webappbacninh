@@ -15,10 +15,10 @@
     <div class="container"><div class="section-heading text-center"><span class="section-kicker"><?= e((string) count($operationServices)) ?> NHÓM CÔNG VIỆC</span><h2>Chọn đúng phần doanh nghiệp đang thiếu</h2><p>Không bắt buộc mua trọn gói. Mỗi nhóm có thể triển khai riêng hoặc kết hợp.</p></div>
       <div class="service-detail-grid">
         <?php foreach ($operationServices as $index => $service): ?>
-          <article id="<?= e($service['slug']) ?>">
-            <a class="service-detail-card__link" href="<?= e(route('operations.show', $service['slug'])) ?>" aria-label="Xem dịch vụ <?= e($service['title']) ?>"></a>
-            <i class="<?= e($service['icon']) ?>"></i><span><?= e(str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT)) ?></span><h3><?= e($service['title']) ?></h3><p><?= e($service['description']) ?></p>
-            <?php if (!empty($service['scope'])): ?><ul><?php foreach (array_slice($service['scope'], 0, 4) as $scope): ?><li><?= e($scope['title']) ?></li><?php endforeach; ?></ul><?php endif; ?>
+          <article id="<?= e($service->slug) ?>">
+            <a class="service-detail-card__link" href="<?= e($service->url) ?>" aria-label="Xem dịch vụ <?= e($service->title) ?>"></a>
+            <i class="<?= e($service->icon_class) ?>"></i><span><?= e(str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT)) ?></span><h3><?= e($service->title) ?></h3><p><?= e($service->description) ?></p>
+            <?php if (!empty(($service->scope ?? []))): ?><ul><?php foreach (array_slice(($service->scope ?? []), 0, 4) as $scope): ?><li><?= e($scope['title']) ?></li><?php endforeach; ?></ul><?php endif; ?>
             <strong class="service-detail-card__more">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></strong>
           </article>
         <?php endforeach; ?>

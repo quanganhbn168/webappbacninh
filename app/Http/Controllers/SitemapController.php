@@ -53,7 +53,7 @@ class SitemapController extends Controller
                 )));
 
             Service::active()->get()->each(fn (Service $service) => $sitemap->add($this->url(
-                route('services.show', ['slug' => $service->slug]),
+                $service->url,
                 $service->updated_at,
                 0.9,
                 Url::CHANGE_FREQUENCY_WEEKLY,

@@ -1,4 +1,4 @@
-@extends('layouts.plain')
+@extends('layouts.basic')
 
 @section('title', 'Đăng ký - WebApp Bắc Ninh')
 
@@ -13,6 +13,10 @@
                             <h3 class="fw-bold text-primary">Tạo Tài Khoản</h3>
                             <p class="text-muted small">Tham gia cộng đồng WebApp Bắc Ninh ngay hôm nay.</p>
                         </div>
+
+                        @if (session('error'))
+                            <div class="alert alert-danger mb-4 rounded-3 border-0 bg-danger bg-opacity-10 text-danger small">{{ session('error') }}</div>
+                        @endif
 
                         @if ($errors->any())
                             <div class="alert alert-danger mb-4 rounded-3 border-0 bg-danger bg-opacity-10 text-danger small">
@@ -66,20 +70,7 @@
                                 <button type="submit" class="btn btn-primary btn-lg shadow-sm fw-bold">Đăng ký ngay</button>
                             </div>
 
-                            <div class="position-relative mb-4 text-center">
-                                <hr class="text-secondary opacity-25">
-                                <span class="position-absolute top-50 start-50 translate-middle bg-body px-2 small text-muted">Hoặc đăng ký với</span>
-                            </div>
-
-                            <div class="d-flex gap-2 mb-3">
-                                <a href="{{ route('social.login', 'google') }}" class="btn btn-outline-danger w-50 fw-bold">
-                                    <i class="fab fa-google me-2"></i> Google
-                                </a>
-                                {{-- Custom Style for Facebook Blue --}}
-                                <a href="{{ route('social.login', 'facebook') }}" class="btn w-50 fw-bold" style="color: #1877F2; border-color: #1877F2; background-color: transparent;" onmouseover="this.style.backgroundColor='#1877F2'; this.style.color='white'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#1877F2'">
-                                    <i class="fab fa-facebook-f me-2"></i> Facebook
-                                </a>
-                            </div>
+                            @include('frontend.auth.partials.social-buttons', ['label' => 'Hoặc đăng ký với'])
                         </form>
 
                         <div class="text-center">

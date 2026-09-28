@@ -10,8 +10,6 @@
   const consultModal = $('#consult-modal');
   const previewModal = $('#preview-modal');
   const domainModal = $('#domain-modal');
-  const nav = $('#main-nav');
-  const menuButton = $('[data-menu-toggle]');
   let modalTrigger = null;
   let toastTimer = null;
 
@@ -24,18 +22,22 @@
   }
 
   function closeMenu() {
-    nav?.classList.remove('is-open');
-    menuButton?.setAttribute('aria-expanded', 'false');
-    menuButton?.setAttribute('aria-label', 'Mở menu');
+    const nav = $('#main-nav');
+    if (nav && window.bootstrap) window.bootstrap.Offcanvas.getInstance(nav)?.hide();
   }
 
-  function showModal(dialog, trigger = document.activeElement) {
-    if (!dialog) return;
+  const modal = element => window.bootstrap.Modal.getOrCreateInstance(element);
+
+  function showModal(element, trigger = document.activeElement) {
+    if (!element) return;
     closeMenu();
-    $$('dialog[open]').forEach(item => item.close());
+    $$('.modal.show').forEach(open => { if (open !== element) modal(open).hide(); });
     modalTrigger = trigger;
-    dialog.showModal();
-    dialog.scrollTop = 0;
+    modal(element).show();
+  }
+
+  function hideModal(element) {
+    if (element) modal(element).hide();
   }
 
   function openConsult(service, trigger) {
@@ -57,50 +59,18 @@
     showModal(previewModal, trigger);
   }
 
-  menuButton?.addEventListener('click', () => {
-    const open = !nav.classList.contains('is-open');
-    nav.classList.toggle('is-open', open);
-    menuButton.setAttribute('aria-expanded', String(open));
-    menuButton.setAttribute('aria-label', open ? 'Đóng menu' : 'Mở menu');
-  });
-
-  $$('.dropdown-toggle').forEach(toggle => {
-    toggle.addEventListener('click', () => {
-      const parent = toggle.closest('.nav-dropdown');
-      const open = !parent.classList.contains('is-open');
-      parent.classList.toggle('is-open', open);
-      toggle.setAttribute('aria-expanded', String(open));
-    });
-  });
-
-  $$('dialog').forEach(dialog => {
-    // Only clicks outside the content bounds dismiss the dialog.
-    dialog.addEventListener('click', event => {
-      if (event.target !== dialog) return;
-      const rect = dialog.getBoundingClientRect();
-      if (event.clientX < rect.left || event.clientX > rect.right ||
-          event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
-    });
-    dialog.addEventListener('close', () => {
-      if (!$('dialog[open]') && modalTrigger instanceof HTMLElement) {
-        modalTrigger.focus({ preventScroll: true });
-      }
-    });
+  // Return focus to the element that opened a modal.
+  document.addEventListener('hidden.bs.modal', () => {
+    if (!$('.modal.show') && modalTrigger instanceof HTMLElement) modalTrigger.focus({ preventScroll: true });
   });
 
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') {
-      closeMenu();
-      $$('.nav-dropdown.is-open').forEach(el => el.classList.remove('is-open'));
-      $$('.dropdown-toggle').forEach(el => el.setAttribute('aria-expanded', 'false'));
-    }
+    if (event.key === 'Escape') closeMenu();
   });
 
   document.addEventListener('click', event => {
     const target = event.target instanceof Element ? event.target : null;
     if (!target) return;
-    const close = target.closest('[data-close]');
-    if (close) { close.closest('dialog')?.close(); return; }
     const consult = target.closest('[data-consult]');
     if (consult) { openConsult(consult.dataset.consult, consult); return; }
     const preview = target.closest('[data-preview]');
@@ -147,12 +117,8 @@
       $('#preview-extra').append(list);
       return;
     }
+    // Same-page anchors in the mobile menu should close the panel.
     if (target.closest('.main-nav a')) closeMenu();
-    if (!target.closest('.site-header')) closeMenu();
-    if (!target.closest('.nav-dropdown')) {
-      $$('.nav-dropdown.is-open').forEach(el => el.classList.remove('is-open'));
-      $$('.dropdown-toggle').forEach(el => el.setAttribute('aria-expanded','false'));
-    }
   });
 
   const form = $('#consult-form');
@@ -185,7 +151,7 @@
         const response = await config.submitConsultation(payload);
         if (!response || response.ok !== true) throw new Error(response?.message || 'Máy chủ chưa xác nhận gửi thành công.');
         toast(response.message || 'Yêu cầu đã được máy chủ tiếp nhận.');
-        form.reset(); consultModal.close();
+        form.reset(); hideModal(consultModal);
       } catch (e) {
         error.textContent = e instanceof Error ? e.message : 'Không thể kết nối. Vui lòng thử lại.';
         error.hidden = false;
@@ -237,6 +203,5 @@
     if (item.open) $$('.faq-item[open]').forEach(other => { if (other !== item) other.open = false; });
   }));
 
-  window.matchMedia('(min-width: 960px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
 
 })();

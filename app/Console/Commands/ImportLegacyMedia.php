@@ -3,11 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\AdBanner;
-use App\Models\OperationService;
 use App\Models\Post;
-use App\Models\Project;
-use App\Models\Service;
-use App\Models\Template;
 use App\Models\TemplateCategory;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
@@ -30,20 +26,10 @@ class ImportLegacyMedia extends Command
             'featured_image' => 'featured',
             'og_image' => 'og',
         ]);
-        $imported += $this->importFor(Project::class, ['image' => 'featured']);
-        $imported += $this->importFor(Template::class, ['image' => 'featured']);
         $imported += $this->importFor(AdBanner::class, ['image' => 'featured']);
         $imported += $this->importFor(TemplateCategory::class, [
             'image' => 'featured',
             'og_image' => 'og',
-        ]);
-        $imported += $this->importFor(Service::class, [
-            'image' => 'featured',
-            'secondary_image' => 'gallery',
-        ]);
-        $imported += $this->importFor(OperationService::class, [
-            'image' => 'featured',
-            'secondary_image' => 'gallery',
         ]);
 
         $this->components->info($this->option('dry-run')

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\OperationService;
+use App\Models\Page;
 use App\Models\Post;
 use App\Models\Project;
 use App\Models\Service;
@@ -120,23 +121,23 @@ class FrontendSiteTest extends TestCase
 
     public function test_all_dynamic_pages_render(): void
     {
-        foreach (config('website_services') as $item) {
-            $this->get('/thiet-ke-website/'.$item['slug'])->assertOk();
+        foreach (Service::query()->active()->where('is_landing', true)->pluck('slug') as $slug) {
+            $this->get('/thiet-ke-website/'.$slug)->assertOk();
         }
-        foreach (config('themes') as $item) {
-            $this->get('/kho-giao-dien/'.$item['slug'])->assertOk();
+        foreach (Template::query()->active()->pluck('slug') as $slug) {
+            $this->get('/kho-giao-dien/'.$slug)->assertOk();
         }
-        foreach (config('projects') as $item) {
-            $this->get('/du-an/'.$item['slug'])->assertOk();
+        foreach (Project::query()->active()->pluck('slug') as $slug) {
+            $this->get('/du-an/'.$slug)->assertOk();
         }
-        foreach (config('articles') as $item) {
-            $this->get('/kien-thuc/'.$item['slug'])->assertOk();
+        foreach (Post::query()->published()->pluck('slug') as $slug) {
+            $this->get('/kien-thuc/'.$slug)->assertOk();
         }
-        foreach (config('operation_services') as $item) {
-            $this->get('/dich-vu-van-hanh/'.pathinfo($item['route'], PATHINFO_FILENAME))->assertOk();
+        foreach (OperationService::query()->active()->pluck('slug') as $slug) {
+            $this->get('/dich-vu-van-hanh/'.$slug)->assertOk();
         }
-        foreach (config('legal_pages') as $item) {
-            $this->get('/'.$item['slug'])->assertOk();
+        foreach (Page::query()->active()->pluck('slug') as $slug) {
+            $this->get('/'.$slug)->assertOk();
         }
 
         $this->get(route('services.show', 'website-doanh-nghiep'))

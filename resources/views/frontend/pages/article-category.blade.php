@@ -1,5 +1,5 @@
 <div class="secondary-content">
-    <main id="main" x-data="catalog()" data-catalog>
+    <main id="main" data-catalog>
         <section class="hero">
             <div class="container hero-inner">
                 <div class="hero-copy">
@@ -13,7 +13,7 @@
             </div>
         </section>
         <section class="section">
-            <div class="container cards-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="container cards-grid">
                 @forelse($catalogItems as $item)
                     @include('partials.frontend.catalog-card', ['catalogType' => 'articles'])
                 @empty

@@ -1,106 +1,28 @@
 <footer class="site-footer" id="lien-he">
    <div class="container footer-grid">
     <div class="footer-brand">
-     <a aria-label="WebApp Bắc Ninh - Trang chủ" class="brand" href="/">
-      @if(site_config('site_logo_wide'))
-<img class="brand__logo" src="{{ site_asset_url(site_config('site_logo_wide')) }}" alt="{{ site_config('name') }}" width="230" height="64">
-@else
-<span class="brand__name">
-       WEBAPP
-       <b>
-        BẮC NINH
-       </b>
-      </span>
-      <span class="brand__tagline">
-       <i>
-       </i>
-       WEBSITE - PHẦN MỀM - VẬN HÀNH SỐ
-       <i>
-       </i>
-      </span>
-     @endif
-</a>
+     @include('partials.frontend.brand')
      <p>
       Đồng hành cùng doanh nghiệp trong hành trình chuyển đổi số với những giải pháp website, phần mềm và vận hành hiệu quả.
      </p>
-     <div class="flex flex-wrap gap-3 mt-4">
+     <div class="d-flex flex-wrap gap-3 mt-4">
 @foreach ($socialChannels['footer'] as $channel)
-<a href="{{ $channel['url'] }}" target="_blank" rel="noopener noreferrer" class="text-sm font-semibold">{{ $channel['label'] }}</a>
+<a href="{{ $channel['url'] }}" target="_blank" rel="noopener noreferrer" class="small fw-semibold">{{ $channel['label'] }}</a>
 @endforeach
 </div>
     </div>
-    <div class="footer-column">
-     <h3>
-      Dịch vụ
-     </h3>
-     <a href="/dich-vu#thiet-ke-website">
-      Thiết kế Website
-     </a>
-     <a href="/dich-vu#phan-mem">
-      Phần mềm doanh nghiệp
-     </a>
-     <a href="/dich-vu#crm-booking">
-      CRM &amp; Booking
-     </a>
-     <a href="/dich-vu#seo-quang-cao">
-      SEO &amp; Nội dung
-     </a>
-     <a href="/dich-vu#seo-quang-cao">
-      Quảng cáo &amp; Tracking
-     </a>
-     <a href="/dich-vu#quy-trinh">
-      Chăm sóc &amp; Vận hành
-     </a>
-    </div>
-    <div class="footer-column">
-     <h3>
-      Sản phẩm
-     </h3>
-     <button data-description="Website dành cho spa, thẩm mỹ và chăm sóc sắc đẹp." data-image="/frontend/images/product-spa.svg" data-preview="" data-title="Website Spa" type="button">
-      Website Spa
-     </button>
-     <button data-description="Giới thiệu tour, điểm đến, lưu trú và nhận yêu cầu đặt chỗ." data-image="/frontend/images/project-resort.webp" data-preview="" data-title="Website Du lịch" type="button">
-      Website Du lịch
-     </button>
-     <button data-description="Trưng bày bộ sưu tập nội thất, dự án và hồ sơ năng lực." data-image="/frontend/images/service-website.webp" data-preview="" data-title="Website Nội thất" type="button">
-      Website Nội thất
-     </button>
-     <button data-description="Giới thiệu thiết bị, dịch vụ và dự án phòng cháy chữa cháy." data-image="/frontend/images/product-pccc.svg" data-preview="" data-title="Website PCCC" type="button">
-      Website PCCC
-     </button>
-     <button data-description="Quản lý khách hàng, cơ hội và quy trình chăm sóc." data-image="/frontend/images/service-crm.webp" data-preview="" data-title="CRM" type="button">
-      CRM
-     </button>
-     <button data-description="Nhận và quản lý lịch đặt hẹn cho doanh nghiệp dịch vụ." data-image="/frontend/images/hero-services.webp" data-preview="" data-title="Booking System" type="button">
-      Booking System
-     </button>
-     <button data-description="Kết nối các nghiệp vụ vận hành trên một hệ thống quản trị." data-image="/frontend/images/service-software.webp" data-preview="" data-title="Mini ERP" type="button">
-      Mini ERP
-     </button>
-    </div>
-    <div class="footer-column">
-     <h3>
-      Về chúng tôi
-     </h3>
-     <a href="/gioi-thieu">
-      Giới thiệu
-     </a>
-     <a href="/du-an">
-      Dự án tiêu biểu
-     </a>
-     <a href="/bang-gia">
-      Bảng giá
-     </a>
-     <a href="/kien-thuc">
-      Blog - Kiến thức
-     </a>
-     <button data-consult="Hợp tác / Tuyển dụng" type="button">
-      Tuyển dụng
-     </button>
-     <button data-consult="Liên hệ" type="button">
-      Liên hệ
-     </button>
-    </div>
+    @foreach ([\App\Models\Menu::FOOTER_SERVICES, \App\Models\Menu::FOOTER_PRODUCTS, \App\Models\Menu::FOOTER_ABOUT] as $location)
+     @php($footerMenu = app(\App\Domain\Navigation\Actions\BuildMenuTree::class)->name($location))
+     @php($footerItems = app(\App\Domain\Navigation\Actions\BuildMenuTree::class)->execute($location))
+     @if ($footerMenu && $footerItems !== [])
+      <nav class="footer-column" aria-label="{{ $footerMenu }}">
+       <h3>{{ $footerMenu }}</h3>
+       @foreach ($footerItems as $item)
+        <a href="{{ $item['url'] }}" @if ($item['new_tab']) target="_blank" rel="noopener" @endif>{{ $item['title'] }}</a>
+       @endforeach
+      </nav>
+     @endif
+    @endforeach
     <div class="footer-column footer-contact">
      @if (site_config('phone_secondary') && site_config('phone_secondary_href'))
          <a href="tel:{{ site_config('phone_secondary_href') }}">{{ site_config('phone_secondary') }}</a>

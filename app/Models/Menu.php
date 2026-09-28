@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Menu extends Model
 {
+    public const HEADER = 'header';
+
+    public const FOOTER_SERVICES = 'footer_services';
+
+    public const FOOTER_PRODUCTS = 'footer_products';
+
+    public const FOOTER_ABOUT = 'footer_about';
+
     protected $fillable = ['name', 'location', 'is_active'];
 
     protected function casts(): array
@@ -15,7 +23,28 @@ class Menu extends Model
         return ['is_active' => 'boolean'];
     }
 
+    /**
+     * @return array<string, string>
+     */
+    public static function locations(): array
+    {
+        return [
+            self::HEADER => 'Menu chính (header)',
+            self::FOOTER_SERVICES => 'Footer – cột 1',
+            self::FOOTER_PRODUCTS => 'Footer – cột 2',
+            self::FOOTER_ABOUT => 'Footer – cột 3',
+        ];
+    }
+
+    /**
+     * Top-level items, each with its children, in display order.
+     */
     public function items(): HasMany
+    {
+        return $this->allItems()->whereNull('parent_id')->orderBy('position')->orderBy('id');
+    }
+
+    public function allItems(): HasMany
     {
         return $this->hasMany(MenuItem::class);
     }

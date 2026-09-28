@@ -54,9 +54,7 @@ class SlugObserver
             return false;
         }
 
-        return collect(config('website_services'))->contains(
-            fn (array $service): bool => $service['slug'] === $model->slug
-        );
+        return (bool) $model->is_landing;
     }
 
     private function deleteSlugEntry(Model $model): void

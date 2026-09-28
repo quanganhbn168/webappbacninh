@@ -1,8 +1,9 @@
 
-  <!-- Shared consultation and preview dialogs. -->
-  <dialog aria-labelledby="consult-title" class="modal" id="consult-modal">
-   <div class="modal-shell">
-    <button aria-label="Đóng" class="modal-close" data-close="" type="button">
+  <!-- Shared consultation, preview and domain modals (Bootstrap). -->
+  <div aria-labelledby="consult-title" aria-hidden="true" class="modal fade site-modal" id="consult-modal" tabindex="-1">
+   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+   <div class="modal-content modal-shell">
+    <button aria-label="Đóng" class="modal-close" data-bs-dismiss="modal" type="button">
      <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
       <path d="m5 5 14 14M5 19 19 5">
       </path>
@@ -76,10 +77,12 @@
      </div>
     </form>
    </div>
-  </dialog>
-  <dialog aria-labelledby="preview-title" class="modal modal--preview" id="preview-modal">
-   <div class="modal-shell">
-    <button aria-label="Đóng" class="modal-close" data-close="" type="button">
+   </div>
+  </div>
+  <div aria-labelledby="preview-title" aria-hidden="true" class="modal modal--preview fade site-modal" id="preview-modal" tabindex="-1">
+   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+   <div class="modal-content modal-shell">
+    <button aria-label="Đóng" class="modal-close" data-bs-dismiss="modal" type="button">
      <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
       <path d="m5 5 14 14M5 19 19 5">
       </path>
@@ -99,10 +102,12 @@
      Trao đổi về giải pháp này
     </button>
    </div>
-  </dialog>
-  <dialog aria-labelledby="domain-title" class="modal" id="domain-modal">
-   <div class="modal-shell">
-    <button aria-label="Đóng" class="modal-close" data-close="" type="button">
+   </div>
+  </div>
+  <div aria-labelledby="domain-title" aria-hidden="true" class="modal fade site-modal" id="domain-modal" tabindex="-1">
+   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+   <div class="modal-content modal-shell">
+    <button aria-label="Đóng" class="modal-close" data-bs-dismiss="modal" type="button">
      <svg aria-hidden="true" class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24">
       <path d="m5 5 14 14M5 19 19 5">
       </path>
@@ -136,6 +141,7 @@
     </p>
     <p class="form-note">Thông tin chỉ được sử dụng để liên hệ và tư vấn theo nhu cầu của bạn.</p>
    </div>
-  </dialog>
+   </div>
+  </div>
   <div aria-live="polite" class="toast" hidden="" id="toast" role="status">
   </div>

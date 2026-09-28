@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\SocialProvider;
 use App\Http\Controllers\Auth\CustomerAuthController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\Frontend\ArticleController;
@@ -8,9 +9,9 @@ use App\Http\Controllers\Frontend\OperationServiceController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\ProjectController;
 use App\Http\Controllers\Frontend\ServiceController;
-use App\Http\Controllers\Frontend\SiteController;
 use App\Http\Controllers\Frontend\SiteIconController;
 use App\Http\Controllers\Frontend\SiteManifestController;
+use App\Http\Controllers\Frontend\StaticPageController;
 use App\Http\Controllers\Frontend\ThemeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SitemapController;
@@ -27,7 +28,7 @@ Route::redirect('/landing/mau-may-loc-khong khi-mau-1', '/landing/mau-may-loc-kh
 Route::view('/landing/mau-may-loc-khong-khi-mau-2', 'landing.freshair.index')
     ->name('landing.freshair');
 
-Route::get('/', [PageController::class, 'show'])->name('home');
+Route::get('/', [StaticPageController::class, 'show'])->name('home');
 foreach ([
     'dich-vu' => 'services.overview',
     'hosting-domain-email' => 'hosting',
@@ -37,20 +38,21 @@ foreach ([
     'bang-gia' => 'pricing',
     'lien-he' => 'contact',
 ] as $page => $routeName) {
-    Route::get('/'.$page, [PageController::class, 'show'])->defaults('page', $page)->name($routeName);
+    Route::get('/'.$page, [StaticPageController::class, 'show'])->defaults('page', $page)->name($routeName);
 }
-Route::get('/kien-thuc', [PageController::class, 'show'])->defaults('page', 'tin-tuc')->name('articles.index');
+Route::get('/kien-thuc', [StaticPageController::class, 'show'])->defaults('page', 'tin-tuc')->name('articles.index');
 Route::redirect('/tin-tuc', '/kien-thuc', 301);
 
-Route::controller(SiteController::class)->group(function (): void {
-    Route::get('/gioi-thieu', 'about')->name('about');
-    Route::get('/hop-tac-agency', 'agency')->name('agency');
-
-    Route::get('/chinh-sach-bao-mat', 'legal')->defaults('slug', 'chinh-sach-bao-mat')->name('legal.privacy');
-    Route::get('/dieu-khoan-su-dung', 'legal')->defaults('slug', 'dieu-khoan-su-dung')->name('legal.terms');
-    Route::get('/chinh-sach-bao-hanh', 'legal')->defaults('slug', 'chinh-sach-bao-hanh')->name('legal.warranty');
-    Route::get('/quy-trinh-thanh-toan', 'legal')->defaults('slug', 'quy-trinh-thanh-toan')->name('legal.payment');
-});
+foreach ([
+    'gioi-thieu' => 'about',
+    'hop-tac-agency' => 'agency',
+    'chinh-sach-bao-mat' => 'legal.privacy',
+    'dieu-khoan-su-dung' => 'legal.terms',
+    'chinh-sach-bao-hanh' => 'legal.warranty',
+    'quy-trinh-thanh-toan' => 'legal.payment',
+] as $slug => $routeName) {
+    Route::get('/'.$slug, [PageController::class, 'show'])->defaults('slug', $slug)->name($routeName);
+}
 
 Route::get('/thiet-ke-website', [ServiceController::class, 'index'])->name('services.index');
 Route::get('/thiet-ke-website/{slug}', [ServiceController::class, 'detail'])->name('services.show');
@@ -82,8 +84,8 @@ Route::post('/login', [CustomerAuthController::class, 'login']);
 Route::get('/register', [CustomerAuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [CustomerAuthController::class, 'register']);
 Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('logout');
-Route::get('/auth/{provider}', [CustomerAuthController::class, 'redirectToProvider'])->name('social.login');
-Route::get('/auth/{provider}/callback', [CustomerAuthController::class, 'handleProviderCallback']);
+Route::get('/auth/{provider}', [CustomerAuthController::class, 'redirectToProvider'])->name('social.login')->whereIn('provider', array_column(SocialProvider::cases(), 'value'));
+Route::get('/auth/{provider}/callback', [CustomerAuthController::class, 'handleProviderCallback'])->name('social.callback')->whereIn('provider', array_column(SocialProvider::cases(), 'value'));
 Route::get('/domain-check', [DomainController::class, 'check'])->name('domain.check');
 
 Route::get('/anh-cover', [ThumbnailController::class, 'showCoverPage'])->name('cover.page');
@@ -118,7 +120,9 @@ Route::prefix('payment')->group(function (): void {
 });
 
 Route::post('/subscribe', fn () => back()->with('success', 'Cảm ơn bạn đã để lại email, chúng tôi sẽ liên hệ sớm!'))->name('subscribe.email');
-Route::post('/create-tenant', [TenantRegisterController::class, 'store']);
+// Each call creates and migrates a database, so only signed-in admins may use it
+// until public sign-up for the SaaS plan is designed.
+Route::post('/create-tenant', [TenantRegisterController::class, 'store'])->middleware(['auth:admin', 'throttle:5,1']);
 
 $legacyRedirects = [
     'index.php' => 'home',
@@ -136,12 +140,12 @@ foreach ($legacyRedirects as $uri => $routeName) {
     Route::get('/'.$uri, fn () => redirect()->route($routeName, status: 301));
 }
 
-foreach (config('website_services') as $service) {
-    Route::get('/'.$service['route'], fn () => redirect()->route('services.show', $service['slug'], 301));
+// Addresses of the old static PHP site.
+foreach (['website-doanh-nghiep', 'website-ban-hang', 'landing-page', 'thiet-ke-lai-website'] as $slug) {
+    Route::get('/'.$slug.'.php', fn () => redirect()->route('services.show', $slug, 301));
 }
-foreach (config('operation_services') as $service) {
-    $slug = pathinfo($service['route'], PATHINFO_FILENAME);
-    Route::get('/'.$service['route'], fn () => redirect()->route('operations.show', $slug, 301));
+foreach (['hosting-bao-tri-website', 'quan-tri-dang-bai-website', 'seo-website', 'noi-dung-facebook', 'nang-cap-tich-hop-website', 'do-luong-bao-cao-website'] as $slug) {
+    Route::get('/'.$slug.'.php', fn () => redirect()->route('operations.show', $slug, 301));
 }
 $legalRoutes = [
     'chinh-sach-bao-mat' => 'legal.privacy',

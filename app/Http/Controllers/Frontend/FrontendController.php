@@ -8,28 +8,19 @@ use Illuminate\Contracts\View\View;
 
 abstract class FrontendController extends Controller
 {
-    protected function simplePage(string $view, string $title, string $description, string $menu, array $styles = [], string $bodyClass = '', array $scripts = [], ?string $cta = null): View
+    protected function simplePage(string $view, string $title, string $description, string $seoKey, string $bodyClass = '', array $scripts = []): View
     {
-        $seoKey = match ($menu) {
-            'website-service' => 'services',
-            'knowledge' => 'articles',
-            default => $menu,
-        };
         $seo = site_page_seo($seoKey, ['title' => $title, 'description' => $description]);
         $data = [
             'pageTitle' => $seo['title'],
             'pageDescription' => $seo['description'],
-            'activeMenu' => $menu,
-            'headerCta' => $cta ?? route('contact'),
-            'floatingCta' => $cta ?? route('contact'),
-            'extraStyles' => $styles,
             'extraScripts' => $scripts,
             'bodyClass' => $bodyClass,
         ];
 
-        foreach (['keywords' => 'pageKeywords', 'canonical_url' => 'canonicalUrl', 'og_image' => 'ogImage', 'robots' => 'robots'] as $seoKey => $dataKey) {
-            if (filled($seo[$seoKey] ?? null)) {
-                $data[$dataKey] = $seo[$seoKey];
+        foreach (['keywords' => 'pageKeywords', 'canonical_url' => 'canonicalUrl', 'og_image' => 'ogImage', 'robots' => 'robots'] as $field => $dataKey) {
+            if (filled($seo[$field] ?? null)) {
+                $data[$dataKey] = $seo[$field];
             }
         }
 
@@ -50,13 +41,8 @@ abstract class FrontendController extends Controller
             'robots' => 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
             'language' => site_config('default_language', 'vi'),
             'alternateLinks' => [],
-            'extraStyles' => [],
             'extraScripts' => [],
             'bodyClass' => '',
-            'activeMenu' => '',
-            'activeSubmenu' => '',
-            'headerCta' => route('contact'),
-            'floatingCta' => route('contact'),
             'jsonLd' => null,
             'schemaType' => null,
             'schemaData' => [],

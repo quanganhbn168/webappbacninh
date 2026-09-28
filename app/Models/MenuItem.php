@@ -14,11 +14,9 @@ class MenuItem extends Model
         'menu_id',
         'parent_id',
         'title',
-        'route_name',
-        'route_parameter',
         'url',
         'icon',
-        'target',
+        'open_in_new_tab',
         'position',
         'is_active',
     ];
@@ -27,6 +25,7 @@ class MenuItem extends Model
     {
         return [
             'is_active' => 'boolean',
+            'open_in_new_tab' => 'boolean',
             'position' => 'integer',
         ];
     }
@@ -36,13 +35,25 @@ class MenuItem extends Model
         return $this->belongsTo(Menu::class);
     }
 
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
     public function children(): HasMany
     {
-        return $this->hasMany(self::class, 'parent_id')->orderBy('position');
+        return $this->hasMany(self::class, 'parent_id')->orderBy('position')->orderBy('id');
     }
 
     protected static function booted(): void
     {
+        static::saving(function (MenuItem $item): void {
+            // Children always belong to their parent's menu.
+            if ($item->parent_id && $item->parent) {
+                $item->menu_id = $item->parent->menu_id;
+            }
+        });
+
         static::saved(function (MenuItem $item): void {
             $item->forgetMenuCache((int) $item->getOriginal('menu_id'));
             $item->forgetMenuCache((int) $item->menu_id);

@@ -23,10 +23,7 @@
     @if (!empty($jsonLd))
         <script type="application/ld+json">{!! json_encode($jsonLd, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
     @endif
-    @vite(['resources/css/frontend.css', 'resources/js/frontend.js'])
-    @if (!str_starts_with($contentView, 'frontend.pages.'))
-        @vite('resources/css/managed-content.css')
-    @endif
+    @vite(['resources/scss/bootstrap.scss', 'resources/css/site.css', 'resources/js/frontend.js'])
     {!! tracking_code('head') !!}
 </head>
 <body class="{{ $bodyClass ?? '' }}">

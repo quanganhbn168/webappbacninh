@@ -6,6 +6,7 @@ use App\Settings\ContactSettings;
 use App\Settings\FaviconSettings;
 use App\Settings\GeneralSettings;
 use App\Settings\SeoSettings;
+use App\Settings\SiteDefaults;
 use App\Settings\SocialSettings;
 use App\Settings\TrackingSettings;
 use App\Settings\WebsiteSettings;
@@ -13,15 +14,14 @@ use App\Settings\WebsiteSettings;
 if (! function_exists('site_settings')) {
     function site_settings(bool $refresh = false): array
     {
-        static $values;
-
-        if (! $refresh && $values !== null) {
-            return $values;
+        // Cached per request in the container; forgetInstance('site.settings') refreshes it.
+        if (! $refresh && app()->bound('site.settings')) {
+            return app('site.settings');
         }
 
-        $values = array_merge(config('site'), [
-            'site_name' => config('site.name'),
-            'company_name' => config('site.name'),
+        $values = array_merge(SiteDefaults::all(), [
+            'site_name' => SiteDefaults::get('name'),
+            'company_name' => SiteDefaults::get('name'),
             'default_language' => 'vi',
             'site_logo_wide' => '',
             'site_logo_white' => '',
@@ -34,7 +34,7 @@ if (! function_exists('site_settings')) {
             'favicon_background_color' => '#ffffff',
             'favicon_safari_mask_color' => '#0f172a',
             'favicon_generated_version' => '',
-            'default_meta_title' => config('site.name'),
+            'default_meta_title' => SiteDefaults::get('name'),
             'default_meta_description' => 'Thiết kế website theo nhu cầu doanh nghiệp, tối ưu SEO và chuyển đổi.',
             'default_meta_keywords' => 'thiết kế website, web Bắc Ninh, website doanh nghiệp',
             'default_og_image' => '',
@@ -134,6 +134,8 @@ if (! function_exists('site_settings')) {
         } catch (Throwable) {
             // During first deploy the settings migrations may not have run yet; defaults stay available.
         }
+
+        app()->instance('site.settings', $values);
 
         return $values;
     }
@@ -247,67 +249,7 @@ if (! function_exists('absolute_url')) {
     }
 }
 
-if (! function_exists('themes')) {
-    function themes(): array
-    {
-        return config('themes', []);
-    }
-    function projects(): array
-    {
-        return config('projects', []);
-    }
-    function articles(): array
-    {
-        return config('articles', []);
-    }
-
-    function theme_by_slug(string $slug): ?array
-    {
-        return collect(themes())->firstWhere('slug', $slug);
-    }
-    function project_by_slug(string $slug): ?array
-    {
-        return collect(projects())->firstWhere('slug', $slug);
-    }
-    function article_by_slug(string $slug): ?array
-    {
-        return collect(articles())->firstWhere('slug', $slug);
-    }
-
-    function theme_url(array $theme): string
-    {
-        return route('themes.show', $theme['slug']);
-    }
-    function project_url(array $project): string
-    {
-        return route('projects.show', $project['slug']);
-    }
-    function article_url(array $article): string
-    {
-        return route('articles.show', $article['slug']);
-    }
-
-    function related_themes(array $current, int $limit = 3): array
-    {
-        return collect(themes())->reject(fn (array $item) => $item['slug'] === $current['slug'])
-            ->sortByDesc(fn (array $item) => (($item['industry'] === $current['industry']) ? 2 : 0) + (($item['type'] === $current['type']) ? 1 : 0) + (($item['featured'] ?? 0) / 100))
-            ->take($limit)->values()->all();
-    }
-
-    function related_projects(array $current, int $limit = 3): array
-    {
-        return collect(projects())->reject(fn (array $item) => $item['slug'] === $current['slug'])
-            ->sortByDesc(fn (array $item) => (($item['industry'] === $current['industry']) ? 2 : 0) + (($item['category'] === $current['category']) ? 1 : 0) + (($item['featured'] ?? 0) / 100))
-            ->take($limit)->values()->all();
-    }
-
-    function related_articles(array $current, int $limit = 3): array
-    {
-        return collect(articles())->reject(fn (array $item) => $item['slug'] === $current['slug'])
-            ->sortByDesc(fn (array $item) => (($item['category'] === $current['category']) ? 2 : 0) + (($item['featured'] ?? 0) / 100))
-            ->take($limit)->values()->all();
-    }
-
+if (! function_exists('money')) {
     function money(int|float $value): string
     {
         return number_format((float) $value, 0, ',', '.').'đ';

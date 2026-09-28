@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Domain\Services\Actions\MapServiceUploadData;
 use App\Domain\Settings\Actions\RenderTrackingCode;
 use App\Domain\Settings\Actions\SaveSiteSettings;
 use App\Domain\Settings\Rules\ValidPublicLink;
@@ -90,21 +89,6 @@ class SettingsManagementTest extends TestCase
         $this->get('/login')
             ->assertOk()
             ->assertSee('googletagmanager.com/gtag/js?id=G-ZEKMT39KKJ', false);
-    }
-
-    public function test_service_upload_paths_are_mapped_without_overwriting_existing_images(): void
-    {
-        $action = app(MapServiceUploadData::class);
-
-        $this->assertSame([
-            'image' => 'services/featured/new.webp',
-            'secondary_image' => 'legacy/secondary.webp',
-        ], $action->execute([
-            'image' => 'legacy/featured.webp',
-            'secondary_image' => 'legacy/secondary.webp',
-            'image_upload' => 'services/featured/new.webp',
-            'secondary_image_upload' => null,
-        ]));
     }
 
     public function test_standard_validation_opens_the_error_flow_and_shows_a_danger_notification(): void

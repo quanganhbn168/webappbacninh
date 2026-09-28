@@ -1,0 +1,95 @@
+/* Base tokens and shared chrome (header, footer, floating actions). */
+:root { --brand: #ffac00; --brand-dark: #f39a00; --line: #eeebe6; --font-sans: 'Roboto Variable', Arial, sans-serif; }
+html { font-size: 16px; }
+.container { width: calc(100% - 3rem); max-width: 1260px; margin-inline: auto; }
+.secondary-content .container { width: calc(100% - 3rem); max-width: 1260px; margin-inline: auto; }
+.secondary-content { font-family: var(--font-sans); }
+.main-nav .nav-link[aria-current="page"] { color: #985e00; }
+.main-nav { min-width: 0; }
+@media (max-width: 767px) {
+    .container, .secondary-content .container { width: calc(100% - 2rem); }
+}
+.brand__logo { width: auto; max-width: 230px; height: 64px; object-fit: contain; }
+.secondary-content .news-featured { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; }
+.secondary-content .featured-main { display: flex; flex-direction: column; min-width: 0; }
+.secondary-content .featured-main > a > img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.secondary-content .featured-side { display: grid; grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.secondary-content .side-article { display: grid; grid-template-columns: 36% minmax(0, 1fr); gap: 0; overflow: hidden; min-height: 150px; }
+.secondary-content .side-article__image { display: block; position: relative; height: 100%; }
+.secondary-content .side-article img { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; object-fit: cover; }
+.secondary-content .side-article .card-body { padding: 1rem; }
+.secondary-content .side-article h3 { font-size: 1.05rem; line-height: 1.4; margin-block: .5rem; }
+.secondary-content .side-article .image-tag, .secondary-content .featured-main .image-tag { position: static; display: inline-block; width: fit-content; }
+@media(max-width: 767px) {
+    .brand__logo { max-width: 190px; height: 52px; }
+    .secondary-content .news-featured { grid-template-columns: minmax(0, 1fr); }
+    .secondary-content .featured-side { grid-template-rows: none; }
+}
+.floating-actions { z-index: 1030; }
+.floating-wechat { width: 13.5rem; }
+.floating-action { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: #342219; color: white; box-shadow: 0 4px 16px #34221926; border: 2px solid white; transition: transform .2s; }
+.floating-action:hover { transform: translateY(-2px); background: #985e00; }
+.floating-actions__phone { background: #bf7800; }
+.floating-actions__zalo, .floating-actions__messenger, .floating-actions__telegram { background: #086bd8; }
+.floating-actions__whatsapp { background: #188444; }
+.floating-action--top { background: white; color: #342219; border-color: #eeebe6; }
+
+/* Header navigation (Bootstrap navbar + offcanvas), keeping the approved look. */
+.site-header .navbar { --bs-navbar-padding-y: 0; }
+.site-header .main-nav { gap: 1.55rem; }
+.site-header .nav-link { padding: 0; }
+.site-header .nav-dropdown { display: flex; align-items: center; gap: .08rem; }
+.nav-dropdown .dropdown-toggle { display: inline-flex; align-items: center; justify-content: center; width: 1rem; height: 100%; color: inherit; }
+.nav-dropdown .dropdown-toggle::after { margin-left: 0; }
+.dropdown-panel {
+    --bs-dropdown-border-color: var(--border, #eeeae5);
+    --bs-dropdown-border-radius: .6rem;
+    --bs-dropdown-padding-x: .65rem;
+    --bs-dropdown-padding-y: .65rem;
+    --bs-dropdown-link-hover-bg: #fff7e8;
+    --bs-dropdown-link-active-bg: #fff7e8;
+    --bs-dropdown-link-active-color: #262322;
+    width: 22rem;
+    box-shadow: 0 1rem 3rem #321e0a24;
+}
+.dropdown-panel .dropdown-item { display: flex; align-items: center; gap: .75rem; padding: .85rem .7rem; border-radius: .35rem; font-size: .95rem; white-space: normal; }
+.dropdown-item__icon { width: 1.35rem; text-align: center; color: var(--gold-dark, #ed9900); font-size: 1.1rem; }
+.dropdown-item__arrow { margin-left: auto; font-size: .7rem; color: #9a948e; }
+
+@media (min-width: 992px) {
+    .site-header .navbar-expand-lg .offcanvas { height: 100%; margin-left: 4.4rem; }
+    .site-header .navbar-expand-lg .offcanvas-body { height: 100%; }
+    .site-header .main-nav { height: 100%; align-items: stretch; }
+    .site-header .nav-item { display: flex; }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown .dropdown-panel { top: calc(100% - .15rem); left: -1.25rem; margin-top: 0; }
+    /* Open on hover as before; click and keyboard still use Bootstrap's dropdown. */
+    .nav-dropdown:hover > .dropdown-panel, .nav-dropdown:focus-within > .dropdown-panel { display: block; }
+    .mobile-toggle { display: none !important; }
+}
+
+@media (max-width: 991.98px) {
+    .main-nav-panel { --bs-offcanvas-width: min(22rem, 88vw); }
+    .site-header .main-nav { gap: 0; }
+    .site-header .nav-link { width: 100%; min-height: 2.8rem; padding: .6rem 0; font-size: 1rem; }
+    .site-header .nav-dropdown { flex-wrap: wrap; justify-content: space-between; }
+    .site-header .nav-dropdown > .nav-link { width: auto; flex: 1; }
+    .nav-dropdown .dropdown-toggle { width: 2.8rem; height: 2.8rem; }
+    .nav-dropdown .dropdown-panel { position: static; flex-basis: 100%; width: 100%; border: 0; box-shadow: none; padding: .2rem .3rem; }
+    .mobile-toggle { display: inline-flex; }
+}
+/* No stacking context on the header: the offcanvas and its backdrop must sit above floating actions. */
+.site-header { z-index: auto; }
+
+/* Shared modals (Bootstrap): the approved card look and blurred backdrop. */
+.site-modal .modal-dialog { max-width: 40rem; }
+.site-modal.modal--preview .modal-dialog { max-width: 50rem; }
+.site-modal .modal-content {
+    color: var(--text);
+    border: 1px solid #e3dace;
+    border-radius: 1rem;
+    box-shadow: 0 2rem 8rem #1b10084d;
+}
+#detail-dialog .modal-dialog { max-width: 680px; }
+.modal-backdrop { --bs-backdrop-bg: #241810; --bs-backdrop-opacity: .55; }
+.modal-backdrop.show { -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }

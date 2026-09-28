@@ -10,8 +10,6 @@
   const consultModal = $('#consult-modal');
   const previewModal = $('#preview-modal');
   const domainModal = $('#domain-modal');
-  const nav = $('#main-nav');
-  const menuButton = $('[data-menu-toggle]');
   let modalTrigger = null;
   let toastTimer = null;
 
@@ -24,9 +22,8 @@
   }
 
   function closeMenu() {
-    nav?.classList.remove('is-open');
-    menuButton?.setAttribute('aria-expanded', 'false');
-    menuButton?.setAttribute('aria-label', 'Mở menu');
+    const nav = $('#main-nav');
+    if (nav && window.bootstrap) window.bootstrap.Offcanvas.getInstance(nav)?.hide();
   }
 
   function showModal(dialog, trigger = document.activeElement) {
@@ -57,22 +54,6 @@
     showModal(previewModal, trigger);
   }
 
-  menuButton?.addEventListener('click', () => {
-    const open = !nav.classList.contains('is-open');
-    nav.classList.toggle('is-open', open);
-    menuButton.setAttribute('aria-expanded', String(open));
-    menuButton.setAttribute('aria-label', open ? 'Đóng menu' : 'Mở menu');
-  });
-
-  $$('.dropdown-toggle').forEach(toggle => {
-    toggle.addEventListener('click', () => {
-      const parent = toggle.closest('.nav-dropdown');
-      const open = !parent.classList.contains('is-open');
-      parent.classList.toggle('is-open', open);
-      toggle.setAttribute('aria-expanded', String(open));
-    });
-  });
-
   $$('dialog').forEach(dialog => {
     // Only clicks outside the content bounds dismiss the dialog.
     dialog.addEventListener('click', event => {
@@ -89,11 +70,7 @@
   });
 
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') {
-      closeMenu();
-      $$('.nav-dropdown.is-open').forEach(el => el.classList.remove('is-open'));
-      $$('.dropdown-toggle').forEach(el => el.setAttribute('aria-expanded', 'false'));
-    }
+    if (event.key === 'Escape') closeMenu();
   });
 
   document.addEventListener('click', event => {
@@ -147,12 +124,8 @@
       $('#preview-extra').append(list);
       return;
     }
+    // Same-page anchors in the mobile menu should close the panel.
     if (target.closest('.main-nav a')) closeMenu();
-    if (!target.closest('.site-header')) closeMenu();
-    if (!target.closest('.nav-dropdown')) {
-      $$('.nav-dropdown.is-open').forEach(el => el.classList.remove('is-open'));
-      $$('.dropdown-toggle').forEach(el => el.setAttribute('aria-expanded','false'));
-    }
   });
 
   const form = $('#consult-form');
@@ -237,6 +210,5 @@
     if (item.open) $$('.faq-item[open]').forEach(other => { if (other !== item) other.open = false; });
   }));
 
-  window.matchMedia('(min-width: 960px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
 
 })();

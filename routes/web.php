@@ -4,6 +4,7 @@ use App\Enums\SocialProvider;
 use App\Http\Controllers\Auth\CustomerAuthController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\Frontend\ArticleController;
+use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\LeadController;
 use App\Http\Controllers\Frontend\OperationServiceController;
 use App\Http\Controllers\Frontend\PageController;
@@ -11,7 +12,6 @@ use App\Http\Controllers\Frontend\ProjectController;
 use App\Http\Controllers\Frontend\ServiceController;
 use App\Http\Controllers\Frontend\SiteIconController;
 use App\Http\Controllers\Frontend\SiteManifestController;
-use App\Http\Controllers\Frontend\StaticPageController;
 use App\Http\Controllers\Frontend\ThemeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SitemapController;
@@ -28,31 +28,31 @@ Route::redirect('/landing/mau-may-loc-khong khi-mau-1', '/landing/mau-may-loc-kh
 Route::view('/landing/mau-may-loc-khong-khi-mau-2', 'landing.freshair.index')
     ->name('landing.freshair');
 
-Route::get('/', [StaticPageController::class, 'show'])->name('home');
-foreach ([
-    'dich-vu' => 'services.overview',
-    'hosting-domain-email' => 'hosting',
-    'giai-phap' => 'solutions',
-    'san-pham' => 'products',
-    'du-an' => 'projects.index',
-    'bang-gia' => 'pricing',
-    'lien-he' => 'contact',
-] as $page => $routeName) {
-    Route::get('/'.$page, [StaticPageController::class, 'show'])->defaults('page', $page)->name($routeName);
-}
-Route::get('/kien-thuc', [StaticPageController::class, 'show'])->defaults('page', 'tin-tuc')->name('articles.index');
-Route::redirect('/tin-tuc', '/kien-thuc', 301);
+Route::get('/', HomeController::class)->name('home');
 
-foreach ([
-    'gioi-thieu' => 'about',
-    'hop-tac-agency' => 'agency',
-    'chinh-sach-bao-mat' => 'legal.privacy',
-    'dieu-khoan-su-dung' => 'legal.terms',
-    'chinh-sach-bao-hanh' => 'legal.warranty',
-    'quy-trinh-thanh-toan' => 'legal.payment',
-] as $slug => $routeName) {
-    Route::get('/'.$slug, [PageController::class, 'show'])->defaults('slug', $slug)->name($routeName);
-}
+Route::controller(PageController::class)->group(function (): void {
+    Route::get('/dich-vu', 'services')->name('services.overview');
+    Route::get('/hosting-domain-email', 'hosting')->name('hosting');
+    Route::get('/giai-phap', 'solutions')->name('solutions');
+    Route::get('/san-pham', 'products')->name('products');
+    Route::get('/bang-gia', 'pricing')->name('pricing');
+    Route::get('/lien-he', 'contact')->name('contact');
+    Route::get('/gioi-thieu', 'about')->name('about');
+    Route::get('/hop-tac-agency', 'agency')->name('agency');
+    foreach ([
+        'chinh-sach-bao-mat' => ['privacy', 'legal.privacy'],
+        'dieu-khoan-su-dung' => ['terms', 'legal.terms'],
+        'chinh-sach-bao-hanh' => ['warranty', 'legal.warranty'],
+        'quy-trinh-thanh-toan' => ['payment-process', 'legal.payment'],
+    ] as $slug => [$key, $routeName]) {
+        Route::get('/'.$slug, 'legal')->defaults('key', $key)->name($routeName);
+    }
+});
+
+Route::get('/du-an', [ProjectController::class, 'index'])->name('projects.index');
+Route::get('/kien-thuc', [ArticleController::class, 'index'])->name('articles.index');
+Route::redirect('/tin-tuc', '/kien-thuc', 301);
+Route::get('/cong-cu', [ToolController::class, 'index'])->name('tools.index');
 
 Route::get('/thiet-ke-website', [ServiceController::class, 'index'])->name('services.index');
 Route::get('/thiet-ke-website/{slug}', [ServiceController::class, 'detail'])->name('services.show');

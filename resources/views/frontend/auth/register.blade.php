@@ -33,28 +33,28 @@
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">Họ và Tên</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-user"></i></span>
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><x-icon name="user" /></span>
                                     <input type="text" name="name" class="form-control border-start-0 ps-0" placeholder="Nguyễn Văn A" value="{{ old('name') }}" required autofocus>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">Email</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-envelope"></i></span>
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><x-icon name="mail" /></span>
                                     <input type="email" name="email" class="form-control border-start-0 ps-0" placeholder="name@example.com" value="{{ old('email') }}" required>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">Mật khẩu</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-lock"></i></span>
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><x-icon name="lock" /></span>
                                     <input type="password" name="password" class="form-control border-start-0 ps-0" placeholder="Min 8 ký tự" required>
                                 </div>
                             </div>
                             <div class="mb-4">
                                 <label class="form-label small fw-bold text-muted">Xác nhận mật khẩu</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-lock"></i></span>
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><x-icon name="lock" /></span>
                                     <input type="password" name="password_confirmation" class="form-control border-start-0 ps-0" placeholder="Nhập lại mật khẩu" required>
                                 </div>
                             </div>

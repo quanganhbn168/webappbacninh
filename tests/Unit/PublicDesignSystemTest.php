@@ -10,7 +10,7 @@ class PublicDesignSystemTest extends TestCase
     {
         $files = array_merge(
             [dirname(__DIR__, 2).'/resources/css/basic.css'],
-            [dirname(__DIR__, 2).'/resources/css/site/pages.css', dirname(__DIR__, 2).'/resources/css/site/secondary.css'],
+            glob(dirname(__DIR__, 2).'/resources/css/site/*.css'),
         );
 
         foreach ($files as $file) {
@@ -25,7 +25,7 @@ class PublicDesignSystemTest extends TestCase
 
     public function test_public_head_uses_vite_and_has_no_remote_or_filament_font_stylesheet(): void
     {
-        $head = (string) file_get_contents(dirname(__DIR__, 2).'/resources/views/layouts/master.blade.php');
+        $head = (string) file_get_contents(dirname(__DIR__, 2).'/resources/views/layouts/site.blade.php');
 
         $this->assertStringContainsString('resources/scss/bootstrap.scss', $head);
         $this->assertStringContainsString('resources/css/site.css', $head);

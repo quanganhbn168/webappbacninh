@@ -1,21 +1,15 @@
-@extends('layouts.basic')
+@extends('layouts.tool')
 
-@section('tool', '1')
-@section('robots', 'index, follow')
-@section('title', 'Tính thuế Thu nhập Cá nhân (TNCN) 2026 - WebApp Bắc Ninh')
-@section('meta_description', 'Công cụ tính thuế thu nhập cá nhân (TNCN) miễn phí theo Luật mới 109/2025/QH15. Hỗ trợ biểu thuế 2025 và 2026, tính tự động giảm trừ gia cảnh.')
-@section('meta_keywords', 'tính thuế tncn, thuế thu nhập cá nhân 2026, biểu thuế lũy tiến, giảm trừ gia cảnh, công cụ tính thuế')
-
-@section('content')
+@section('tool-content')
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="text-center mb-5">
                 <span class="badge text-bg-danger bg-opacity-10 text-danger px-3 py-2 mb-3 fw-bold tool-hero__badge">
-                    <i class="fas fa-fire me-1"></i> Luật mới 2026
+                    <x-icon name="flame" class="me-1" /> Luật mới 2026
                 </span>
                 <h1 class="display-5 fw-bold mb-3">
-                    <i class="fas fa-calculator text-primary me-2"></i>Tính thuế Thu nhập Cá nhân
+                    <x-icon name="calculator" class="text-primary me-2" />Tính thuế Thu nhập Cá nhân
                 </h1>
                 <p class="text-secondary lead">Công cụ tính thuế TNCN theo Luật 109/2025/QH15 (5 bậc mới) và biểu thuế cũ (7 bậc).</p>
             </div>
@@ -33,7 +27,7 @@
                     <div class="row g-4">
                         <div class="col-lg-6">
                             <div class="mb-4">
-                                <label class="form-label fw-bold" for="gross-income"><i class="fas fa-money-bill-wave text-success me-1"></i> Tổng thu nhập (Gross)</label>
+                                <label class="form-label fw-bold" for="gross-income"><x-icon name="banknote" class="text-success me-1" /> Tổng thu nhập (Gross)</label>
                                 <div class="tool-input-suffix">
                                     <input type="text" inputmode="numeric" class="form-control form-control-lg" id="gross-income" value="30000000" placeholder="30.000.000">
                                     <span>VNĐ</span>
@@ -41,7 +35,7 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold" for="dependents"><i class="fas fa-users text-info me-1"></i> Số người phụ thuộc</label>
+                                <label class="form-label fw-bold" for="dependents"><x-icon name="users" class="text-info me-1" /> Số người phụ thuộc</label>
                                 <select class="form-select form-select-lg" id="dependents">
                                     @for ($i = 0; $i <= 10; $i++)
                                         <option value="{{ $i }}">{{ $i }} người</option>
@@ -51,7 +45,7 @@
 
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <label class="form-label fw-bold mb-0" for="insurance"><i class="fas fa-shield-alt text-warning me-1"></i> BHXH, BHYT, BHTN (10.5%)</label>
+                                    <label class="form-label fw-bold mb-0" for="insurance"><x-icon name="shield-check" class="text-warning me-1" /> BHXH, BHYT, BHTN (10.5%)</label>
                                     <div class="form-check form-switch mb-0">
                                         <input class="form-check-input" type="checkbox" id="auto-insurance" checked>
                                         <label class="form-check-label small" for="auto-insurance">Tự động</label>
@@ -64,7 +58,7 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold" for="other-deductions"><i class="fas fa-minus-circle text-secondary me-1"></i> Các khoản giảm trừ khác</label>
+                                <label class="form-label fw-bold" for="other-deductions"><x-icon name="circle-minus" class="text-secondary me-1" /> Các khoản giảm trừ khác</label>
                                 <div class="tool-input-suffix">
                                     <input type="text" inputmode="numeric" class="form-control form-control-lg" id="other-deductions" value="0" placeholder="0">
                                     <span>VNĐ</span>
@@ -104,7 +98,7 @@
                     </div>
 
                     <div class="mt-5" data-show-if="tax_breakdown" hidden>
-                        <h2 class="h5 fw-bold mb-3"><i class="fas fa-layer-group text-primary me-2"></i>Chi tiết thuế theo bậc</h2>
+                        <h2 class="h5 fw-bold mb-3"><x-icon name="layers" class="text-primary me-2" />Chi tiết thuế theo bậc</h2>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
                                 <thead class="table-light">
@@ -132,7 +126,7 @@
             <div class="row g-4 mt-5">
                 <div class="col-md-6">
                     <div class="tool-info h-100">
-                        <h2 class="h5 fw-bold mb-3"><i class="fas fa-info-circle text-primary me-2"></i>Mức giảm trừ gia cảnh 2026</h2>
+                        <h2 class="h5 fw-bold mb-3"><x-icon name="info" class="text-primary me-2" />Mức giảm trừ gia cảnh 2026</h2>
                         <ul class="mb-0">
                             <li class="mb-2">Bản thân người nộp thuế: <strong>15.5 triệu/tháng</strong></li>
                             <li>Mỗi người phụ thuộc: <strong>6.2 triệu/tháng</strong></li>
@@ -141,7 +135,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="tool-info h-100">
-                        <h2 class="h5 fw-bold mb-3"><i class="fas fa-gavel text-warning me-2"></i>Căn cứ pháp lý</h2>
+                        <h2 class="h5 fw-bold mb-3"><x-icon name="gavel" class="text-warning me-2" />Căn cứ pháp lý</h2>
                         <ul class="mb-0 small">
                             <li class="mb-2">Luật Thuế TNCN số 109/2025/QH15 (có hiệu lực từ 01/07/2026)</li>
                             <li>Nghị quyết 110/2025/UBTVQH15 về mức giảm trừ gia cảnh (áp dụng từ kỳ tính thuế 2026)</li>

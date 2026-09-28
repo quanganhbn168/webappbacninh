@@ -33,7 +33,7 @@
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">Email đăng nhập</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-envelope"></i></span>
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><x-icon name="mail" /></span>
                                     <input type="email" name="email" class="form-control border-start-0 ps-0" placeholder="name@example.com" value="{{ old('email') }}" required autofocus>
                                 </div>
                             </div>
@@ -43,7 +43,7 @@
                                     <a href="#" class="small text-primary text-decoration-none">Quên mật khẩu?</a>
                                 </div>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-lock"></i></span>
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><x-icon name="lock" /></span>
                                     <input type="password" name="password" class="form-control border-start-0 ps-0" placeholder="••••••••" required>
                                 </div>
                             </div>

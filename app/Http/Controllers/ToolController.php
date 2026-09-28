@@ -2,40 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Frontend\FrontendController;
+use App\Models\MiniApp;
+use Illuminate\Contracts\View\View;
 
-class ToolController extends Controller
+class ToolController extends FrontendController
 {
-    /**
-     * QR Code Generator Tool
-     */
-    public function qrCode()
+    /** The tool list; entries are the mini apps managed in the admin. */
+    public function index(): View
     {
-        return view('tools.qr-code');
+        $tools = MiniApp::query()->active()->ordered()->get();
+
+        return $this->sitePage('tools', 'site.tools.index', [
+            'tools' => $tools,
+            'schemaType' => 'CollectionPage',
+            'schemaItems' => $tools->map(fn (MiniApp $tool): array => ['name' => $tool->name, 'url' => url($tool->link)])->all(),
+        ]);
     }
 
-    /**
-     * Bank QR Code (VietQR)
-     */
-    public function bankQr()
+    public function qrCode(): View
     {
-        $banks = config('vietqr_banks.banks');
-        return view('tools.bank-qr', compact('banks'));
+        return $this->toolPage('qr-code');
     }
 
-    /**
-     * Perpetual Calendar Tool (Lịch Vạn Niên)
-     */
-    public function calendar()
+    public function bankQr(): View
     {
-        return view('tools.calendar');
+        return $this->toolPage('bank-qr', ['banks' => config('vietqr_banks.banks')]);
     }
 
-    /**
-     * Vòng Quay Bần Hàn (Food Wheel)
-     */
-    public function foodWheel()
+    public function calendar(): View
     {
-        return view('tools.food-wheel');
+        return $this->toolPage('calendar');
+    }
+
+    public function foodWheel(): View
+    {
+        return $this->toolPage('food-wheel');
     }
 }

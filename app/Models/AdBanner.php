@@ -3,21 +3,21 @@
 namespace App\Models;
 
 use App\Enums\BannerSlot;
-use App\Traits\ImportsLegacyMedia;
+use Awcodes\Curator\Models\Media;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class AdBanner extends Model implements HasMedia
+class AdBanner extends Model
 {
-    use HasFactory, ImportsLegacyMedia, InteractsWithMedia;
+    use HasFactory;
 
     protected $fillable = [
         'name',
         'slot',
-        'image', // Stored media path
+        'image_id',
         'link',
         'alt_text',
         'is_active',
@@ -35,42 +35,26 @@ class AdBanner extends Model implements HasMedia
         'ends_at' => 'datetime',
     ];
 
+    public function image(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'image_id');
+    }
+
     /**
-     * Scope to get active banners for a slot.
+     * Active, scheduled banners for a slot.
      */
     public function scopeForSlot(Builder $query, BannerSlot $slot): Builder
     {
         return $query->where('slot', $slot)
             ->where('is_active', true)
-            ->where(function ($q) {
-                $q->whereNull('starts_at')
-                  ->orWhere('starts_at', '<=', now());
-            })
-            ->where(function ($q) {
-                $q->whereNull('ends_at')
-                  ->orWhere('ends_at', '>=', now());
-            })
+            ->whereNotNull('image_id')
+            ->where(fn (Builder $query) => $query->whereNull('starts_at')->orWhere('starts_at', '<=', now()))
+            ->where(fn (Builder $query) => $query->whereNull('ends_at')->orWhere('ends_at', '>=', now()))
             ->orderBy('order');
     }
 
-    /**
-     * Get image URL.
-     */
-    public function getImageUrlAttribute(): string
+    protected function imageUrl(): Attribute
     {
-        if ($this->hasMedia('featured')) {
-            return $this->getFirstMediaUrl('featured');
-        }
-
-        if ($this->image && (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://'))) {
-            return $this->image;
-        }
-
-        return $this->image ? asset($this->image) : asset('images/ad-placeholder.jpg');
-    }
-
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('featured')->singleFile();
+        return Attribute::get(fn (): string => $this->image?->url ?? asset('images/placeholder.svg'));
     }
 }

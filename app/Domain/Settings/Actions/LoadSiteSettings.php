@@ -42,7 +42,6 @@ final class LoadSiteSettings
                 'default_meta_keywords' => $seo->default_meta_keywords,
                 'default_og_image' => $seo->default_og_image,
                 'google_site_verification' => $seo->google_site_verification,
-                'page_meta_json' => json_encode($seo->page_meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
             ],
             'contact' => [
                 'phone' => $contact->phone,

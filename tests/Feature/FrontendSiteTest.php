@@ -22,20 +22,20 @@ class FrontendSiteTest extends TestCase
 
     public function test_all_static_and_listing_pages_render(): void
     {
-        foreach (['/', '/gioi-thieu', '/lien-he', '/bang-gia', '/hop-tac-agency', '/thiet-ke-website', '/kho-giao-dien', '/du-an', '/kien-thuc', '/dich-vu-van-hanh'] as $uri) {
+        foreach (['/', '/dich-vu', '/hosting-domain-email', '/giai-phap', '/san-pham', '/gioi-thieu', '/lien-he', '/bang-gia', '/hop-tac-agency', '/thiet-ke-website', '/kho-giao-dien', '/du-an', '/kien-thuc', '/dich-vu-van-hanh', '/cong-cu', '/chinh-sach-bao-mat', '/dieu-khoan-su-dung', '/chinh-sach-bao-hanh', '/quy-trinh-thanh-toan'] as $uri) {
             $this->get($uri)->assertOk()->assertSee(site_config('name'));
         }
 
         $this->get('/')
             ->assertSee('/frontend/images/hero-home.webp', false)
-            ->assertSee('/build/assets/frontend-', false)
+            ->assertSee('/build/assets/site-', false)
             ->assertDontSee('/frontend/assets/css/', false)
             ->assertDontSee('fonts.googleapis.com', false)
             ->assertDontSee('fonts/filament/filament/inter', false)
             ->assertDontSee('src="public/assets/', false)
             ->assertSee('application/ld+json', false)
-            ->assertSee('"@type": "WebSite"', false)
-            ->assertSee('"@type": "ProfessionalService"', false);
+            ->assertSee('"@type":"WebSite"', false)
+            ->assertSee('"@type":"ProfessionalService"', false);
     }
 
     public function test_optional_secondary_phone_is_rendered_in_desktop_contact_areas_and_schema(): void
@@ -52,12 +52,12 @@ class FrontendSiteTest extends TestCase
 
             $home = $this->get('/')->assertOk();
             $home->assertSee('0222 333 444');
-            $home->assertSee('"telephone": "0222333444"', false);
+            $home->assertSee('"telephone":"0222333444"', false);
             $this->assertSame(1, substr_count($home->getContent(), 'tel:0222333444'));
 
             $contactPage = $this->get('/lien-he')->assertOk();
-            $contactPage->assertSee('Điện thoại thứ hai');
-            $this->assertSame(2, substr_count($contactPage->getContent(), 'tel:0222333444'));
+            $contactPage->assertSee('0222 333 444');
+            $this->assertSame(1, substr_count($contactPage->getContent(), 'tel:0222333444'));
         } finally {
             $contact->phone_secondary = $originalPhone;
             $contact->phone_secondary_href = $originalPhoneHref;
@@ -95,12 +95,12 @@ class FrontendSiteTest extends TestCase
             $social->save();
 
             $visible = $this->get('/')->assertOk();
-            $visible->assertSee('floating-actions__whatsapp', false);
+            $visible->assertSee('floating-action--whatsapp', false);
             $visible->assertSee('https://wa.me/84986123168', false);
-            $visible->assertSee('wechatContactModal', false);
+            $visible->assertSee('Mã QR WeChat', false);
             $visible->assertSee('/storage/site/social/wechat/contact-qr.png', false);
             $visible->assertSee('webappbacninh');
-            $visible->assertDontSee('floating-actions__zalo', false);
+            $visible->assertDontSee('floating-action--zalo', false);
 
             $social->wechat_id = '';
             $social->wechat_qr = '';
@@ -108,8 +108,8 @@ class FrontendSiteTest extends TestCase
             $social->save();
 
             $hidden = $this->get('/')->assertOk();
-            $hidden->assertDontSee('floating-actions__whatsapp', false);
-            $hidden->assertDontSee('wechatContactModal', false);
+            $hidden->assertDontSee('floating-action--whatsapp', false);
+            $hidden->assertDontSee('Mã QR WeChat', false);
         } finally {
             foreach ($original as $field => $value) {
                 $social->{$field} = $value;
@@ -136,13 +136,13 @@ class FrontendSiteTest extends TestCase
         foreach (OperationService::query()->active()->pluck('slug') as $slug) {
             $this->get('/dich-vu-van-hanh/'.$slug)->assertOk();
         }
-        foreach (Page::query()->active()->pluck('slug') as $slug) {
-            $this->get('/'.$slug)->assertOk();
+        foreach (Page::query()->get() as $page) {
+            $this->get($page->url)->assertOk();
         }
 
         $this->get(route('services.show', 'website-doanh-nghiep'))
-            ->assertSee('"@type": "Service"', false)
-            ->assertSee('"@type": "FAQPage"', false);
+            ->assertSee('"@type":"Service"', false)
+            ->assertSee('"@type":"FAQPage"', false);
     }
 
     public function test_unknown_dynamic_pages_return_404(): void
@@ -176,7 +176,7 @@ class FrontendSiteTest extends TestCase
             'service_category_id' => $category->id,
             'title' => 'Dịch vụ kiểm thử '.$suffix,
             'slug' => 'dich-vu-kiem-thu-'.$suffix,
-            'icon' => 'fa-solid fa-code',
+            'icon' => 'code',
             'description' => 'Dịch vụ không có landing chuyên biệt.',
             'content' => '<p>Nội dung dịch vụ kiểm thử.</p>',
             'is_active' => true,
@@ -202,7 +202,7 @@ class FrontendSiteTest extends TestCase
             ['slug' => 'website-doanh-nghiep'],
             [
                 'title' => 'Website doanh nghiệp',
-                'icon' => 'fa-solid fa-building',
+                'icon' => 'building-2',
                 'description' => 'Landing page chuyên biệt.',
                 'is_active' => true,
             ]

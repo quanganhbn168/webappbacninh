@@ -1,0 +1,99 @@
+/* Header: sticky Bootstrap navbar; the menu is an offcanvas below lg. No transform/filter on the
+ * header: they would make it the containing block of the fixed offcanvas.
+ * z-index sits above the offcanvas backdrop (1040) so the panel inside the header stays visible,
+ * and below modal backdrops (1050). */
+.site-header { position: sticky; top: 0; z-index: 1041; height: var(--header-height); background: #fffffffa; border-bottom: 1px solid #f0eae4; }
+.site-header__inner { display: flex; align-items: center; gap: 1rem; height: 100%; }
+.site-header__actions { display: flex; align-items: center; gap: .75rem; margin-left: auto; }
+.site-header__actions .btn { min-height: 2.75rem; --bs-btn-padding-x: 1.2rem; --bs-btn-padding-y: .6rem; --bs-btn-font-size: .87rem; }
+
+.brand { display: inline-flex; flex-direction: column; flex-shrink: 0; color: #291a13; }
+.brand:hover { color: #291a13; }
+.brand__name { font-size: 1.75rem; font-weight: 900; letter-spacing: -.055em; line-height: 1; white-space: nowrap; }
+.brand__name b { color: var(--gold); font-weight: 900; }
+.brand__tagline { display: flex; align-items: center; justify-content: center; gap: .28rem; font-size: .47rem; font-weight: 800; letter-spacing: .025em; line-height: 1.8; white-space: nowrap; }
+.brand__tagline i { width: 1.1rem; height: 1px; background: var(--gold); }
+.brand__logo { width: auto; max-width: 230px; height: 56px; object-fit: contain; }
+
+.site-nav .nav-link { color: #262322; font-size: .92rem; font-weight: 550; white-space: nowrap; }
+.site-nav .nav-link:hover, .site-nav .nav-link:focus-visible { color: #bd7900; }
+.site-nav .nav-link.active { color: var(--gold-700); }
+.site-nav__toggle { display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 0; background: none; color: inherit; }
+.site-nav__toggle::after { margin-left: 0; }
+.site-nav__panel {
+    --bs-dropdown-border-color: var(--border); --bs-dropdown-border-radius: .6rem; --bs-dropdown-padding-x: .5rem; --bs-dropdown-padding-y: .5rem;
+    --bs-dropdown-link-hover-bg: var(--gold-50); --bs-dropdown-link-active-bg: var(--gold-50); --bs-dropdown-link-active-color: #262322;
+    width: 21rem; box-shadow: var(--shadow-lg);
+}
+.site-nav__panel .dropdown-item { display: flex; align-items: center; gap: .75rem; padding: .75rem .7rem; border-radius: .35rem; font-size: .95rem; white-space: normal; }
+.site-nav__icon { width: 1.3rem; height: 1.3rem; color: var(--gold-600); }
+.site-nav__actions { display: grid; gap: .75rem; margin-top: 1.5rem; }
+
+@media (min-width: 992px) {
+    .site-nav { height: 100%; margin-left: auto; }
+    .site-nav .offcanvas-body { height: 100%; }
+    .site-nav__list { height: 100%; align-items: stretch; gap: 1.5rem; }
+    .site-nav .nav-item { display: flex; align-items: center; }
+    .site-nav .nav-link { position: relative; height: 100%; display: inline-flex; align-items: center; padding: 0 !important; }
+    .site-nav .nav-link.active::after { content: ""; position: absolute; right: 0; bottom: 0; left: 0; height: .2rem; background: #ffd778; }
+    .site-nav__dropdown { position: relative; gap: .15rem; }
+    .site-nav__toggle { width: 1rem; height: 100%; }
+    .site-nav__panel { top: calc(100% - .15rem) !important; left: -1.25rem; margin-top: 0; }
+    /* Open on hover too; click and keyboard use Bootstrap's dropdown. */
+    .site-nav__dropdown:hover > .site-nav__panel, .site-nav__dropdown:focus-within > .site-nav__panel { display: block; }
+    .site-header__actions { margin-left: 1.5rem; }
+}
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .site-nav__list { gap: 1rem; }
+    .site-header__actions .btn-outline-dark { display: none !important; }
+}
+@media (max-width: 991.98px) {
+    .site-nav { --bs-offcanvas-width: min(22rem, 88vw); }
+    .site-nav__list .nav-link { min-height: 2.9rem; padding: .6rem 0; font-size: 1rem; }
+    .site-nav__dropdown { display: flex; flex-wrap: wrap; justify-content: space-between; }
+    .site-nav__dropdown > .nav-link { flex: 1; }
+    .site-nav__toggle { width: 2.9rem; height: 2.9rem; }
+    .site-nav__panel { position: static; flex-basis: 100%; width: 100%; border: 0; box-shadow: none; padding: 0 0 .5rem; }
+}
+@media (max-width: 575.98px) {
+    :root { --header-height: 3.75rem; }
+    .brand__name { font-size: 1.45rem; }
+    .brand__logo { max-width: 180px; height: 46px; }
+}
+
+/* Footer */
+.site-footer { padding-top: 3.5rem; background: #fff; border-top: 1px solid var(--border); font-size: .92rem; }
+.site-footer__about { max-width: 20rem; margin: 1.25rem 0 0; color: var(--muted); line-height: 1.6; }
+.site-footer__social { display: flex; gap: .6rem; margin-top: 1.25rem; }
+.site-footer__social a { display: inline-flex; align-items: center; justify-content: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--cream); color: var(--ink); }
+.site-footer__social a:hover { background: var(--gold); }
+.site-footer__social .icon { width: 1.1rem; height: 1.1rem; }
+.site-footer__column { display: flex; flex-direction: column; gap: .6rem; }
+.site-footer__column h2 { margin-bottom: .5rem; font-size: 1rem; font-weight: 700; }
+.site-footer__column a, .site-footer__column span { color: #5e5a57; }
+.site-footer__column a:hover { color: var(--gold-700); }
+.site-footer__contact a, .site-footer__contact span { display: flex; align-items: flex-start; gap: .6rem; overflow-wrap: anywhere; }
+.site-footer__contact .icon { width: 1.1rem; height: 1.1rem; margin-top: .1rem; color: var(--gold-600); }
+.site-footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem 2rem; margin-top: 2.5rem; padding-block: 1.25rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; }
+.site-footer__bottom p { margin: 0; }
+.site-footer__bottom nav { display: flex; gap: 1.25rem; }
+.site-footer__bottom a:hover { color: var(--gold-700); }
+
+/* Floating contact buttons */
+.floating-actions { position: fixed; right: 1rem; bottom: 1rem; z-index: 1030; display: flex; flex-direction: column; align-items: flex-end; gap: .6rem; }
+.floating-action { display: inline-flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; padding: 0; border: 2px solid #fff; border-radius: 50%; background: var(--ink); color: #fff; box-shadow: 0 4px 16px #34221926; transition: transform .2s, background .2s; }
+.floating-action:hover { transform: translateY(-2px); background: var(--gold-700); color: #fff; }
+.floating-action .icon { width: 1.35rem; height: 1.35rem; }
+.floating-action--phone { background: #bf7800; }
+.floating-action--zalo, .floating-action--messenger, .floating-action--telegram { background: #086bd8; }
+.floating-action--whatsapp { background: #188444; }
+.floating-action--top { background: #fff; color: var(--ink); border-color: var(--border); }
+.floating-actions__wechat img { width: 180px; height: 180px; }
+
+/* Modals and toast */
+.site-modal .modal-content { border: 1px solid #e3dace; border-radius: var(--radius-lg); box-shadow: 0 2rem 8rem #1b10084d; }
+.site-modal .modal-header, .site-modal .modal-body { padding-inline: clamp(1.25rem, 3vw, 2rem); }
+.site-modal .modal-header { padding-top: 1.75rem; align-items: flex-start; }
+.site-modal .modal-body { padding-bottom: 1.75rem; }
+.modal-backdrop { --bs-backdrop-bg: #241810; --bs-backdrop-opacity: .55; }
+.site-toast { border: 0; background: var(--ink); color: #fff; }

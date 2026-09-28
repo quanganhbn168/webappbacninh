@@ -9,13 +9,13 @@
             <div class="col-md-8 col-lg-6">
                 
                 <a href="{{ route('home') }}" class="text-decoration-none mb-4 d-inline-block">
-                    <i class="fas fa-arrow-left me-2"></i> Quay lại trang chủ
+                    <x-icon name="arrow-left" class="me-2" /> Quay lại trang chủ
                 </a>
 
                 <div class="glass-card p-5 text-center">
                     @if($status === 'available')
                         <div class="mb-4">
-                            <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+                            <x-icon name="circle-check" class="text-success" style="font-size: 5rem;" />
                         </div>
                         <h2 class="fw-bold mb-3">Chúc mừng!</h2>
                         <h4 class="text-primary mb-4">{{ $domain }}</h4>
@@ -26,7 +26,7 @@
                         </a>
                     @else
                         <div class="mb-4">
-                            <i class="fas fa-times-circle text-danger" style="font-size: 5rem;"></i>
+                            <x-icon name="circle-x" class="text-danger" style="font-size: 5rem;" />
                         </div>
                         <h2 class="fw-bold mb-3">Rất tiếc!</h2>
                         <h4 class="text-secondary mb-4">{{ $domain }}</h4>

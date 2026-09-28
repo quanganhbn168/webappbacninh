@@ -1,18 +1,12 @@
-@extends('layouts.basic')
+@extends('layouts.tool')
 
-@section('tool', '1')
-@section('robots', 'index, follow')
-
-@section('title', 'Tạo mã QR Code Online Miễn Phí - WebApp Bắc Ninh')
-@section('meta_description', 'Công cụ tạo mã QR Code online miễn phí. Tạo QR Wifi, URL, Văn bản nhanh chóng, hỗ trợ chèn logo và tùy chỉnh màu sắc.')
-
-@section('content')
+@section('tool-content')
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white">
-                    <h1 class="h4 mb-0"><i class="fas fa-qrcode me-2"></i>Tạo Mã QR Code (Link/Text/Wifi)</h1>
+                <div class="card-header bg-primary text-dark">
+                    <h1 class="h4 mb-0"><x-icon name="qr-code" class="me-2" />Tạo Mã QR Code (Link/Text/Wifi)</h1>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -71,7 +65,7 @@
                             
                             <div class="mt-3">
                                 <button class="btn btn-success btn-lg" onclick="downloadQR()">
-                                    <i class="fas fa-download me-1"></i> Tải xuống ảnh PNG
+                                    <x-icon name="download" class="me-1" /> Tải xuống ảnh PNG
                                 </button>
                             </div>
                         </div>
@@ -80,7 +74,7 @@
             </div>
             
             <div class="mt-4">
-                <h4><i class="fas fa-info-circle text-primary"></i> Thông tin thêm</h4>
+                <h4><x-icon name="info" class="text-primary" /> Thông tin thêm</h4>
                 <p>Công cụ này dành cho việc tạo mã QR chứa thông tin văn bản, trang web (URL), email, hoặc Wifi. Nếu bạn muốn tạo mã QR chuyển khoản ngân hàng, vui lòng sử dụng công cụ <a href="{{ route('tools.bank-qr') }}">Tạo QR Ngân Hàng</a>.</p>
             </div>
         </div>

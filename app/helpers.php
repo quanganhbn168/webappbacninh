@@ -44,7 +44,6 @@ if (! function_exists('site_settings')) {
             'head_code' => '',
             'body_start_code' => '',
             'body_end_code' => '',
-            'page_meta' => [],
             'phone_secondary' => '',
             'phone_secondary_href' => '',
             'messenger' => '',
@@ -73,7 +72,6 @@ if (! function_exists('site_settings')) {
                 'default_meta_keywords' => 'default_meta_keywords',
                 'default_og_image' => 'default_og_image',
                 'google_site_verification' => 'google_site_verification',
-                'page_meta' => 'page_meta',
             ],
             ContactSettings::class => [
                 'phone' => 'phone',
@@ -175,17 +173,6 @@ if (! function_exists('site_config')) {
     }
 }
 
-if (! function_exists('site_page_seo')) {
-    /** @return array<string, string> */
-    function site_page_seo(string $key, array $fallback = []): array
-    {
-        $pages = site_config('page_meta', []);
-        $configured = is_array($pages) && is_array($pages[$key] ?? null) ? $pages[$key] : [];
-
-        return array_replace($fallback, array_filter($configured, static fn (mixed $value): bool => is_string($value) && trim($value) !== ''));
-    }
-}
-
 if (! function_exists('setting')) {
     function setting(string $key, mixed $default = null): mixed
     {
@@ -197,46 +184,6 @@ if (! function_exists('frontend_asset')) {
     function frontend_asset(string $path): string
     {
         return asset('frontend/'.ltrim($path, '/'));
-    }
-}
-
-if (! function_exists('frontend_url')) {
-    function frontend_url(string $path = ''): string
-    {
-        if (preg_match('~^(https?:)?//|^(mailto:|tel:|#)~', $path)) {
-            return $path;
-        }
-
-        [$path, $fragment] = array_pad(explode('#', $path, 2), 2, null);
-        $route = match ($path) {
-            '', 'index.php' => route('home'),
-            'gioi-thieu.php' => route('about'),
-            'lien-he.php' => route('contact'),
-            'bang-gia.php' => route('pricing'),
-            'hop-tac-agency.php' => route('agency'),
-            'thiet-ke-website.php' => route('services.index'),
-            'website-doanh-nghiep.php' => route('services.show', 'website-doanh-nghiep'),
-            'website-ban-hang.php' => route('services.show', 'website-ban-hang'),
-            'landing-page.php' => route('services.show', 'landing-page'),
-            'thiet-ke-lai-website.php' => route('services.show', 'thiet-ke-lai-website'),
-            'kho-giao-dien.php' => route('themes.index'),
-            'du-an.php' => route('projects.index'),
-            'kien-thuc.php' => route('articles.index'),
-            'dich-vu-van-hanh.php' => route('operations.index'),
-            'hosting-bao-tri-website.php' => route('operations.show', 'hosting-bao-tri-website'),
-            'quan-tri-dang-bai-website.php' => route('operations.show', 'quan-tri-dang-bai-website'),
-            'seo-website.php' => route('operations.show', 'seo-website'),
-            'noi-dung-facebook.php' => route('operations.show', 'noi-dung-facebook'),
-            'nang-cap-tich-hop-website.php' => route('operations.show', 'nang-cap-tich-hop-website'),
-            'do-luong-bao-cao-website.php' => route('operations.show', 'do-luong-bao-cao-website'),
-            'chinh-sach-bao-mat.php' => route('legal.privacy'),
-            'dieu-khoan-su-dung.php' => route('legal.terms'),
-            'chinh-sach-bao-hanh.php' => route('legal.warranty'),
-            'quy-trinh-thanh-toan.php' => route('legal.payment'),
-            default => url($path),
-        };
-
-        return $fragment === null ? $route : $route.'#'.$fragment;
     }
 }
 

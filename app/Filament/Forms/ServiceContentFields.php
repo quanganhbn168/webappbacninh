@@ -22,13 +22,13 @@ final class ServiceContentFields
     }
 
     /**
-     * Cards with a Font Awesome icon, a title and a short text.
+     * Cards with an icon, a title and a short text.
      */
     public static function cards(string $name, string $label): Repeater
     {
         return Repeater::make($name)->label($label)
             ->schema([
-                TextInput::make('icon')->label('Biểu tượng')->placeholder('fa-solid fa-check')->maxLength(100),
+                IconPicker::make('icon'),
                 TextInput::make('title')->label('Tiêu đề')->required()->maxLength(255),
                 Textarea::make('text')->label('Mô tả')->rows(2)->columnSpanFull(),
             ])

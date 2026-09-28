@@ -164,7 +164,7 @@ class Post extends Model implements HasMedia
             return $this->featuredMedia->url;
         }
         if ($this->curator_managed) {
-            return asset('images/placeholder.jpg');
+            return asset('images/placeholder.svg');
         }
         if ($this->hasMedia('featured')) {
             return $this->getFirstMediaUrl('featured');
@@ -173,7 +173,7 @@ class Post extends Model implements HasMedia
             return asset($this->featured_image);
         }
 
-        return asset('images/placeholder.jpg');
+        return asset('images/placeholder.svg');
     }
 
     public function getOgImageUrlAttribute(): string

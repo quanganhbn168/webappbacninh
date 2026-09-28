@@ -12,12 +12,12 @@ final class ResolveSocialChannels
     {
         $settings = app(SocialSettings::class);
         $definitions = [
-            'facebook' => ['label' => 'Facebook', 'icon' => 'fa-brands fa-facebook-f', 'floating' => false],
-            'messenger' => ['label' => 'Messenger', 'icon' => 'fa-brands fa-facebook-messenger', 'floating' => true],
-            'zalo' => ['label' => 'Zalo', 'icon' => 'zalo', 'floating' => true],
-            'telegram' => ['label' => 'Telegram', 'icon' => 'fa-brands fa-telegram', 'floating' => true],
-            'whatsapp' => ['label' => 'WhatsApp', 'icon' => 'fa-brands fa-whatsapp', 'floating' => true],
-            'youtube' => ['label' => 'YouTube', 'icon' => 'fa-brands fa-youtube', 'floating' => false],
+            'facebook' => ['label' => 'Facebook', 'icon' => 'brand-facebook', 'floating' => false],
+            'messenger' => ['label' => 'Messenger', 'icon' => 'brand-messenger', 'floating' => true],
+            'zalo' => ['label' => 'Zalo', 'icon' => 'brand-zalo', 'floating' => true],
+            'telegram' => ['label' => 'Telegram', 'icon' => 'brand-telegram', 'floating' => true],
+            'whatsapp' => ['label' => 'WhatsApp', 'icon' => 'brand-whatsapp', 'floating' => true],
+            'youtube' => ['label' => 'YouTube', 'icon' => 'brand-youtube', 'floating' => false],
         ];
         $footer = [];
         $floating = [];

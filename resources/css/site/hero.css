@@ -1,0 +1,56 @@
+/* Page hero: copy on the left, product shot or aside card on the right. */
+.page-hero { position: relative; overflow: hidden; background: linear-gradient(110deg, #fdf9f3 0%, #fcf7ef 60%, #fcf6ed 100%); }
+.page-hero__grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: center; gap: 2rem; min-height: 24rem; padding-block: 2.5rem; }
+.page-hero--text .page-hero__grid { grid-template-columns: minmax(0, 1fr); min-height: 0; max-width: 52rem; }
+.page-hero__copy { position: relative; z-index: 1; }
+.page-hero h1 { margin-bottom: 1rem; }
+.page-hero__highlight { display: block; color: var(--gold); }
+.page-hero__lead { max-width: 36rem; margin-bottom: 2rem; color: #6f7172; font-size: clamp(1rem, .95rem + .3vw, 1.15rem); line-height: 1.55; }
+.page-hero__art { position: relative; align-self: stretch; display: flex; align-items: center; justify-content: flex-end; margin-right: -2rem; }
+.page-hero__art img { width: 100%; max-height: 24rem; object-fit: contain; mix-blend-mode: multiply; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%); mask-image: linear-gradient(90deg, transparent, #000 10%); }
+.page-hero__note { position: absolute; top: 8%; right: 0; max-width: 12rem; color: #6e5846; font-size: 1.55rem; line-height: 1.05; transform: rotate(-8deg); text-align: center; }
+.page-hero__aside { align-self: center; }
+.page-hero__meta { display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem; margin-top: 1.75rem; color: var(--muted); font-size: .85rem; }
+.page-hero__meta strong { display: block; color: var(--ink); font-size: 1rem; }
+
+.page-hero--home .page-hero__grid { min-height: 26rem; }
+@media (min-width: 992px) { .page-hero--home .page-hero__grid { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); } }
+.page-hero--home h1 { font-size: clamp(2rem, 1.1rem + 2.6vw, 3rem); }
+.page-hero--home .page-hero__highlight { color: inherit; }
+.page-hero--compact .page-hero__grid { min-height: 0; padding-block: 2rem 2.5rem; }
+.page-hero--dark { background: var(--brown); color: #eadbd0; }
+.page-hero--dark h1 { color: #fff; }
+.page-hero--dark .page-hero__lead { color: #d6c4b7; }
+
+.site-breadcrumb { margin-bottom: 1.25rem; font-size: .85rem; }
+.site-breadcrumb .breadcrumb { margin: 0; --bs-breadcrumb-divider-color: #b8aea5; --bs-breadcrumb-item-active-color: var(--muted); }
+.site-breadcrumb a { color: var(--gold-700); }
+.site-breadcrumb .breadcrumb-item.active { max-width: 32ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.trust-row { border-block: 1px solid #f1ebe3; background: #fff; }
+.page-hero .trust-row { background: transparent; border-bottom: 0; }
+.trust-row__list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem 2rem; margin: 0; padding: 1.25rem 0; list-style: none; }
+.trust-row__item { display: flex; align-items: center; gap: .85rem; }
+.trust-row__item .icon { width: 2rem; height: 2rem; color: var(--ink); }
+.trust-row__item strong { display: block; color: var(--ink); font-size: .92rem; }
+.trust-row__item span { display: block; color: var(--muted); font-size: .8rem; line-height: 1.35; }
+
+.stat-panel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: hidden; border-top: 3px solid var(--gold-600); border-radius: var(--radius-sm); background: #fff; box-shadow: var(--shadow); }
+.stat-panel > div { padding: 1.4rem 1.5rem; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.stat-panel > div:nth-child(2n) { border-right: 0; }
+.stat-panel strong { display: block; color: var(--gold-700); font-size: 1.5rem; font-weight: 800; }
+.stat-panel span { color: var(--muted); font-size: .85rem; }
+
+@media (max-width: 991.98px) {
+    .page-hero__grid, .page-hero--home .page-hero__grid { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-block: 2rem 2.5rem; }
+    .page-hero__art { margin-right: 0; justify-content: center; }
+    .page-hero__art img { max-height: 18rem; }
+    .page-hero__note { display: none; }
+    .trust-row__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 575.98px) {
+    .page-hero .btn-row .btn { flex: 1 1 100%; }
+    .trust-row__list { gap: 1rem; }
+    .trust-row__item { align-items: flex-start; gap: .6rem; }
+    .trust-row__item .icon { width: 1.5rem; height: 1.5rem; }
+}

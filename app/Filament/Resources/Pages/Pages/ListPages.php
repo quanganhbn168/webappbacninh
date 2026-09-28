@@ -3,17 +3,14 @@
 namespace App\Filament\Resources\Pages\Pages;
 
 use App\Filament\Resources\Pages\PageResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListPages extends ListRecords
 {
     protected static string $resource = PageResource::class;
 
-    protected function getHeaderActions(): array
+    public function getSubheading(): ?string
     {
-        return [
-            CreateAction::make(),
-        ];
+        return 'Nội dung mỗi trang nằm trong giao diện; ở đây chỉnh tiêu đề SEO, mô tả, ảnh chia sẻ và banner đầu trang.';
     }
 }

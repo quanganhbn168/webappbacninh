@@ -24,8 +24,10 @@ class DatabaseSeeder extends Seeder
             TemplateSeeder::class,
             ProjectSeeder::class,
             PostSeeder::class,
+            ProductSeeder::class,
+            PricingPlanSeeder::class,
+            TestimonialSeeder::class,
             MiniAppSeeder::class,
-            AdBannerSeeder::class,
             TagSeeder::class,
         ]);
     }

@@ -1,14 +1,23 @@
 /*
  * Public site styles, loaded after Bootstrap (resources/scss/bootstrap.scss).
- * - site/pages.css      approved design: base elements and the new pages
- * - site/secondary.css  pages wrapped in .secondary-content
- * - site/managed.css    content pages wrapped in .managed-content
- * - site/base.css       shared chrome: container width, header logo, floating actions
+ * Bootstrap handles layout, grid, forms and utilities; these files add the
+ * WebApp Bắc Ninh design tokens and components.
+ *   base.css     tokens, typography, buttons and small helpers
+ *   chrome.css   header, footer, floating actions, modals
+ *   hero.css     page heroes, breadcrumbs, trust row
+ *   cards.css    icon tiles and every card type
+ *   blocks.css   sections: CTA, split band, FAQ, tables, lead panel, filters
+ *   content.css  article and document text
+ *   catalog.css  theme showcase
+ *   tools.css    free tool pages
  */
 @import '@fontsource-variable/roboto';
 @import '@fontsource-variable/caveat';
-@import '@fortawesome/fontawesome-free/css/all.min.css';
-@import './site/pages.css';
-@import './site/secondary.css';
-@import './site/managed.css';
 @import './site/base.css';
+@import './site/chrome.css';
+@import './site/hero.css';
+@import './site/cards.css';
+@import './site/blocks.css';
+@import './site/content.css';
+@import './site/catalog.css';
+@import './site/tools.css';

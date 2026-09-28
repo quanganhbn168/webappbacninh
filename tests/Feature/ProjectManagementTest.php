@@ -37,7 +37,7 @@ class ProjectManagementTest extends TestCase
 
         $this->get(route('projects.index'))->assertOk()
             ->assertSee('Dự án thử '.$suffix)
-            ->assertSee('data-filter="nhom-thu-'.$suffix.'"', false);
+            ->assertSee('data-catalog-filter="nhom-thu-'.$suffix.'"', false);
 
         $this->get(route('projects.show', 'du-an-thu-'.$suffix))->assertOk()
             ->assertSee('Nhà hàng Bắc Ninh')

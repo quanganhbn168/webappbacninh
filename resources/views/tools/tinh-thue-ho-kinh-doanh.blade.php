@@ -1,20 +1,14 @@
-@extends('layouts.basic')
+@extends('layouts.tool')
 
-@section('tool', '1')
-@section('robots', 'index, follow')
-@section('title', 'Tính thuế Hộ kinh doanh 2026 - WebApp Bắc Ninh')
-@section('meta_description', 'Công cụ tính thuế hộ kinh doanh miễn phí theo Luật mới 2026. Ngưỡng miễn thuế 500 triệu/năm, tính thuế GTGT và TNCN theo ngành nghề.')
-@section('meta_keywords', 'thuế hộ kinh doanh, thuế khoán, ngưỡng 500 triệu, thuế GTGT, thuế TNCN, kinh doanh cá nhân')
-
-@section('content')
+@section('tool-content')
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="text-center mb-5">
                 <span class="badge text-bg-success bg-opacity-10 text-success px-3 py-2 mb-3 fw-bold tool-hero__badge">
-                    <i class="fas fa-store me-1"></i> Hộ kinh doanh
+                    <x-icon name="store" class="me-1" /> Hộ kinh doanh
                 </span>
-                <h1 class="display-5 fw-bold mb-3"><i class="fas fa-store text-primary me-2"></i>Tính thuế Hộ kinh doanh</h1>
+                <h1 class="display-5 fw-bold mb-3"><x-icon name="store" class="text-primary me-2" />Tính thuế Hộ kinh doanh</h1>
                 <p class="text-secondary lead">Công cụ tính thuế GTGT và TNCN cho hộ kinh doanh cá nhân theo Luật mới 2026.</p>
             </div>
 
@@ -29,7 +23,7 @@
                     </div>
 
                     <fieldset class="mb-4">
-                        <legend class="form-label fw-bold fs-6"><i class="fas fa-industry text-info me-1"></i> Chọn ngành nghề</legend>
+                        <legend class="form-label fw-bold fs-6"><x-icon name="factory" class="text-info me-1" /> Chọn ngành nghề</legend>
                         <div class="row g-3">
                             @foreach ($sectors as $sector)
                                 <div class="col-md-4">
@@ -45,7 +39,7 @@
 
                     <div class="row g-4">
                         <div class="col-lg-5">
-                            <label class="form-label fw-bold" for="revenue"><i class="fas fa-money-bill-wave text-success me-1"></i> Doanh thu năm (VNĐ)</label>
+                            <label class="form-label fw-bold" for="revenue"><x-icon name="banknote" class="text-success me-1" /> Doanh thu năm (VNĐ)</label>
                             <div class="tool-input-suffix">
                                 <input type="text" inputmode="numeric" class="form-control form-control-lg" id="revenue" value="600000000" placeholder="600.000.000">
                                 <span>VNĐ</span>
@@ -56,7 +50,7 @@
                         <div class="col-lg-7">
                             <div class="tool-result h-100" data-result hidden aria-live="polite">
                                 <div class="text-center py-4" data-exempt hidden>
-                                    <i class="fas fa-check-circle fa-3x mb-3"></i>
+                                    <x-icon name="circle-check" class="icon-xl mb-3" />
                                     <p class="h4 fw-bold">Không phải nộp thuế!</p>
                                     <p class="opacity-75 mb-0">Doanh thu dưới ngưỡng chịu thuế <span data-threshold>500 triệu</span>/năm</p>
                                 </div>
@@ -97,13 +91,13 @@
             <div class="row g-4 mt-5">
                 <div class="col-md-6">
                     <div class="tool-info h-100">
-                        <h2 class="h5 fw-bold mb-3"><i class="fas fa-info-circle text-success me-2"></i>Ngưỡng miễn thuế 2026</h2>
+                        <h2 class="h5 fw-bold mb-3"><x-icon name="info" class="text-success me-2" />Ngưỡng miễn thuế 2026</h2>
                         <p class="mb-0">Từ 01/01/2026, hộ kinh doanh có doanh thu ≤ <strong>500 triệu/năm</strong> không phải nộp thuế GTGT và TNCN.</p>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="tool-info h-100">
-                        <h2 class="h5 fw-bold mb-3"><i class="fas fa-gavel text-warning me-2"></i>Bãi bỏ thuế khoán</h2>
+                        <h2 class="h5 fw-bold mb-3"><x-icon name="gavel" class="text-warning me-2" />Bãi bỏ thuế khoán</h2>
                         <p class="mb-0">Từ 2026, hộ kinh doanh chuyển sang <strong>tự kê khai</strong> thuế dựa trên doanh thu thực tế, bỏ hình thức thuế khoán.</p>
                     </div>
                 </div>

@@ -7,17 +7,27 @@ use Illuminate\Contracts\View\View;
 
 class ProjectController extends FrontendController
 {
+    public function index(): View
+    {
+        $projects = Project::query()->forCatalog()->get();
+
+        return $this->sitePage('projects', 'site.projects.index', [
+            'projects' => $projects,
+            'categories' => $projects->pluck('category')->filter()->unique('id')->values(),
+            'schemaType' => 'CollectionPage',
+            'schemaItems' => $projects->map(fn (Project $project): array => ['name' => $project->title, 'url' => $project->url])->all(),
+        ]);
+    }
+
     public function detail(string $slug): View
     {
         $project = Project::query()->active()->with(['category', 'image'])->where('slug', $slug)->firstOrFail();
 
-        return $this->page('frontend.site.projects.show', [
+        return $this->page('site.projects.show', [
             'project' => $project,
             'relatedItems' => $project->related(),
             'pageTitle' => $project->meta_title ?: $project->title.' | Dự án '.site_config('name'),
             'pageDescription' => $project->meta_description ?: (string) $project->excerpt,
-            'extraScripts' => ['project-detail.js'],
-            'bodyClass' => 'page-project-detail',
             'ogImage' => $project->image_url,
             'schemaType' => 'CreativeWork',
             'schemaData' => ['author' => ['@id' => rtrim((string) site_config('site_url'), '/').'/#organization']],

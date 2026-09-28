@@ -16,9 +16,9 @@ class MenuManagementTest extends TestCase
     public function test_header_and_footer_render_the_menus_from_the_database(): void
     {
         $this->get(route('about'))->assertOk()
-            ->assertSee('id="main-nav"', false)
+            ->assertSee('id="site-nav"', false)
             ->assertSee('Giải pháp')
-            ->assertSee('<h3>Về chúng tôi</h3>', false)
+            ->assertSee('<h2>Về chúng tôi</h2>', false)
             ->assertSee('href="/hop-tac-agency"', false);
     }
 
@@ -26,8 +26,8 @@ class MenuManagementTest extends TestCase
     {
         $html = $this->get('/du-an')->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('#class="nav-link active is-active" href="/du-an"\s+aria-current="page"#', $html);
-        $this->assertDoesNotMatchRegularExpression('#class="nav-link active is-active" href="/bang-gia"#', $html);
+        $this->assertMatchesRegularExpression('#class="nav-link active" href="/du-an"\s+aria-current="page"#', $html);
+        $this->assertDoesNotMatchRegularExpression('#class="nav-link active" href="/bang-gia"#', $html);
     }
 
     public function test_menu_edited_in_the_admin_updates_the_site_immediately(): void
@@ -39,8 +39,8 @@ class MenuManagementTest extends TestCase
         $item->update(['title' => 'Tuyển dụng gấp']);
         $this->get('/')->assertSee('Tuyển dụng gấp');
 
-        $menu->allItems()->create(['title' => 'Mục mới', 'url' => '/moi', 'parent_id' => $item->id, 'icon' => 'fa-solid fa-star']);
-        $this->get('/')->assertSee('Mục mới')->assertSee('fa-solid fa-star', false);
+        $menu->allItems()->create(['title' => 'Mục mới', 'url' => '/moi', 'parent_id' => $item->id, 'icon' => 'star']);
+        $this->get('/')->assertSee('Mục mới')->assertSee('M11.525 2.295', false);
 
         $menu->update(['is_active' => false]);
         $this->get('/')->assertDontSee('Tuyển dụng gấp');
@@ -58,6 +58,6 @@ class MenuManagementTest extends TestCase
             ->call('save')
             ->assertHasNoFormErrors();
 
-        $this->get('/')->assertSee('<h3>Công ty</h3>', false);
+        $this->get('/')->assertSee('<h2>Công ty</h2>', false);
     }
 }

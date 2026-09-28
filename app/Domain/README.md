@@ -6,7 +6,8 @@ commands stay thin and call into these classes.
 | Folder | Area |
 |---|---|
 | `Content/` | Shared content helpers (slugs, reading time, blog content) |
-| `Pages/` | Pages managed in the admin (about, legal, custom pages) |
+| `Pages/` | The fixed site pages (`SitePages`): routes, default titles and descriptions |
+| `Tools/` | SEO data of the free tool pages |
 | `Media/` | Importing existing images into the Curator library |
 | `Settings/` | Site settings |
 | `Site/` | Favicon, manifest, public assets, social channels |

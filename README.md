@@ -9,7 +9,12 @@ Hướng dẫn triển khai: [DEPLOYMENT.md](DEPLOYMENT.md). Giao diện đã du
 
 | Mục | Model | Trang public |
 |---|---|---|
-| Nội dung → Trang | `Page` | `/gioi-thieu`, `/hop-tac-agency`, trang chính sách, trang tự tạo tại `/{slug}` |
+| Nội dung → Trang & SEO | `Page` | SEO (tiêu đề, mô tả, ảnh chia sẻ, noindex) và banner đầu trang của 19 trang cố định (`App\Domain\Pages\SitePages`); nội dung trang nằm trong view |
+| Nội dung → Sản phẩm | `Product` | `/san-pham`, dải sản phẩm ở trang chủ |
+| Nội dung → Bảng giá | `PricingPlan` | `/bang-gia`, trang chủ, `/dich-vu`, `/thiet-ke-website`, `/hosting-domain-email`, `/dich-vu-van-hanh` |
+| Nội dung → Đánh giá khách hàng | `Testimonial` | trang chủ |
+| Nội dung → Công cụ miễn phí | `MiniApp` | `/cong-cu` và mục "Công cụ miễn phí khác" ở trang công cụ |
+| Nội dung → Banner quảng cáo | `AdBanner` | các vị trí ở trang chủ, trang dịch vụ, cột phải bài viết |
 | Nội dung → Dịch vụ thiết kế web | `Service`, `ServiceCategory` | `/thiet-ke-website/{slug}` (có landing) hoặc `/{slug}` |
 | Nội dung → Dịch vụ vận hành | `OperationService` | `/dich-vu-van-hanh`, `/dich-vu-van-hanh/{slug}` |
 | Nội dung → Dự án, Nhóm dự án | `Project`, `ProjectCategory` | `/du-an`, `/du-an/{slug}` |
@@ -27,17 +32,24 @@ Database là nguồn dữ liệu duy nhất. `config/` chỉ chứa cấu hình 
 app/
   Domain/            nghiệp vụ theo mảng (xem app/Domain/README.md)
     Content/  Identity/  Media/  Navigation/  Pages/  Settings/  Site/
-  Enums/             kiểu dữ liệu cố định (PageTemplate, TemplateType, SocialProvider)
+  Enums/             kiểu dữ liệu cố định (ProductGroup, PricingGroup, BannerSlot, TemplateType…)
   Filament/          trang quản trị: Resources/<Tên>/{Schemas,Tables,Pages}
   Http/Controllers/  controller mỏng: lấy model, trả view
   Models/            Eloquent model + accessor dùng cho view
   Settings/          nhóm cài đặt (spatie/laravel-settings) và SiteDefaults
-  Support/           tiện ích kỹ thuật (cache menu, cấp quyền Shield)
+  Support/           tiện ích kỹ thuật (bộ icon, cache menu, cấp quyền Shield)
 Modules/             gói tính năng bật/tắt (Ecommerce, RealEstate) — để dành cho tenant
 database/seeders/    dữ liệu mẫu cho bản cài mới (không ghi đè dữ liệu đã sửa trong admin)
 ```
 
-Giao diện public: Bootstrap 5 (`resources/scss/bootstrap.scss`, biến màu và font theo thiết kế đã duyệt) nạp trước, sau đó là CSS thiết kế `resources/css/site.css` (các file trong `resources/css/site/`). JavaScript dùng Bootstrap (modal, offcanvas, dropdown, collapse) và JS thuần trong `resources/js/frontend/`. Trang đăng nhập, lỗi, thanh toán và các trang công cụ (`resources/views/tools`) dùng `layouts.basic`; trang công cụ nạp thêm `resources/js/tools.js` (ToolKit: ô nhập số tiền, gửi JSON, đổ kết quả vào `[data-field]`). Tailwind chỉ còn dùng cho giao diện admin Filament.
+Giao diện public (chi tiết: [docs/APPROVED-INTERFACE.md](docs/APPROVED-INTERFACE.md)):
+
+- Mỗi trang là một view Blade trong `resources/views/site/` (ví dụ `site/projects/index.blade.php`, `site/projects/show.blade.php`), kế thừa `layouts/site.blade.php`.
+- Khối dùng chung là Blade component trong `resources/views/components/`: `<x-hero>`, `<x-section-head>`, `<x-feature-card>`, `<x-card.project|post|product|theme|price|package|quote>`, `<x-steps>`, `<x-faq>`, `<x-cta-banner>`, `<x-lead-form>`, `<x-lead-section>`, `<x-ad-banners>`, `<x-icon>`.
+- CSS: Bootstrap 5 (`resources/scss/bootstrap.scss`, chỉ các phần đang dùng) rồi `resources/css/site.css` (token, header/footer, thẻ, khối nội dung).
+- Icon: `<x-icon name="phone" />`, bộ SVG trong `resources/icons/icons.json` (Lucide + logo thương hiệu từ Simple Icons). Thêm icon: sửa danh sách trong `scripts/build-icons.mjs` rồi chạy `node scripts/build-icons.mjs`. Ô chọn icon trong admin dùng `App\Filament\Forms\IconPicker`.
+- JavaScript: `resources/js/site.js` (plugin Bootstrap cần dùng + các module trong `resources/js/site/`: form tư vấn, lọc danh mục, kho giao diện, thư viện ảnh, ToolKit cho trang công cụ).
+- Trang công cụ (`resources/views/tools`) dùng `layouts/tool.blade.php` (có header, footer, breadcrumb). Trang đăng nhập, lỗi, thanh toán dùng `layouts/basic.blade.php`. Tailwind chỉ còn dùng cho admin Filament và hai landing page mẫu.
 
 Luồng một request: `Route → Controller → Model (scope/accessor) → View`. Logic dùng lại ở nhiều nơi (admin, controller, lệnh artisan) đặt trong `app/Domain/<Mảng>/Actions`, mỗi class làm một việc.
 

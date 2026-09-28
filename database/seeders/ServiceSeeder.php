@@ -44,7 +44,7 @@ class ServiceSeeder extends Seeder
                 'eyebrow' => 'WEBSITE DOANH NGHIỆP',
                 'highlight' => 'Nền tảng giới thiệu năng lực, sản phẩm và dự án rõ ràng.',
                 'description' => 'Dành cho công ty sản xuất, thương mại và dịch vụ cần một website đủ tin cậy để gửi khách hàng, đối tác, đại lý và ứng viên.',
-                'icon' => 'fa-solid fa-building',
+                'icon' => 'building-2',
                 'price_from' => 'Từ 8 triệu',
                 'timeline' => '2 - 4 tuần',
                 'cta' => 'Nhận cấu trúc website doanh nghiệp',
@@ -62,17 +62,17 @@ class ServiceSeeder extends Seeder
                 ],
                 'problems' => [
                     [
-                        'icon' => 'fa-solid fa-file-circle-question',
+                        'icon' => 'file-question-mark',
                         'title' => 'Nội dung rời rạc',
                         'text' => 'Khách hàng không thấy rõ năng lực, sản phẩm chủ lực và lý do nên lựa chọn doanh nghiệp.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-mobile-screen',
+                        'icon' => 'smartphone',
                         'title' => 'Hiển thị mobile kém',
                         'text' => 'Website cũ khó đọc trên điện thoại, nút liên hệ nhỏ và tốc độ tải chậm.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-user-slash',
+                        'icon' => 'user-x',
                         'title' => 'Không tạo được lead',
                         'text' => 'Có lượt truy cập nhưng thiếu form, CTA, hotline và luồng chuyển đổi rõ ràng.',
                     ],
@@ -88,32 +88,32 @@ class ServiceSeeder extends Seeder
                 ],
                 'features' => [
                     [
-                        'icon' => 'fa-solid fa-palette',
+                        'icon' => 'palette',
                         'title' => 'Theo nhận diện thương hiệu',
                         'text' => 'Màu sắc, font, hình ảnh và bố cục phù hợp doanh nghiệp.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-layer-group',
+                        'icon' => 'layers',
                         'title' => 'Cấu trúc rõ ràng',
                         'text' => 'Sắp xếp nội dung theo cách khách hàng dễ hiểu và dễ tìm.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-language',
+                        'icon' => 'languages',
                         'title' => 'Có thể đa ngôn ngữ',
                         'text' => 'Mở rộng tiếng Anh, Trung hoặc ngôn ngữ khác khi cần.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-chart-line',
+                        'icon' => 'chart-line',
                         'title' => 'SEO nền tảng',
                         'text' => 'Heading, schema, sitemap, tốc độ và cấu trúc URL được chuẩn bị từ đầu.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-user-gear',
+                        'icon' => 'user-cog',
                         'title' => 'Quản trị dễ dùng',
                         'text' => 'Tự cập nhật bài viết, dịch vụ, dự án và thông tin liên hệ.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-headset',
+                        'icon' => 'headset',
                         'title' => 'Hỗ trợ sau bàn giao',
                         'text' => 'Có gói hosting, bảo trì, đăng bài và SEO định kỳ.',
                     ],
@@ -176,7 +176,7 @@ class ServiceSeeder extends Seeder
                 'eyebrow' => 'WEBSITE BÁN HÀNG',
                 'highlight' => 'Tập trung sản phẩm, đơn hàng và dữ liệu khách hàng về một nơi.',
                 'description' => 'Phù hợp cửa hàng, nhà phân phối và doanh nghiệp muốn chủ động kênh bán hàng thay vì phụ thuộc hoàn toàn vào mạng xã hội hoặc sàn thương mại điện tử.',
-                'icon' => 'fa-solid fa-cart-shopping',
+                'icon' => 'shopping-cart',
                 'price_from' => 'Từ 15 triệu',
                 'timeline' => '3 - 6 tuần',
                 'cta' => 'Nhận tư vấn website bán hàng',
@@ -194,17 +194,17 @@ class ServiceSeeder extends Seeder
                 ],
                 'problems' => [
                     [
-                        'icon' => 'fa-solid fa-comments-dollar',
+                        'icon' => 'hand-coins',
                         'title' => 'Chốt đơn thủ công',
                         'text' => 'Nhân viên phải hỏi lại mã hàng, giá, số lượng và thông tin giao hàng qua tin nhắn.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-boxes-stacked',
+                        'icon' => 'boxes',
                         'title' => 'Sản phẩm khó tìm',
                         'text' => 'Danh mục lớn nhưng thiếu bộ lọc, tìm kiếm và cách trình bày thông tin rõ ràng.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-database',
+                        'icon' => 'database',
                         'title' => 'Dữ liệu phân tán',
                         'text' => 'Đơn hàng và khách hàng nằm ở nhiều kênh, khó theo dõi và chăm sóc lại.',
                     ],
@@ -221,32 +221,32 @@ class ServiceSeeder extends Seeder
                 ],
                 'features' => [
                     [
-                        'icon' => 'fa-solid fa-box-open',
+                        'icon' => 'package-open',
                         'title' => 'Quản lý sản phẩm',
                         'text' => 'Danh mục, thuộc tính, giá, hình ảnh và trạng thái sản phẩm.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-cart-arrow-down',
+                        'icon' => 'shopping-cart',
                         'title' => 'Giỏ hàng và đặt hàng',
                         'text' => 'Quy trình mua hàng gọn trên cả điện thoại và máy tính.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-credit-card',
+                        'icon' => 'credit-card',
                         'title' => 'Thanh toán',
                         'text' => 'Có thể tích hợp QR, chuyển khoản hoặc cổng thanh toán.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-truck-fast',
+                        'icon' => 'truck',
                         'title' => 'Vận chuyển',
                         'text' => 'Cấu hình phí giao hàng hoặc tích hợp đơn vị vận chuyển khi cần.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-receipt',
+                        'icon' => 'receipt',
                         'title' => 'Quản lý đơn',
                         'text' => 'Theo dõi trạng thái, thông tin khách và lịch sử xử lý đơn hàng.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-chart-column',
+                        'icon' => 'chart-column',
                         'title' => 'Theo dõi chuyển đổi',
                         'text' => 'Gắn Analytics, Pixel và các sự kiện mua hàng quan trọng.',
                     ],
@@ -309,7 +309,7 @@ class ServiceSeeder extends Seeder
                 'eyebrow' => 'LANDING PAGE CHUYỂN ĐỔI',
                 'highlight' => 'Dùng cho quảng cáo, tuyển sinh, sự kiện và dịch vụ trọng điểm.',
                 'description' => 'Một trang đích được xây theo luồng thuyết phục rõ ràng, giúp khách hàng hiểu lợi ích, xem bằng chứng và để lại thông tin hoặc liên hệ ngay.',
-                'icon' => 'fa-solid fa-bullseye',
+                'icon' => 'target',
                 'price_from' => 'Từ 6,5 triệu',
                 'timeline' => '7 - 15 ngày',
                 'cta' => 'Nhận bố cục landing page',
@@ -327,17 +327,17 @@ class ServiceSeeder extends Seeder
                 ],
                 'problems' => [
                     [
-                        'icon' => 'fa-solid fa-arrow-up-right-dots',
+                        'icon' => 'chart-no-axes-combined',
                         'title' => 'Chi phí quảng cáo cao',
                         'text' => 'Khách bấm quảng cáo nhưng trang đích không đúng thông điệp hoặc quá nhiều lựa chọn.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-route',
+                        'icon' => 'route',
                         'title' => 'Luồng nội dung yếu',
                         'text' => 'Thông tin thiếu thứ tự, không xử lý phản đối và chưa tạo động lực hành động.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-filter-circle-xmark',
+                        'icon' => 'funnel-x',
                         'title' => 'Không đo được lead',
                         'text' => 'Thiếu form, sự kiện tracking và nguồn chiến dịch để đánh giá hiệu quả.',
                     ],
@@ -354,32 +354,32 @@ class ServiceSeeder extends Seeder
                 ],
                 'features' => [
                     [
-                        'icon' => 'fa-solid fa-pen-nib',
+                        'icon' => 'pen-tool',
                         'title' => 'Bố cục bán hàng',
                         'text' => 'Sắp xếp nội dung theo hành trình ra quyết định của khách hàng.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-mobile-button',
+                        'icon' => 'smartphone',
                         'title' => 'Mobile-first',
                         'text' => 'Ưu tiên tốc độ đọc, nút CTA và form trên điện thoại.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-wand-magic-sparkles',
+                        'icon' => 'wand-sparkles',
                         'title' => 'Hiệu ứng vừa đủ',
                         'text' => 'Chuyển động hỗ trợ trải nghiệm, không làm trang nặng hoặc rối.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-list-check',
+                        'icon' => 'list-checks',
                         'title' => 'Form thu lead',
                         'text' => 'Biểu mẫu ngắn, rõ và có thể lưu hoặc gửi thông báo.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-chart-simple',
+                        'icon' => 'chart-column',
                         'title' => 'Tracking chiến dịch',
                         'text' => 'Gắn Analytics, Pixel, UTM và sự kiện chuyển đổi.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-flask',
+                        'icon' => 'flask-conical',
                         'title' => 'Dễ thử nghiệm',
                         'text' => 'Có thể thay CTA, tiêu đề hoặc gói giá để tối ưu sau khi chạy.',
                     ],
@@ -442,7 +442,7 @@ class ServiceSeeder extends Seeder
                 'eyebrow' => 'THIẾT KẾ LẠI WEBSITE CŨ',
                 'highlight' => 'Cải thiện giao diện, tốc độ, quản trị và khả năng tạo khách hàng.',
                 'description' => 'Không phải lúc nào cũng cần bỏ toàn bộ website. WebApp Bắc Ninh kiểm tra cấu trúc, nội dung, dữ liệu và hệ thống hiện tại để đề xuất phần nên giữ, phần cần thay và cách chuyển đổi an toàn.',
-                'icon' => 'fa-solid fa-arrows-rotate',
+                'icon' => 'refresh-cw',
                 'price_from' => 'Khảo sát trước',
                 'timeline' => '2 - 6 tuần',
                 'cta' => 'Yêu cầu kiểm tra website cũ',
@@ -460,17 +460,17 @@ class ServiceSeeder extends Seeder
                 ],
                 'problems' => [
                     [
-                        'icon' => 'fa-solid fa-gauge-high',
+                        'icon' => 'gauge',
                         'title' => 'Tốc độ và trải nghiệm kém',
                         'text' => 'Mã nguồn cũ, ảnh nặng, plugin dư thừa hoặc bố cục không còn phù hợp thiết bị mới.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-triangle-exclamation',
+                        'icon' => 'triangle-alert',
                         'title' => 'Rủi ro mất dữ liệu',
                         'text' => 'Làm mới thiếu kế hoạch có thể mất bài viết, URL cũ, thứ hạng và thông tin khách hàng.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-screwdriver-wrench',
+                        'icon' => 'wrench',
                         'title' => 'Khó bảo trì',
                         'text' => 'Không rõ đơn vị cũ, source thiếu hoặc hệ thống phụ thuộc nhiều thành phần lỗi thời.',
                     ],
@@ -486,32 +486,32 @@ class ServiceSeeder extends Seeder
                 ],
                 'features' => [
                     [
-                        'icon' => 'fa-solid fa-magnifying-glass',
+                        'icon' => 'search',
                         'title' => 'Audit website cũ',
                         'text' => 'Kiểm tra giao diện, nội dung, tốc độ, SEO, hosting và mã nguồn.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-database',
+                        'icon' => 'database',
                         'title' => 'Giữ dữ liệu quan trọng',
                         'text' => 'Lập kế hoạch sao lưu và chuyển bài viết, sản phẩm, khách hàng khi có thể.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-link',
+                        'icon' => 'link',
                         'title' => 'Bảo toàn URL',
                         'text' => 'Giữ đường dẫn có giá trị hoặc thiết lập redirect phù hợp.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-mobile-screen-button',
+                        'icon' => 'smartphone',
                         'title' => 'Giao diện responsive mới',
                         'text' => 'Thiết kế lại theo nội dung và mục tiêu kinh doanh hiện tại.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-shield-halved',
+                        'icon' => 'shield-check',
                         'title' => 'Kiểm thử trước khi chuyển',
                         'text' => 'Chạy bản mới trên môi trường thử nghiệm và có phương án quay lại.',
                     ],
                     [
-                        'icon' => 'fa-solid fa-chart-line',
+                        'icon' => 'chart-line',
                         'title' => 'Theo dõi sau nâng cấp',
                         'text' => 'Kiểm tra lỗi 404, Search Console, form và tốc độ sau khi đưa vào sử dụng.',
                     ],

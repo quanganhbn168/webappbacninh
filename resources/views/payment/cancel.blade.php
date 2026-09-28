@@ -11,7 +11,7 @@
                     
                     <div class="mb-4">
                         <div class="rounded-circle bg-warning bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
-                            <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                            <x-icon name="triangle-alert" class="text-warning" style="font-size: 3rem;" />
                         </div>
                     </div>
 
@@ -22,11 +22,11 @@
 
                     <div class="d-grid gap-2">
                         <a href="{{ route('payment.checkout') }}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-redo me-2"></i>
+                            <x-icon name="rotate-cw" class="me-2" />
                             Thử lại
                         </a>
                         <a href="{{ url('/') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-home me-2"></i>
+                            <x-icon name="house" class="me-2" />
                             Về trang chủ
                         </a>
                     </div>

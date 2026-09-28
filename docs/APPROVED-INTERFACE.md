@@ -1,70 +1,39 @@
 # Giao diện WebApp Bắc Ninh
 
-## Phạm vi
+Giao diện public giữ thiết kế đã duyệt (màu vàng #ffac00, nâu đậm, Roboto, chữ viết tay Caveat) và được dựng lại trên Bootstrap 5 với một bộ component chung.
 
-Trang chủ, dịch vụ và hosting lấy từ `webappbacninh-new-interface-home-full-source.zip`. Sáu trang giải pháp, sản phẩm, dự án, bảng giá, blog và liên hệ lấy từ `webappbacninh-6-trang-html-tailwind-alpine.zip`. Giữ hình ảnh, nội dung và hướng thiết kế đã duyệt; chuẩn hóa lề, responsive, điều hướng và tài nguyên.
+## Cấu trúc
 
-- Layout chung: `resources/views/layouts/master.blade.php`.
-- Layout trắng cho trang tiện ích, đăng nhập và lỗi: `resources/views/layouts/plain.blade.php` (không header/footer).
-- Phần dùng chung: `resources/views/partials/frontend/`.
-- Trang lỗi: `resources/views/errors/404.blade.php`, `500.blade.php`; trang 500 dùng khi `APP_DEBUG=false`.
-- Các trang mới: `resources/views/frontend/pages/`.
-- CSS/JS: `resources/scss/bootstrap.scss` (Bootstrap 5.3) + `resources/css/site.css`, `resources/js/frontend.js` (Bootstrap JS và JS thuần); build bằng Vite.
-- Header và footer lấy menu từ admin (Nội dung → Menu).
-- Ảnh: `public/frontend/images/`.
-- Roboto Variable và Caveat Variable lấy từ package Fontsource, tự host qua Vite.
-- Trang chi tiết CMS dùng layout chung và `managed-content.css`; các rule nội dung được giới hạn bằng CSS scope để không ảnh hưởng header/footer.
-- Backend quản trị vẫn là Filament 5. Đã loại bỏ AdminLTE, các controller/view cũ không còn route và bản PHP trùng.
+- Layout: `resources/views/layouts/site.blade.php` (trang public), `layouts/tool.blade.php` (trang công cụ, kế thừa `site`), `layouts/basic.blade.php` (đăng nhập, lỗi 404/500/503, thanh toán).
+- Header, footer, nút liên hệ nổi, modal tư vấn/kiểm tra tên miền: `resources/views/partials/site/`.
+- Trang: `resources/views/site/`
+  - `home.blade.php`, `pages/{services,hosting,solutions,products,pricing,contact,about,agency}.blade.php`, `pages/legal/*.blade.php`
+  - `projects/`, `articles/`, `themes/`, `services/`, `operations/`, `tools/index.blade.php`
+  - `partials/`: lưới dịch vụ, dải hợp tác Agency, quy trình 5 bước, module mở rộng — dùng lại ở nhiều trang.
+- Component: `resources/views/components/` (xem README).
+- CSS: `resources/css/site/{base,chrome,hero,cards,blocks,content,catalog,tools}.css`.
 
-## Dữ liệu và chức năng
+## Nội dung nào sửa ở đâu
 
-Tên website, điện thoại, email, mạng xã hội, favicon, SEO và tracking tiếp tục lấy từ hệ thống settings hiện có. Trang danh sách dự án và blog lấy dữ liệu CMS; URL chi tiết, nội dung dịch vụ và dữ liệu hiện có được giữ lại.
+| Nội dung | Sửa ở |
+|---|---|
+| Tiêu đề SEO, mô tả, ảnh chia sẻ, noindex, banner đầu trang (dòng chữ nhỏ, tiêu đề, dòng nhấn, mô tả, ảnh) | Admin → Trang & SEO |
+| Sản phẩm, gói giá, đánh giá khách hàng, công cụ miễn phí, banner quảng cáo | Admin → mục tương ứng |
+| Dịch vụ, dự án, kho giao diện, bài viết, menu | Admin (như trước) |
+| Chữ cố định trong từng trang (tiêu đề mục, danh sách lợi ích, câu hỏi thường gặp chung) | View Blade của trang |
 
-Form tư vấn trên header và trang liên hệ gửi vào `POST /lien-he`, dùng `StoreLeadRequest` và `LeadController`. Chỉ thông báo thành công sau khi máy chủ lưu dữ liệu.
+Banner đầu trang: để trống trong admin thì dùng nội dung viết sẵn trong view (`<x-hero>` nhận giá trị mặc định, admin ghi đè khi có).
 
-Các phần giới thiệu, bảng giá và sản phẩm đóng gói trong bộ thiết kế hiện là nội dung Blade. Một số nút demo mở bản xem trước minh họa; chưa phải sản phẩm thanh toán hoặc ứng dụng đã triển khai. Kiểm tra tên miền trong giao diện chỉ kiểm tra định dạng, không khẳng định tên miền còn trống. Không triển khai newsletter giả lập.
+## Quy ước
 
-## Build và triển khai
+- Không dùng Font Awesome; icon dùng `<x-icon>`.
+- Form tư vấn: `<x-lead-form>` gửi `POST /lien-he` (JSON khi có JavaScript, form thường khi không), lưu vào Admin → Liên hệ. Nút có `data-consult="…"` mở modal tư vấn và điền sẵn nhu cầu; `data-domain` mở modal kiểm tra tên miền (`/domain-check`).
+- Lọc danh sách ngắn bằng `data-catalog` (sản phẩm, dự án, giải pháp); kho giao diện dùng `data-theme-library`; blog phân trang phía máy chủ.
+- Màu chữ vàng trên nền trắng dùng `--gold-text`/`--gold-700` để đủ tương phản; nền vàng dùng chữ nâu đậm.
+- Ảnh dưới màn hình đầu dùng `loading="lazy"` và có `width`/`height`.
 
-```sh
-composer install --no-dev --prefer-dist --optimize-autoloader
-# Chỉ chạy lần đầu nếu môi trường chưa có CURATOR_GLIDE_TOKEN:
-php artisan curator:token
-php artisan migrate --force
-php artisan blog:import-media
-pnpm install --frozen-lockfile
-pnpm run build
-php artisan optimize:clear
-php artisan view:cache
-php artisan test
-```
+## Tài nguyên tự host
 
-Bản cập nhật blog cần migration bổ sung bảng `curator`, khóa ảnh và cờ quản lý ảnh cho bài viết/danh mục. `blog:import-media` sao chép ảnh blog cũ có sẵn trên máy, giữ nguyên tệp gốc và bỏ qua bài đã dùng Curator; chạy lại an toàn. Lệnh không ghi đè nội dung/SEO đã sửa trong CMS. Tệp mới nằm trong `storage/app/public/blog/imports`; không được Git chuyển lên hosting, cần đồng bộ media riêng hoặc chạy import tại hosting có ảnh gốc. Không dùng `migrate:fresh`.
-
-`CURATOR_GLIDE_TOKEN` cần tạo riêng một lần ở mỗi môi trường; không đưa token vào Git và không tạo lại ở mỗi lần deploy. `deploy.sh` cài Composer, build asset, migrate và import ảnh, sau đó xây lại cache.
-
-Local sử dụng `https://webappbacninh.test` với Laragon, root là thư mục `public` của checkout này. Tên miền `.vn` không bị chuyển hướng về local. Không có thay đổi DNS công khai hoặc triển khai production. Bản khôi phục PHP cũ nằm ngoài Git, trong `storage/app/local-interface-setup/legacy-php-backup.zip`.
-
-## Tài nguyên tiện ích tự host
-
-- `public/vendor/lunar-1.7.7.js`: lunar-javascript 1.7.7, từ bản phát hành npm trên unpkg.
-- `public/vendor/easy-qrcode-4.5.0.min.js`: easyqrcodejs 4.5.0, từ bản phát hành npm trên jsDelivr.
-
-Các thư viện được tải về và phục vụ tại local; không còn tải runtime từ CDN ở các trang tiện ích này. API dịch vụ bên ngoài như VietQR là tích hợp chức năng, không phải thư viện giao diện.
-
-## Quản trị blog và liên hệ
-
-- `/admin/posts` và `/admin/post-categories`: chọn ảnh qua Curator trên ổ public, tải ảnh và chèn ảnh vào trình soạn thảo. Ảnh đại diện và `og:image` là hai lựa chọn riêng. Bỏ `og:image` sẽ dùng ảnh đại diện. Dữ liệu SEO bổ sung/từ khóa cũ được giữ trong DB nhưng không còn trường nhập trên form blog.
-- Đường dẫn tự tạo theo tiêu đề/tên danh mục, hiển thị dạng permalink; bấm **Chỉnh sửa** mới mở input. Khi lưu, kiểm tra bảng `slugs` và bảng nội dung, thêm `-2`, `-3` khi trùng. Đổi tiêu đề bài đã có không đổi slug. URL bài: `/kien-thuc/{slug}`, danh mục: `/kien-thuc/danh-muc/{slug}`. Đổi slug thủ công không tạo lịch sử redirect cho slug cũ.
-- Trang chủ/blog lấy bài từ CMS: 1 bài lớn và tối đa 3 bài nhỏ, ưu tiên bài đánh dấu nổi bật rồi bổ sung bài mới nhất nếu chưa đủ. Không lặp bài để lấp chỗ; bài hẹn xuất bản chưa tới ngày không hiển thị.
-- `/admin/leads`: xem thông tin yêu cầu tư vấn, tìm kiếm và cập nhật trạng thái Mới / Đã liên hệ / Đã xử lý. Chưa gửi email thông báo tự động.
-- `/admin/settings` → **Thương hiệu**: logo ngang dùng cho header/footer; favicon nguồn giữ quy trình sinh bộ favicon/manifest hiện có. Logo/favicon hiện dùng upload cấu hình riêng; Curator áp dụng cho blog.
-- **Liên hệ**: số điện thoại, email, địa chỉ, giờ làm việc. **Mạng xã hội**: nút Zalo/Messenger/Telegram/WhatsApp chỉ hiện khi có URL hợp lệ; nút gọi và tư vấn dùng cấu hình thật.
-
-## Form blog 2:1
-
-Form bài viết và danh mục dùng 3 cột từ breakpoint `lg`: vùng nội dung chiếm 2, thiết lập và ảnh chiếm 1. Trên điện thoại các vùng xếp thành một cột. Tiêu đề, permalink, mô tả, nội dung nằm liên tiếp bên trái; SEO bên dưới, mỗi trường một hàng. Danh mục bài viết, lịch xuất bản, toggle và hai ảnh nằm bên phải. Nhãn ảnh Open Graph trên form là **Ảnh chia sẻ**.
-
-RichEditor dùng bộ công cụ mặc định của Filament, thay nút tải tệp bằng Curator. CSS giới hạn vùng `.blog-content-editor .tiptap` ở 520px, cuộn nội dung riêng và giữ toolbar ngoài vùng cuộn, theo cách tổ chức tham khảo ở cnetpos, rubyqueennew và kingda.
-
-Không còn trường nhập số phút đọc. `Post::read_time` tự ước tính từ nội dung hiển thị với 200 từ/phút, tối thiểu 1 phút, hỗ trợ HTML và JSON sections cũ. Không dùng giá trị nhập tay trước đây; không cần migration hoặc cập nhật lại bài cũ.
+- `public/vendor/lunar-1.7.7.js`: lunar-javascript 1.7.7 (lịch vạn niên).
+- `public/vendor/easy-qrcode-4.5.0.min.js`: easyqrcodejs 4.5.0 (tạo QR).
+- Roboto Variable và Caveat Variable qua Fontsource.

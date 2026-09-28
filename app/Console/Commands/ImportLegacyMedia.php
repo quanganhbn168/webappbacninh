@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\AdBanner;
 use App\Models\Post;
 use App\Models\TemplateCategory;
 use Illuminate\Console\Command;
@@ -26,7 +25,6 @@ class ImportLegacyMedia extends Command
             'featured_image' => 'featured',
             'og_image' => 'og',
         ]);
-        $imported += $this->importFor(AdBanner::class, ['image' => 'featured']);
         $imported += $this->importFor(TemplateCategory::class, [
             'image' => 'featured',
             'og_image' => 'og',

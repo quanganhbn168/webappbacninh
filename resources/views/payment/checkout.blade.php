@@ -39,7 +39,7 @@
             {{-- Header --}}
             <div class="text-center mb-5">
                 <h1 class="display-5 fw-bold text-dark mb-3">
-                    <i class="fas fa-credit-card text-primary me-2"></i>
+                    <x-icon name="credit-card" class="text-primary me-2" />
                     Thanh toán
                 </h1>
                 <p class="text-muted lead">
@@ -53,7 +53,7 @@
                     <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
                         <div class="card-body p-4">
                             <h5 class="fw-bold mb-4">
-                                <i class="fas fa-wallet text-primary me-2"></i>
+                                <x-icon name="wallet" class="text-primary me-2" />
                                 Phương thức thanh toán
                             </h5>
 
@@ -72,7 +72,7 @@
                                              onclick="selectProvider('{{ $provider['name'] }}')">
                                             <div class="d-flex align-items-center">
                                                 <div class="me-3">
-                                                    <i class="{{ $provider['icon'] }} fa-2x" style="color: {{ $provider['color'] }}"></i>
+                                                    <x-icon name="circle-help" class="{{ $provider['icon'] }} icon-lg" style="color: {{ $provider['color'] }}" />
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     <h6 class="fw-bold mb-1">{{ $provider['display_name'] }}</h6>
@@ -93,7 +93,7 @@
 
                                 {{-- Customer info --}}
                                 <h6 class="fw-bold mb-3">
-                                    <i class="fas fa-user text-info me-2"></i>
+                                    <x-icon name="user" class="text-info me-2" />
                                     Thông tin khách hàng (tùy chọn)
                                 </h6>
                                 <div class="row g-3 mb-4">
@@ -106,14 +106,14 @@
                                 </div>
 
                                 <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">
-                                    <i class="fas fa-lock me-2"></i>
+                                    <x-icon name="lock" class="me-2" />
                                     Thanh toán ngay
                                 </button>
                             </form>
 
                             @if(session('error'))
                             <div class="alert alert-danger mt-3">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <x-icon name="triangle-alert" class="me-2" />
                                 {{ session('error') }}
                             </div>
                             @endif
@@ -125,7 +125,7 @@
                 <div class="col-lg-5">
                     <div class="order-summary">
                         <h5 class="fw-bold mb-4">
-                            <i class="fas fa-shopping-cart me-2"></i>
+                            <x-icon name="shopping-cart" class="me-2" />
                             Thông tin đơn hàng
                         </h5>
 
@@ -150,7 +150,7 @@
 
                         <div class="mt-4 pt-3 border-top border-white border-opacity-25">
                             <div class="d-flex align-items-center small opacity-75">
-                                <i class="fas fa-shield-alt me-2"></i>
+                                <x-icon name="shield-check" class="me-2" />
                                 Giao dịch được bảo mật bởi SSL
                             </div>
                         </div>
@@ -158,7 +158,7 @@
 
                     {{-- Demo note --}}
                     <div class="alert alert-info mt-3 small">
-                        <i class="fas fa-info-circle me-2"></i>
+                        <x-icon name="info" class="me-2" />
                         <strong>Demo mode:</strong> Đây là trang thanh toán mẫu để demo Payment Gateway Interface Pattern.
                     </div>
                 </div>

@@ -48,7 +48,7 @@
             {{-- Header --}}
             <div class="text-center mb-4">
                 <h1 class="display-6 fw-bold text-dark mb-2">
-                    <i class="fas fa-qrcode text-success me-2"></i>
+                    <x-icon name="qr-code" class="text-success me-2" />
                     Thanh toán SePay
                 </h1>
                 <p class="text-muted">Quét mã QR hoặc chuyển khoản thủ công</p>
@@ -83,7 +83,7 @@
                                 <span class="opacity-75">Số tài khoản:</span>
                                 <div>
                                     <strong id="accountNumber">{{ $account }}</strong>
-                                    <i class="fas fa-copy ms-2 copy-btn" onclick="copyToClipboard('{{ $account }}', this)"></i>
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-2 copy-btn" onclick="copyToClipboard('{{ $account }}', this)" aria-label="Sao chép số tài khoản"><x-icon name="copy" class="icon-sm" /></button>
                                 </div>
                             </div>
                         </div>
@@ -98,7 +98,7 @@
                                 <span class="opacity-75">Nội dung CK:</span>
                                 <div>
                                     <strong class="text-warning" id="paymentCode">{{ $code }}</strong>
-                                    <i class="fas fa-copy ms-2 copy-btn" onclick="copyToClipboard('{{ $code }}', this)"></i>
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-2 copy-btn" onclick="copyToClipboard('{{ $code }}', this)" aria-label="Sao chép nội dung chuyển khoản"><x-icon name="copy" class="icon-sm" /></button>
                                 </div>
                             </div>
                         </div>
@@ -107,7 +107,7 @@
 
                 {{-- Warning --}}
                 <div class="alert alert-warning mt-3 mb-0 text-dark small">
-                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    <x-icon name="triangle-alert" class="me-1" />
                     <strong>Lưu ý:</strong> Nhập đúng nội dung chuyển khoản <strong>{{ $code }}</strong> để hệ thống tự động xác nhận.
                 </div>
             </div>
@@ -116,14 +116,14 @@
             <div class="card mt-4 border-0 shadow-sm">
                 <div class="card-body text-center">
                     <div class="status-checking mb-2">
-                        <i class="fas fa-sync-alt fa-spin text-primary fa-2x"></i>
+                        <x-icon name="refresh-cw" class="icon-spin text-primary icon-lg" />
                     </div>
                     <p class="mb-1 fw-bold">Đang chờ thanh toán...</p>
                     <small class="text-muted">Hệ thống sẽ tự động xác nhận khi nhận được tiền</small>
                     
                     <div class="mt-3">
                         <a href="{{ $return_url ?? url('/') }}" class="btn btn-outline-secondary btn-sm">
-                            <i class="fas fa-arrow-left me-1"></i> Quay lại
+                            <x-icon name="arrow-left" class="me-1" /> Quay lại
                         </a>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
 
             {{-- Instructions --}}
             <div class="mt-4">
-                <h6 class="fw-bold mb-3"><i class="fas fa-info-circle text-info me-2"></i>Hướng dẫn thanh toán</h6>
+                <h6 class="fw-bold mb-3"><x-icon name="info" class="text-info me-2" />Hướng dẫn thanh toán</h6>
                 <ol class="text-muted small">
                     <li>Mở app ngân hàng trên điện thoại</li>
                     <li>Chọn "Quét QR" hoặc "Chuyển khoản"</li>
@@ -151,11 +151,9 @@
 <script>
 function copyToClipboard(text, btn) {
     navigator.clipboard.writeText(text).then(() => {
-        const originalClass = btn.className;
-        btn.className = 'fas fa-check ms-2 text-success';
-        setTimeout(() => {
-            btn.className = originalClass;
-        }, 2000);
+        btn.classList.add('text-success');
+        btn.setAttribute('title', 'Đã sao chép');
+        setTimeout(() => btn.classList.remove('text-success'), 2000);
     });
 }
 

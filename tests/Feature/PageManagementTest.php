@@ -2,13 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Enums\PageTemplate;
-use App\Filament\Resources\Pages\Pages\CreatePage;
+use App\Domain\Pages\SitePages;
+use App\Filament\Resources\Pages\PageResource;
 use App\Filament\Resources\Pages\Pages\EditPage;
 use App\Models\Page;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -16,10 +15,11 @@ class PageManagementTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function test_default_pages_render_from_the_database(): void
+    public function test_every_fixed_page_has_a_record_and_renders(): void
     {
-        foreach (['about', 'agency', 'legal.privacy', 'legal.terms', 'legal.warranty', 'legal.payment'] as $route) {
-            $this->get(route($route))->assertOk();
+        foreach (array_keys(SitePages::PAGES) as $key) {
+            $page = Page::query()->where('key', $key)->firstOrFail();
+            $this->get($page->url)->assertOk();
         }
 
         $this->get(route('legal.privacy'))
@@ -28,68 +28,52 @@ class PageManagementTest extends TestCase
             ->assertSee('Họ tên, số điện thoại, email và tên doanh nghiệp.');
     }
 
-    public function test_edits_in_the_admin_change_the_public_page(): void
+    public function test_seo_and_banner_edited_in_the_admin_change_the_public_page(): void
     {
-        Page::query()->where('slug', 'chinh-sach-bao-mat')->firstOrFail()->update([
-            'title' => 'Chính sách bảo mật đã sửa',
-            'content' => [['type' => 'section', 'data' => ['heading' => 'Mục mới', 'content' => 'Đoạn mới', 'items' => "Ý một\nÝ hai"]]],
+        Page::query()->where('key', 'pricing')->firstOrFail()->update([
+            'meta_title' => 'Bảng giá đã sửa | Kiểm thử',
+            'meta_description' => 'Mô tả SEO kiểm thử cho bảng giá.',
+            'banner_title' => 'Tiêu đề banner mới',
+            'banner_highlight' => 'Dòng nhấn mới',
+            'banner_subtitle' => 'Đoạn mô tả banner mới.',
+            'noindex' => true,
         ]);
 
-        $this->get(route('legal.privacy'))
-            ->assertSee('Chính sách bảo mật đã sửa')
-            ->assertSee('Mục mới')
-            ->assertSee('Ý hai')
-            ->assertDontSee('1. Thông tin được tiếp nhận');
+        $this->get(route('pricing'))
+            ->assertSee('<title>Bảng giá đã sửa | Kiểm thử</title>', false)
+            ->assertSee('<meta name="description" content="Mô tả SEO kiểm thử cho bảng giá.">', false)
+            ->assertSee('<meta name="robots" content="noindex, follow">', false)
+            ->assertSee('Tiêu đề banner mới')
+            ->assertSee('Dòng nhấn mới')
+            ->assertSee('Đoạn mô tả banner mới.')
+            ->assertDontSee('Minh bạch – Linh hoạt – Phù hợp');
     }
 
-    public function test_new_page_is_served_from_the_site_root_and_hidden_when_inactive(): void
+    public function test_empty_fields_fall_back_to_the_view_defaults(): void
     {
-        $slug = 'huong-dan-'.Str::lower(Str::random(8));
+        Page::query()->where('key', 'pricing')->firstOrFail()->update(['meta_title' => null, 'meta_description' => null, 'banner_title' => null]);
 
-        Livewire::actingAs($this->admin(), 'admin')->test(CreatePage::class)
-            ->fillForm([
-                'title' => 'Hướng dẫn thanh toán',
-                'slug' => $slug,
-                'template' => PageTemplate::Document->value,
-                'summary' => 'Các bước thanh toán đơn hàng.',
-                'content' => [['type' => 'section', 'data' => ['heading' => 'Bước 1', 'content' => 'Quét mã QR', 'items' => '']]],
-                'is_active' => true,
-            ])
-            ->call('create')
-            ->assertHasNoFormErrors();
-
-        $this->get('/'.$slug)->assertOk()->assertSee('Hướng dẫn thanh toán')->assertSee('Quét mã QR');
-
-        Page::query()->where('slug', $slug)->firstOrFail()->update(['is_active' => false]);
-
-        $this->get('/'.$slug)->assertNotFound();
+        $this->get(route('pricing'))
+            ->assertSee('<title>Bảng giá | '.site_config('name').'</title>', false)
+            ->assertSee(SitePages::description('pricing'))
+            ->assertSee('Minh bạch – Linh hoạt – Phù hợp');
     }
 
-    public function test_slug_cannot_take_a_fixed_route_or_another_page(): void
+    public function test_admin_can_edit_but_not_create_or_delete_pages(): void
     {
-        foreach (['lien-he', 'chinh-sach-bao-mat', 'Có Dấu'] as $slug) {
-            Livewire::actingAs($this->admin(), 'admin')->test(CreatePage::class)
-                ->fillForm(['title' => 'Trang thử', 'slug' => $slug, 'template' => PageTemplate::Document->value])
-                ->call('create')
-                ->assertHasFormErrors(['slug']);
-        }
-    }
+        $admin = $this->admin();
+        $page = Page::query()->where('key', 'about')->firstOrFail();
 
-    public function test_existing_page_keeps_its_own_named_route_slug(): void
-    {
-        $page = Page::query()->where('slug', 'gioi-thieu')->firstOrFail();
+        $this->actingAs($admin, 'admin')->get(PageResource::getUrl('index'))->assertOk()->assertSee('Giới thiệu');
+        $this->assertFalse(PageResource::canCreate());
+        $this->assertFalse($admin->can('delete', $page));
 
-        Livewire::actingAs($this->admin(), 'admin')->test(EditPage::class, ['record' => $page->getRouteKey()])
-            ->fillForm(['meta_title' => 'Về chúng tôi | WebApp Bắc Ninh'])
+        Livewire::actingAs($admin, 'admin')->test(EditPage::class, ['record' => $page->getRouteKey()])
+            ->fillForm(['meta_title' => 'Về chúng tôi | Kiểm thử'])
             ->call('save')
             ->assertHasNoFormErrors();
 
-        $this->get(route('about'))->assertOk()->assertSee('<title>Về chúng tôi | WebApp Bắc Ninh</title>', false);
-    }
-
-    public function test_admin_page_list_renders(): void
-    {
-        $this->actingAs($this->admin(), 'admin')->get('/admin/pages')->assertOk()->assertSee('Chính sách bảo mật thông tin');
+        $this->get(route('about'))->assertSee('<title>Về chúng tôi | Kiểm thử</title>', false);
     }
 
     private function admin(): User

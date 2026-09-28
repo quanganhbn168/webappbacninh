@@ -1,20 +1,14 @@
-@extends('layouts.basic')
+@extends('layouts.tool')
 
-@section('tool', '1')
-@section('robots', 'index, follow')
-@section('title', 'Tính thuế Doanh nghiệp nhỏ và vừa 2026 - WebApp Bắc Ninh')
-@section('meta_description', 'Công cụ tính thuế TNDN cho doanh nghiệp nhỏ và vừa theo Luật mới. Thuế suất 15%, 17%, 20% theo doanh thu, miễn thuế 3 năm đầu cho doanh nghiệp mới.')
-@section('meta_keywords', 'thuế TNDN, thuế doanh nghiệp nhỏ và vừa, DNNVV, thuế suất 15%, miễn thuế 3 năm')
-
-@section('content')
+@section('tool-content')
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="text-center mb-5">
                 <span class="badge text-bg-primary bg-opacity-25 text-dark px-3 py-2 mb-3 fw-bold tool-hero__badge">
-                    <i class="fas fa-building me-1"></i> DNNVV
+                    <x-icon name="building-2" class="me-1" /> DNNVV
                 </span>
-                <h1 class="display-5 fw-bold mb-3"><i class="fas fa-building text-primary me-2"></i>Tính thuế Doanh nghiệp</h1>
+                <h1 class="display-5 fw-bold mb-3"><x-icon name="building-2" class="text-primary me-2" />Tính thuế Doanh nghiệp</h1>
                 <p class="text-secondary lead">Công cụ tính thuế TNDN cho doanh nghiệp nhỏ và vừa theo Luật mới 2025.</p>
             </div>
 
@@ -35,7 +29,7 @@
                     <div class="row g-4">
                         <div class="col-lg-5">
                             <div class="mb-4">
-                                <label class="form-label fw-bold" for="revenue"><i class="fas fa-chart-line text-success me-1"></i> Doanh thu năm (VNĐ)</label>
+                                <label class="form-label fw-bold" for="revenue"><x-icon name="chart-line" class="text-success me-1" /> Doanh thu năm (VNĐ)</label>
                                 <div class="tool-input-suffix">
                                     <input type="text" inputmode="numeric" class="form-control form-control-lg" id="revenue" value="2000000000" placeholder="2.000.000.000">
                                     <span>VNĐ</span>
@@ -43,7 +37,7 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold" for="expenses"><i class="fas fa-minus-circle text-danger me-1"></i> Chi phí (VNĐ) <small class="text-secondary fw-normal">(Mặc định 70% doanh thu)</small></label>
+                                <label class="form-label fw-bold" for="expenses"><x-icon name="circle-minus" class="text-danger me-1" /> Chi phí (VNĐ) <small class="text-secondary fw-normal">(Mặc định 70% doanh thu)</small></label>
                                 <div class="tool-input-suffix">
                                     <input type="text" inputmode="numeric" class="form-control form-control-lg" id="expenses" value="1400000000" placeholder="1.400.000.000">
                                     <span>VNĐ</span>
@@ -53,7 +47,7 @@
                             <div class="mb-4">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="new-business">
-                                    <label class="form-check-label fw-bold" for="new-business"><i class="fas fa-seedling text-success me-1"></i> Doanh nghiệp mới thành lập</label>
+                                    <label class="form-check-label fw-bold" for="new-business"><x-icon name="sprout" class="text-success me-1" /> Doanh nghiệp mới thành lập</label>
                                 </div>
                                 <div class="mt-2" id="years-wrapper" hidden>
                                     <label class="form-label small" for="years">Đã hoạt động bao nhiêu năm?</label>
@@ -63,7 +57,7 @@
                                         <option value="2">2 năm</option>
                                         <option value="3">3 năm trở lên</option>
                                     </select>
-                                    <small class="text-success" id="exempt-hint"><i class="fas fa-check-circle"></i> Được miễn thuế TNDN!</small>
+                                    <small class="text-success" id="exempt-hint"><x-icon name="circle-check" /> Được miễn thuế TNDN!</small>
                                 </div>
                             </div>
                         </div>
@@ -71,7 +65,7 @@
                         <div class="col-lg-7">
                             <div class="tool-result h-100" data-result hidden aria-live="polite">
                                 <div class="text-center mb-4">
-                                    <span class="badge text-bg-success mb-2" data-exempt-badge hidden><i class="fas fa-gift me-1"></i> Miễn thuế TNDN</span>
+                                    <span class="badge text-bg-success mb-2" data-exempt-badge hidden><x-icon name="gift" class="me-1" /> Miễn thuế TNDN</span>
                                     <p class="mb-1 opacity-75">Tổng thuế ước tính</p>
                                     <p class="display-4 fw-bold mb-0" data-field="total_tax" data-format="money"></p>
                                     <p class="small mt-2 opacity-75" data-field="meta.revenue_tier" data-format="text"></p>
@@ -112,10 +106,10 @@
             </div>
 
             <div class="row g-4 mt-5">
-                @foreach ([['fa-seedling text-success', 'Miễn 3 năm đầu', 'DN mới thành lập được miễn thuế TNDN trong 3 năm đầu.'], ['fa-percent text-warning', 'Giảm 2% GTGT', 'Thuế GTGT giảm từ 10% xuống 8% đến hết năm 2026.'], ['fa-shield-alt text-primary', 'Thuế suất ưu đãi', 'DNNVV được hưởng thuế suất 15-17% thay vì 20% thông thường.']] as [$icon, $title, $text])
+                @foreach ([['sprout', 'text-success', 'Miễn 3 năm đầu', 'DN mới thành lập được miễn thuế TNDN trong 3 năm đầu.'], ['percent', 'text-warning', 'Giảm 2% GTGT', 'Thuế GTGT giảm từ 10% xuống 8% đến hết năm 2026.'], ['shield-check', 'text-gold-dark', 'Thuế suất ưu đãi', 'DNNVV được hưởng thuế suất 15-17% thay vì 20% thông thường.']] as [$icon, $color, $title, $text])
                     <div class="col-md-4">
                         <div class="tool-info h-100 text-center">
-                            <i class="fas {{ $icon }} fa-2x mb-3"></i>
+                            <x-icon :name="$icon" class="{{ $color }} icon-lg mb-3" />
                             <h2 class="h6 fw-bold">{{ $title }}</h2>
                             <p class="small mb-0 text-secondary">{{ $text }}</p>
                         </div>

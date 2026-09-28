@@ -1,18 +1,12 @@
-@extends('layouts.basic')
+@extends('layouts.tool')
 
-@section('tool', '1')
-@section('robots', 'index, follow')
-
-@section('title', 'Tạo mã QR Ngân Hàng - VietQR Chuyển Khoản Nhanh - WebApp Bắc Ninh')
-@section('meta_description', 'Công cụ tạo mã QR chuyển khoản ngân hàng VietQR tự động. Hỗ trợ tất cả ngân hàng Việt Nam (VCB, MB, Tech... - VietQR). Chính xác, an toàn, có logo.')
-
-@section('content')
+@section('tool-content')
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-success text-white">
-                    <h1 class="h4 mb-0"><i class="fas fa-money-bill-wave me-2"></i>Tạo Mã QR Chuyển Khoản (VietQR)</h1>
+                    <h1 class="h4 mb-0"><x-icon name="banknote" class="me-2" />Tạo Mã QR Chuyển Khoản (VietQR)</h1>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -48,7 +42,7 @@
                                 </div>
 
                                 <button type="button" class="btn btn-success w-100 fw-bold mt-4" onclick="generateBankQR()">
-                                    <i class="fas fa-qrcode me-2"></i> TẠO MÃ NGÂN HÀNG
+                                    <x-icon name="qr-code" class="me-2" /> TẠO MÃ NGÂN HÀNG
                                 </button>
                             </form>
                         </div>
@@ -58,18 +52,18 @@
                             <h5 class="mb-3 text-muted">Mã VietQR Của Bạn</h5>
                             <div id="bankQrcode" class="bg-white p-3 shadow-sm rounded mb-3 d-flex align-items-center justify-content-center" style="min-height: 400px; width: 100%; max-width: 350px;">
                                 <div class="text-muted text-center">
-                                    <i class="fas fa-university fa-3x mb-3 text-secondary"></i><br>
+                                    <x-icon name="landmark" class="icon-xl mb-3 text-secondary" /><br>
                                     Nhập thông tin bên trái để tạo mã
                                 </div>
                             </div>
-                            <button class="btn btn-primary" onclick="downloadBankQR()"><i class="fas fa-download me-1"></i> Tải Mã Về Máy</button>
+                            <button class="btn btn-primary" onclick="downloadBankQR()"><x-icon name="download" class="me-1" /> Tải Mã Về Máy</button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="mt-4">
-                <h4><i class="fas fa-shield-alt text-success"></i> VietQR Chuẩn Napas</h4>
+                <h4><x-icon name="shield-check" class="text-success" /> VietQR Chuẩn Napas</h4>
                 <p>Mã QR được tạo ra tuẩn thủ tiêu chuẩn VietQR của Napas. Hỗ trợ quét bằng tất cả các ứng dụng ngân hàng (Mobile Banking) và ví điện tử (MoMo, ZaloPay...) tại Việt Nam.</p>
             </div>
         </div>

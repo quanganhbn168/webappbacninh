@@ -8,10 +8,9 @@ export default defineConfig({
       input: [
         'resources/scss/bootstrap.scss',
         'resources/css/site.css',
-        'resources/js/frontend.js',
+        'resources/js/site.js',
         'resources/css/basic.css',
         'resources/js/basic.js',
-        'resources/js/tools.js',
         'resources/css/filament/admin/theme.css',
         'resources/css/landing/purehome.css',
         'resources/js/landing/purehome.js',

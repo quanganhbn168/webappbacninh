@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Services\Schemas;
 
+use App\Filament\Forms\IconPicker;
 use App\Filament\Forms\ServiceContentFields;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\RichEditor;
@@ -38,7 +39,7 @@ class ServiceForm
                                     ->searchable()->preload(),
                                 TextInput::make('menu_key')->label('Mã menu')->maxLength(100),
                                 TextInput::make('eyebrow')->label('Nhãn phụ')->maxLength(255)->placeholder('WEBSITE DOANH NGHIỆP'),
-                                TextInput::make('icon')->label('Biểu tượng Font Awesome')->maxLength(255)->placeholder('fa-solid fa-building'),
+                                IconPicker::make('icon'),
                                 TextInput::make('price_from')->label('Giá từ')->maxLength(255)->placeholder('Từ 8 triệu'),
                                 TextInput::make('timeline')->label('Thời gian triển khai')->maxLength(255)->placeholder('2 - 4 tuần'),
                                 TextInput::make('order')->label('Thứ tự')->numeric()->default(0),

@@ -31,4 +31,16 @@ Blog images from the old file manager are no longer imported on every deploy. Ru
 - `php artisan curator:token` — generates `CURATOR_GLIDE_TOKEN` in `.env` if it is missing.
 - Social sign-in: set `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`, `FACEBOOK_CLIENT_ID`/`FACEBOOK_CLIENT_SECRET` and `ZALO_CLIENT_ID`/`ZALO_CLIENT_SECRET`. A provider's button stays hidden until both of its keys are set. The callback URLs are `https://<domain>/auth/{google|facebook|zalo}/callback`.
 
+## Web server
+
+Enable gzip or Brotli for `text/css`, `application/javascript`, `image/svg+xml` and `text/html`, and long-lived caching for `/build/` (file names are fingerprinted by Vite), for example in Nginx:
+
+```nginx
+gzip on;
+gzip_types text/css application/javascript image/svg+xml application/json;
+location /build/ { expires 1y; add_header Cache-Control "public, immutable"; }
+```
+
+During maintenance mode the branded page `resources/views/errors/503.blade.php` is pre-rendered by `php artisan down --render`.
+
 After deployment, verify the homepage, `/admin/settings`, a public form submission and the generated favicon/manifest URLs over HTTPS.

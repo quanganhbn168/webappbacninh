@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Pages;
 
-use App\Filament\Resources\Pages\Pages\CreatePage;
 use App\Filament\Resources\Pages\Pages\EditPage;
 use App\Filament\Resources\Pages\Pages\ListPages;
 use App\Filament\Resources\Pages\Schemas\PageForm;
@@ -23,15 +22,21 @@ class PageResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
 
-    protected static ?string $navigationLabel = 'Trang';
+    protected static ?string $navigationLabel = 'Trang & SEO';
 
     protected static ?string $modelLabel = 'trang';
 
-    protected static ?string $pluralModelLabel = 'Trang';
+    protected static ?string $pluralModelLabel = 'Trang & SEO';
 
     protected static ?int $navigationSort = 5;
 
     protected static ?string $recordTitleAttribute = 'title';
+
+    /** Pages are fixed in code (App\Domain\Pages\SitePages): they are edited, never created or deleted here. */
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -47,7 +52,6 @@ class PageResource extends Resource
     {
         return [
             'index' => ListPages::route('/'),
-            'create' => CreatePage::route('/create'),
             'edit' => EditPage::route('/{record}/edit'),
         ];
     }

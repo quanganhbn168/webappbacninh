@@ -1,12 +1,6 @@
-@extends('layouts.basic')
+@extends('layouts.tool')
 
-@section('tool', '1')
-@section('robots', 'index, follow')
-@section('title', 'Công cụ lấy ảnh Cover Video (Thumbnail) - WebApp Bắc Ninh')
-@section('meta_description', 'Công cụ miễn phí giúp lấy ảnh cover (thumbnail) chất lượng cao từ video YouTube, TikTok. Hỗ trợ tải về nhanh chóng.')
-@section('meta_keywords', 'get thumbnail youtube, lấy ảnh cover tiktok, youtube thumbnail downloader, công cụ mmo')
-
-@section('content')
+@section('tool-content')
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
@@ -29,7 +23,7 @@
                         <h1 class="h2 fw-bold mb-2">Lấy Ảnh Cover Video</h1>
                         <p class="text-secondary">Dán link YouTube hoặc TikTok để lấy ảnh thumbnail chất lượng cao.</p>
                         <a href="{{ route('cover.bulk.page') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4 mt-2">
-                            <i class="fas fa-bolt me-1"></i> Chuyển sang chế độ tải hàng loạt (Bulk) &rarr;
+                            <x-icon name="zap" class="me-1" /> Chuyển sang chế độ tải hàng loạt (Bulk) &rarr;
                         </a>
                     </div>
 
@@ -59,7 +53,7 @@
                                         <input type="text" id="cover-title" name="filename" class="form-control form-control-lg" data-title>
                                     </div>
                                     <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm mb-3">
-                                        <i class="fas fa-image me-2"></i> Tải Ảnh Cover (JPG)
+                                        <x-icon name="image" class="me-2" /> Tải Ảnh Cover (JPG)
                                     </button>
                                 </form>
 
@@ -68,12 +62,12 @@
                                     <input type="hidden" name="video_url" data-video-url>
                                     <input type="hidden" name="filename" data-video-title>
                                     <button type="submit" class="btn btn-danger btn-lg w-100 fw-bold shadow-sm">
-                                        <i class="fas fa-video me-2"></i> Tải Video (No Watermark)
+                                        <x-icon name="video" class="me-2" /> Tải Video (No Watermark)
                                     </button>
                                 </form>
 
                                 <div class="alert alert-warning small mt-2" data-no-video hidden>
-                                    <i class="fas fa-exclamation-triangle me-1"></i> Không tìm thấy link video không logo.
+                                    <x-icon name="triangle-alert" class="me-1" /> Không tìm thấy link video không logo.
                                 </div>
                             </div>
                         </div>

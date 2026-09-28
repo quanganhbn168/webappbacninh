@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Menus;
 
+use App\Filament\Forms\IconPicker;
 use App\Filament\Resources\Menus\Pages\EditMenu;
 use App\Filament\Resources\Menus\Pages\ListMenus;
 use App\Models\Menu;
@@ -82,8 +83,7 @@ class MenuResource extends Resource
             TextInput::make('url')->label('Đường dẫn')->required()->maxLength(2048)
                 ->placeholder('/lien-he hoặc https://…')
                 ->helperText('Trang trong website nhập dạng /duong-dan, có thể thêm #muc.'),
-            $withIcon ? TextInput::make('icon')->label('Biểu tượng')->maxLength(100)->placeholder('fa-solid fa-display')
-                ->helperText('Tên class Font Awesome, hiện trong menu con của header.') : null,
+            $withIcon ? IconPicker::make('icon')->helperText('Hiện trong menu con của header.') : null,
             Toggle::make('open_in_new_tab')->label('Mở tab mới'),
             Toggle::make('is_active')->label('Hiển thị')->default(true),
         ]));

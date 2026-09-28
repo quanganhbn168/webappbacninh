@@ -17,7 +17,7 @@ run_step() {
 run_step "Pull source" git pull --ff-only
 
 # Visitors get a 503 page instead of errors while vendor/ and the database change.
-run_step "Enable maintenance mode" php artisan down --retry=15
+run_step "Enable maintenance mode" php artisan down --retry=15 --render="errors::503"
 MAINTENANCE=1
 
 run_step "Install PHP dependencies" composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction

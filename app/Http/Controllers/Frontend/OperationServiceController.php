@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\PricingGroup;
 use App\Models\OperationService;
+use App\Models\PricingPlan;
 use Illuminate\Contracts\View\View;
 
 class OperationServiceController extends FrontendController
@@ -10,20 +12,10 @@ class OperationServiceController extends FrontendController
     public function index(): View
     {
         $services = OperationService::query()->active()->ordered()->get();
-        $seo = site_page_seo('operations', [
-            'title' => 'Dịch vụ vận hành website, SEO và nội dung | WebApp Bắc Ninh',
-            'description' => 'Hosting, bảo trì, quản trị website, đăng bài, SEO, nội dung Facebook và nâng cấp chức năng theo nhu cầu doanh nghiệp.',
-        ]);
 
-        return $this->page('frontend.site.pages.operations', [
+        return $this->sitePage('operations', 'site.operations.index', [
             'operationServices' => $services,
-            'pageTitle' => $seo['title'],
-            'pageDescription' => $seo['description'],
-            'pageKeywords' => $seo['keywords'] ?? '',
-            'canonicalUrl' => $seo['canonical_url'] ?? request()->url(),
-            'robots' => $seo['robots'] ?? 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
-            'bodyClass' => 'page-operations',
-            'ogImage' => $seo['og_image'] ?? frontend_asset('assets/images/seo-operation.webp'),
+            'plans' => PricingPlan::query()->inGroup(PricingGroup::Care)->get(),
             'schemaType' => 'CollectionPage',
             'schemaItems' => $services->map(fn (OperationService $service): array => [
                 'name' => $service->title,
@@ -36,11 +28,10 @@ class OperationServiceController extends FrontendController
     {
         $service = OperationService::query()->active()->with(['image', 'secondaryImage'])->where('slug', $slug)->firstOrFail();
 
-        return $this->page('frontend.site.operations.show', [
+        return $this->page('site.operations.show', [
             'service' => $service,
             'pageTitle' => $service->meta_title ?: $service->title.' | '.site_config('name'),
             'pageDescription' => $service->meta_description ?: (string) $service->description,
-            'bodyClass' => 'page-operation-service page-operation-'.($service->menu_key ?: $service->slug),
             'ogImage' => $service->image_url,
             'schemaType' => 'Service',
             'schemaData' => ['serviceType' => $service->title],

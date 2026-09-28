@@ -13,7 +13,7 @@
                         {{-- Success --}}
                         <div class="mb-4">
                             <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
-                                <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
+                                <x-icon name="circle-check" class="text-success" style="font-size: 3rem;" />
                             </div>
                         </div>
                         <h2 class="fw-bold text-success mb-3">Thanh toán thành công!</h2>
@@ -24,7 +24,7 @@
                         {{-- Failed --}}
                         <div class="mb-4">
                             <div class="rounded-circle bg-danger bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
-                                <i class="fas fa-times-circle text-danger" style="font-size: 3rem;"></i>
+                                <x-icon name="circle-x" class="text-danger" style="font-size: 3rem;" />
                             </div>
                         </div>
                         <h2 class="fw-bold text-danger mb-3">Thanh toán thất bại</h2>
@@ -78,12 +78,12 @@
                     {{-- Actions --}}
                     <div class="d-grid gap-2">
                         <a href="{{ url('/') }}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-home me-2"></i>
+                            <x-icon name="house" class="me-2" />
                             Về trang chủ
                         </a>
                         @if(!$result['success'])
                         <a href="{{ route('payment.checkout') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-redo me-2"></i>
+                            <x-icon name="rotate-cw" class="me-2" />
                             Thử lại
                         </a>
                         @endif

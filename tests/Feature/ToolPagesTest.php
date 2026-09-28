@@ -6,12 +6,14 @@ use Tests\TestCase;
 
 class ToolPagesTest extends TestCase
 {
-    public function test_tool_pages_use_the_bootstrap_layout_and_are_indexable(): void
+    public function test_tool_pages_use_the_site_layout_and_are_indexable(): void
     {
         foreach (['tools.tax', 'tools.tax.household', 'tools.tax.sme', 'tools.qr', 'tools.bank-qr', 'tools.calendar', 'tools.food-wheel', 'cover.page', 'cover.bulk.page'] as $route) {
             $this->get(route($route))->assertOk()
-                ->assertSee('/build/assets/tools-', false)
-                ->assertSee('<meta name="robots" content="index, follow">', false)
+                ->assertSee('/build/assets/site-', false)
+                ->assertSee('id="site-nav"', false)
+                ->assertSee('href="'.route('tools.index').'"', false)
+                ->assertSee('<meta name="robots" content="index, follow', false)
                 ->assertDontSee('alpinejs', false)
                 ->assertDontSee('x-data', false);
         }

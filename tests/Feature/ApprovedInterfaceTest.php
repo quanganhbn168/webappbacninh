@@ -10,7 +10,7 @@ class ApprovedInterfaceTest extends TestCase
     {
         foreach (['/', '/dich-vu', '/hosting-domain-email', '/giai-phap', '/san-pham', '/du-an', '/bang-gia', '/kien-thuc', '/lien-he'] as $uri) {
             $response = $this->get($uri)->assertOk();
-            $response->assertSee('/build/assets/frontend-', false);
+            $response->assertSee('/build/assets/site-', false);
             $html = $response->getContent();
             $this->assertSame(1, substr_count($html, '<header '), $uri);
             $this->assertSame(1, substr_count($html, '<footer '), $uri);

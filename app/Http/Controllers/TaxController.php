@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Frontend\FrontendController;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Services\Tax\DTO\TaxInput;
@@ -10,7 +11,7 @@ use App\Services\Tax\Services\HouseholdBusinessTaxService;
 use App\Services\Tax\Services\SMETaxService;
 use App\Services\Tax\Enums\BusinessSector;
 
-class TaxController extends Controller
+class TaxController extends FrontendController
 {
     public function __construct(
         private readonly PersonalIncomeTaxService $personalTaxService,
@@ -24,7 +25,7 @@ class TaxController extends Controller
 
     public function showPersonalTax()
     {
-        return view('tools.tinh-thue-tncn');
+        return $this->toolPage('tinh-thue-tncn');
     }
 
     public function calculatePersonalTax(Request $request): JsonResponse
@@ -73,7 +74,7 @@ class TaxController extends Controller
     public function showHouseholdTax()
     {
         $sectors = BusinessSector::toArray();
-        return view('tools.tinh-thue-ho-kinh-doanh', compact('sectors'));
+        return $this->toolPage('tinh-thue-ho-kinh-doanh', compact('sectors'));
     }
 
     public function calculateHouseholdTax(Request $request): JsonResponse
@@ -104,7 +105,7 @@ class TaxController extends Controller
 
     public function showSMETax()
     {
-        return view('tools.tinh-thue-doanh-nghiep');
+        return $this->toolPage('tinh-thue-doanh-nghiep');
     }
 
     public function calculateSMETax(Request $request): JsonResponse

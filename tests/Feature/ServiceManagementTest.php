@@ -30,9 +30,9 @@ class ServiceManagementTest extends TestCase
         $this->get($service->url)->assertOk()
             ->assertSee('Gói Thử Nghiệm')
             ->assertSee('Hạng mục A')
-            ->assertSee('ĐƯỢC QUAN TÂM')
+            ->assertSee('Được quan tâm')
             ->assertSee('Câu hỏi kiểm thử?')
-            ->assertSee('"@type": "FAQPage"', false);
+            ->assertSee('"@type":"FAQPage"', false);
     }
 
     public function test_a_service_without_landing_is_served_from_the_root_and_landing_ones_redirect(): void
@@ -55,7 +55,7 @@ class ServiceManagementTest extends TestCase
                 'title' => 'Vận hành thử',
                 'slug' => $slug,
                 'price_from' => 'Từ 300.000đ/tháng',
-                'scope' => [['icon' => 'fa-solid fa-check', 'title' => 'Kiểm tra định kỳ', 'text' => 'Mỗi tuần một lần']],
+                'scope' => [['icon' => 'check', 'title' => 'Kiểm tra định kỳ', 'text' => 'Mỗi tuần một lần']],
                 'process' => [['step' => '01', 'title' => 'Khảo sát', 'text' => 'Rà soát hiện trạng']],
                 'is_active' => true,
             ])

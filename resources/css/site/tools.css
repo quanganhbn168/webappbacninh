@@ -1,0 +1,18 @@
+/* Free tool pages (resources/views/tools) */
+.tool-hero__badge { letter-spacing: .02em; }
+.tool-toggle { display: flex; gap: .25rem; padding: .25rem; background: var(--bs-light); border: 1px solid var(--bs-border-color); border-radius: 50rem; }
+.tool-toggle .btn { flex: 1; border-radius: 50rem; white-space: normal; min-height: 2.75rem; }
+.tool-result { background: linear-gradient(135deg, #3b2418 0%, #5a3a24 100%); color: #fff; border-radius: 1.25rem; padding: 1.75rem; }
+.tool-result :is(h1, h2, h3, h4, h5, .h1, .h2, .h3, .h4, .h5, .display-4) { color: inherit; }
+.tool-result .text-warning { color: #ffd166 !important; }
+.tool-info { background: #fff; border: 1px solid var(--bs-border-color); border-radius: 1rem; padding: 1.25rem; }
+.tool-input-suffix { position: relative; }
+.tool-input-suffix .form-control { padding-right: 3.5rem; }
+.tool-input-suffix > span { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--bs-secondary-color); font-size: .9rem; pointer-events: none; }
+.tool-link-card { transition: transform .15s ease, box-shadow .15s ease; }
+.tool-link-card:hover { transform: translateY(-3px); box-shadow: var(--bs-box-shadow); }
+.btn-check + .btn-outline-primary { --bs-btn-color: var(--bs-body-color); }
+.tool-page > .container:first-child .site-breadcrumb { margin-bottom: 0; }
+.tool-card { position: relative; }
+.tool-card__badge { position: absolute; top: 1rem; right: 1rem; }
+.tool-page .card { border-radius: var(--radius-lg); }

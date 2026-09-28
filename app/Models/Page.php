@@ -2,68 +2,76 @@
 
 namespace App\Models;
 
-use App\Enums\PageTemplate;
-use App\Traits\HasSlug;
-use Illuminate\Database\Eloquent\Builder;
+use App\Domain\Pages\SitePages;
+use Awcodes\Curator\Models\Media;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Cache;
 
+/**
+ * SEO and hero banner of a fixed site page (see App\Domain\Pages\SitePages).
+ * Page content lives in the page's Blade view.
+ */
 class Page extends Model
 {
-    use HasSlug;
-
     protected $fillable = [
+        'key',
         'title',
-        'short_title',
-        'slug',
-        'template',
-        'eyebrow',
-        'summary',
-        'notice',
-        'icon',
-        'content',
-        'content_updated_at',
         'meta_title',
         'meta_description',
-        'is_active',
-        'order',
+        'meta_keywords',
+        'og_image_id',
+        'noindex',
+        'banner_eyebrow',
+        'banner_title',
+        'banner_highlight',
+        'banner_subtitle',
+        'banner_image_id',
     ];
 
     protected $casts = [
-        'template' => PageTemplate::class,
-        'content' => 'array',
-        'content_updated_at' => 'date',
-        'is_active' => 'boolean',
-        'order' => 'integer',
+        'noindex' => 'boolean',
     ];
 
-    public function scopeActive(Builder $query): Builder
+    protected static function booted(): void
     {
-        return $query->where('is_active', true);
-    }
-
-    public function breadcrumbTitle(): string
-    {
-        return $this->short_title ?: $this->title;
+        static::saved(fn (self $page) => Cache::forget(self::cacheKey($page->key)));
+        static::deleted(fn (self $page) => Cache::forget(self::cacheKey($page->key)));
     }
 
     /**
-     * @return array<int, array{type: string, data: array<string, mixed>}>
+     * The stored page for a key, or an unsaved one with the default title.
      */
-    public function blocks(): array
+    public static function for(string $key): self
     {
-        return array_values(array_filter($this->content ?? [], fn (mixed $block): bool => is_array($block) && isset($block['type'])));
+        $page = Cache::rememberForever(self::cacheKey($key), fn (): ?self => self::query()->with(['ogImage', 'bannerImage'])->where('key', $key)->first());
+
+        return $page ?? new self(['key' => $key, 'title' => SitePages::title($key)]);
     }
 
-    /**
-     * Section blocks with their 1-based anchor number, for the table of contents.
-     *
-     * @return array<int, string>
-     */
-    public function tableOfContents(): array
+    public static function cacheKey(string $key): string
     {
-        return collect($this->blocks())
-            ->filter(fn (array $block): bool => $block['type'] === 'section' && filled($block['data']['heading'] ?? null))
-            ->mapWithKeys(fn (array $block, int $index): array => [$index + 1 => $block['data']['heading']])
-            ->all();
+        return 'site-page.'.$key;
+    }
+
+    public function ogImage(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'og_image_id');
+    }
+
+    public function bannerImage(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'banner_image_id');
+    }
+
+    protected function url(): Attribute
+    {
+        return Attribute::get(fn (): ?string => SitePages::url((string) $this->key));
+    }
+
+    protected function bannerImageUrl(): Attribute
+    {
+        return Attribute::get(fn (): ?string => $this->bannerImage?->url);
     }
 }

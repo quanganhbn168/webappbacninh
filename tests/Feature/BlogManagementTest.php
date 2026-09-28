@@ -72,14 +72,14 @@ class BlogManagementTest extends TestCase
         Livewire::actingAs($this->admin(), 'admin')->test(EditPost::class, ['record' => $post->id])
             ->set('data.featured_media_id', [])->call('save')->assertHasNoFormErrors();
         $this->assertNull($post->fresh()->featured_media_id);
-        $this->assertSame(asset('images/placeholder.jpg'), $post->fresh()->featured_image_url);
+        $this->assertSame(asset('images/placeholder.svg'), $post->fresh()->featured_image_url);
     }
 
     public function test_featured_layout_has_one_main_and_three_side_articles_and_hides_future_posts(): void
     {
         $response = $this->get('/kien-thuc')->assertOk();
-        $this->assertSame(1, substr_count($response->getContent(), 'class="card article featured-main"'));
-        $this->assertSame(3, substr_count($response->getContent(), 'class="card side-article"'));
+        $this->assertSame(1, substr_count($response->getContent(), 'media-card--featured'));
+        $this->assertSame(3, substr_count($response->getContent(), 'media-card--row'));
         $post = Post::create(['content' => '<p>Test</p>', 'title' => 'Scheduled '.Str::random(10), 'is_published' => true, 'published_at' => now()->addDay()]);
         $this->get(route('articles.show', $post->slug))->assertNotFound();
         $this->get('/kien-thuc')->assertDontSee($post->title);

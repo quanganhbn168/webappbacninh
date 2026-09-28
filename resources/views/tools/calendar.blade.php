@@ -1,12 +1,6 @@
-@extends('layouts.basic')
+@extends('layouts.tool')
 
-@section('tool', '1')
-@section('robots', 'index, follow')
-
-@section('title', 'Lịch Vạn Niên 2026 - Xem Lịch Âm Dương, Ngày Tốt Xấu - WebApp Bắc Ninh')
-@section('meta_description', 'Xem lịch vạn niên, lịch âm dương hôm nay, đổi ngày âm dương, xem ngày tốt xấu, giờ hoàng đạo chuẩn xác nhất.')
-
-@section('content')
+@section('tool-content')
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
@@ -20,9 +14,9 @@
             <div class="card shadow-lg border-0 mb-5 overflow-hidden">
                 <div class="row g-0">
                     <!-- Left: Solar Date -->
-                    <div class="col-md-6 bg-primary text-white p-5 d-flex flex-column justify-content-center align-items-center position-relative">
+                    <div class="col-md-6 tool-result rounded-0 p-5 d-flex flex-column justify-content-center align-items-center position-relative">
                         <div class="position-absolute" style="top: 20px; left: 20px; opacity: 0.5; font-size: 5rem;">
-                            <i class="fas fa-sun"></i>
+                            <x-icon name="sun" />
                         </div>
                         <h5 class="text-uppercase letter-spacing-2 mb-3">Dương Lịch</h5>
                         <h1 class="display-1 fw-bold mb-0" id="todayDay">--</h1>
@@ -33,7 +27,7 @@
                     <!-- Right: Lunar Date -->
                     <div class="col-md-6 bg-white p-5 d-flex flex-column justify-content-center align-items-center position-relative">
                         <div class="position-absolute" style="top: 20px; right: 20px; opacity: 0.1; font-size: 5rem; color: #000;">
-                            <i class="fas fa-moon"></i>
+                            <x-icon name="moon" />
                         </div>
                         <h5 class="text-uppercase letter-spacing-2 mb-3 text-secondary">Âm Lịch</h5>
                         <h1 class="display-1 fw-bold text-dark mb-0" id="lunarDay">--</h1>
@@ -48,9 +42,9 @@
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
                     <h3 class="h5 mb-0 fw-bold" id="calHeader">Tháng -- Năm ----</h3>
                     <div class="btn-group">
-                        <button class="btn btn-outline-primary btn-sm" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="prevMonth()"><x-icon name="chevron-left" /></button>
                         <button class="btn btn-outline-primary btn-sm" onclick="goToday()">Hôm nay</button>
-                        <button class="btn btn-outline-primary btn-sm" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="nextMonth()"><x-icon name="chevron-right" /></button>
                     </div>
                 </div>
                 <div class="card-body p-4">
@@ -70,7 +64,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top-0 pb-4 text-center">
-                    <small class="text-muted"><i class="fas fa-info-circle me-1"></i> Số nhỏ bên dưới là ngày Âm lịch</small>
+                    <small class="text-muted"><x-icon name="info" class="me-1" /> Số nhỏ bên dưới là ngày Âm lịch</small>
                 </div>
             </div>
             

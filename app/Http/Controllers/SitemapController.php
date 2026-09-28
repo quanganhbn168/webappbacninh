@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MiniApp;
 use App\Models\OperationService;
+use App\Models\Page;
 use App\Models\Post;
 use App\Models\Project;
 use App\Models\Service;
@@ -18,29 +19,20 @@ class SitemapController extends Controller
 {
     public function index(): Response
     {
-        $xml = Cache::remember('sitemap:v2', now()->addHour(), function (): string {
+        $xml = Cache::remember('sitemap:v3', now()->addHour(), function (): string {
             $sitemap = Sitemap::create();
 
-            foreach ([
-                ['home', [], 1.0, Url::CHANGE_FREQUENCY_DAILY],
-                ['about', [], 0.7, Url::CHANGE_FREQUENCY_MONTHLY],
-                ['contact', [], 0.7, Url::CHANGE_FREQUENCY_MONTHLY],
-                ['pricing', [], 0.8, Url::CHANGE_FREQUENCY_WEEKLY],
-                ['agency', [], 0.7, Url::CHANGE_FREQUENCY_MONTHLY],
-                ['services.index', [], 0.9, Url::CHANGE_FREQUENCY_WEEKLY],
-                ['themes.index', [], 0.8, Url::CHANGE_FREQUENCY_WEEKLY],
-                ['projects.index', [], 0.8, Url::CHANGE_FREQUENCY_WEEKLY],
-                ['articles.index', [], 0.8, Url::CHANGE_FREQUENCY_DAILY],
-                ['operations.index', [], 0.8, Url::CHANGE_FREQUENCY_WEEKLY],
-                ['legal.privacy', [], 0.3, Url::CHANGE_FREQUENCY_YEARLY],
-                ['legal.terms', [], 0.3, Url::CHANGE_FREQUENCY_YEARLY],
-                ['legal.warranty', [], 0.3, Url::CHANGE_FREQUENCY_YEARLY],
-                ['legal.payment', [], 0.3, Url::CHANGE_FREQUENCY_YEARLY],
-                ['cover.page', [], 0.6, Url::CHANGE_FREQUENCY_MONTHLY],
-                ['cover.bulk.page', [], 0.6, Url::CHANGE_FREQUENCY_MONTHLY],
-            ] as [$route, $parameters, $priority, $frequency]) {
-                $sitemap->add($this->url(route($route, $parameters), null, $priority, $frequency));
-            }
+            // Fixed pages, except those hidden from search engines in the admin.
+            Page::query()->where('noindex', false)->get()->each(function (Page $page) use ($sitemap): void {
+                if ($page->url) {
+                    $priority = match ($page->key) {
+                        'home' => 1.0,
+                        'privacy', 'terms', 'warranty', 'payment-process' => 0.3,
+                        default => 0.8,
+                    };
+                    $sitemap->add($this->url($page->url, $page->updated_at, $priority, Url::CHANGE_FREQUENCY_WEEKLY));
+                }
+            });
 
             Post::published()
                 ->where('published_at', '<=', now())

@@ -48,10 +48,7 @@ final class SaveSiteSettings
             $this->persist(app(GeneralSettings::class), Arr::get($data, 'general', []), ['name', 'company_name', 'default_language']);
             $this->persist(app(WebsiteSettings::class), $websiteData, ['site_url', 'site_logo_wide', 'site_logo_white', 'site_logo_square', 'site_favicon']);
 
-            $seo = Arr::get($data, 'seo', []);
-            $seo['page_meta'] = json_decode((string) ($seo['page_meta_json'] ?? '{}'), true, 512, JSON_THROW_ON_ERROR);
-            unset($seo['page_meta_json']);
-            $this->persist(app(SeoSettings::class), $seo, ['default_meta_title', 'default_meta_description', 'default_meta_keywords', 'default_og_image', 'google_site_verification', 'page_meta']);
+            $this->persist(app(SeoSettings::class), Arr::get($data, 'seo', []), ['default_meta_title', 'default_meta_description', 'default_meta_keywords', 'default_og_image', 'google_site_verification']);
 
             $this->persist(app(ContactSettings::class), Arr::get($data, 'contact', []), ['phone', 'phone_href', 'phone_secondary', 'phone_secondary_href', 'email', 'address', 'working_time']);
             $this->persist(app(SocialSettings::class), Arr::get($data, 'social', []), ['facebook', 'messenger', 'zalo', 'telegram', 'wechat_id', 'wechat_qr', 'whatsapp', 'youtube']);

@@ -187,18 +187,6 @@ class ManageSettings extends Page
                                         Textarea::make('seo.default_meta_description')->label('Meta description mặc định')->rows(3)->maxLength(500)->columnSpanFull(),
                                         self::brandImage('seo.default_og_image', 'Ảnh chia sẻ mặc định (OG)', 'site/seo', ['1.91:1', '16:9']),
                                         TextInput::make('seo.google_site_verification')->label('Google Search Console verification')->maxLength(255),
-                                        CodeEditor::make('seo.page_meta_json')
-                                            ->label('SEO theo từng trang (JSON)')
-                                            ->language(Language::Json)
-                                            ->json()
-                                            ->rules(['max:30000'])
-                                            ->validationMessages([
-                                                'json' => 'SEO theo từng trang phải là chuỗi JSON hợp lệ.',
-                                                'max' => 'SEO theo từng trang không được vượt quá 30.000 ký tự.',
-                                            ])
-                                            ->wrap()
-                                            ->columnSpanFull()
-                                            ->helperText('Các key hiện dùng: home, about, contact, pricing, agency, services, themes, projects, articles, operations.'),
                                     ])
                                     ->columns(2),
                             ]),

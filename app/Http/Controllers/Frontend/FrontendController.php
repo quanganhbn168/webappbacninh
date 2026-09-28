@@ -2,92 +2,102 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Pages\SitePages;
 use App\Domain\Site\Actions\ResolveSocialChannels;
+use App\Domain\Tools\ToolPages;
 use App\Http\Controllers\Controller;
+use App\Models\Page;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\View as ViewFacade;
 
 abstract class FrontendController extends Controller
 {
-    protected function simplePage(string $view, string $title, string $description, string $seoKey, string $bodyClass = '', array $scripts = []): View
+    /**
+     * A fixed site page: SEO fields and hero banner come from its admin record (App\Models\Page).
+     */
+    protected function sitePage(string $key, string $view, array $data = []): View
     {
-        $seo = site_page_seo($seoKey, ['title' => $title, 'description' => $description]);
-        $data = [
-            'pageTitle' => $seo['title'],
-            'pageDescription' => $seo['description'],
-            'extraScripts' => $scripts,
-            'bodyClass' => $bodyClass,
+        $page = Page::for($key);
+        $defaults = [
+            'pageTitle' => $page->meta_title ?: ($key === 'home'
+                ? site_config('default_meta_title', site_config('name'))
+                : $page->title.' | '.site_config('name')),
+            'pageDescription' => $page->meta_description ?: SitePages::description($key),
+            'seoPage' => $page,
         ];
 
-        foreach (['keywords' => 'pageKeywords', 'canonical_url' => 'canonicalUrl', 'og_image' => 'ogImage', 'robots' => 'robots'] as $field => $dataKey) {
-            if (filled($seo[$field] ?? null)) {
-                $data[$dataKey] = $seo[$field];
-            }
+        if (filled($page->meta_keywords)) {
+            $defaults['pageKeywords'] = $page->meta_keywords;
+        }
+        if ($image = $page->ogImage?->url ?? $page->banner_image_url) {
+            $defaults['ogImage'] = $image;
+        }
+        if ($page->noindex) {
+            $defaults['robots'] = 'noindex, follow';
+        }
+        if ($key !== 'home') {
+            $defaults['breadcrumbs'] = [
+                ['name' => 'Trang chủ', 'url' => route('home')],
+                ['name' => $page->title, 'url' => request()->url()],
+            ];
         }
 
-        return $this->page($view, $data);
+        return $this->page($view, $data + $defaults);
     }
 
-    protected function page(string $contentView, array $data): View
+    /**
+     * A free tool page (resources/views/tools), inside the site chrome under /cong-cu.
+     */
+    protected function toolPage(string $key, array $data = []): View
+    {
+        $tool = ToolPages::PAGES[$key];
+
+        return $this->page('tools.'.$key, $data + [
+            'pageTitle' => $tool['title'].' | '.site_config('name'),
+            'pageDescription' => $tool['description'],
+            'pageKeywords' => $tool['keywords'],
+            'schemaType' => 'WebApplication',
+            'schemaData' => ['applicationCategory' => 'UtilitiesApplication', 'operatingSystem' => 'Web', 'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'VND']],
+            'breadcrumbs' => [
+                ['name' => 'Trang chủ', 'url' => route('home')],
+                ['name' => 'Công cụ', 'url' => route('tools.index')],
+                ['name' => $tool['name'], 'url' => request()->url()],
+            ],
+        ]);
+    }
+
+    protected function page(string $view, array $data): View
     {
         $data += [
-            'contentView' => $contentView,
             'pageTitle' => site_config('default_meta_title', site_config('name')),
             'pageDescription' => site_config('default_meta_description', ''),
             'pageKeywords' => site_config('default_meta_keywords', ''),
             'canonicalUrl' => request()->url(),
-            'ogImage' => absolute_url(site_config('default_og_image') ?: frontend_asset('assets/images/hero-industrial.webp')),
+            'ogImage' => site_config('default_og_image') ?: asset('frontend/images/hero-home.webp'),
             'ogType' => 'website',
             'ogImageAlt' => site_config('name'),
             'robots' => 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
             'language' => site_config('default_language', 'vi'),
-            'alternateLinks' => [],
-            'extraScripts' => [],
-            'bodyClass' => '',
+            'bodyClass' => null,
             'jsonLd' => null,
-            'schemaType' => null,
+            'schemaType' => 'WebPage',
             'schemaData' => [],
             'schemaFaqs' => [],
             'schemaItems' => [],
             'breadcrumbs' => [],
+            'seoPage' => null,
         ];
 
-        $data['schemaType'] ??= $this->schemaTypeFor($contentView);
         $data['canonicalUrl'] = filled($data['canonicalUrl']) ? $data['canonicalUrl'] : request()->url();
         $data['ogImage'] = absolute_url((string) $data['ogImage']);
         $data['jsonLd'] ??= $this->buildJsonLd($data);
-
         $data['socialChannels'] = app(ResolveSocialChannels::class)->execute();
-        $data['frontendSettings'] = [
-            'contact' => [
-                'phone' => site_config('phone'),
-                'email' => site_config('email'),
-                'zalo' => site_config('zalo'),
-            ],
-            'socialLinks' => ['Facebook' => site_config('facebook'), 'YouTube' => site_config('youtube')],
-            'socials' => ['facebook' => site_config('facebook'), 'youtube' => site_config('youtube')],
-            'privacyUrl' => route('legal.privacy'),
-            'termsUrl' => route('legal.terms'),
-        ];
 
-        return view('layouts.master', $data);
+        // Components (hero, breadcrumbs) read these without every view passing them along.
+        ViewFacade::share('seoPage', $data['seoPage']);
+        ViewFacade::share('pageBreadcrumbs', $data['breadcrumbs']);
 
-    }
-
-    private function schemaTypeFor(string $contentView): string
-    {
-        return match ($contentView) {
-            'frontend.site.pages.about' => 'AboutPage',
-            'frontend.site.pages.contact' => 'ContactPage',
-            'frontend.site.pages.website-service',
-            'frontend.site.pages.operations',
-            'frontend.site.pages.pricing',
-            'frontend.site.pages.agency' => 'Service',
-            'frontend.site.themes.index',
-            'frontend.site.projects.index',
-            'frontend.site.articles.index',
-            'frontend.site.services.category' => 'CollectionPage',
-            default => 'WebPage',
-        };
+        return view($view, $data);
     }
 
     private function buildJsonLd(array $data): array

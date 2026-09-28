@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\OperationServices\Schemas;
 
+use App\Filament\Forms\IconPicker;
 use App\Filament\Forms\ServiceContentFields;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\Textarea;
@@ -29,7 +30,7 @@ class OperationServiceForm
                                     ->prefix(url('/dich-vu-van-hanh').'/'),
                                 TextInput::make('menu_key')->label('Mã menu')->maxLength(100),
                                 TextInput::make('eyebrow')->label('Nhãn phụ')->maxLength(255),
-                                TextInput::make('icon')->label('Biểu tượng Font Awesome')->maxLength(255)->placeholder('fa-solid fa-server'),
+                                IconPicker::make('icon'),
                                 TextInput::make('price_from')->label('Giá từ')->maxLength(255)->placeholder('Từ 500.000đ/tháng'),
                                 TextInput::make('cadence')->label('Chu kỳ')->maxLength(255)->placeholder('Theo tháng'),
                                 TextInput::make('order')->label('Thứ tự')->numeric()->default(0),

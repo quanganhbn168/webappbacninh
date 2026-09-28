@@ -50,7 +50,7 @@ trait HasServiceContent
 
     protected function iconClass(): Attribute
     {
-        return Attribute::get(fn (): string => $this->icon ?: 'fa-solid fa-layer-group');
+        return Attribute::get(fn (): string => $this->icon ?: 'layers');
     }
 
     protected function priceLabel(): Attribute

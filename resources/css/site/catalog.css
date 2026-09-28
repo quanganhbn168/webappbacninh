@@ -1,0 +1,48 @@
+/* Theme showcase (/kho-giao-dien) */
+.theme-quick { border-bottom: 1px solid var(--border); background: #fff; }
+.theme-quick__track { display: flex; gap: .5rem; overflow-x: auto; padding-block: 1rem; scrollbar-width: thin; }
+.theme-quick__item { display: inline-flex; flex: 0 0 auto; align-items: center; gap: .5rem; min-height: 3rem; padding: .6rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fff; color: var(--ink); font-size: .88rem; font-weight: 600; transition: background .18s, border-color .18s, color .18s; }
+.theme-quick__item .icon { width: 1.15rem; height: 1.15rem; color: var(--gold-600); }
+.theme-quick__item:hover { border-color: var(--gold); }
+.theme-quick__item.active { border-color: var(--gold-600); background: var(--gold-600); color: #fff; }
+.theme-quick__item.active .icon { color: #fff; }
+
+.theme-filter { display: grid; gap: 1.25rem; padding: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius); background: #fff; }
+.theme-filter__head { display: flex; align-items: center; justify-content: space-between; padding-bottom: .75rem; border-bottom: 1px solid var(--border); }
+.theme-filter__group { margin: 0; padding: 0; border: 0; }
+.theme-filter__group .form-label { font-size: .85rem; font-weight: 700; }
+.theme-filter .form-check { font-size: .88rem; }
+@media (min-width: 992px) {
+    .theme-filter { position: sticky; top: calc(var(--header-height) + 1rem); }
+}
+@media (max-width: 991.98px) {
+    .offcanvas-lg .theme-filter { border: 0; padding: 0; }
+    .offcanvas-lg .theme-filter__head { display: none; }
+}
+
+.theme-resultbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; padding: .75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fff; }
+.theme-card__badges { position: absolute; top: .75rem; left: .75rem; display: flex; flex-wrap: wrap; gap: .35rem; }
+.theme-card__badge { padding: .22rem .55rem; border-radius: .3rem; background: #211710d9; color: #fff; font-size: .72rem; font-weight: 700; }
+.theme-card__badge--hot { background: #d83b32; }
+.theme-card__badge--new { background: var(--green); }
+.theme-card__meta { display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: .75rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; }
+.theme-card__code { color: #b03a22; }
+.theme-card__footer { position: relative; z-index: 1; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: .75rem; margin-top: auto; padding-top: .9rem; border-top: 1px solid var(--border); }
+.theme-card__footer small { display: block; color: var(--muted); font-size: .75rem; }
+.theme-card__footer strong { color: var(--gold-700); }
+
+.order-card { position: sticky; top: calc(var(--header-height) + 1rem); display: flex; flex-direction: column; gap: .35rem; padding: 1.5rem; border: 1px solid var(--border); border-top: 3px solid var(--gold-600); border-radius: var(--radius); background: #fff; box-shadow: var(--shadow); }
+.order-card__code { align-self: flex-start; margin-bottom: .5rem; padding: .25rem .6rem; border-radius: .3rem; background: var(--ink); color: #fff; font-size: .78rem; font-weight: 700; }
+.order-card__price { color: var(--gold-700); font-size: 1.9rem; font-weight: 800; line-height: 1.1; }
+.order-card__specs { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: .75rem 0 1.25rem; padding: 1rem 0; border-block: 1px solid var(--border); }
+.order-card__specs dt { color: var(--muted); font-size: .75rem; font-weight: 500; }
+.order-card__specs dd { margin: 0; color: var(--ink); font-size: .88rem; font-weight: 700; }
+
+.note-box { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; padding: clamp(1.5rem, 3vw, 2rem); border: 1px solid var(--border); border-left: 4px solid var(--gold); border-radius: var(--radius); background: #fff; box-shadow: var(--shadow-sm); }
+.note-box > div { flex: 1 1 24rem; }
+
+.two-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 575.98px) {
+    .two-columns { grid-template-columns: minmax(0, 1fr); }
+    .order-card__specs { grid-template-columns: minmax(0, 1fr); }
+}

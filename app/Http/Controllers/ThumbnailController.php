@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Frontend\FrontendController;
 use App\Models\ThumbnailLog;
 use App\Services\TiktokService;
 use App\Services\YoutubeService;
@@ -14,14 +15,14 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use ZipArchive;
 
-class ThumbnailController extends Controller
+class ThumbnailController extends FrontendController
 {
     /**
      * Hiển thị trang công cụ lấy ảnh cover.
      */
     public function showCoverPage()
     {
-        return view('tools.anh-cover');
+        return $this->toolPage('anh-cover');
     }
 
     /**
@@ -184,6 +185,6 @@ class ThumbnailController extends Controller
 
     public function showBulkCoverPage()
     {
-        return view('tools.bulk-anh-cover');
+        return $this->toolPage('bulk-anh-cover');
     }
 }

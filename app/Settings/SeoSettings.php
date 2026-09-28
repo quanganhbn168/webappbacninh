@@ -16,8 +16,6 @@ class SeoSettings extends Settings
 
     public string $google_site_verification;
 
-    public array $page_meta;
-
     public static function group(): string
     {
         return 'seo';

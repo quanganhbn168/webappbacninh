@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Page;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class PagePolicy
 {
@@ -24,7 +24,7 @@ class PagePolicy
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Page');
+        return false; // Pages are fixed in code (App\Domain\Pages\SitePages).
     }
 
     public function update(AuthUser $authUser, Page $page): bool
@@ -34,42 +34,41 @@ class PagePolicy
 
     public function delete(AuthUser $authUser, Page $page): bool
     {
-        return $authUser->can('Delete:Page');
+        return false; // Pages are fixed in code (App\Domain\Pages\SitePages).
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('DeleteAny:Page');
+        return false; // Pages are fixed in code (App\Domain\Pages\SitePages).
     }
 
     public function restore(AuthUser $authUser, Page $page): bool
     {
-        return $authUser->can('Restore:Page');
+        return false; // Pages are fixed in code (App\Domain\Pages\SitePages).
     }
 
     public function forceDelete(AuthUser $authUser, Page $page): bool
     {
-        return $authUser->can('ForceDelete:Page');
+        return false; // Pages are fixed in code (App\Domain\Pages\SitePages).
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:Page');
+        return false; // Pages are fixed in code (App\Domain\Pages\SitePages).
     }
 
     public function restoreAny(AuthUser $authUser): bool
     {
-        return $authUser->can('RestoreAny:Page');
+        return false; // Pages are fixed in code (App\Domain\Pages\SitePages).
     }
 
     public function replicate(AuthUser $authUser, Page $page): bool
     {
-        return $authUser->can('Replicate:Page');
+        return false; // Pages are fixed in code (App\Domain\Pages\SitePages).
     }
 
     public function reorder(AuthUser $authUser): bool
     {
         return $authUser->can('Reorder:Page');
     }
-
 }

@@ -1,12 +1,6 @@
-@extends('layouts.basic')
+@extends('layouts.tool')
 
-@section('tool', '1')
-@section('robots', 'index, follow')
-
-@section('title', 'Vòng Quay Ăn Trưa - Hôm nay ăn gì? - WebApp Bắc Ninh')
-@section('meta_description', 'Vòng quay may mắn chọn món ăn trưa. Chế độ "Đầu tháng sang chảnh" và "Cuối tháng bần hàn". Quay ngay để biết trưa nay ăn gì!')
-
-@section('content')
+@section('tool-content')
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8 text-center">
@@ -46,7 +40,7 @@
 
             <div class="mt-4">
                 <button class="btn btn-primary btn-lg px-5 fw-bold shadow-lg spin-btn" onclick="spin()">
-                    <i class="fas fa-sync-alt me-2"></i> QUAY NGAY
+                    <x-icon name="refresh-cw" class="me-2" /> QUAY NGAY
                 </button>
             </div>
         </div>
@@ -71,7 +65,7 @@
 
                 <button type="button" class="btn btn-outline-primary mt-3" data-bs-dismiss="modal">Quay lại</button>
                 <button type="button" class="btn btn-success mt-3 ms-2" onclick="shareResult()">
-                    <i class="fab fa-facebook"></i> Khoe ngay
+                    <x-icon name="brand-facebook" /> Khoe ngay
                 </button>
             </div>
         </div>
@@ -246,7 +240,7 @@
                 resultDesc.classList.remove('alert-danger', 'alert-light');
             }
         } else {
-            html = '<i class="fas fa-utensils fa-5x text-secondary"></i>';
+            html = '<x-icon name="utensils" class="icon-2xl text-secondary" />';
             resultDesc.classList.remove('alert-danger', 'alert-success');
             resultDesc.classList.add('alert-light');
             resultDesc.textContent = 'Hôm nay ăn ' + item.text + ' nhé!';

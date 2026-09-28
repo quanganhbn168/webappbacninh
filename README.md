@@ -1,71 +1,53 @@
 # WebApp Bắc Ninh
 
-Production deployment instructions: [DEPLOYMENT.md](DEPLOYMENT.md).
+Website giới thiệu dịch vụ của WebApp Bắc Ninh, kèm trang quản trị tự xây trên Filament.
+Nền tảng: Laravel 13, Filament 5, Livewire 4, Tailwind CSS 4 + Alpine (giao diện public), Curator (thư viện ảnh), Filament Shield (phân quyền).
 
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Hướng dẫn triển khai: [DEPLOYMENT.md](DEPLOYMENT.md). Giao diện đã duyệt: [docs/APPROVED-INTERFACE.md](docs/APPROVED-INTERFACE.md).
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Nội dung quản lý trong admin (`/admin`)
 
-## About Laravel
+| Mục | Model | Trang public |
+|---|---|---|
+| Nội dung → Trang | `Page` | `/gioi-thieu`, `/hop-tac-agency`, trang chính sách, trang tự tạo tại `/{slug}` |
+| Nội dung → Dịch vụ thiết kế web | `Service`, `ServiceCategory` | `/thiet-ke-website/{slug}` (có landing) hoặc `/{slug}` |
+| Nội dung → Dịch vụ vận hành | `OperationService` | `/dich-vu-van-hanh`, `/dich-vu-van-hanh/{slug}` |
+| Nội dung → Dự án, Nhóm dự án | `Project`, `ProjectCategory` | `/du-an`, `/du-an/{slug}` |
+| Kho giao diện → Giao diện, Ngành, Tính năng | `Template`, `TemplateCategory`, `ThemeFeature` | `/kho-giao-dien`, `/kho-giao-dien/{slug}` |
+| Blog → Bài viết, Danh mục | `Post`, `PostCategory` | `/kien-thuc`, `/kien-thuc/{slug}` |
+| Nội dung → Liên hệ | `Lead` | form liên hệ trên các trang |
+| Cài đặt | `App\Settings\*` | logo, liên hệ, mạng xã hội, SEO, mã theo dõi, favicon |
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Database là nguồn dữ liệu duy nhất. `config/` chỉ chứa cấu hình kỹ thuật (khóa API, cổng thanh toán…), không chứa nội dung.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Cấu trúc mã nguồn
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```
+app/
+  Domain/            nghiệp vụ theo mảng (xem app/Domain/README.md)
+    Content/  Identity/  Media/  Pages/  Settings/  Site/
+  Enums/             kiểu dữ liệu cố định (PageTemplate, TemplateType, SocialProvider)
+  Filament/          trang quản trị: Resources/<Tên>/{Schemas,Tables,Pages}
+  Http/Controllers/  controller mỏng: lấy model, trả view
+  Models/            Eloquent model + accessor dùng cho view
+  Settings/          nhóm cài đặt (spatie/laravel-settings) và SiteDefaults
+  Support/           tiện ích kỹ thuật (cache menu, cấp quyền Shield)
+Modules/             gói tính năng bật/tắt (Ecommerce, RealEstate) — để dành cho tenant
+database/seeders/    dữ liệu mẫu cho bản cài mới (không ghi đè dữ liệu đã sửa trong admin)
+```
 
-## Learning Laravel
+Luồng một request: `Route → Controller → Model (scope/accessor) → View`. Logic dùng lại ở nhiều nơi (admin, controller, lệnh artisan) đặt trong `app/Domain/<Mảng>/Actions`, mỗi class làm một việc.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Ảnh của giao diện, dự án, dịch vụ và bài viết dùng Curator (`image_id`, `gallery` là danh sách id). Ảnh có sẵn trong `public/` được nhập bằng `App\Domain\Media\Actions\ImportLocalImage`.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Mỗi resource Filament mới cần quyền Shield: tạo trong migration bằng `App\Support\ShieldPermissions::grantToSuperAdmin([...])` để deploy chỉ cần `migrate`.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Chạy trên máy
 
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# webappbacninh
+```bash
+composer install && pnpm install
+cp .env.example .env && php artisan key:generate && php artisan curator:token
+php artisan migrate --seed
+pnpm build          # hoặc pnpm dev
+php artisan test
+```

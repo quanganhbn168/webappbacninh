@@ -37,7 +37,7 @@ Modules/             gói tính năng bật/tắt (Ecommerce, RealEstate) — đ
 database/seeders/    dữ liệu mẫu cho bản cài mới (không ghi đè dữ liệu đã sửa trong admin)
 ```
 
-Giao diện public: Bootstrap 5 (`resources/scss/bootstrap.scss`, biến màu và font theo thiết kế đã duyệt) nạp trước, sau đó là CSS thiết kế `resources/css/site.css` (các file trong `resources/css/site/`). JavaScript dùng Bootstrap (modal, offcanvas, dropdown, collapse) và JS thuần trong `resources/js/frontend/`. Trang đăng nhập, lỗi, thanh toán dùng `layouts.basic`. Riêng trang công cụ (`resources/views/tools`) vẫn dùng layout cũ với Tailwind.
+Giao diện public: Bootstrap 5 (`resources/scss/bootstrap.scss`, biến màu và font theo thiết kế đã duyệt) nạp trước, sau đó là CSS thiết kế `resources/css/site.css` (các file trong `resources/css/site/`). JavaScript dùng Bootstrap (modal, offcanvas, dropdown, collapse) và JS thuần trong `resources/js/frontend/`. Trang đăng nhập, lỗi, thanh toán và các trang công cụ (`resources/views/tools`) dùng `layouts.basic`; trang công cụ nạp thêm `resources/js/tools.js` (ToolKit: ô nhập số tiền, gửi JSON, đổ kết quả vào `[data-field]`). Tailwind chỉ còn dùng cho giao diện admin Filament.
 
 Luồng một request: `Route → Controller → Model (scope/accessor) → View`. Logic dùng lại ở nhiều nơi (admin, controller, lệnh artisan) đặt trong `app/Domain/<Mảng>/Actions`, mỗi class làm một việc.
 

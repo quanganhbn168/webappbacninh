@@ -1,21 +1,21 @@
 <main>
 <section class="theme-hero">
 <div class="container">
-<nav aria-label="breadcrumb" class="theme-breadcrumb" data-aos="fade-up">
+<nav aria-label="breadcrumb" class="theme-breadcrumb">
 <ol class="breadcrumb mb-0"><li class="breadcrumb-item"><a href="<?= e(route('home')) ?>">Trang chủ</a></li><li aria-current="page" class="breadcrumb-item active">Kho giao diện</li></ol>
 </nav>
 <div class="row align-items-center gy-4">
 <div class="col-lg-7">
-<span class="section-kicker" data-aos="fade-up">KHO GIAO DIỆN WEBSITE</span>
-<h1 data-aos="fade-up" data-aos-delay="70">Chọn mẫu phù hợp.<br/><span>Chúng tôi tùy chỉnh theo doanh nghiệp.</span></h1>
-<p data-aos="fade-up" data-aos-delay="130">Kho giao diện giúp anh/chị hình dung nhanh phong cách website trước khi triển khai. Mỗi mẫu có thể thay màu sắc, hình ảnh, nội dung, bố cục và bổ sung chức năng theo nhu cầu thực tế.</p>
-<div class="theme-hero__actions" data-aos="fade-up" data-aos-delay="190">
+<span class="section-kicker">KHO GIAO DIỆN WEBSITE</span>
+<h1>Chọn mẫu phù hợp.<br/><span>Chúng tôi tùy chỉnh theo doanh nghiệp.</span></h1>
+<p>Kho giao diện giúp anh/chị hình dung nhanh phong cách website trước khi triển khai. Mỗi mẫu có thể thay màu sắc, hình ảnh, nội dung, bố cục và bổ sung chức năng theo nhu cầu thực tế.</p>
+<div class="theme-hero__actions">
 <a class="btn btn-primary btn-lg" href="#themeGrid">Xem các mẫu giao diện</a>
 <a class="btn btn-outline-dark btn-lg" href="#themeContact">Chưa biết chọn mẫu nào?</a>
 </div>
 </div>
 <div class="col-lg-5">
-<div class="theme-hero__stats" data-aos="fade-left">
+<div class="theme-hero__stats">
 <div><strong><?= e((string) $themes->count()) ?></strong><span>Mẫu minh họa</span></div>
 <div><strong><?= e((string) $industries->count()) ?></strong><span>Nhóm ngành nghề</span></div>
 <div><strong>100%</strong><span>Tùy chỉnh nội dung</span></div>
@@ -67,7 +67,7 @@
 </section>
 <section class="theme-note">
 <div class="container">
-<div class="theme-note__box" data-aos="fade-up">
+<div class="theme-note__box">
 <div class="theme-note__icon"><i class="fa-solid fa-pen-ruler"></i></div>
 <div><span class="section-kicker">KHÔNG PHẢI MẪU ĐÓNG KHUNG</span><h2>Mỗi giao diện đều được tùy chỉnh theo nhận diện và nội dung của doanh nghiệp.</h2><p>Kho giao diện chỉ giúp rút ngắn thời gian chọn phong cách. Website bàn giao vẫn được thay logo, màu sắc, hình ảnh, bố cục nội dung, danh mục và chức năng phù hợp với dự án thực tế.</p></div>
 <a class="btn btn-primary" href="#themeContact">Trao đổi nhu cầu</a>

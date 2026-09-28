@@ -1,155 +1,131 @@
-@extends('layouts.plain')
+@extends('layouts.basic')
 
+@section('tool', '1')
+@section('robots', 'index, follow')
 @section('title', 'Công cụ lấy ảnh Cover Video (Thumbnail) - WebApp Bắc Ninh')
 @section('meta_description', 'Công cụ miễn phí giúp lấy ảnh cover (thumbnail) chất lượng cao từ video YouTube, TikTok. Hỗ trợ tải về nhanh chóng.')
 @section('meta_keywords', 'get thumbnail youtube, lấy ảnh cover tiktok, youtube thumbnail downloader, công cụ mmo')
-
-@push('head')
-    <script defer src="/vendor/alpinejs.min.js"></script>
-    <style>
-        [x-cloak] { display: none !important; }
-    </style>
-@endpush
 
 @section('content')
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <div class="card shadow-lg border-0 rounded-lg">
-                <div class="card-body p-4 p-md-5" x-data="{
-                    url: '',
-                    isLoading: false,
-                    result: null,
-                    error: '',
-                    async getInfo() {
-                        if (!this.url.trim()) {
-                            this.error = 'Vui lòng nhập một đường dẫn hợp lệ.';
-                            return;
-                        }
-                        this.isLoading = true;
-                        this.result = null;
-                        this.error = '';
-
-                        try {
-                            const response = await fetch('/get-info', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content')
-                                },
-                                body: JSON.stringify({ url: this.url })
-                            });
-
-                            const data = await response.json();
-
-                            if (data.success) {
-                                this.result = data;
-                            } else {
-                                this.error = data.message || 'Không thể phân tích link này. Vui lòng kiểm tra lại.';
-                            }
-                        } catch (e) {
-                            this.error = 'Đã có lỗi xảy ra. Vui lòng thử lại sau.';
-                        } finally {
-                            this.isLoading = false;
-                        }
-                    }
-                }">
-                    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-                    {{-- Alerts --}}
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-4 p-md-5" id="cover-tool" data-url="{{ route('cover.getInfo') }}">
                     @if (session('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
-                            <button type="button" class="btn-close" data-ui-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
                         </div>
                     @endif
                     @if (session('error'))
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             {{ session('error') }}
-                            <button type="button" class="btn-close" data-ui-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
                         </div>
                     @endif
 
-                    {{-- Header --}}
                     <div class="text-center mb-5">
-                        <h1 class="h2 fw-bold text-dark mb-2">Lấy Ảnh Cover Video</h1>
-                        <p class="text-muted">Dán link YouTube hoặc TikTok để lấy ảnh thumbnail chất lượng cao.</p>
-                        <div class="mt-3">
-                            <a href="{{ route('cover.bulk.page') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">
-                                <i class="fas fa-bolt me-1"></i> Chuyển sang chế độ tải hàng loạt (Bulk) &rarr;
-                            </a>
-                        </div>
+                        <h1 class="h2 fw-bold mb-2">Lấy Ảnh Cover Video</h1>
+                        <p class="text-secondary">Dán link YouTube hoặc TikTok để lấy ảnh thumbnail chất lượng cao.</p>
+                        <a href="{{ route('cover.bulk.page') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4 mt-2">
+                            <i class="fas fa-bolt me-1"></i> Chuyển sang chế độ tải hàng loạt (Bulk) &rarr;
+                        </a>
                     </div>
 
-                    {{-- Search Box --}}
-                    <div class="input-group input-group-lg mb-3 shadow-sm">
-                        <input type="text" class="form-control border-primary" 
-                               x-model="url" @keydown.enter.prevent="getInfo()" 
-                               placeholder="Dán link YouTube, YouTube Shorts hoặc TikTok vào đây..."
-                               :disabled="isLoading">
-                        <button class="btn btn-primary px-4 fw-bold" type="button" 
-                                @click.prevent="getInfo()" :disabled="isLoading">
-                            <span x-show="!isLoading">Lấy thông tin</span>
-                            <span x-show="isLoading" x-cloak>
-                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                Đang xử lý...
-                            </span>
+                    <form class="input-group input-group-lg mb-3 shadow-sm" data-cover-form>
+                        <label class="visually-hidden" for="cover-url">Link video</label>
+                        <input type="url" class="form-control border-primary" id="cover-url" required placeholder="Dán link YouTube, YouTube Shorts hoặc TikTok vào đây...">
+                        <button class="btn btn-primary px-4 fw-bold" type="submit">
+                            <span data-idle>Lấy thông tin</span>
+                            <span data-busy hidden><span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Đang xử lý...</span>
                         </button>
-                    </div>
+                    </form>
 
-                    {{-- Error Message --}}
-                    <div x-show="error" x-cloak class="alert alert-danger mt-4" x-text="error"></div>
+                    <div class="alert alert-danger mt-4" data-cover-error hidden role="alert"></div>
 
-                    {{-- Result Area --}}
-                    <div x-show="result" x-cloak x-transition class="mt-5 pt-4 border-top">
+                    <div class="mt-5 pt-4 border-top" data-cover-result hidden>
                         <div class="row g-4">
                             <div class="col-md-5">
-                                <div class="position-relative bg-light rounded overflow-hidden">
-                                    <img :src="result.thumbnail_url" alt="Video Thumbnail" class="img-fluid w-100 rounded shadow-sm">
-                                </div>
+                                <img data-thumbnail alt="Ảnh thumbnail của video" class="img-fluid w-100 rounded shadow-sm bg-light">
                             </div>
                             <div class="col-md-7">
-                                <form action="{{ route('cover.download') }}" method="POST" class="d-flex flex-column justify-content-center">
+                                <form action="{{ route('cover.download') }}" method="POST">
                                     @csrf
-                                    <input type="hidden" name="image_url" :value="result.thumbnail_url">
-                                    <input type="hidden" name="filename" :value="result.title">
-                                    <input type="hidden" name="provider" :value="result.provider">
-
+                                    <input type="hidden" name="image_url" data-image-url>
+                                    <input type="hidden" name="provider" data-provider>
                                     <div class="mb-3">
-                                        <label for="title" class="form-label fw-bold text-secondary text-uppercase small">Tiêu đề</label>
-                                        <input type="text" id="title" x-model="result.title" class="form-control form-control-lg">
+                                        <label for="cover-title" class="form-label fw-bold text-secondary text-uppercase small">Tiêu đề</label>
+                                        <input type="text" id="cover-title" name="filename" class="form-control form-control-lg" data-title>
                                     </div>
-
                                     <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm mb-3">
                                         <i class="fas fa-image me-2"></i> Tải Ảnh Cover (JPG)
                                     </button>
                                 </form>
 
-                                {{-- Form Tải Video (Nếu có) --}}
-                                <template x-if="result.video_url">
-                                    <form action="{{ route('cover.download.video') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="video_url" :value="result.video_url">
-                                        <input type="hidden" name="filename" :value="result.title">
-                                        
-                                        <button type="submit" class="btn btn-danger btn-lg w-100 fw-bold shadow-sm">
-                                            <i class="fas fa-video me-2"></i> Tải Video (No Watermark)
-                                        </button>
-                                    </form>
-                                </template>
-                                
-                                <template x-if="!result.video_url && result.provider === 'tiktok'">
-                                    <div class="alert alert-warning small mt-2">
-                                        <i class="fas fa-exclamation-triangle me-1"></i> Không tìm thấy link video không logo.
-                                    </div>
-                                </template>
+                                <form action="{{ route('cover.download.video') }}" method="POST" data-video-form hidden>
+                                    @csrf
+                                    <input type="hidden" name="video_url" data-video-url>
+                                    <input type="hidden" name="filename" data-video-title>
+                                    <button type="submit" class="btn btn-danger btn-lg w-100 fw-bold shadow-sm">
+                                        <i class="fas fa-video me-2"></i> Tải Video (No Watermark)
+                                    </button>
+                                </form>
+
+                                <div class="alert alert-warning small mt-2" data-no-video hidden>
+                                    <i class="fas fa-exclamation-triangle me-1"></i> Không tìm thấy link video không logo.
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script type="module">
+    const { ToolKit } = window;
+    const root = document.getElementById('cover-tool');
+    const form = root.querySelector('[data-cover-form]');
+    const button = form.querySelector('button');
+    const error = root.querySelector('[data-cover-error]');
+    const result = root.querySelector('[data-cover-result]');
+    const $ = selector => root.querySelector(selector);
+
+    function busy(state) {
+        button.disabled = state;
+        form.querySelector('input').disabled = state;
+        $('[data-idle]').hidden = state;
+        $('[data-busy]').hidden = !state;
+    }
+
+    form.addEventListener('submit', async event => {
+        event.preventDefault();
+        busy(true);
+        error.hidden = true;
+        result.hidden = true;
+        try {
+            const data = await ToolKit.postJson(root.dataset.url, { url: $('#cover-url').value.trim() });
+            $('[data-thumbnail]').src = data.thumbnail_url;
+            $('[data-image-url]').value = data.thumbnail_url;
+            $('[data-provider]').value = data.provider ?? '';
+            $('[data-title]').value = data.title ?? '';
+            $('[data-video-url]').value = data.video_url ?? '';
+            $('[data-video-form]').hidden = !data.video_url;
+            $('[data-no-video]').hidden = Boolean(data.video_url) || data.provider !== 'tiktok';
+            result.hidden = false;
+        } catch (exception) {
+            error.textContent = exception.message || 'Không thể phân tích link này. Vui lòng kiểm tra lại.';
+            error.hidden = false;
+        } finally {
+            busy(false);
+        }
+    });
+
+    // The video file keeps the (editable) title as its name.
+    $('[data-video-form]').addEventListener('submit', () => { $('[data-video-title]').value = $('[data-title]').value; });
+</script>
+@endpush

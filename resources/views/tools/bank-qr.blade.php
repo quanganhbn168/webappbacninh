@@ -1,4 +1,7 @@
-@extends('layouts.plain')
+@extends('layouts.basic')
+
+@section('tool', '1')
+@section('robots', 'index, follow')
 
 @section('title', 'Tạo mã QR Ngân Hàng - VietQR Chuyển Khoản Nhanh - WebApp Bắc Ninh')
 @section('meta_description', 'Công cụ tạo mã QR chuyển khoản ngân hàng VietQR tự động. Hỗ trợ tất cả ngân hàng Việt Nam (VCB, MB, Tech... - VietQR). Chính xác, an toàn, có logo.')
@@ -9,16 +12,16 @@
         <div class="col-md-10">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-success text-white">
-                    <h1 class="h4 mb-0"><i class="fas fa-money-bill-wave mr-2"></i>Tạo Mã QR Chuyển Khoản (VietQR)</h1>
+                    <h1 class="h4 mb-0"><i class="fas fa-money-bill-wave me-2"></i>Tạo Mã QR Chuyển Khoản (VietQR)</h1>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <!-- Input Column -->
                         <div class="col-md-7 border-right">
                             <form id="bankForm">
-                                <div class="form-group">
-                                    <label class="font-weight-bold">Ngân hàng thụ hưởng <span class="text-danger">*</span></label>
-                                    <select class="form-control select2" id="bankId" style="width: 100%;">
+                                <div class="mb-3">
+                                    <label class="fw-bold">Ngân hàng thụ hưởng <span class="text-danger">*</span></label>
+                                    <select class="form-select select2" id="bankId" style="width: 100%;">
                                         <option value="">-- Chọn ngân hàng --</option>
                                         @foreach($banks as $code => $bank)
                                             <option value="{{ $code }}" data-bin="{{ $bank['bin'] }}" data-logo="{{ $bank['logo'] }}">
@@ -27,25 +30,25 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group">
-                                    <label class="font-weight-bold">Số tài khoản <span class="text-danger">*</span></label>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Số tài khoản <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="bankAccount" placeholder="Ví dụ: 1903..." required>
                                 </div>
-                                <div class="form-group">
-                                    <label class="font-weight-bold">Tên chủ tài khoản (Viết hoa, không dấu)</label>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Tên chủ tài khoản (Viết hoa, không dấu)</label>
                                     <input type="text" class="form-control text-uppercase" id="bankName" placeholder="NGUYEN VAN A">
                                 </div>
-                                <div class="form-group">
-                                    <label class="font-weight-bold">Số tiền (VNĐ)</label>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Số tiền (VNĐ)</label>
                                     <input type="number" class="form-control" id="bankAmount" placeholder="Để trống nếu muốn tự nhập khi quét">
                                 </div>
-                                <div class="form-group">
-                                    <label class="font-weight-bold">Nội dung chuyển khoản</label>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Nội dung chuyển khoản</label>
                                     <input type="text" class="form-control" id="bankContent" placeholder="Ví dụ: Thanh toan tien com">
                                 </div>
 
-                                <button type="button" class="btn btn-success btn-block font-weight-bold mt-4" onclick="generateBankQR()">
-                                    <i class="fas fa-qrcode mr-2"></i> TẠO MÃ NGÂN HÀNG
+                                <button type="button" class="btn btn-success w-100 fw-bold mt-4" onclick="generateBankQR()">
+                                    <i class="fas fa-qrcode me-2"></i> TẠO MÃ NGÂN HÀNG
                                 </button>
                             </form>
                         </div>
@@ -59,7 +62,7 @@
                                     Nhập thông tin bên trái để tạo mã
                                 </div>
                             </div>
-                            <button class="btn btn-primary" onclick="downloadBankQR()"><i class="fas fa-download mr-1"></i> Tải Mã Về Máy</button>
+                            <button class="btn btn-primary" onclick="downloadBankQR()"><i class="fas fa-download me-1"></i> Tải Mã Về Máy</button>
                         </div>
                     </div>
                 </div>

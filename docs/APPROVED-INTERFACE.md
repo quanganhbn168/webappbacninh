@@ -47,7 +47,6 @@ Local sử dụng `https://webappbacninh.test` với Laragon, root là thư mụ
 
 ## Tài nguyên tiện ích tự host
 
-- `public/vendor/alpinejs.min.js`: Alpine 3.17.2, từ package đã khóa trong pnpm.
 - `public/vendor/lunar-1.7.7.js`: lunar-javascript 1.7.7, từ bản phát hành npm trên unpkg.
 - `public/vendor/easy-qrcode-4.5.0.min.js`: easyqrcodejs 4.5.0, từ bản phát hành npm trên jsDelivr.
 

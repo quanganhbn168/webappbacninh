@@ -1,13 +1,13 @@
 <main>
   <section class="inner-hero inner-hero--operations">
     <div class="container"><div class="row align-items-center gy-5">
-      <div class="col-lg-6" data-aos="fade-up">
+      <div class="col-lg-6">
         <nav class="inner-breadcrumb"><a href="<?= e(route('home')) ?>">Trang chủ</a><i class="fa-solid fa-angle-right"></i><span>Dịch vụ vận hành</span></nav>
         <span class="section-kicker">SAU KHI WEBSITE ĐI VÀO HOẠT ĐỘNG</span><h1>Website không tự tạo giá trị nếu không được duy trì</h1>
         <p>WebApp Bắc Ninh hỗ trợ phần kỹ thuật, nội dung, SEO và cập nhật định kỳ để doanh nghiệp không phải tuyển ngay một đội riêng.</p>
         <div class="inner-hero__actions"><a class="btn btn-primary btn-lg" href="#operationServices">Xem dịch vụ</a><a class="btn btn-outline-dark btn-lg" href="#operationContact">Nhận đề xuất gói</a></div>
       </div>
-      <div class="col-lg-6" data-aos="fade-left"><img class="inner-hero__image" src="<?= e(frontend_asset('assets/images/seo-operation.webp')) ?>" alt="Dịch vụ vận hành website và SEO"></div>
+      <div class="col-lg-6"><img class="inner-hero__image" src="<?= e(frontend_asset('assets/images/seo-operation.webp')) ?>" alt="Dịch vụ vận hành website và SEO"></div>
     </div></div>
   </section>
 

@@ -1,4 +1,7 @@
-@extends('layouts.plain')
+@extends('layouts.basic')
+
+@section('tool', '1')
+@section('robots', 'index, follow')
 
 @section('title', 'Vòng Quay Ăn Trưa - Hôm nay ăn gì? - WebApp Bắc Ninh')
 @section('meta_description', 'Vòng quay may mắn chọn món ăn trưa. Chế độ "Đầu tháng sang chảnh" và "Cuối tháng bần hàn". Quay ngay để biết trưa nay ăn gì!')
@@ -7,7 +10,7 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8 text-center">
-            <h1 class="display-4 font-weight-bold text-primary mb-3">Vòng Quay "Thần Thánh"</h1>
+            <h1 class="display-4 fw-bold text-primary mb-3">Vòng Quay "Thần Thánh"</h1>
             <p class="lead text-muted mb-5">Đừng để câu hỏi "Trưa nay ăn gì?" làm chia rẽ tình đồng nghiệp!</p>
 
             <!-- Controls -->
@@ -42,8 +45,8 @@
             </div>
 
             <div class="mt-4">
-                <button class="btn btn-primary btn-lg px-5 font-weight-bold shadow-lg spin-btn" onclick="spin()">
-                    <i class="fas fa-sync-alt mr-2"></i> QUAY NGAY
+                <button class="btn btn-primary btn-lg px-5 fw-bold shadow-lg spin-btn" onclick="spin()">
+                    <i class="fas fa-sync-alt me-2"></i> QUAY NGAY
                 </button>
             </div>
         </div>
@@ -56,7 +59,7 @@
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-body text-center p-5">
                 <h3 class="text-uppercase text-muted mb-3">Trưa nay bạn sẽ ăn:</h3>
-                <h1 class="display-4 font-weight-bold text-primary mb-4" id="resultName">...</h1>
+                <h1 class="display-4 fw-bold text-primary mb-4" id="resultName">...</h1>
                 
                 <div id="resultImageContainer" class="mb-4">
                     <!-- Meme will be inserted here -->
@@ -66,8 +69,8 @@
                     Chúc bạn ngon miệng!
                 </div>
 
-                <button type="button" class="btn btn-outline-primary mt-3" data-ui-dismiss="modal">Quay lại</button>
-                <button type="button" class="btn btn-success mt-3 ml-2" onclick="shareResult()">
+                <button type="button" class="btn btn-outline-primary mt-3" data-bs-dismiss="modal">Quay lại</button>
+                <button type="button" class="btn btn-success mt-3 ms-2" onclick="shareResult()">
                     <i class="fab fa-facebook"></i> Khoe ngay
                 </button>
             </div>
@@ -250,7 +253,7 @@
         }
 
         document.getElementById('resultImageContainer').innerHTML = html;
-        window.tailwindUi?.open(document.getElementById('resultModal'));
+        window.bootstrap.Modal.getOrCreateInstance(document.getElementById('resultModal')).show();
     }
 
     function shareResult() {

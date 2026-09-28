@@ -1,7 +1,7 @@
 <main>
   <section class="operation-detail-hero">
     <div class="container">
-      <nav class="inner-breadcrumb" data-aos="fade-up">
+      <nav class="inner-breadcrumb">
         <a href="<?= e(route('home')) ?>">Trang chủ</a>
         <i class="fa-solid fa-angle-right"></i>
         <a href="<?= e(route('operations.index')) ?>">Dịch vụ vận hành</a>
@@ -10,7 +10,7 @@
       </nav>
 
       <div class="row align-items-center gy-5">
-        <div class="col-lg-6" data-aos="fade-up">
+        <div class="col-lg-6">
           <span class="section-kicker"><?= e($service->eyebrow_label) ?></span>
           <h1><?= e($service->title) ?></h1>
           <p class="operation-detail-hero__highlight"><?= e($service->highlight) ?></p>
@@ -24,7 +24,7 @@
             <div><small>Hình thức triển khai</small><strong><?= e($service->cadence_label) ?></strong></div>
           </div>
         </div>
-        <div class="col-lg-6" data-aos="fade-left">
+        <div class="col-lg-6">
           <div class="operation-detail-hero__media">
             <img src="<?= e($service->image_url) ?>" alt="<?= e($service->title) ?>" width="1200" height="800">
             <div class="operation-detail-hero__badge"><i class="<?= e($service->icon_class) ?>"></i><span><small>Dịch vụ vận hành</small><strong>WebApp Bắc Ninh</strong></span></div>
@@ -48,17 +48,17 @@
   <section class="section">
     <div class="container">
       <div class="row align-items-end gy-3 mb-5">
-        <div class="col-lg-7" data-aos="fade-up">
+        <div class="col-lg-7">
           <span class="section-kicker">DỊCH VỤ NÀY PHÙ HỢP KHI</span>
           <h2 class="section-title mb-0">Doanh nghiệp đang gặp một trong các tình huống sau</h2>
         </div>
-        <div class="col-lg-5" data-aos="fade-up" data-aos-delay="80">
+        <div class="col-lg-5">
           <p class="section-lead mb-0">Phạm vi cuối cùng được điều chỉnh theo hệ thống, dữ liệu và nhân sự hiện có của doanh nghiệp.</p>
         </div>
       </div>
       <div class="operation-audience-grid">
         <?php foreach (($service->audiences ?? []) as $index => $item): ?>
-          <article data-aos="fade-up" data-aos-delay="<?= e((string) ($index * 50)) ?>">
+          <article>
             <span><?= e(str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT)) ?></span>
             <p><?= e($item) ?></p>
           </article>
@@ -69,14 +69,14 @@
 
   <section class="section section--light">
     <div class="container">
-      <div class="section-heading text-center" data-aos="fade-up">
+      <div class="section-heading text-center">
         <span class="section-kicker">PHẠM VI CÔNG VIỆC</span>
         <h2>Những hạng mục có thể triển khai</h2>
         <p>Chọn riêng từng phần hoặc kết hợp thành gói vận hành theo tháng.</p>
       </div>
       <div class="operation-scope-grid">
         <?php foreach (($service->scope ?? []) as $index => $item): ?>
-          <article data-aos="fade-up" data-aos-delay="<?= e((string) (($index % 3) * 60)) ?>">
+          <article>
             <i class="<?= e($item['icon']) ?>"></i>
             <h3><?= e($item['title']) ?></h3>
             <p><?= e($item['text']) ?></p>
@@ -89,12 +89,12 @@
   <section class="section operation-deliverables">
     <div class="container">
       <div class="row align-items-center gy-5">
-        <div class="col-lg-6" data-aos="fade-right">
+        <div class="col-lg-6">
           <div class="operation-deliverables__media">
             <img src="<?= e($service->secondary_image_url) ?>" alt="Phạm vi bàn giao <?= e($service->eyebrow_label) ?>" width="1200" height="800">
           </div>
         </div>
-        <div class="col-lg-6" data-aos="fade-left">
+        <div class="col-lg-6">
           <span class="section-kicker">KẾT QUẢ BÀN GIAO</span>
           <h2 class="section-title">Không chỉ nói chung chung là “đã làm”</h2>
           <p class="section-lead">Mỗi gói đều có đầu việc, đường dẫn hoặc báo cáo tương ứng để doanh nghiệp kiểm tra.</p>
@@ -110,13 +110,13 @@
 
   <section class="section section--navy">
     <div class="container">
-      <div class="section-heading text-center" data-aos="fade-up">
+      <div class="section-heading text-center">
         <span class="section-kicker section-kicker--gold">QUY TRÌNH THỰC HIỆN</span>
         <h2 class="section-title section-title--light">Triển khai theo bốn bước rõ ràng</h2>
       </div>
       <div class="operation-process-grid">
         <?php foreach (($service->process ?? []) as $index => $item): ?>
-          <article data-aos="fade-up" data-aos-delay="<?= e((string) ($index * 70)) ?>">
+          <article>
             <span><?= e($item['step']) ?></span>
             <h3><?= e($item['title']) ?></h3>
             <p><?= e($item['text']) ?></p>
@@ -128,14 +128,14 @@
 
   <section class="section section--cream">
     <div class="container">
-      <div class="section-heading text-center" data-aos="fade-up">
+      <div class="section-heading text-center">
         <span class="section-kicker">MỨC ĐẦU TƯ THAM KHẢO</span>
         <h2>Chọn theo khối lượng và mức độ hỗ trợ</h2>
         <p>Giá cuối cùng phụ thuộc hiện trạng website, dữ liệu, tần suất và yêu cầu phản hồi.</p>
       </div>
       <div class="operation-detail-packages">
         <?php foreach (($service->packages ?? []) as $index => $package): ?>
-          <article class="<?= !empty($package['featured']) ? 'is-featured' : '' ?>" data-aos="fade-up" data-aos-delay="<?= e((string) ($index * 70)) ?>">
+          <article class="<?= !empty($package['featured']) ? 'is-featured' : '' ?>">
             <?php if (!empty($package['featured'])): ?><span class="operation-package-badge">ĐƯỢC QUAN TÂM</span><?php endif; ?>
             <h3><?= e($package['name']) ?></h3>
             <strong><?= e($package['price']) ?></strong>
@@ -152,12 +152,12 @@
   <section class="section">
     <div class="container">
       <div class="row gy-5 justify-content-between">
-        <div class="col-lg-4" data-aos="fade-right">
+        <div class="col-lg-4">
           <span class="section-kicker">CÂU HỎI THƯỜNG GẶP</span>
           <h2 class="section-title">Làm rõ trước khi triển khai</h2>
           <p class="section-lead">Phạm vi cụ thể vẫn được ghi lại trong báo giá hoặc thỏa thuận dịch vụ.</p>
         </div>
-        <div class="col-lg-7" data-aos="fade-left">
+        <div class="col-lg-7">
           <div class="accordion faq-accordion" id="operationFaq">
             <?php foreach (($service->faqs ?? []) as $index => $faq): $faqId = 'operationFaq' . $index; ?>
               <div class="accordion-item">

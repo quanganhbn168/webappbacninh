@@ -9,7 +9,7 @@ class PublicDesignSystemTest extends TestCase
     public function test_public_css_uses_the_shared_type_scale_without_pixel_font_sizes(): void
     {
         $files = array_merge(
-            [dirname(__DIR__, 2).'/resources/css/public-ui.css'],
+            [dirname(__DIR__, 2).'/resources/css/basic.css'],
             [dirname(__DIR__, 2).'/resources/css/site/pages.css', dirname(__DIR__, 2).'/resources/css/site/secondary.css'],
         );
 
@@ -21,15 +21,6 @@ class PublicDesignSystemTest extends TestCase
                 $file.' contains a pixel font-size outside the shared type scale.',
             );
         }
-    }
-
-    public function test_public_tailwind_scan_is_isolated_from_filament_and_modules(): void
-    {
-        $css = (string) file_get_contents(dirname(__DIR__, 2).'/resources/css/app.css');
-
-        $this->assertStringContainsString("@source '../views/frontend/**/*.php'", $css);
-        $this->assertStringNotContainsString("@source '../../vendor/filament", $css);
-        $this->assertStringNotContainsString("@source '../../Modules", $css);
     }
 
     public function test_public_head_uses_vite_and_has_no_remote_or_filament_font_stylesheet(): void

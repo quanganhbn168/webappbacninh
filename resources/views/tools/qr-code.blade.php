@@ -1,4 +1,7 @@
-@extends('layouts.plain')
+@extends('layouts.basic')
+
+@section('tool', '1')
+@section('robots', 'index, follow')
 
 @section('title', 'Tạo mã QR Code Online Miễn Phí - WebApp Bắc Ninh')
 @section('meta_description', 'Công cụ tạo mã QR Code online miễn phí. Tạo QR Wifi, URL, Văn bản nhanh chóng, hỗ trợ chèn logo và tùy chỉnh màu sắc.')
@@ -9,38 +12,38 @@
         <div class="col-md-10">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white">
-                    <h1 class="h4 mb-0"><i class="fas fa-qrcode mr-2"></i>Tạo Mã QR Code (Link/Text/Wifi)</h1>
+                    <h1 class="h4 mb-0"><i class="fas fa-qrcode me-2"></i>Tạo Mã QR Code (Link/Text/Wifi)</h1>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <!-- Input Column -->
                         <div class="col-md-7 border-right">
                             <form id="qrForm">
-                                <div class="form-group">
-                                    <label class="font-weight-bold">Nội dung QR Code</label>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Nội dung QR Code</label>
                                     <textarea class="form-control" id="qrText" rows="3" placeholder="Nhập văn bản, đường dẫn website, hoặc nội dung bất kỳ...">https://webappbacninh.vn</textarea>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="form-group">
+                                        <div class="mb-3">
                                             <label>Màu nền (Background)</label>
-                                            <input type="color" class="form-control" id="qrBgColor" value="#ffffff">
+                                            <input type="color" class="form-control form-control-color w-100" id="qrBgColor" value="#ffffff">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-group">
+                                        <div class="mb-3">
                                             <label>Màu mã (Foreground)</label>
-                                            <input type="color" class="form-control" id="qrColor" value="#000000">
+                                            <input type="color" class="form-control form-control-color w-100" id="qrColor" value="#000000">
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="form-group">
+                                        <div class="mb-3">
                                             <label>Kích thước (px)</label>
-                                            <select class="form-control" id="qrSize">
+                                            <select class="form-select" id="qrSize">
                                                 <option value="200">200 x 200</option>
                                                 <option value="300" selected>300 x 300</option>
                                                 <option value="400">400 x 400</option>
@@ -50,16 +53,14 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-group">
+                                        <div class="mb-3">
                                             <label>Logo (Optional)</label>
-                                            <div class="custom-file">
-                                                <input type="file" class="custom-file-input" id="qrLogo" accept="image/*">
-                                                <label class="custom-file-label" for="qrLogo">Chọn ảnh logo...</label>
-                                            </div>
+                                            <label class="form-label visually-hidden" for="qrLogo">Chọn ảnh logo</label>
+                                            <input type="file" class="form-control" id="qrLogo" accept="image/*">
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-primary btn-block d-md-none mt-3" onclick="generateQR()">Tạo Mã</button>
+                                <button type="button" class="btn btn-primary w-100 d-md-none mt-3" onclick="generateQR()">Tạo Mã</button>
                             </form>
                         </div>
 
@@ -70,7 +71,7 @@
                             
                             <div class="mt-3">
                                 <button class="btn btn-success btn-lg" onclick="downloadQR()">
-                                    <i class="fas fa-download mr-1"></i> Tải xuống ảnh PNG
+                                    <i class="fas fa-download me-1"></i> Tải xuống ảnh PNG
                                 </button>
                             </div>
                         </div>
@@ -93,45 +94,38 @@
     var qrcode = null;
     var logoFile = null;
 
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof $ === 'undefined') return;
+    document.addEventListener('DOMContentLoaded', function () {
+        generateQR();
 
-        $(document).ready(function() {
-            generateQR();
+        ['qrText', 'qrBgColor', 'qrColor', 'qrSize'].forEach(function (id) {
+            var input = document.getElementById(id);
+            input.addEventListener('input', generateQR);
+            input.addEventListener('change', generateQR);
+        });
 
-            // Event Listeners
-            $('#qrText, #qrBgColor, #qrColor, #qrSize').on('input change', function() {
+        document.getElementById('qrLogo').addEventListener('change', function (event) {
+            var file = event.target.files[0];
+            if (!file) {
+                logoFile = null;
                 generateQR();
-            });
-
-            // File Input Change
-            $('#qrLogo').on('change', function(e) {
-                var file = e.target.files[0];
-                if (file) {
-                    $(this).next('.custom-file-label').html(file.name);
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        logoFile = e.target.result;
-                        generateQR();
-                    }
-                    reader.readAsDataURL(file);
-                } else {
-                    logoFile = null;
-                    $(this).next('.custom-file-label').html('Chọn ảnh logo...');
-                    generateQR();
-                }
-            });
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function (loaded) {
+                logoFile = loaded.target.result;
+                generateQR();
+            };
+            reader.readAsDataURL(file);
         });
     });
 
     function generateQR() {
-        // Clear previous
-        $('#qrcode').html('');
+        document.getElementById('qrcode').replaceChildren();
 
-        var text = $('#qrText').val() || 'https://webappbacninh.vn';
-        var size = parseInt($('#qrSize').val());
-        var colorDark = $('#qrColor').val();
-        var colorLight = $('#qrBgColor').val();
+        var text = document.getElementById('qrText').value || 'https://webappbacninh.vn';
+        var size = parseInt(document.getElementById('qrSize').value, 10);
+        var colorDark = document.getElementById('qrColor').value;
+        var colorLight = document.getElementById('qrBgColor').value;
 
         // Options
         var options = {

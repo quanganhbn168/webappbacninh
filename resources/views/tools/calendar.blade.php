@@ -1,4 +1,7 @@
-@extends('layouts.plain')
+@extends('layouts.basic')
+
+@section('tool', '1')
+@section('robots', 'index, follow')
 
 @section('title', 'Lịch Vạn Niên 2026 - Xem Lịch Âm Dương, Ngày Tốt Xấu - WebApp Bắc Ninh')
 @section('meta_description', 'Xem lịch vạn niên, lịch âm dương hôm nay, đổi ngày âm dương, xem ngày tốt xấu, giờ hoàng đạo chuẩn xác nhất.')
@@ -9,21 +12,21 @@
         <div class="col-lg-10">
             <!-- Header -->
             <div class="text-center mb-5">
-                <h1 class="display-4 font-weight-bold text-primary mb-2">Lịch Vạn Niên</h1>
+                <h1 class="display-4 fw-bold text-primary mb-2">Lịch Vạn Niên</h1>
                 <p class="lead text-muted">Xem lịch âm dương, ngày tốt xấu chuẩn xác.</p>
             </div>
 
             <!-- Today Card -->
             <div class="card shadow-lg border-0 mb-5 overflow-hidden">
-                <div class="row no-gutters">
+                <div class="row g-0">
                     <!-- Left: Solar Date -->
                     <div class="col-md-6 bg-primary text-white p-5 d-flex flex-column justify-content-center align-items-center position-relative">
                         <div class="position-absolute" style="top: 20px; left: 20px; opacity: 0.5; font-size: 5rem;">
                             <i class="fas fa-sun"></i>
                         </div>
                         <h5 class="text-uppercase letter-spacing-2 mb-3">Dương Lịch</h5>
-                        <h1 class="display-1 font-weight-bold mb-0" id="todayDay">--</h1>
-                        <h3 class="font-weight-light mb-0" id="todayMonthYear">--/----</h3>
+                        <h1 class="display-1 fw-bold mb-0" id="todayDay">--</h1>
+                        <h3 class="fw-light mb-0" id="todayMonthYear">--/----</h3>
                         <p class="mt-3 mb-0 text-white-50" id="todayWeekday">Thứ --</p>
                     </div>
                     
@@ -33,9 +36,9 @@
                             <i class="fas fa-moon"></i>
                         </div>
                         <h5 class="text-uppercase letter-spacing-2 mb-3 text-secondary">Âm Lịch</h5>
-                        <h1 class="display-1 font-weight-bold text-dark mb-0" id="lunarDay">--</h1>
-                        <h3 class="font-weight-light text-muted mb-0" id="lunarMonthYear">--/----</h3>
-                        <p class="mt-3 mb-0 text-danger font-weight-bold" id="canChi">-- --</p>
+                        <h1 class="display-1 fw-bold text-dark mb-0" id="lunarDay">--</h1>
+                        <h3 class="fw-light text-muted mb-0" id="lunarMonthYear">--/----</h3>
+                        <p class="mt-3 mb-0 text-danger fw-bold" id="canChi">-- --</p>
                     </div>
                 </div>
             </div>
@@ -43,7 +46,7 @@
             <!-- Calendar Grid -->
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
-                    <h3 class="h5 mb-0 font-weight-bold" id="calHeader">Tháng -- Năm ----</h3>
+                    <h3 class="h5 mb-0 fw-bold" id="calHeader">Tháng -- Năm ----</h3>
                     <div class="btn-group">
                         <button class="btn btn-outline-primary btn-sm" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
                         <button class="btn btn-outline-primary btn-sm" onclick="goToday()">Hôm nay</button>
@@ -52,7 +55,7 @@
                 </div>
                 <div class="card-body p-4">
                     <div class="calendar-grid">
-                        <div class="row text-center mb-3 font-weight-bold text-muted text-uppercase small">
+                        <div class="row text-center mb-3 fw-bold text-muted text-uppercase small">
                             <div class="col">CN</div>
                             <div class="col">T2</div>
                             <div class="col">T3</div>
@@ -67,7 +70,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top-0 pb-4 text-center">
-                    <small class="text-muted"><i class="fas fa-info-circle mr-1"></i> Số nhỏ bên dưới là ngày Âm lịch</small>
+                    <small class="text-muted"><i class="fas fa-info-circle me-1"></i> Số nhỏ bên dưới là ngày Âm lịch</small>
                 </div>
             </div>
             
@@ -114,130 +117,58 @@
     const can = ['Canh', 'Tân', 'Nhâm', 'Quý', 'Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ'];
     const chi = ['Thân', 'Dậu', 'Tuất', 'Hợi', 'Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi'];
 
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof $ === 'undefined') {
-            return;
-        }
-        $(document).ready(function() {
-            renderToday();
-            renderCalendar(currentMonth, currentYear);
-        });
-    });
+    const text = (id, value) => { document.getElementById(id).textContent = value; };
 
-    function getLunarDate(date) {
-        // Using LunarDate library
-        // Format: new LunarDate(yyyy, mm, dd)
-        // Library might need specific usage check, but let's assume standard object 
-        // Based on CDN: LunarDate.SolarToLunar(date)
-        
-        // Fallback to simple algorithm if library fails or use the library correctly
-        // Let's use standard JS Date to pass to library if it supports it
-        
-        try {
-            // Using the global LunarDate object from CDN
-            const solarDay = date.getDate();
-            const solarMonth = date.getMonth() + 1;
-            const solarYear = date.getFullYear();
-            
-            // Assume the library exposes LunarDate class
-            // Check library documentation or assume typical usage
-            // Most common: new LunarDate(date) or LunarDate.fromDate(date)
-            
-            // NOTE: Since I can't browse the exact docs right now, I'll use a local minimal implementation for reliability if needed,
-            // but for now let's try to assume it works or use a known one.
-            // Let's implement a simple wrapper or use a known algorithm if this is risky.
-            // Actually, for "Premium", I should use a solid script.
-            
-            // Let's assume the CDN works. If not, I can inject a small library code block.
-            // But for now, I'll mock the lunar data visualization or use a dummy display if library fails, 
-            // but let's try to infer from common lib patterns.
-            
-            // Let's use a reliable simple implementation inline to be 100% sure without external dependency risk for this demo.
-            // But user asked for "Calendar", so I'll try to use the library `LunarDate` if available.
-            
-            if (typeof LunarDate !== 'undefined') {
-               const lunar = new LunarDate(date);
-               return {
-                   day: lunar.day,
-                   month: lunar.month,
-                   year: lunar.year,
-                   can: lunar.can, // returns index or string?
-                   chi: lunar.chi 
-               };
-            }
-        } catch(e) {
-            console.error("Lunar Library Error", e);
-        }
+    // lunar-javascript: Solar.fromDate(date).getLunar() gives the lunar day, month and year.
+    function lunarOf(date) {
+        const lunar = Solar.fromDate(date).getLunar();
+        return { day: lunar.getDay(), month: Math.abs(lunar.getMonth()), leap: lunar.getMonth() < 0, year: lunar.getYear() };
+    }
 
-        // Dummy fallback if library not loaded
-        return { day: date.getDate() > 15 ? date.getDate()-15 : date.getDate()+15, month: date.getMonth()+1, year: date.getFullYear() };
+    function canChi(lunarYear) {
+        return `${can[lunarYear % 10]} ${chi[lunarYear % 12]}`;
     }
 
     function renderToday() {
-        // Solar
-        $('#todayDay').text(today.getDate());
-        $('#todayMonthYear').text(`Tháng ${today.getMonth() + 1}/${today.getFullYear()}`);
-        $('#todayWeekday').text(weekDays[today.getDay()]);
+        text('todayDay', today.getDate());
+        text('todayMonthYear', `Tháng ${today.getMonth() + 1}/${today.getFullYear()}`);
+        text('todayWeekday', weekDays[today.getDay()]);
 
-        // Lunar
-        // Note: Real implementation needs a robust library. 
-        // I will inject a simplified JS Lunar converter here or ensure the CDN is correct.
-        // For this specific turn, I'll trust the CDN `NghiaCaNgao` which usually exports `LunarDate`.
-        
-        // Simulating data updates for UI structure
-        $('#lunarDay').text('Loading...');
+        const lunar = lunarOf(today);
+        text('lunarDay', lunar.day);
+        text('lunarMonthYear', `Tháng ${lunar.month}${lunar.leap ? ' (nhuận)' : ''} Năm ${lunar.year}`);
+        text('canChi', `Năm ${canChi(lunar.year)}`);
     }
 
     function renderCalendar(month, year) {
-        $('#calHeader').text(`Tháng ${month + 1} Năm ${year}`);
-        
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const daysInMonth = lastDay.getDate();
-        const startDayIndex = firstDay.getDay(); // 0 (Sun) to 6 (Sat)
-        
-        const grid = $('#calendarDays');
-        grid.html('');
+        text('calHeader', `Tháng ${month + 1} Năm ${year}`);
 
-        // Empty cells before start
+        const startDayIndex = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const grid = document.getElementById('calendarDays');
+        const cells = [];
+
         for (let i = 0; i < startDayIndex; i++) {
-            grid.append('<div class="cal-day empty"></div>');
+            cells.push('<div class="cal-day empty"></div>');
         }
 
-        // Days
         for (let d = 1; d <= daysInMonth; d++) {
             const date = new Date(year, month, d);
-            const isToday = date.toDateString() === today.toDateString();
-            const isSunday = date.getDay() === 0;
-            
-            // Lunar placeholder - will be calculated
-            let lunarD = d; // dummy
-            
-            const cell = `
-                <div class="cal-day ${isToday ? 'today' : ''} ${isSunday ? 'sunday' : ''}">
-                    <div class="solar">${d}</div>
-                    <div class="lunar" id="lun-${d}">-</div>
-                </div>
-            `;
-            grid.append(cell);
-            
-            // Async lunar calculation if needed
-            setTimeout(() => {
-                if (typeof LunarDate !== 'undefined') {
-                    try {
-                        const l = new LunarDate(date);
-                        $(`#lun-${d}`).text(`${l.day}/${l.month}`);
-                        
-                        if(isToday) {
-                            $('#lunarDay').text(l.day);
-                            $('#lunarMonthYear').text(`Tháng ${l.month} Năm ${l.year}`);
-                            $('#canChi').text(`${l.canYear} ${l.chiYear}`); // Adjust based on lib props
-                        }
-                    } catch(e) {}
-                }
-            }, 0);
+            const lunar = lunarOf(date);
+            const classes = ['cal-day'];
+            if (date.toDateString() === today.toDateString()) classes.push('today');
+            if (date.getDay() === 0) classes.push('sunday');
+            const lunarLabel = lunar.day === 1 ? `${lunar.day}/${lunar.month}` : lunar.day;
+            cells.push(`<div class="${classes.join(' ')}"><div class="solar">${d}</div><div class="lunar">${lunarLabel}</div></div>`);
         }
+
+        grid.innerHTML = cells.join('');
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        renderToday();
+        renderCalendar(currentMonth, currentYear);
+    });
 
     function prevMonth() {
         currentMonth--;

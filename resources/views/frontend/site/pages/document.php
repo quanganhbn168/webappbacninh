@@ -5,14 +5,14 @@ $toc = $page->tableOfContents();
 <main>
   <section class="legal-hero">
     <div class="container">
-      <nav class="inner-breadcrumb" data-aos="fade-up">
+      <nav class="inner-breadcrumb">
         <a href="<?= e(route('home')) ?>">Trang chủ</a>
         <i class="fa-solid fa-angle-right"></i>
         <span><?= e($page->breadcrumbTitle()) ?></span>
       </nav>
 
       <div class="row align-items-center gy-4">
-        <div class="col-lg-8" data-aos="fade-up">
+        <div class="col-lg-8">
           <?php if (filled($page->eyebrow)): ?>
             <span class="section-kicker"><?= e($page->eyebrow) ?></span>
           <?php endif; ?>
@@ -28,7 +28,7 @@ $toc = $page->tableOfContents();
           </div>
         </div>
         <?php if (filled($page->icon)): ?>
-          <div class="col-lg-4" data-aos="fade-left">
+          <div class="col-lg-4">
             <div class="legal-hero__icon"><i class="<?= e($page->icon) ?>"></i></div>
           </div>
         <?php endif; ?>
@@ -55,7 +55,7 @@ $toc = $page->tableOfContents();
 
         <div class="<?= $toc !== [] ? 'col-lg-9' : 'col-lg-10 mx-auto' ?>">
           <?php if (filled($page->notice)): ?>
-            <div class="legal-notice" data-aos="fade-up">
+            <div class="legal-notice">
               <i class="fa-solid fa-circle-info"></i>
               <p><?= e($page->notice) ?></p>
             </div>
@@ -65,7 +65,7 @@ $toc = $page->tableOfContents();
             <?php foreach ($page->blocks() as $index => $block): ?>
               <?php $data = $block['data'] ?? []; ?>
               <?php if ($block['type'] === 'section'): ?>
-                <article id="section-<?= e((string) ($index + 1)) ?>" data-aos="fade-up">
+                <article id="section-<?= e((string) ($index + 1)) ?>">
                   <?php if (filled($data['heading'] ?? null)): ?>
                     <h2><?= e($data['heading']) ?></h2>
                   <?php endif; ?>
@@ -82,9 +82,9 @@ $toc = $page->tableOfContents();
                   <?php endif; ?>
                 </article>
               <?php elseif ($block['type'] === 'rich_text'): ?>
-                <article data-aos="fade-up"><?= str((string) ($data['body'] ?? ''))->sanitizeHtml() ?></article>
+                <article><?= str((string) ($data['body'] ?? ''))->sanitizeHtml() ?></article>
               <?php elseif ($block['type'] === 'callout' && filled($data['text'] ?? null)): ?>
-                <div class="legal-notice" data-aos="fade-up">
+                <div class="legal-notice">
                   <i class="fa-solid fa-circle-info"></i>
                   <p><?= e($data['text']) ?></p>
                 </div>
@@ -92,7 +92,7 @@ $toc = $page->tableOfContents();
             <?php endforeach; ?>
           </div>
 
-          <div class="legal-contact" data-aos="fade-up">
+          <div class="legal-contact">
             <div>
               <span class="section-kicker">THÔNG TIN LIÊN HỆ</span>
               <h2>Cần trao đổi thêm về nội dung này?</h2>

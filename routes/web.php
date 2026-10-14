@@ -28,6 +28,9 @@ Route::redirect('/landing/mau-may-loc-khong khi-mau-1', '/landing/mau-may-loc-kh
 Route::view('/landing/mau-may-loc-khong-khi-mau-2', 'landing.freshair.index')
     ->name('landing.freshair');
 
+Route::get('/profile/bac-be-bong', function () {
+    return view('profile.bac-be-bong');
+});
 Route::get('/', HomeController::class)->name('home');
 
 Route::controller(PageController::class)->group(function (): void {

@@ -3,22 +3,25 @@
     'submit' => 'Gửi yêu cầu tư vấn',
     'fields' => ['email', 'company', 'message'],
     'needOptions' => [],
+    'showNeed' => true,
     'id' => 'lead-'.\Illuminate\Support\Str::random(6),
 ])
+@php($hasCompany = in_array('company', $fields, true))
+@php($hasEmail = in_array('email', $fields, true))
 <form {{ $attributes->merge(['class' => 'lead-form']) }} action="{{ route('leads.store') }}" method="post" data-lead-form novalidate>
     @csrf
     <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
     <div class="row g-3">
         <div class="col-sm-6">
             <label class="form-label" for="{{ $id }}-name">Họ và tên <span class="text-danger">*</span></label>
-            <input class="form-control" id="{{ $id }}-name" name="name" autocomplete="name" minlength="2" maxlength="150" required placeholder="Họ và tên của anh/chị">
+            <input class="form-control" id="{{ $id }}-name" name="name" autocomplete="name" minlength="2" maxlength="150" required placeholder="Họ và tên">
         </div>
         <div class="col-sm-6">
             <label class="form-label" for="{{ $id }}-phone">Số điện thoại <span class="text-danger">*</span></label>
             <input class="form-control" id="{{ $id }}-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" pattern="[0-9 +().-]{8,22}" maxlength="30" required placeholder="Số điện thoại liên hệ">
         </div>
-        @if (in_array('email', $fields, true))
-            <div class="col-sm-6">
+        @if ($hasEmail)
+            <div class="{{ $hasCompany || $showNeed ? 'col-sm-6' : 'col-12' }}">
                 <label class="form-label" for="{{ $id }}-email">Email</label>
                 <input class="form-control" id="{{ $id }}-email" name="email" type="email" autocomplete="email" maxlength="190" placeholder="Không bắt buộc">
             </div>
@@ -29,7 +32,8 @@
                 <input class="form-control" id="{{ $id }}-company" name="company" autocomplete="organization" maxlength="190">
             </div>
         @endif
-        <div class="{{ (in_array('email', $fields, true) xor in_array('company', $fields, true)) ? 'col-sm-6' : 'col-12' }}">
+        @if ($showNeed)
+        <div class="{{ ($hasEmail xor $hasCompany) ? 'col-sm-6' : 'col-12' }}">
             <label class="form-label" for="{{ $id }}-need">{{ $needOptions ? 'Dịch vụ bạn quan tâm' : 'Nhu cầu' }}</label>
             @if ($needOptions)
                 @php($selected = $need ?: request()->query('service'))
@@ -43,6 +47,7 @@
                 <input class="form-control" id="{{ $id }}-need" name="need" maxlength="255" value="{{ $need }}" data-lead-need placeholder="Website, phần mềm…">
             @endif
         </div>
+        @endif
         @if (in_array('message', $fields, true))
             <div class="col-12">
                 <label class="form-label" for="{{ $id }}-message">Mô tả ngắn</label>

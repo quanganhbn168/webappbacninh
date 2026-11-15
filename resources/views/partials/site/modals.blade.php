@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body">
                 <p class="text-muted">Để lại nhu cầu, chúng tôi sẽ liên hệ và tư vấn giải pháp phù hợp.</p>
-                <x-lead-form id="consult" :fields="['email', 'message']" />
+                <x-lead-form id="consult" :fields="['email', 'message']" :show-need="false" />
             </div>
         </div>
     </div>

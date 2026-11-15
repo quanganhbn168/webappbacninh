@@ -25,6 +25,10 @@ run_step "Install frontend dependencies" pnpm install --frozen-lockfile
 run_step "Build versioned frontend assets" pnpm run build
 run_step "Run database migrations" php artisan migrate --force
 
+# A real public/storage directory (not a symlink) makes uploaded images return 403/404.
+if [ -e public/storage ] && [ ! -L public/storage ]; then
+    run_step "Move stale public/storage aside" mv public/storage "public/storage.old-$(date +%Y%m%d%H%M%S)"
+fi
 if [ ! -L public/storage ]; then
     run_step "Link public storage for uploaded images" php artisan storage:link
 fi

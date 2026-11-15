@@ -14,6 +14,7 @@ Hướng dẫn triển khai: [DEPLOYMENT.md](DEPLOYMENT.md). Giao diện đã du
 | Nội dung → Bảng giá | `PricingPlan` | `/bang-gia`, trang chủ, `/dich-vu`, `/thiet-ke-website`, `/hosting-domain-email`, `/dich-vu-van-hanh` |
 | Nội dung → Đánh giá khách hàng | `Testimonial` | trang chủ |
 | Nội dung → Công cụ miễn phí | `MiniApp` | `/cong-cu` và mục "Công cụ miễn phí khác" ở trang công cụ |
+| Nội dung → Landing page | `LandingPage` | `/landing/{slug}` — trang bán hàng một sản phẩm, chọn 1 trong 2 mẫu giao diện cố định (PureHome, FreshAir), chỉ sửa nội dung, giá, ảnh, SEO; có nhân bản |
 | Nội dung → Banner quảng cáo | `AdBanner` | các vị trí ở trang chủ, trang dịch vụ, cột phải bài viết |
 | Nội dung → Dịch vụ thiết kế web | `Service`, `ServiceCategory` | `/thiet-ke-website/{slug}` (có landing) hoặc `/{slug}` |
 | Nội dung → Dịch vụ vận hành | `OperationService` | `/dich-vu-van-hanh`, `/dich-vu-van-hanh/{slug}` |

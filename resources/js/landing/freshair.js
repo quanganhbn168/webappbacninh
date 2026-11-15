@@ -1,8 +1,12 @@
-const price = 3590000;
+import { initLandingLeads } from './lead';
+
+// Price, names and contacts come from the landing page record (see #landing-config in the view).
+const config = JSON.parse(document.getElementById('landing-config').textContent);
+const price = config.price;
 const money = (amount) => `${new Intl.NumberFormat('vi-VN').format(amount)}đ`;
 const quantityInput = document.getElementById('fa-quantity');
 const quantity = () => Math.max(1, Math.min(10, Math.trunc(Number(quantityInput.value)) || 1));
-const cartKey = 'freshair-s8-demo-cart-v1';
+const cartKey = config.cartKey;
 let cartQuantity = 0;
 try { cartQuantity = Math.max(0, Math.min(10, Math.trunc(Number(localStorage.getItem(cartKey))) || 0)); } catch { /* Private browsing can disable storage. */ }
 
@@ -21,8 +25,8 @@ function renderCart() {
     document.querySelector('[data-cart-total]').textContent = money(price * cartQuantity);
     document.querySelector('.fa-cart-empty').hidden = cartQuantity > 0;
     document.querySelector('.fa-cart-content').hidden = cartQuantity === 0;
-    const body = `Tôi muốn đặt mua máy lọc không khí FreshAir S8.\nSố lượng: ${cartQuantity}\nĐơn giá: ${money(price)}\nTạm tính: ${money(price * cartQuantity)}\nVui lòng tư vấn ưu đãi và thông tin giao hàng.`;
-    document.querySelector('[data-order-email]').href = `mailto:cskh@freshair.vn?subject=${encodeURIComponent('Đặt mua FreshAir S8')}&body=${encodeURIComponent(body)}`;
+    const body = `Tôi muốn đặt mua ${config.productFull}.\nSố lượng: ${cartQuantity}\nĐơn giá: ${money(price)}\nTạm tính: ${money(price * cartQuantity)}\nVui lòng tư vấn ưu đãi và thông tin giao hàng.`;
+    document.querySelector('[data-order-email]').href = `mailto:${config.email}?subject=${encodeURIComponent(`Đặt mua ${config.product}`)}&body=${encodeURIComponent(body)}`;
 }
 function saveCart() {
     try { localStorage.setItem(cartKey, String(cartQuantity)); } catch { /* The cart still works for the current visit. */ }
@@ -48,7 +52,7 @@ document.querySelectorAll('[data-add-cart]').forEach((button) => {
     button.addEventListener('click', () => {
         cartQuantity = Math.min(10, cartQuantity + quantity());
         saveCart();
-        notify(`Đã thêm FreshAir S8. Giỏ hàng có ${cartQuantity} sản phẩm.`);
+        notify(`Đã thêm ${config.product}. Giỏ hàng có ${cartQuantity} sản phẩm.`);
     });
 });
 document.querySelectorAll('[data-buy]').forEach((button) => {
@@ -168,7 +172,7 @@ document.querySelector('.fa-search').addEventListener('submit', (event) => {
     const query = normalizeText(document.getElementById('fa-search-input').value);
     if (!query) { notify('Nhập thông tin bạn muốn tìm: giá, màng lọc, bảo hành…'); return; }
     const section = [...document.querySelectorAll('[data-search-section]')].find((element) => normalizeText(`${element.dataset.searchSection} ${element.textContent}`).includes(query));
-    if (!section) { notify('Chưa tìm thấy nội dung. Bạn có thể xem Hỏi đáp hoặc gọi 1900 636 888.'); return; }
+    if (!section) { notify(`Chưa tìm thấy nội dung. Bạn có thể xem Hỏi đáp hoặc gọi ${config.hotline}.`); return; }
     section.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
     const heading = section.querySelector('h2');
     heading.setAttribute('tabindex', '-1');
@@ -181,29 +185,8 @@ const dialogReviews = document.querySelector('.fa-reviews-dialog-list');
 document.querySelectorAll('#fa-reviews-list > article').forEach((review) => dialogReviews.append(review.cloneNode(true)));
 document.querySelector('[data-open-reviews]').addEventListener('click', () => reviewsDialog.showModal());
 
-document.getElementById('fa-consult-form').addEventListener('submit', (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    if (!form.reportValidity()) return;
-    const data = new FormData(form);
-    const values = [['Họ và tên', String(data.get('name')).trim()], ['Điện thoại', String(data.get('phone')).trim()], ['Email', String(data.get('email')).trim() || 'Không cung cấp'], ['Nhu cầu', String(data.get('room'))]];
-    if (!values[0][1]) { form.elements.name.setCustomValidity('Vui lòng nhập họ và tên.'); form.elements.name.reportValidity(); return; }
-    const summary = document.querySelector('.fa-consult-summary');
-    summary.replaceChildren();
-    values.forEach(([label, value]) => {
-        const row = document.createElement('div');
-        const term = document.createElement('dt');
-        const description = document.createElement('dd');
-        term.textContent = label;
-        description.textContent = value;
-        row.append(term, description);
-        summary.append(row);
-    });
-    const body = `Tôi muốn được tư vấn máy lọc không khí FreshAir S8.\n\n${values.map(([label, value]) => `${label}: ${value}`).join('\n')}`;
-    document.querySelector('[data-consult-email]').href = `mailto:cskh@freshair.vn?subject=${encodeURIComponent('Yêu cầu tư vấn FreshAir S8')}&body=${encodeURIComponent(body)}`;
-    document.getElementById('fa-consult-dialog').showModal();
-});
-document.querySelector('#fa-consult-form [name="name"]').addEventListener('input', (event) => event.currentTarget.setCustomValidity(''));
+// The consult form posts to the shared lead endpoint; the status line sits under the form.
+initLandingLeads(() => notify(`Đã nhận yêu cầu. ${config.product} sẽ gọi lại cho bạn sớm nhất.`));
 
 const shareUrl = document.querySelector('link[rel="canonical"]').href;
 const shareDialog = document.getElementById('fa-share-dialog');
@@ -218,7 +201,7 @@ const nativeShare = document.querySelector('[data-native-share]');
 if (typeof navigator.share === 'function') {
     nativeShare.hidden = false;
     nativeShare.addEventListener('click', async () => {
-        try { await navigator.share({ title: 'FreshAir S8 — Không khí sạch, cuộc sống tốt đẹp hơn', text: 'Máy lọc không khí FreshAir S8, giá ưu đãi 3.590.000đ.', url: shareUrl }); }
+        try { await navigator.share({ title: config.shareTitle, text: config.shareText, url: shareUrl }); }
         catch (error) { if (error.name !== 'AbortError') notify('Bạn có thể sao chép đường dẫn để chia sẻ.'); }
     });
 }

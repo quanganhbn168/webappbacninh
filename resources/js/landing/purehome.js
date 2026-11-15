@@ -1,3 +1,7 @@
+import { initLandingLeads } from './lead';
+
+initLandingLeads();
+
 const menuButton = document.querySelector('.ph-menu');
 const navigation = document.querySelector('.ph-nav');
 
@@ -76,13 +80,8 @@ document.querySelectorAll('#ph-review-cards > article').forEach((review) => {
     allReviews.append(review.cloneNode(true));
 });
 
-const policies = {
-    warranty: ['Chính sách bảo hành', 'PureHome A3 được bảo hành chính hãng 24 tháng. Vui lòng giữ hóa đơn hoặc thông tin đặt hàng để được hỗ trợ kiểm tra sản phẩm và hướng dẫn bảo hành.'],
-    returns: ['Chính sách đổi trả', 'Hỗ trợ đổi trả trong 7 ngày. Vui lòng liên hệ PureHome trước khi gửi sản phẩm để được xác nhận điều kiện đổi trả và hướng dẫn đóng gói, vận chuyển.'],
-    shipping: ['Chính sách giao hàng', 'Miễn phí giao hàng toàn quốc cho PureHome A3. Thời gian giao hàng và địa chỉ nhận hàng được xác nhận trực tiếp khi đặt mua.'],
-    privacy: ['Chính sách bảo mật', 'Trang giới thiệu này không thu thập thông tin qua biểu mẫu hoặc xử lý thanh toán trực tuyến. Khi liên hệ qua điện thoại hoặc email, chỉ cung cấp thông tin cần thiết để được tư vấn và hỗ trợ đơn hàng.'],
-    terms: ['Điều khoản sử dụng', 'Nội dung trên trang giới thiệu sản phẩm PureHome A3. Vui lòng xác nhận thông số, ưu đãi, chính sách và thông tin giao hàng với nhân viên tư vấn trước khi đặt mua.'],
-};
+// Policy texts come from the landing page record (see #landing-config in the view).
+const policies = JSON.parse(document.getElementById('landing-config').textContent).policies;
 
 document.querySelectorAll('[data-policy]').forEach((button) => {
     button.addEventListener('click', () => {

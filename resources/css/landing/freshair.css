@@ -779,3 +779,8 @@ body:has(dialog[open]) { overflow: hidden; }
 .fa-review-card header small > .fa-icon, .fa-family-trust b > .fa-icon { width: 1em; height: 1em; }
 .fa-footer [data-share] > .fa-icon { width: 1rem; height: 1rem; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; } }
+
+/* Consult form: submissions become leads; the trap field is for bots only. */
+.fa-lead-trap { position: absolute; left: -9999px; }
+.fa-form-status { font-weight: 700; color: #0a6a3a; }
+.fa-form-status.is-error { color: #b3261e; }

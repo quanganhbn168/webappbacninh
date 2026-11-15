@@ -597,3 +597,13 @@ body:has(.ph-dialog[open]) { overflow: hidden; }
     html { scroll-behavior: auto; }
     *, *::before, *::after { transition: none !important; }
 }
+
+/* Call-back form in the order dialog: its submissions become leads. */
+.ph-lead { display: grid; gap: .6rem; margin: 1rem 0 .4rem; padding: 1rem; border-radius: .9rem; background: #eef8fc; }
+.ph-lead input:not([name="website"]) { width: 100%; min-height: 2.9rem; padding: 0 .9rem; border: 1px solid #c3dfeb; border-radius: .6rem; font: inherit; background: #fff; }
+.ph-lead input:focus-visible { outline: 3px solid #0877a2; outline-offset: 1px; }
+.ph-lead .ph-button { margin-top: .2rem; }
+.ph-lead-title { margin: 0; font-weight: 700; font-size: .95rem; }
+.ph-lead-status { margin: 0; font-size: .9rem; color: #0a6a3a; }
+.ph-lead-status.is-error { color: #b3261e; }
+.ph-lead-trap { position: absolute; left: -9999px; }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\CustomerAuthController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\Frontend\ArticleController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\LandingPageController;
 use App\Http\Controllers\Frontend\LeadController;
 use App\Http\Controllers\Frontend\OperationServiceController;
 use App\Http\Controllers\Frontend\PageController;
@@ -21,11 +22,7 @@ use App\Http\Controllers\ThumbnailController;
 use App\Http\Controllers\ToolController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/landing/mau-may-loc-khong-khi-mau-1', 'landing.purehome.index')
-    ->name('landing.purehome');
-Route::redirect('/landing/mau-may-loc-khong khi-mau-1', '/landing/mau-may-loc-khong-khi-mau-1', 301);
-Route::view('/landing/mau-may-loc-khong-khi-mau-2', 'landing.freshair.index')
-    ->name('landing.freshair');
+Route::get('/landing/{slug}', [LandingPageController::class, 'show'])->name('landing.show');
 
 Route::get('/profile/bac-be-bong', function () {
     return view('profile.bac-be-bong');

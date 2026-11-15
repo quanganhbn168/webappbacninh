@@ -1,7 +1,7 @@
 # FreshAir S8 — landing mẫu 2
 
-- Route cố định: `/landing/mau-may-loc-khong-khi-mau-2`, tên `landing.freshair`.
-- Nội dung, thông số, giá, ưu đãi, đánh giá và thông tin liên hệ là dữ liệu giao diện mẫu được viết cố định theo hai ảnh tham chiếu. Không truy vấn CMS, không tạo bảng hoặc bản ghi.
+- Đây là một **mẫu giao diện** của chức năng Landing page (xem README). Địa chỉ mặc định của bản mẫu: `/landing/mau-may-loc-khong-khi-mau-2`; trang mới tạo trong admin có địa chỉ riêng `/landing/<đường-dẫn>`.
+- Giao diện cố định. Nội dung, thông số, giá, ưu đãi, đánh giá, liên hệ và ảnh lấy từ bảng `landing_pages` (giá trị khởi đầu: `AppDomainLandingFreshairDefaults`), sửa trong admin → Nội dung → Landing page. Gửi form tư vấn tạo `Lead` và báo Telegram.
 - Bố cục kết hợp hero lớn và dải lợi ích, khối mua hàng ba cột, thư viện ảnh sáu góc, công nghệ/thông số/tư vấn, quà tặng, đánh giá, FAQ và thanh mua cố định.
 - View: `resources/views/landing/freshair/index.blade.php`. CSS và JS riêng: `resources/{css,js}/landing/freshair.*`.
 - Icon giao diện dùng SVG Font Awesome Free 6.7.2 (Solid) từ dependency có sẵn, materialize trong `resources/views/components/landing/freshair-icon.blade.php`. Giữ attribution CC BY 4.0, không đọc `node_modules` khi chạy và không tải thêm icon font/CDN. Giữ hình lá thương hiệu; icon thanh toán, thông số, tư vấn, chia sẻ, đánh giá và điều khiển có khung/căn giữa đồng nhất.

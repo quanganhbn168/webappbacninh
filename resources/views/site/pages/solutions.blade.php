@@ -42,7 +42,7 @@
                                 <h3 class="media-card__title">{{ $name }}</h3>
                                 <p>{{ $text }}</p>
                                 <div class="media-card__tags">@foreach ($tags as $tag)<span class="tag">{{ $tag }}</span>@endforeach</div>
-                                <button class="btn btn-link p-0 mt-auto align-self-start" type="button" data-consult="Giải pháp {{ $name }}">Khám phá giải pháp <x-icon name="arrow-right" /></button>
+                                <button class="btn btn-link p-0 mt-auto align-self-start" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Khám phá giải pháp <x-icon name="arrow-right" /></button>
                             </div>
                         </article>
                     </div>

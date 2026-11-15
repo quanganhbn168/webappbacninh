@@ -4,7 +4,7 @@
     <x-hero eyebrow="Dịch vụ WebApp Bắc Ninh" title="Giải pháp dịch vụ toàn diện" highlight="cho doanh nghiệp"
         lead="Chúng tôi cung cấp dịch vụ thiết kế website, phát triển phần mềm, CRM, booking, SEO, quảng cáo và vận hành số, giúp doanh nghiệp tối ưu quy trình, tăng trưởng bền vững với sự đồng hành lâu dài."
         :image="asset('frontend/images/hero-services.webp')" image-alt="Giải pháp website và phần mềm quản trị doanh nghiệp trên máy tính">
-        <button class="btn btn-primary" type="button" data-consult="Tư vấn dự án">Nhận tư vấn miễn phí <x-icon name="arrow-right" /></button>
+        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn miễn phí <x-icon name="arrow-right" /></button>
         <a class="btn btn-outline-dark" href="{{ route('about') }}">Xem hồ sơ năng lực</a>
         <x-slot:after>
             <x-trust-row :items="[
@@ -48,7 +48,7 @@
                         <li>Mở rộng linh hoạt theo quy mô doanh nghiệp</li>
                         <li>Hỗ trợ và bảo trì lâu dài</li>
                     </ul>
-                    <div class="btn-row"><button class="btn btn-outline-primary" type="button" data-consult="Phần mềm doanh nghiệp theo yêu cầu">Nhận tư vấn</button></div>
+                    <div class="btn-row"><button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn</button></div>
                 </x-feature-row>
                 <x-feature-row id="crm-booking" :image="asset('frontend/images/service-crm.webp')" title="CRM / Booking cho doanh nghiệp dịch vụ"
                     text="Giải pháp quản lý khách hàng và đặt lịch thông minh, giúp doanh nghiệp tự động hóa quy trình, tăng tỷ lệ chuyển đổi." note="Quản lý khách hàng – Dễ dàng hơn mỗi ngày!">

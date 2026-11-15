@@ -146,7 +146,7 @@
                     <p class="eyebrow">Câu hỏi thường gặp</p>
                     <h2>Những điểm nên làm rõ trước khi bắt đầu.</h2>
                     <p class="lead-text my-3">Báo giá chính xác chỉ có sau khi biết website cần làm gì, nội dung hiện có và mức độ tùy chỉnh mong muốn.</p>
-                    <button class="btn btn-outline-primary" type="button" data-consult="Câu hỏi về thiết kế website">Gửi câu hỏi khác</button>
+                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Gửi câu hỏi khác</button>
                 </div>
                 <div class="col-lg-7"><x-faq :items="\App\Http\Controllers\Frontend\ServiceController::WEBSITE_FAQS" :columns="1" /></div>
             </div>

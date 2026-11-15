@@ -35,7 +35,7 @@
                             <h2 class="h3">Cần áp dụng nội dung này cho website của doanh nghiệp?</h2>
                             <p class="mb-0 text-muted">WebApp Bắc Ninh có thể kiểm tra hiện trạng và đề xuất phạm vi thực tế.</p>
                         </div>
-                        <button class="btn btn-primary" type="button" data-consult="Tư vấn: {{ $article->title }}">Nhận tư vấn</button>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn</button>
                     </div>
                 </article>
                 <aside class="article-sidebar">

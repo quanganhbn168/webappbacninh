@@ -2,7 +2,6 @@
 // Each module looks for its own data-* hooks, so pages only need the markup.
 import { Alert, Collapse, Dropdown, Modal, Offcanvas, Tab, Toast } from 'bootstrap';
 import { initLeadForms } from './site/lead-forms';
-import { initConsult } from './site/consult';
 import { initCatalogs } from './site/catalog';
 import { initThemeLibrary } from './site/theme-library';
 import { initGalleries } from './site/gallery';
@@ -13,7 +12,6 @@ import './site/toolkit';
 window.bootstrap = { Alert, Collapse, Dropdown, Modal, Offcanvas, Tab, Toast };
 
 initLeadForms();
-initConsult();
 initCatalogs();
 initThemeLibrary();
 initGalleries();

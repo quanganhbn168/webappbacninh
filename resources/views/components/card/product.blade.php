@@ -26,12 +26,12 @@
                 @if ($product->detail_url)
                     <a class="btn btn-outline-primary btn-sm" href="{{ $product->detail_url }}">Xem chi tiết</a>
                 @else
-                    <button class="btn btn-outline-primary btn-sm" type="button" data-consult="{{ $product->name }}">Xem chi tiết</button>
+                    <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Xem chi tiết</button>
                 @endif
                 @if ($product->demo_url)
                     <a class="btn btn-primary btn-sm" href="{{ $product->demo_url }}" target="_blank" rel="noopener">Xem Demo</a>
                 @else
-                    <button class="btn btn-primary btn-sm" type="button" data-consult="Xem demo: {{ $product->name }}">Xem Demo</button>
+                    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Xem Demo</button>
                 @endif
             </div>
         </div>

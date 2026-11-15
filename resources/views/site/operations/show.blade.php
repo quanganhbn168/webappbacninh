@@ -90,7 +90,7 @@
                     <div class="col-lg-5">
                         <p class="eyebrow">Câu hỏi thường gặp</p>
                         <h2>Làm rõ trước khi triển khai</h2>
-                        <button class="btn btn-outline-primary mt-3" type="button" data-consult="Câu hỏi về {{ $service->title }}">Gửi câu hỏi khác</button>
+                        <button class="btn btn-outline-primary mt-3" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Gửi câu hỏi khác</button>
                     </div>
                     <div class="col-lg-7"><x-faq :items="$service->faqs" :columns="1" /></div>
                 </div>

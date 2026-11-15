@@ -5,7 +5,7 @@
         lead="Chúng tôi tập trung vào website dễ hiểu, dễ sử dụng và có thể tiếp tục phát triển bằng nội dung, SEO, tích hợp và phần mềm khi doanh nghiệp thực sự cần."
         :image="asset('frontend/assets/images/about-bacninh.webp')" image-alt="Đội ngũ WebApp Bắc Ninh">
         <a class="btn btn-primary" href="{{ route('projects.index') }}">Xem dự án <x-icon name="arrow-right" /></a>
-        <button class="btn btn-outline-dark" type="button" data-consult="Trao đổi nhu cầu">Trao đổi nhu cầu</button>
+        <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Trao đổi nhu cầu</button>
     </x-hero>
 
     <section class="section">

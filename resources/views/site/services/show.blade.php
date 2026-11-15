@@ -101,7 +101,7 @@
                         <p class="eyebrow">Câu hỏi thường gặp</p>
                         <h2>Làm rõ trước khi bắt đầu</h2>
                         <p class="lead-text my-3">Phần còn phụ thuộc dữ liệu hoặc hệ thống hiện tại sẽ được khảo sát trước khi báo giá chính thức.</p>
-                        <button class="btn btn-outline-primary" type="button" data-consult="Câu hỏi về {{ $service->title }}">Gửi câu hỏi khác</button>
+                        <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Gửi câu hỏi khác</button>
                     </div>
                     <div class="col-lg-7"><x-faq :items="$service->faqs" :columns="1" /></div>
                 </div>

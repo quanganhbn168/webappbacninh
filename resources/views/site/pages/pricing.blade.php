@@ -4,7 +4,7 @@
     <x-hero title="Bảng giá dịch vụ" highlight="Minh bạch – Linh hoạt – Phù hợp"
         lead="Lựa chọn giải pháp phù hợp với mục tiêu và ngân sách của doanh nghiệp. Chúng tôi luôn tư vấn chi tiết, tối ưu chi phí và đồng hành lâu dài."
         :image="asset('frontend/images/prices-hero.webp')" image-alt="Bảng điều khiển doanh thu trên laptop">
-        <button class="btn btn-primary" type="button" data-consult="Nhận báo giá theo yêu cầu">Nhận báo giá theo yêu cầu <x-icon name="arrow-right" /></button>
+        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận báo giá theo yêu cầu <x-icon name="arrow-right" /></button>
         <x-slot:after>
             <x-trust-row :items="[
                 ['icon' => 'database', 'title' => 'Chi phí rõ ràng', 'text' => 'Công khai, minh bạch'],
@@ -97,7 +97,7 @@
                                 <h3>{{ $addon->name }}</h3>
                                 <strong>{{ $addon->priceText() }}</strong>
                                 @if ($addon->summary)<p>{{ $addon->summary }}</p>@endif
-                                <button class="btn btn-link" type="button" data-consult="{{ $addon->name }}">{{ $addon->cta_label ?: 'Nhận tư vấn' }} <x-icon name="arrow-right" /></button>
+                                <button class="btn btn-link" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">{{ $addon->cta_label ?: 'Nhận tư vấn' }} <x-icon name="arrow-right" /></button>
                             </article>
                         </div>
                     @endforeach

@@ -7,7 +7,7 @@
                 <p class="lead-text">{{ $text ?? 'Chúng tôi là đối tác tin cậy cho các Agency, Studio, Media… cung cấp giải pháp website và phần mềm dưới thương hiệu của bạn.' }}</p>
                 <div class="btn-row">
                     <a class="btn btn-primary" href="{{ route('agency') }}">Trao đổi hợp tác <x-icon name="arrow-right" /></a>
-                    <button class="btn btn-outline-dark" type="button" data-consult="Nhận hồ sơ năng lực">Nhận hồ sơ năng lực</button>
+                    <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận hồ sơ năng lực</button>
                 </div>
             </div>
             <img class="split-band__image" src="{{ asset('frontend/images/agency-handshake.webp') }}" alt="Hai đối tác trao đổi hợp tác" width="640" height="420" loading="lazy">

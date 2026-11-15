@@ -11,7 +11,7 @@
                 @endif
             </div>
             <div class="btn-row">
-                <button class="btn btn-primary" type="button" data-consult="{{ $need }}">{{ $button }} <x-icon name="arrow-right" /></button>
+                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">{{ $button }} <x-icon name="arrow-right" /></button>
                 @if ($secondaryHref)
                     <a class="btn btn-outline-light" href="{{ $secondaryHref }}">{{ $secondaryLabel }}</a>
                 @endif

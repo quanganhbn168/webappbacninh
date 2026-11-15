@@ -17,5 +17,5 @@
             @endforeach
         </ul>
     @endif
-    <button type="button" @class(['btn', 'mt-auto', 'btn-primary' => $plan->is_featured, 'btn-outline-primary' => ! $plan->is_featured]) data-consult="{{ $plan->name }}">{{ $plan->cta_label ?: 'Nhận tư vấn' }}</button>
+    <button type="button" @class(['btn', 'mt-auto', 'btn-primary' => $plan->is_featured, 'btn-outline-primary' => ! $plan->is_featured]) data-bs-toggle="modal" data-bs-target="#consult-modal">{{ $plan->cta_label ?: 'Nhận tư vấn' }}</button>
 </article>

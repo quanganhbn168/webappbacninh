@@ -66,7 +66,7 @@
                 ] as [$icon, $title, $text, $cta, $need])
                     <div class="col">
                         <x-feature-card :icon="$icon" :title="$title" :text="$text">
-                            <button class="btn btn-link p-0 mt-3" type="button" data-consult="{{ $need }}">{{ $cta }} <x-icon name="arrow-right" /></button>
+                            <button class="btn btn-link p-0 mt-3" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">{{ $cta }} <x-icon name="arrow-right" /></button>
                         </x-feature-card>
                     </div>
                 @endforeach

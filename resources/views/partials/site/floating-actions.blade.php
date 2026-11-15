@@ -5,7 +5,7 @@
     @foreach ($socialChannels['floating'] as $channel)
         <a class="floating-action floating-action--{{ $channel['key'] }}" href="{{ $channel['url'] }}" target="_blank" rel="noopener noreferrer" aria-label="{{ $channel['label'] }}" title="{{ $channel['label'] }}"><x-icon :name="$channel['icon']" /></a>
     @endforeach
-    <button type="button" class="floating-action" data-consult aria-label="Yêu cầu tư vấn" title="Yêu cầu tư vấn"><x-icon name="message-circle-more" /></button>
+    <button type="button" class="floating-action" data-bs-toggle="modal" data-bs-target="#consult-modal" aria-label="Yêu cầu tư vấn" title="Yêu cầu tư vấn"><x-icon name="message-circle-more" /></button>
     @if ($socialChannels['wechat'])
         <div class="dropup">
             <button type="button" class="floating-action floating-action--wechat" data-bs-toggle="dropdown" aria-expanded="false" aria-label="WeChat" title="WeChat"><x-icon name="qr-code" /></button>

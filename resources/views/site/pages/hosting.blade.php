@@ -5,8 +5,8 @@
         lead="WebApp Bắc Ninh cung cấp giải pháp Hosting, Domain, Email doanh nghiệp và cấu hình kỹ thuật đồng bộ, giúp website của bạn hoạt động ổn định, nhanh chóng và an toàn."
         :image="asset('frontend/images/hero-hosting.webp')" image-alt="Hệ thống máy chủ hosting, website trên laptop và điện thoại" note="Hạ tầng vững chắc cho doanh nghiệp phát triển"
         :breadcrumbs="[['name' => 'Trang chủ', 'url' => route('home')], ['name' => 'Dịch vụ', 'url' => route('services.overview')], ['name' => 'Hosting - Domain - Email', 'url' => route('hosting')]]">
-        <button class="btn btn-primary" type="button" data-consult="Hosting / Domain / Email">Nhận tư vấn hạ tầng <x-icon name="arrow-right" /></button>
-        <button class="btn btn-outline-dark" type="button" data-domain>Kiểm tra tên miền</button>
+        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn hạ tầng <x-icon name="arrow-right" /></button>
+        <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#domain-modal">Kiểm tra tên miền</button>
         <x-slot:after>
             <x-trust-row :items="[
                 ['icon' => 'gauge', 'title' => 'Tốc độ ổn định'],
@@ -24,7 +24,7 @@
                     <p class="eyebrow">Bạn đang gặp những vấn đề gì?</p>
                     <h2>Hạ tầng không ổn định làm gián đoạn công việc</h2>
                     <p class="lead-text my-3">Website chậm, thường xuyên lỗi, email không hoạt động hay domain hết hạn… đều ảnh hưởng đến hình ảnh và hiệu suất kinh doanh của doanh nghiệp.</p>
-                    <button class="btn btn-primary" type="button" data-consult="Tư vấn khắc phục sự cố hạ tầng">Liên hệ tư vấn</button>
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Liên hệ tư vấn</button>
                 </div>
                 <div class="col-lg-7">
                     <div class="row g-3 row-cols-1 row-cols-sm-2">
@@ -84,7 +84,7 @@
                     <div class="row g-3 row-cols-1 row-cols-sm-2">
                         @foreach ([['globe', 'Tên miền', 'Theo giá thị trường'], ['mail', 'Email doanh nghiệp', 'Từ 50.000đ/tháng'], ['lock', 'SSL cao cấp', 'Từ 300.000đ/năm'], ['hard-drive', 'Sao lưu dữ liệu', 'Từ 300.000đ/tháng']] as [$icon, $title, $price])
                             <div class="col">
-                                <button class="feature-card feature-card--link feature-card--row w-100 text-start" type="button" data-consult="{{ $title }}">
+                                <button class="feature-card feature-card--link feature-card--row w-100 text-start" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">
                                     <span class="icon-tile"><x-icon :name="$icon" /></span>
                                     <span><strong class="d-block text-dark">{{ $title }}</strong><span class="text-gold-dark fw-semibold">{{ $price }}</span></span>
                                 </button>

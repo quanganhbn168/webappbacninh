@@ -23,7 +23,7 @@
                     @foreach ($sections as $section)
                         <a href="#muc-{{ $loop->iteration }}">{{ $section['heading'] }}</a>
                     @endforeach
-                    <button class="btn btn-outline-primary btn-sm w-100 mt-2" type="button" data-consult="Hỏi về {{ $title }}">Cần giải thích thêm</button>
+                    <button class="btn btn-outline-primary btn-sm w-100 mt-2" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Cần giải thích thêm</button>
                 </nav>
             </aside>
             <div class="col-lg-9">

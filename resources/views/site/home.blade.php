@@ -5,7 +5,7 @@
         lead="Chúng tôi thiết kế website, landing page, phát triển phần mềm, CRM, booking và đồng hành vận hành số cùng doanh nghiệp với giải pháp tối ưu, hiện đại và hỗ trợ lâu dài."
         :image="asset('frontend/images/hero-home.webp')" image-alt="Giải pháp website và phần mềm quản trị doanh nghiệp trên máy tính">
         <a class="btn btn-primary" href="{{ route('products') }}">Xem Demo <x-icon name="arrow-right" /></a>
-        <button class="btn btn-outline-dark" type="button" data-consult="Tư vấn dự án">Nhận tư vấn miễn phí</button>
+        <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn miễn phí</button>
         <x-slot:after>
             <x-trust-row :items="[
                 ['icon' => 'shield-check', 'title' => 'Uy tín - Chuyên nghiệp'],

@@ -37,14 +37,14 @@
                     </ul>
                     <div class="site-nav__actions d-lg-none">
                         <a class="btn btn-outline-dark" href="{{ route('products') }}">Xem Demo</a>
-                        <button class="btn btn-primary" type="button" data-consult="Tư vấn dự án">Nhận tư vấn</button>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn</button>
                     </div>
                 </div>
             </div>
 
             <div class="site-header__actions">
                 <a class="btn btn-outline-dark d-none d-sm-inline-flex" href="{{ route('products') }}">Xem Demo</a>
-                <button class="btn btn-primary d-none d-sm-inline-flex" type="button" data-consult="Tư vấn dự án">Nhận tư vấn</button>
+                <button class="btn btn-primary d-none d-sm-inline-flex" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn</button>
                 <button class="btn btn-icon d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#site-nav" aria-controls="site-nav" aria-label="Mở menu">
                     <x-icon name="menu" />
                 </button>

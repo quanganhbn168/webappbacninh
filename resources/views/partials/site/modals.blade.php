@@ -1,15 +1,11 @@
 <div class="modal fade" id="consult-modal" tabindex="-1" aria-labelledby="consult-modal-title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header border-0 pb-0">
-                <div>
-                    <p class="eyebrow mb-1">{{ site_config('name') }}</p>
-                    <h2 class="modal-title h3" id="consult-modal-title">Cùng trao đổi về dự án của bạn</h2>
-                </div>
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="consult-modal-title">Đăng ký tư vấn</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
             </div>
             <div class="modal-body">
-                <p class="text-muted">Để lại nhu cầu, chúng tôi sẽ liên hệ và tư vấn giải pháp phù hợp.</p>
                 <x-lead-form id="consult" :fields="['email', 'message']" :show-need="false" />
             </div>
         </div>
@@ -19,11 +15,8 @@
 <div class="modal fade" id="domain-modal" tabindex="-1" aria-labelledby="domain-modal-title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header border-0 pb-0">
-                <div>
-                    <p class="eyebrow mb-1">Tên miền doanh nghiệp</p>
-                    <h2 class="modal-title h3" id="domain-modal-title">Kiểm tra tên miền</h2>
-                </div>
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="domain-modal-title">Kiểm tra tên miền</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
             </div>
             <div class="modal-body">

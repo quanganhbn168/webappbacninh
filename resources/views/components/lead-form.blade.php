@@ -18,18 +18,18 @@
             <input class="form-control" id="{{ $id }}-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" pattern="[0-9 +().-]{8,22}" maxlength="30" required placeholder="Số điện thoại liên hệ">
         </div>
         @if (in_array('email', $fields, true))
-            <div class="{{ in_array('company', $fields, true) ? 'col-sm-6' : 'col-12' }}">
+            <div class="col-sm-6">
                 <label class="form-label" for="{{ $id }}-email">Email</label>
                 <input class="form-control" id="{{ $id }}-email" name="email" type="email" autocomplete="email" maxlength="190" placeholder="Không bắt buộc">
             </div>
         @endif
         @if (in_array('company', $fields, true))
-            <div class="{{ in_array('email', $fields, true) ? 'col-sm-6' : 'col-12' }}">
+            <div class="col-sm-6">
                 <label class="form-label" for="{{ $id }}-company">Doanh nghiệp / lĩnh vực</label>
                 <input class="form-control" id="{{ $id }}-company" name="company" autocomplete="organization" maxlength="190">
             </div>
         @endif
-        <div class="col-12">
+        <div class="{{ (in_array('email', $fields, true) xor in_array('company', $fields, true)) ? 'col-sm-6' : 'col-12' }}">
             <label class="form-label" for="{{ $id }}-need">{{ $needOptions ? 'Dịch vụ bạn quan tâm' : 'Nhu cầu' }}</label>
             @if ($needOptions)
                 @php($selected = $need ?: request()->query('service'))
@@ -40,7 +40,7 @@
                     @endforeach
                 </select>
             @else
-                <input class="form-control" id="{{ $id }}-need" name="need" maxlength="255" value="{{ $need }}" data-lead-need placeholder="Website, phần mềm, vận hành…">
+                <input class="form-control" id="{{ $id }}-need" name="need" maxlength="255" value="{{ $need }}" data-lead-need placeholder="Website, phần mềm…">
             @endif
         </div>
         @if (in_array('message', $fields, true))

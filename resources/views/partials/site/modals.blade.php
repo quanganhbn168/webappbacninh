@@ -1,5 +1,5 @@
 <div class="modal fade" id="consult-modal" tabindex="-1" aria-labelledby="consult-modal-title" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header border-0 pb-0">
                 <div>

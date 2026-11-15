@@ -66,3 +66,13 @@ php artisan migrate --seed
 pnpm build          # hoặc pnpm dev
 php artisan test
 ```
+
+Test chạy trên database riêng `webappbacninh_test` (khai báo trong `phpunit.xml`), không đụng database của site. Tạo một lần:
+
+```bash
+# tạo database webappbacninh_test trong MySQL, rồi:
+DB_DATABASE=webappbacninh_test php artisan migrate:fresh --seed
+DB_DATABASE=webappbacninh_test php artisan shield:generate --all --panel=admin --option=permissions --no-interaction
+```
+
+Các test dùng `DatabaseTransactions` (tự hoàn tác) trên dữ liệu mẫu này, nên không dùng `RefreshDatabase`.

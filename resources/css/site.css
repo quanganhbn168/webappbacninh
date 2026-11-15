@@ -12,7 +12,7 @@
  *   tools.css    free tool pages
  */
 @import '@fontsource-variable/roboto';
-@import '@fontsource-variable/caveat';
+@import '@fontsource-variable/dancing-script';
 @import './site/base.css';
 @import './site/chrome.css';
 @import './site/hero.css';

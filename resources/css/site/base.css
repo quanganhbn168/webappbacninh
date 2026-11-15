@@ -21,7 +21,7 @@
     --shadow-lg: 0 1rem 3rem #321e0a24;
     --section-space: clamp(3rem, 6vw, 4.5rem);
     --header-height: 4.25rem;
-    --font-hand: 'Caveat Variable', cursive;
+    --font-hand: 'Dancing Script Variable', cursive;
 }
 
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-height) + 1rem); }

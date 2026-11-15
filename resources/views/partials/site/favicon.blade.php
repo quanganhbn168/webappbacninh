@@ -3,6 +3,7 @@
 <meta name="theme-color" content="{{ $faviconAssets->themeColor }}">
 <meta name="msapplication-TileColor" content="{{ $faviconAssets->themeColor }}">
 <meta name="apple-mobile-web-app-title" content="{{ $faviconAssets->shortName }}">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 @if($faviconAssets->generated)

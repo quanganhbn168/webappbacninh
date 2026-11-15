@@ -18,11 +18,16 @@ class StoreLeadRequest extends FormRequest
         return true;
     }
 
+    public function messages(): array
+    {
+        return ['phone.regex' => 'Số điện thoại chưa đúng, anh/chị kiểm tra lại giúp em.'];
+    }
+
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:150'],
-            'phone' => ['required', 'string', 'max:30'],
+            'phone' => ['required', 'string', 'max:30', 'regex:/^\+?[0-9 .()\-]{8,22}$/'],
             'email' => ['nullable', 'email', 'not_regex:/[\r\n]/', 'max:190'],
             'company' => ['nullable', 'string', 'max:190'],
             'business' => ['nullable', 'string', 'max:190'],

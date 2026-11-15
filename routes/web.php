@@ -19,7 +19,6 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\TenantRegisterController;
 use App\Http\Controllers\ThumbnailController;
 use App\Http\Controllers\ToolController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/landing/mau-may-loc-khong-khi-mau-1', 'landing.purehome.index')
@@ -70,7 +69,7 @@ Route::get('/kien-thuc/{slug}', [ArticleController::class, 'detail'])->name('art
 
 Route::get('/dich-vu-van-hanh', [OperationServiceController::class, 'index'])->name('operations.index');
 Route::get('/dich-vu-van-hanh/{slug}', [OperationServiceController::class, 'detail'])->name('operations.show');
-Route::post('/lien-he', [LeadController::class, 'store'])->name('leads.store');
+Route::post('/lien-he', [LeadController::class, 'store'])->middleware('throttle:6,1')->name('leads.store');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 Route::get('/site.webmanifest', SiteManifestController::class)->name('site.manifest');
@@ -126,40 +125,3 @@ Route::post('/subscribe', fn () => back()->with('success', 'Cảm ơn bạn đã
 // Each call creates and migrates a database, so only signed-in admins may use it
 // until public sign-up for the SaaS plan is designed.
 Route::post('/create-tenant', [TenantRegisterController::class, 'store'])->middleware(['auth:admin', 'throttle:5,1']);
-
-$legacyRedirects = [
-    'index.php' => 'home',
-    'gioi-thieu.php' => 'about',
-    'lien-he.php' => 'contact',
-    'bang-gia.php' => 'pricing',
-    'hop-tac-agency.php' => 'agency',
-    'thiet-ke-website.php' => 'services.index',
-    'kho-giao-dien.php' => 'themes.index',
-    'du-an.php' => 'projects.index',
-    'kien-thuc.php' => 'articles.index',
-    'dich-vu-van-hanh.php' => 'operations.index',
-];
-foreach ($legacyRedirects as $uri => $routeName) {
-    Route::get('/'.$uri, fn () => redirect()->route($routeName, status: 301));
-}
-
-// Addresses of the old static PHP site.
-foreach (['website-doanh-nghiep', 'website-ban-hang', 'landing-page', 'thiet-ke-lai-website'] as $slug) {
-    Route::get('/'.$slug.'.php', fn () => redirect()->route('services.show', $slug, 301));
-}
-foreach (['hosting-bao-tri-website', 'quan-tri-dang-bai-website', 'seo-website', 'noi-dung-facebook', 'nang-cap-tich-hop-website', 'do-luong-bao-cao-website'] as $slug) {
-    Route::get('/'.$slug.'.php', fn () => redirect()->route('operations.show', $slug, 301));
-}
-$legalRoutes = [
-    'chinh-sach-bao-mat' => 'legal.privacy',
-    'dieu-khoan-su-dung' => 'legal.terms',
-    'chinh-sach-bao-hanh' => 'legal.warranty',
-    'quy-trinh-thanh-toan' => 'legal.payment',
-];
-foreach ($legalRoutes as $slug => $routeName) {
-    Route::get('/'.$slug.'.php', fn () => redirect()->route($routeName, status: 301));
-}
-
-Route::get('/chi-tiet-giao-dien.php', fn (Request $request) => redirect()->route('themes.show', $request->string('slug'), 301));
-Route::get('/chi-tiet-du-an.php', fn (Request $request) => redirect()->route('projects.show', $request->string('slug'), 301));
-Route::get('/chi-tiet-bai-viet.php', fn (Request $request) => redirect()->route('articles.show', $request->string('slug'), 301));

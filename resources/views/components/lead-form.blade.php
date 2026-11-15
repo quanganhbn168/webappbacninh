@@ -7,6 +7,7 @@
 ])
 <form {{ $attributes->merge(['class' => 'lead-form']) }} action="{{ route('leads.store') }}" method="post" data-lead-form novalidate>
     @csrf
+    <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
     <div class="row g-3">
         <div class="col-sm-6">
             <label class="form-label" for="{{ $id }}-name">Họ và tên <span class="text-danger">*</span></label>

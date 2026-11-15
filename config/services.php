@@ -24,6 +24,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
     'resend' => ['key' => env('RESEND_KEY')],
+    // New contact requests are pushed to this Telegram chat when both values are set.
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'chat_id' => env('TELEGRAM_CHAT_ID'),
+    ],
     'slack' => ['notifications' => [
         'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
         'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),

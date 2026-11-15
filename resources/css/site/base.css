@@ -91,7 +91,7 @@ h3, .h3 { font-size: 1.14rem; font-weight: 700; letter-spacing: -.012em; line-he
 .section--dark :is(h1, h2, h3, h4, .h2, .h3) { color: #fff; }
 .section--dark .text-muted, .section--dark .lead-text { color: #cdb9aa !important; }
 .section--dark .eyebrow { color: var(--gold); }
-.section + .section:not([class*="section--"]) { padding-top: 0; }
+.section:not([class*="section--"]) + .section:not([class*="section--"]) { padding-top: 0; }
 
 .section-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem 2rem; margin-bottom: 2rem; }
 .section-head > div { max-width: 46rem; }

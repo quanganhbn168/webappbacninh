@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Tools\Actions\FetchRemoteMedia;
+use App\Domain\Tools\Actions\ZipThumbnails;
+use App\Domain\Tools\Exceptions\RemoteMediaRefused;
 use App\Http\Controllers\Frontend\FrontendController;
-use App\Models\ThumbnailLog;
 use App\Services\TiktokService;
 use App\Services\YoutubeService;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use ZipArchive;
 
 class ThumbnailController extends FrontendController
 {
@@ -55,132 +53,80 @@ class ThumbnailController extends FrontendController
     }
 
     /**
-     * Tải ảnh, lưu vào server/database và tùy chọn gửi về cho người dùng.
+     * Tải một ảnh cover về máy (không lưu trên server).
      */
-    /**
-     * Tải ảnh trực tiếp về máy (Không lưu server).
-     */
-    public function download(Request $request)
+    public function download(Request $request, FetchRemoteMedia $fetch)
     {
-        $validator = Validator::make($request->all(), [
-            'image_url'    => 'required|url',
-            'filename'     => 'nullable|string',
-            'provider'     => 'required|string',
+        $data = $request->validate([
+            'image_url' => 'required|url|max:2048',
+            'filename' => 'nullable|string|max:255',
+            'provider' => 'required|string|max:20',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->with('error', 'Dữ liệu không hợp lệ.');
-        }
-
         try {
-            $imageUrl = $request->input('image_url');
-            $fileNameFromInput = $request->input('filename');
-            $finalFileName = empty(trim($fileNameFromInput))
-                ? $request->input('provider') . '-' . time() . '.jpg'
-                : Str::slug(Str::limit($fileNameFromInput, 150, '')) . '.jpg';
-
-            // Lấy nội dung ảnh
-            $imageContents = Http::get($imageUrl)->body();
-
-            // Trả về file stream tải xuống ngay lập tức
-            return response($imageContents)
-                ->header('Content-Type', 'image/jpeg')
-                ->header('Content-Disposition', 'attachment; filename="' . $finalFileName . '"');
-
-        } catch (Exception $e) {
-            Log::error('Lỗi download ảnh: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Không thể tải ảnh. Vui lòng thử lại.');
+            $image = $fetch->read($data['image_url']);
+        } catch (RemoteMediaRefused $exception) {
+            return back()->with('error', $exception->getMessage());
         }
+
+        return response($image)
+            ->header('Content-Type', 'image/jpeg')
+            ->header('Content-Disposition', 'attachment; filename="'.$this->fileName($data['filename'] ?? null, $data['provider'], 'jpg').'"');
     }
 
-    public function downloadBulk(Request $request)
+    public function downloadBulk(Request $request, ZipThumbnails $zipThumbnails)
     {
-        $validated = $request->validate([
-            'items'                 => 'required|array|min:1',
-            'items.*.image_url'     => 'required|url',
-            'items.*.filename'      => 'nullable|string',
-            'items.*.provider'      => 'required|string',
+        $data = $request->validate([
+            'items' => 'required|array|min:1|max:'.ZipThumbnails::MAX_ITEMS,
+            'items.*.image_url' => 'required|url|max:2048',
+            'items.*.filename' => 'nullable|string|max:255',
+            'items.*.provider' => 'required|string|max:20',
         ]);
 
-        $items = $validated['items'];
-
         try {
-            $zipName = 'thumbnails-' . date('Ymd-His') . '.zip';
-            $zipPath = tempnam(sys_get_temp_dir(), 'zip'); // Tạo file temp
-
-            $zip = new ZipArchive();
-            if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-                return redirect()->back()->with('error', 'Không thể tạo file ZIP.');
-            }
-
-            foreach ($items as $i => $it) {
-                try {
-                    $fileNameFromInput = trim($it['filename'] ?? '');
-                    $safeName = Str::slug(Str::limit($fileNameFromInput ?: ($it['provider'] . '-' . time() . '-' . $i), 150, ''), '-');
-                    $finalFileName = ($safeName ?: 'thumbnail-' . $i) . '.jpg';
-
-                    // Tải content ảnh về RAM
-                    $imageContents = Http::get($it['image_url'])->body();
-                    
-                    // Thêm trực tiếp vào ZIP
-                    $zip->addFromString($finalFileName, $imageContents);
-                } catch (\Throwable $e) {
-                    Log::error('Lỗi thêm ảnh vào ZIP: ' . $e->getMessage());
-                    // Tiếp tục với ảnh tiếp theo nếu lỗi
-                }
-            }
-            $zip->close();
-
-            // Trả về file ZIP và xóa sau khi gửi
-            return response()->download($zipPath, $zipName)->deleteFileAfterSend(true);
-
-        } catch (Exception $e) {
-             Log::error('Lỗi bulk download: ' . $e->getMessage());
-             return redirect()->back()->with('error', 'Có lỗi xảy ra khi tạo file nén.');
+            $path = $zipThumbnails->execute($data['items']);
+        } catch (RemoteMediaRefused $exception) {
+            return back()->with('error', $exception->getMessage());
         }
+
+        if ($path === null) {
+            return back()->with('error', 'Không tải được ảnh nào trong danh sách.');
+        }
+
+        return response()->download($path, 'thumbnails-'.date('Ymd-His').'.zip')->deleteFileAfterSend();
     }
 
     /**
-     * Tải Video về máy
+     * Tải video TikTok về máy, chuyển tiếp từng phần (không giữ cả file trong RAM).
      */
-    public function downloadVideo(Request $request)
+    public function downloadVideo(Request $request, FetchRemoteMedia $fetch)
     {
-        $validator = Validator::make($request->all(), [
-            'video_url'    => 'required|url',
-            'filename'     => 'nullable|string',
+        $data = $request->validate([
+            'video_url' => 'required|url|max:2048',
+            'filename' => 'nullable|string|max:255',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->with('error', 'Link video không hợp lệ.');
-        }
-
         try {
-            $videoUrl = $request->input('video_url');
-            $fileNameFromInput = $request->input('filename');
-            $finalFileName = empty(trim($fileNameFromInput))
-                ? 'video-' . time() . '.mp4'
-                : Str::slug(Str::limit($fileNameFromInput, 150, '')) . '.mp4';
-
-            // Cách 1: Stream thẳng từ nguồn (Tiết kiệm RAM server)
-            // Tuy nhiên, Laravel Http Client không hỗ trợ stream response trực tiếp dễ dàng như readfile
-            // Nên ta dùng fopen của PHP để pipe stream
-            
-            return response()->streamDownload(function () use ($videoUrl) {
-                if ($stream = fopen($videoUrl, 'r')) {
-                    while (!feof($stream)) {
-                        echo fread($stream, 1024 * 8); // Đọc từng chunk 8KB
-                        flush();
-                    }
-                    fclose($stream);
-                }
-            }, $finalFileName, [
-                'Content-Type' => 'video/mp4',
-            ]);
-
-        } catch (Exception $e) {
-            Log::error('Lỗi download video: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Không thể tải video. Link có thể đã hết hạn.');
+            $stream = $fetch->open($data['video_url'], FetchRemoteMedia::VIDEO_MAX_BYTES);
+        } catch (RemoteMediaRefused $exception) {
+            return back()->with('error', $exception->getMessage());
         }
+
+        return response()->streamDownload(
+            fn () => FetchRemoteMedia::copyTo($stream, FetchRemoteMedia::VIDEO_MAX_BYTES, function (string $chunk): void {
+                echo $chunk;
+                flush();
+            }),
+            $this->fileName($data['filename'] ?? null, 'video', 'mp4'),
+            ['Content-Type' => 'video/mp4'],
+        );
+    }
+
+    private function fileName(?string $wanted, string $fallback, string $extension): string
+    {
+        $name = Str::slug(Str::limit(trim((string) $wanted), 150, ''));
+
+        return ($name ?: Str::slug($fallback).'-'.time()).'.'.$extension;
     }
 
     public function showBulkCoverPage()

@@ -92,11 +92,16 @@ Route::get('/auth/{provider}/callback', [CustomerAuthController::class, 'handleP
 Route::get('/domain-check', [DomainController::class, 'check'])->name('domain.check');
 
 Route::get('/anh-cover', [ThumbnailController::class, 'showCoverPage'])->name('cover.page');
-Route::post('/get-info', [ThumbnailController::class, 'getInfo'])->name('cover.getInfo');
-Route::post('/download-thumbnail', [ThumbnailController::class, 'download'])->name('cover.download');
-Route::post('/download-video', [ThumbnailController::class, 'downloadVideo'])->name('cover.download.video');
 Route::get('/bulk-anh-cover', [ThumbnailController::class, 'showBulkCoverPage'])->name('cover.bulk.page');
-Route::post('/download-bulk', [ThumbnailController::class, 'downloadBulk'])->name('cover.download.bulk');
+// These call YouTube/TikTok and download files on the visitor's behalf: rate limited per IP.
+Route::middleware('throttle:60,1')->group(function (): void {
+    Route::post('/get-info', [ThumbnailController::class, 'getInfo'])->name('cover.getInfo');
+    Route::post('/download-thumbnail', [ThumbnailController::class, 'download'])->name('cover.download');
+});
+Route::middleware('throttle:10,1')->group(function (): void {
+    Route::post('/download-video', [ThumbnailController::class, 'downloadVideo'])->name('cover.download.video');
+    Route::post('/download-bulk', [ThumbnailController::class, 'downloadBulk'])->name('cover.download.bulk');
+});
 
 Route::get('/tinh-thue-tncn', [TaxController::class, 'showPersonalTax'])->name('tools.tax');
 Route::post('/tinh-thue-tncn/calculate', [TaxController::class, 'calculatePersonalTax'])->name('tools.tax.calculate');

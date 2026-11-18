@@ -15,7 +15,7 @@
                             @php($active = \App\Domain\Navigation\Actions\BuildMenuTree::isActive($item))
                             @if ($item['children'] !== [])
                                 <li class="nav-item dropdown site-nav__dropdown">
-                                    <a @class(['nav-link', 'active' => $active]) href="{{ $item['url'] }}" @if ($active) aria-current="page" @endif @if ($item['new_tab']) target="_blank" rel="noopener" @endif>{{ $item['title'] }}</a>
+                                    <a @class(['nav-link', 'active' => $active]) href="{{ $item['url'] }}" @if ($active) aria-current="page" @endif @if ($item['new_tab']) target="_blank" rel="noopener" @endif><span class="site-nav__text">{{ $item['title'] }}</span></a>
                                     <button class="dropdown-toggle site-nav__toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="Mở danh sách {{ mb_strtolower($item['title']) }}"><x-icon name="chevron-down" class="site-nav__caret" /></button>
                                     <ul class="dropdown-menu site-nav__panel">
                                         @foreach ($item['children'] as $child)
@@ -30,7 +30,7 @@
                                 </li>
                             @else
                                 <li class="nav-item">
-                                    <a @class(['nav-link', 'active' => $active]) href="{{ $item['url'] }}" @if ($active) aria-current="page" @endif @if ($item['new_tab']) target="_blank" rel="noopener" @endif>{{ $item['title'] }}</a>
+                                    <a @class(['nav-link', 'active' => $active]) href="{{ $item['url'] }}" @if ($active) aria-current="page" @endif @if ($item['new_tab']) target="_blank" rel="noopener" @endif><span class="site-nav__text">{{ $item['title'] }}</span></a>
                                 </li>
                             @endif
                         @endforeach

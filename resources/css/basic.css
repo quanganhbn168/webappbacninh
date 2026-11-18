@@ -9,3 +9,62 @@
 .icon-2xl { width: 5rem; height: 5rem; }
 .icon-spin { animation: icon-spin 1s linear infinite; }
 @keyframes icon-spin { to { transform: rotate(360deg); } }
+
+/* Trang thanh toán */
+.payment-method {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent !important;
+}
+.payment-method:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+.payment-method.active {
+    border-color: #667eea !important;
+    background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+}
+.payment-method .provider-logo {
+    height: 40px;
+    object-fit: contain;
+}
+.order-summary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 20px;
+    padding: 30px;
+}
+
+/* Trang QR SePay */
+.qr-container {
+    background: linear-gradient(135deg, #00a651 0%, #007a3d 100%);
+    border-radius: 20px;
+    padding: 30px;
+    color: white;
+}
+.qr-code {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    display: inline-block;
+}
+.bank-info {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+}
+.copy-btn {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.copy-btn:hover {
+    opacity: 0.8;
+}
+.status-checking {
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}

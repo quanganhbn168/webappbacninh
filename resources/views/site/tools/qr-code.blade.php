@@ -54,7 +54,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-primary w-100 d-md-none mt-3" onclick="generateQR()">Tạo Mã</button>
+                                <button type="button" class="btn btn-primary w-100 d-md-none mt-3" data-action="generate">Tạo Mã</button>
                             </form>
                         </div>
 
@@ -64,7 +64,7 @@
                             <div id="qrcode" class="bg-white p-3 shadow-sm rounded mb-3"></div>
                             
                             <div class="mt-3">
-                                <button class="btn btn-success btn-lg" onclick="downloadQR()">
+                                <button type="button" class="btn btn-success btn-lg" data-action="download">
                                     <x-icon name="download" class="me-1" /> Tải xuống ảnh PNG
                                 </button>
                             </div>
@@ -82,85 +82,7 @@
 </div>
 
 @push('scripts')
-<!-- EasyQRCodeJS Library -->
-<script src="/vendor/easy-qrcode-4.5.0.min.js"></script>
-<script>
-    var qrcode = null;
-    var logoFile = null;
-
-    document.addEventListener('DOMContentLoaded', function () {
-        generateQR();
-
-        ['qrText', 'qrBgColor', 'qrColor', 'qrSize'].forEach(function (id) {
-            var input = document.getElementById(id);
-            input.addEventListener('input', generateQR);
-            input.addEventListener('change', generateQR);
-        });
-
-        document.getElementById('qrLogo').addEventListener('change', function (event) {
-            var file = event.target.files[0];
-            if (!file) {
-                logoFile = null;
-                generateQR();
-                return;
-            }
-            var reader = new FileReader();
-            reader.onload = function (loaded) {
-                logoFile = loaded.target.result;
-                generateQR();
-            };
-            reader.readAsDataURL(file);
-        });
-    });
-
-    function generateQR() {
-        document.getElementById('qrcode').replaceChildren();
-
-        var text = document.getElementById('qrText').value || 'https://webappbacninh.vn';
-        var size = parseInt(document.getElementById('qrSize').value, 10);
-        var colorDark = document.getElementById('qrColor').value;
-        var colorLight = document.getElementById('qrBgColor').value;
-
-        // Options
-        var options = {
-            text: text,
-            width: size,
-            height: size,
-            colorDark : colorDark,
-            colorLight : colorLight,
-            correctLevel : QRCode.CorrectLevel.H, // High error correction for logo
-            
-            logo: logoFile,
-            logoWidth: size * 0.2, // 20% of QR size
-            logoHeight: size * 0.2,
-            logoBackgroundColor: '#ffffff',
-            logoBackgroundTransparent: false,
-            
-            quietZone: 10,
-            quietZoneColor: "rgba(0,0,0,0)"
-        };
-
-        // Create
-        try {
-            qrcode = new QRCode(document.getElementById("qrcode"), options);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    function downloadQR() {
-        if (qrcode) {
-            // Find canvas
-            var canvas = document.querySelector('#qrcode canvas');
-            if(canvas) {
-                var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-                var link = document.createElement('a');
-                link.download = 'qrcode-' + Date.now() + '.png';
-                link.href = image;
-                link.click();
-            }
-        }
-    }
-</script>
+    <script src="/vendor/easy-qrcode-4.5.0.min.js"></script>
+    @vite('resources/js/tools/qr-code.js')
 @endpush
 @endsection

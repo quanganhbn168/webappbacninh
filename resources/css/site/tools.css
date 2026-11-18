@@ -16,3 +16,26 @@
 .tool-card { position: relative; }
 .tool-card__badge { position: absolute; top: 1rem; right: 1rem; }
 .tool-page .card { border-radius: var(--radius-lg); }
+
+/* Lịch vạn niên */
+.letter-spacing-2 { letter-spacing: 2px; }
+.calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+.cal-day { 
+    min-height: 80px; 
+    border-radius: 12px; 
+    background-color: #f8f9fa; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer; 
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+.cal-day:hover { background-color: #e9ecef; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.cal-day.today { background-color: #e3f2fd; border-color: #2196f3; color: #2196f3; }
+.cal-day.today .lunar { color: #1976d2; }
+.cal-day.empty { background: transparent; cursor: default; }
+.cal-day .solar { font-size: 1.5rem; font-weight: bold; line-height: 1; }
+.cal-day .lunar { font-size: 0.85rem; color: #6c757d; margin-top: 5px; }
+.cal-day.sunday .solar { color: #dc3545; }

@@ -50,6 +50,7 @@ Giao diện public (chi tiết: [docs/APPROVED-INTERFACE.md](docs/APPROVED-INTER
 - CSS: Bootstrap 5 (`resources/scss/bootstrap.scss`, chỉ các phần đang dùng) rồi `resources/css/site.css` (token, header/footer, thẻ, khối nội dung).
 - Icon: `<x-icon name="phone" />`, bộ SVG trong `resources/icons/icons.json` (Lucide + logo thương hiệu từ Simple Icons). Thêm icon: sửa danh sách trong `scripts/build-icons.mjs` rồi chạy `node scripts/build-icons.mjs`. Ô chọn icon trong admin dùng `App\Filament\Forms\IconPicker`.
 - JavaScript: `resources/js/site.js` (plugin Bootstrap cần dùng + các module trong `resources/js/site/`: form tư vấn, lọc danh mục, kho giao diện, thư viện ảnh, ToolKit cho trang công cụ).
+- JS riêng của một trang nằm ở `resources/js/tools/<trang>.js` hoặc `resources/js/payment/<trang>.js`, nạp bằng `@push('scripts') @vite('resources/js/tools/<trang>.js') @endpush`; Vite tự nhận file mới trong hai thư mục này. Không viết `<script>`, `<style>` hay `onclick=` thẳng trong view.
 - Trang công cụ (`resources/views/site/tools`) dùng `layouts/tool.blade.php` (có header, footer, breadcrumb). Trang đăng nhập, lỗi, thanh toán dùng `layouts/basic.blade.php`. Tailwind chỉ còn dùng cho admin Filament và hai landing page mẫu.
 
 Luồng một request: `Route → Controller → Model (scope/accessor) → View`. Logic dùng lại ở nhiều nơi (admin, controller, lệnh artisan) đặt trong `app/Domain/<Mảng>/Actions`, mỗi class làm một việc.

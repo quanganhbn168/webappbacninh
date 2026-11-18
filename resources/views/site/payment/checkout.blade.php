@@ -3,34 +3,6 @@
 @section('title', 'Thanh toán - WebApp Bắc Ninh')
 @section('meta_description', 'Chọn phương thức thanh toán phù hợp: VNPay, MoMo, ZaloPay')
 
-@push('head')
-<style>
-    .payment-method {
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid transparent !important;
-    }
-    .payment-method:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-    .payment-method.active {
-        border-color: #667eea !important;
-        background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
-    }
-    .payment-method .provider-logo {
-        height: 40px;
-        object-fit: contain;
-    }
-    .order-summary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 20px;
-        padding: 30px;
-    }
-</style>
-@endpush
-
 @section('content')
 <div class="container py-5">
     <div class="row justify-content-center">
@@ -68,8 +40,7 @@
                                     @foreach($providers as $provider)
                                     <div class="col-md-6">
                                         <div class="payment-method card h-100 p-3 {{ $provider['name'] === $defaultProvider ? 'active' : '' }}"
-                                             data-provider="{{ $provider['name'] }}"
-                                             onclick="selectProvider('{{ $provider['name'] }}')">
+                                             data-provider="{{ $provider['name'] }}">
                                             <div class="d-flex align-items-center">
                                                 <div class="me-3">
                                                     <x-icon name="circle-help" class="{{ $provider['icon'] }} icon-lg" style="color: {{ $provider['color'] }}" />
@@ -170,18 +141,5 @@
 @endsection
 
 @push('scripts')
-<script>
-function selectProvider(name) {
-    document.getElementById('selectedProvider').value = name;
-    
-    document.querySelectorAll('.payment-method').forEach(el => {
-        el.classList.remove('active');
-        el.querySelector('input[type="radio"]').checked = false;
-    });
-    
-    const selected = document.querySelector(`[data-provider="${name}"]`);
-    selected.classList.add('active');
-    selected.querySelector('input[type="radio"]').checked = true;
-}
-</script>
+    @vite('resources/js/payment/checkout.js')
 @endpush

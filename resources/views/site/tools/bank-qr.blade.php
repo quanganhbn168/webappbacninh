@@ -41,7 +41,7 @@
                                     <input type="text" class="form-control" id="bankContent" placeholder="Ví dụ: Thanh toan tien com">
                                 </div>
 
-                                <button type="button" class="btn btn-success w-100 fw-bold mt-4" onclick="generateBankQR()">
+                                <button type="button" class="btn btn-success w-100 fw-bold mt-4" data-action="generate">
                                     <x-icon name="qr-code" class="me-2" /> TẠO MÃ NGÂN HÀNG
                                 </button>
                             </form>
@@ -56,7 +56,7 @@
                                     Nhập thông tin bên trái để tạo mã
                                 </div>
                             </div>
-                            <button class="btn btn-primary" onclick="downloadBankQR()"><x-icon name="download" class="me-1" /> Tải Mã Về Máy</button>
+                            <button type="button" class="btn btn-primary" data-action="download"><x-icon name="download" class="me-1" /> Tải Mã Về Máy</button>
                         </div>
                     </div>
                 </div>
@@ -71,55 +71,6 @@
 </div>
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('#bankId, #bankAccount, #bankName, #bankAmount, #bankContent').forEach(function(field) {
-            field.addEventListener('change', function() {
-                if(document.getElementById('bankId').value && document.getElementById('bankAccount').value) {
-                    generateBankQR();
-                }
-            });
-        });
-    });
-
-    function generateBankQR() {
-        var bankCode = document.getElementById('bankId').value;
-        var account = document.getElementById('bankAccount').value;
-        var template = 'print'; // compact2, compact, qr_only, print
-        var amount = document.getElementById('bankAmount').value || 0;
-        var content = document.getElementById('bankContent').value || '';
-        var name = document.getElementById('bankName').value || '';
-
-        if(!bankCode || !account) {
-            // alert('Vui lòng chọn ngân hàng và nhập số tiêu khoản');
-            return;
-        }
-
-        document.getElementById('bankQrcode').innerHTML = '<div class="spinner-border text-success" role="status"><span class="visually-hidden">Đang tải...</span></div>';
-
-        // URL format: https://img.vietqr.io/image/<BANK_CODE>-<ACCOUNT_NO>-<TEMPLATE>.png
-        var url = `https://img.vietqr.io/image/${bankCode}-${account}-${template}.png?amount=${amount}&addInfo=${encodeURIComponent(content)}&accountName=${encodeURIComponent(name)}`;
-        
-        // Use Image object to preload
-        var img = new Image();
-        img.onload = function() {
-            document.getElementById('bankQrcode').innerHTML = `<img src="${url}" class="img-fluid border shadow-sm" id="vietqrInfoImg" alt="VietQR" style="max-height:450px;">`;
-        };
-        img.onerror = function() {
-            document.getElementById('bankQrcode').innerHTML = '<div class="text-danger">Lỗi tạo mã. Vui lòng kiểm tra lại thông tin.</div>';
-        };
-        img.src = url;
-    }
-
-    function downloadBankQR() {
-        var img = document.getElementById('vietqrInfoImg');
-        if(img && img.src) {
-            // Open in new tab is safest for cross-origin images without proxy
-            window.open(img.src, '_blank');
-        } else {
-             alert('Vui lòng tạo mã QR trước!');
-        }
-    }
-</script>
+    @vite('resources/js/tools/bank-qr.js')
 @endpush
 @endsection

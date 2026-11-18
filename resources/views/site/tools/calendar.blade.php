@@ -42,9 +42,9 @@
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
                     <h3 class="h5 mb-0 fw-bold" id="calHeader">Tháng -- Năm ----</h3>
                     <div class="btn-group">
-                        <button class="btn btn-outline-primary btn-sm" onclick="prevMonth()"><x-icon name="chevron-left" /></button>
-                        <button class="btn btn-outline-primary btn-sm" onclick="goToday()">Hôm nay</button>
-                        <button class="btn btn-outline-primary btn-sm" onclick="nextMonth()"><x-icon name="chevron-right" /></button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-action="prev" aria-label="Tháng trước"><x-icon name="chevron-left" /></button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-action="today">Hôm nay</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-action="next" aria-label="Tháng sau"><x-icon name="chevron-right" /></button>
                     </div>
                 </div>
                 <div class="card-body p-4">
@@ -72,121 +72,9 @@
     </div>
 </div>
 
-<style>
-    .letter-spacing-2 { letter-spacing: 2px; }
-    .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
-    .cal-day { 
-        min-height: 80px; 
-        border-radius: 12px; 
-        background-color: #f8f9fa; 
-        display: flex; 
-        flex-direction: column; 
-        justify-content: center; 
-        align-items: center; 
-        cursor: pointer; 
-        transition: all 0.2s;
-        border: 1px solid transparent;
-    }
-    .cal-day:hover { background-color: #e9ecef; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .cal-day.today { background-color: #e3f2fd; border-color: #2196f3; color: #2196f3; }
-    .cal-day.today .lunar { color: #1976d2; }
-    .cal-day.empty { background: transparent; cursor: default; }
-    .cal-day .solar { font-size: 1.5rem; font-weight: bold; line-height: 1; }
-    .cal-day .lunar { font-size: 0.85rem; color: #6c757d; margin-top: 5px; }
-    .cal-day.sunday .solar { color: #dc3545; }
-</style>
 
 @push('scripts')
-<!-- Lunar Calendar Library from CDN -->
-<!-- Lunar Calendar Library -->
-<script src="/vendor/lunar-1.7.7.js"></script>
-
-<script>
-    // Init dates
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
-    const today = new Date();
-
-    const weekDays = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
-    const can = ['Canh', 'Tân', 'Nhâm', 'Quý', 'Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ'];
-    const chi = ['Thân', 'Dậu', 'Tuất', 'Hợi', 'Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi'];
-
-    const text = (id, value) => { document.getElementById(id).textContent = value; };
-
-    // lunar-javascript: Solar.fromDate(date).getLunar() gives the lunar day, month and year.
-    function lunarOf(date) {
-        const lunar = Solar.fromDate(date).getLunar();
-        return { day: lunar.getDay(), month: Math.abs(lunar.getMonth()), leap: lunar.getMonth() < 0, year: lunar.getYear() };
-    }
-
-    function canChi(lunarYear) {
-        return `${can[lunarYear % 10]} ${chi[lunarYear % 12]}`;
-    }
-
-    function renderToday() {
-        text('todayDay', today.getDate());
-        text('todayMonthYear', `Tháng ${today.getMonth() + 1}/${today.getFullYear()}`);
-        text('todayWeekday', weekDays[today.getDay()]);
-
-        const lunar = lunarOf(today);
-        text('lunarDay', lunar.day);
-        text('lunarMonthYear', `Tháng ${lunar.month}${lunar.leap ? ' (nhuận)' : ''} Năm ${lunar.year}`);
-        text('canChi', `Năm ${canChi(lunar.year)}`);
-    }
-
-    function renderCalendar(month, year) {
-        text('calHeader', `Tháng ${month + 1} Năm ${year}`);
-
-        const startDayIndex = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const grid = document.getElementById('calendarDays');
-        const cells = [];
-
-        for (let i = 0; i < startDayIndex; i++) {
-            cells.push('<div class="cal-day empty"></div>');
-        }
-
-        for (let d = 1; d <= daysInMonth; d++) {
-            const date = new Date(year, month, d);
-            const lunar = lunarOf(date);
-            const classes = ['cal-day'];
-            if (date.toDateString() === today.toDateString()) classes.push('today');
-            if (date.getDay() === 0) classes.push('sunday');
-            const lunarLabel = lunar.day === 1 ? `${lunar.day}/${lunar.month}` : lunar.day;
-            cells.push(`<div class="${classes.join(' ')}"><div class="solar">${d}</div><div class="lunar">${lunarLabel}</div></div>`);
-        }
-
-        grid.innerHTML = cells.join('');
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        renderToday();
-        renderCalendar(currentMonth, currentYear);
-    });
-
-    function prevMonth() {
-        currentMonth--;
-        if(currentMonth < 0) {
-            currentMonth = 11;
-            currentYear--;
-        }
-        renderCalendar(currentMonth, currentYear);
-    }
-
-    function nextMonth() {
-        currentMonth++;
-        if(currentMonth > 11) {
-            currentMonth = 0;
-            currentYear++;
-        }
-        renderCalendar(currentMonth, currentYear);
-    }
-    
-    function goToday() {
-        currentMonth = new Date().getMonth();
-        currentYear = new Date().getFullYear();
-        renderCalendar(currentMonth, currentYear);
-    }
-</script>
+    <script src="/vendor/lunar-1.7.7.js"></script>
+    @vite('resources/js/tools/calendar.js')
 @endpush
 @endsection

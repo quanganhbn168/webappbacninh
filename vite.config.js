@@ -1,6 +1,10 @@
+import { readdirSync } from 'node:fs';
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
+
+// One script per tool / payment page, loaded only on that page with @vite('resources/js/tools/<name>.js').
+const pageScripts = dir => readdirSync(dir).filter(file => file.endsWith('.js')).map(file => `${dir}/${file}`);
 
 export default defineConfig({
   plugins: [
@@ -16,6 +20,8 @@ export default defineConfig({
         'resources/js/landing/purehome.js',
         'resources/css/landing/freshair.css',
         'resources/js/landing/freshair.js',
+        ...pageScripts('resources/js/tools'),
+        ...pageScripts('resources/js/payment'),
       ],
       refresh: true,
     }),

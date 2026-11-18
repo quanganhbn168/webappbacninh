@@ -3,45 +3,8 @@
 @section('title', 'Thanh toán SePay - WebApp Bắc Ninh')
 @section('meta_description', 'Thanh toán qua chuyển khoản ngân hàng với SePay')
 
-@push('head')
-<style>
-    .qr-container {
-        background: linear-gradient(135deg, #00a651 0%, #007a3d 100%);
-        border-radius: 20px;
-        padding: 30px;
-        color: white;
-    }
-    .qr-code {
-        background: white;
-        border-radius: 15px;
-        padding: 20px;
-        display: inline-block;
-    }
-    .bank-info {
-        background: rgba(255,255,255,0.1);
-        border-radius: 10px;
-        padding: 15px;
-        margin-top: 20px;
-    }
-    .copy-btn {
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    .copy-btn:hover {
-        opacity: 0.8;
-    }
-    .status-checking {
-        animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
-    }
-</style>
-@endpush
-
 @section('content')
-<div class="container py-5">
+<div class="container py-5" data-status-url="{{ url('/api/payment/sepay/status/'.$order_id) }}" data-success-url="{{ ($return_url ?? url('/payment/result')).'?status=success&order_id='.urlencode($order_id) }}">
     <div class="row justify-content-center">
         <div class="col-lg-6">
             
@@ -83,7 +46,7 @@
                                 <span class="opacity-75">Số tài khoản:</span>
                                 <div>
                                     <strong id="accountNumber">{{ $account }}</strong>
-                                    <button type="button" class="btn btn-link btn-sm p-0 ms-2 copy-btn" onclick="copyToClipboard('{{ $account }}', this)" aria-label="Sao chép số tài khoản"><x-icon name="copy" class="icon-sm" /></button>
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-2 copy-btn" data-copy="{{ $account }}" aria-label="Sao chép số tài khoản"><x-icon name="copy" class="icon-sm" /></button>
                                 </div>
                             </div>
                         </div>
@@ -98,7 +61,7 @@
                                 <span class="opacity-75">Nội dung CK:</span>
                                 <div>
                                     <strong class="text-warning" id="paymentCode">{{ $code }}</strong>
-                                    <button type="button" class="btn btn-link btn-sm p-0 ms-2 copy-btn" onclick="copyToClipboard('{{ $code }}', this)" aria-label="Sao chép nội dung chuyển khoản"><x-icon name="copy" class="icon-sm" /></button>
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-2 copy-btn" data-copy="{{ $code }}" aria-label="Sao chép nội dung chuyển khoản"><x-icon name="copy" class="icon-sm" /></button>
                                 </div>
                             </div>
                         </div>
@@ -148,30 +111,5 @@
 @endsection
 
 @push('scripts')
-<script>
-function copyToClipboard(text, btn) {
-    navigator.clipboard.writeText(text).then(() => {
-        btn.classList.add('text-success');
-        btn.setAttribute('title', 'Đã sao chép');
-        setTimeout(() => btn.classList.remove('text-success'), 2000);
-    });
-}
-
-// Poll for payment status (optional - you can implement WebSocket for real-time)
-let checkInterval;
-function checkPaymentStatus() {
-    fetch('/api/payment/sepay/status/{{ $order_id }}')
-        .then(r => r.json())
-        .then(data => {
-            if (data.status === 'completed') {
-                clearInterval(checkInterval);
-                window.location.href = '{{ $return_url ?? url("/payment/result") }}?status=success&order_id={{ $order_id }}';
-            }
-        })
-        .catch(() => {});
-}
-
-// Check every 5 seconds
-checkInterval = setInterval(checkPaymentStatus, 5000);
-</script>
+    @vite('resources/js/payment/sepay-qr.js')
 @endpush

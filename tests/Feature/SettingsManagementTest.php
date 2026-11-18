@@ -65,21 +65,20 @@ class SettingsManagementTest extends TestCase
         $this->actingAs($admin, 'admin')->get('/admin/operation-services')->assertOk();
     }
 
-    public function test_google_tag_is_rendered_from_tracking_settings_on_public_layouts(): void
+    public function test_tracking_code_is_rendered_from_tracking_settings_on_public_layouts(): void
     {
         $settings = app(TrackingSettings::class);
-        $settings->head_code = '<meta name="tracking-head-test" content="ok">';
+        $settings->head_code = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-TEST123"></script><meta name="tracking-head-test" content="ok">';
         $settings->body_start_code = '<div id="tracking-body-start-test"></div>';
         $settings->body_end_code = '<div id="tracking-body-end-test"></div>';
         $settings->save();
 
         $tracking = app(RenderTrackingCode::class)->execute();
 
-        $this->assertStringContainsString('G-ZEKMT39KKJ', $tracking->head);
-        $this->assertStringContainsString('googletagmanager.com/gtag/js', $tracking->head);
+        $this->assertStringContainsString('gtag/js?id=G-TEST123', $tracking->head);
 
         $response = $this->get('/')->assertOk();
-        $response->assertSee('googletagmanager.com/gtag/js?id=G-ZEKMT39KKJ', false);
+        $response->assertSee('googletagmanager.com/gtag/js?id=G-TEST123', false)->assertDontSee('G-ZEKMT39KKJ', false);
         $html = $response->getContent();
 
         $this->assertLessThan(strpos($html, '</head>'), strpos($html, 'tracking-head-test'));
@@ -88,7 +87,7 @@ class SettingsManagementTest extends TestCase
 
         $this->get('/login')
             ->assertOk()
-            ->assertSee('googletagmanager.com/gtag/js?id=G-ZEKMT39KKJ', false);
+            ->assertSee('googletagmanager.com/gtag/js?id=G-TEST123', false);
     }
 
     public function test_standard_validation_opens_the_error_flow_and_shows_a_danger_notification(): void

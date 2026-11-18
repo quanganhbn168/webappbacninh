@@ -40,7 +40,6 @@ if (! function_exists('site_settings')) {
             'default_og_image' => '',
             'google_site_verification' => '',
             'tracking_enabled' => false,
-            'google_tag_id' => '',
             'head_code' => '',
             'body_start_code' => '',
             'body_end_code' => '',
@@ -94,7 +93,6 @@ if (! function_exists('site_settings')) {
             ],
             TrackingSettings::class => [
                 'tracking_enabled' => 'enabled',
-                'google_tag_id' => 'google_tag_id',
                 'head_code' => 'head_code',
                 'body_start_code' => 'body_start_code',
                 'body_end_code' => 'body_end_code',

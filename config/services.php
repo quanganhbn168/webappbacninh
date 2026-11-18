@@ -2,6 +2,14 @@
 
 return [
     'postmark' => ['token' => env('POSTMARK_TOKEN')],
+    // Admin dashboard: GA4 Data API and Search Console API, read-only, through one service
+    // account added as Viewer on the GA4 property and as a user on the Search Console property.
+    'google_analytics' => [
+        'credentials' => env('GOOGLE_SERVICE_ACCOUNT_JSON', storage_path('app/private/google-service-account.json')),
+        'ga4_property_id' => env('GA4_PROPERTY_ID'),
+        // "sc-domain:example.vn" for a domain property, "https://example.vn/" for a URL prefix one.
+        'gsc_site_url' => env('GSC_SITE_URL'),
+    ],
     // Social sign-in: a provider's button only appears once its keys are set.
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),

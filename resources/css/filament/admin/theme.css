@@ -12,3 +12,66 @@
     overflow-x: hidden;
     overscroll-behavior-y: contain;
 }
+
+/* Topbar: the search grows on the left, "Tạo mới", the bell and the user sit on the right. */
+.fi-topbar-end {
+    flex: 1 1 auto;
+}
+.fi-topbar-end .fi-global-search-ctn {
+    flex: 1 1 auto;
+    max-width: 42rem;
+    margin-inline-end: auto;
+}
+
+/*
+ * Desktop layout like a classic admin: the sidebar runs the full height with the logo in
+ * its header, level with the topbar; the topbar sits to its right and starts with the
+ * sidebar toggle and "Trang chủ". Filament puts the topbar across the whole width, so it
+ * is shifted here.
+ */
+@media (min-width: 64rem) {
+    .fi-body-has-topbar .fi-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        height: 100dvh !important;
+        z-index: 31;
+        background-color: white;
+        border-inline-end: 1px solid var(--color-gray-200);
+    }
+    .dark .fi-body-has-topbar .fi-sidebar {
+        background-color: var(--color-gray-900);
+        border-color: rgb(255 255 255 / 0.1);
+    }
+    .fi-body-has-topbar .fi-sidebar-header {
+        display: flex;
+        height: 4rem;
+        padding-inline: 1.25rem;
+        box-shadow: none;
+        border-bottom: 1px solid var(--color-gray-200);
+    }
+    .dark .fi-body-has-topbar .fi-sidebar-header {
+        border-color: rgb(255 255 255 / 0.1);
+    }
+    .fi-body-has-topbar .fi-sidebar-header .fi-logo {
+        justify-content: center;
+        font-size: 1.15rem;
+        letter-spacing: .02em;
+        text-transform: uppercase;
+    }
+
+    /* Room for the fixed sidebar: full width when open, the icon rail when collapsed. */
+    .fi-body:has(.fi-sidebar.fi-sidebar-open) .fi-topbar-ctn,
+    .fi-body:has(.fi-sidebar.fi-sidebar-open) .fi-layout {
+        padding-inline-start: var(--sidebar-width);
+    }
+    .fi-body:has(.fi-sidebar:not(.fi-sidebar-open)) .fi-topbar-ctn,
+    .fi-body:has(.fi-sidebar:not(.fi-sidebar-open)) .fi-layout {
+        padding-inline-start: var(--collapsed-sidebar-width);
+    }
+
+    /* The logo now lives in the sidebar header. */
+    .fi-topbar-start > a:has(.fi-logo),
+    .fi-topbar-start > .fi-logo {
+        display: none;
+    }
+}

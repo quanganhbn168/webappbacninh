@@ -8,8 +8,6 @@ class TrackingSettings extends Settings
 {
     public bool $enabled;
 
-    public string $google_tag_id;
-
     public string $head_code;
 
     public string $body_start_code;

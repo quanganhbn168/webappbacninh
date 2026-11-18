@@ -2,11 +2,11 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\NavigationGroup;
 use App\Domain\Settings\Actions\LoadSiteSettings;
 use App\Domain\Settings\Actions\SaveSiteSettings;
 use App\Domain\Settings\Rules\SquareRasterImage;
 use App\Domain\Settings\Rules\ValidSocialLink;
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\OperationServices\OperationServiceResource;
 use App\Filament\Resources\ServiceCategories\ServiceCategoryResource;
 use App\Filament\Resources\Services\ServiceResource;
@@ -275,20 +275,11 @@ class ManageSettings extends Page
                         Tab::make('Tracking & mã nhúng')
                             ->icon(Heroicon::OutlinedCodeBracket)
                             ->schema([
-                                Section::make('Google tag')
-                                    ->description('Chỉ cần nhập Measurement/Tag ID; hệ thống tự sinh đoạn gtag.js đúng vị trí trong head.')
+                                Section::make('Tracking')
+                                    ->description('Mã Google Analytics (gtag.js), Pixel, Tag Manager… dán nguyên đoạn vào các ô bên dưới.')
                                     ->schema([
                                         Toggle::make('tracking.enabled')->label('Bật tracking và mã nhúng')->default(true),
-                                        TextInput::make('tracking.google_tag_id')
-                                            ->label('Google tag ID')
-                                            ->placeholder('G-XXXXXXXXXX')
-                                            ->regex('/^(G|GT|GTM|AW|DC)-[A-Z0-9-]+$/i')
-                                            ->maxLength(50)
-                                            ->validationMessages([
-                                                'regex' => 'Google tag ID phải có dạng G-, GT-, GTM-, AW- hoặc DC-.',
-                                            ]),
-                                    ])
-                                    ->columns(2),
+                                    ]),
                                 Section::make('Mã chèn theo vị trí')
                                     ->description('Chỉ dán mã từ nguồn tin cậy. Các đoạn này được render nguyên bản trên toàn bộ trang public.')
                                     ->schema([

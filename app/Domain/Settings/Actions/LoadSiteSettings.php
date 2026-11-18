@@ -64,7 +64,6 @@ final class LoadSiteSettings
             ],
             'tracking' => [
                 'enabled' => $tracking->enabled,
-                'google_tag_id' => $tracking->google_tag_id,
                 'head_code' => $tracking->head_code,
                 'body_start_code' => $tracking->body_start_code,
                 'body_end_code' => $tracking->body_end_code,

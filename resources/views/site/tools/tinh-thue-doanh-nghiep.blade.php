@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="text-center mb-5">
-                <span class="badge text-bg-primary bg-opacity-25 text-dark px-3 py-2 mb-3 fw-bold tool-hero__badge">
+                <span class="badge text-bg-primary bg-opacity-25 text-dark px-3 py-2 mb-3 fw-bold">
                     <x-icon name="building-2" class="me-1" /> DNNVV
                 </span>
                 <h1 class="display-5 fw-bold mb-3"><x-icon name="building-2" class="text-primary me-2" />Tính thuế Doanh nghiệp</h1>
@@ -30,17 +30,17 @@
                         <div class="col-lg-5">
                             <div class="mb-4">
                                 <label class="form-label fw-bold" for="revenue"><x-icon name="chart-line" class="text-success me-1" /> Doanh thu năm (VNĐ)</label>
-                                <div class="tool-input-suffix">
+                                <div class="input-group input-group-lg">
                                     <input type="text" inputmode="numeric" class="form-control form-control-lg" id="revenue" value="2000000000" placeholder="2.000.000.000">
-                                    <span>VNĐ</span>
+                                    <span class="input-group-text">VNĐ</span>
                                 </div>
                             </div>
 
                             <div class="mb-4">
                                 <label class="form-label fw-bold" for="expenses"><x-icon name="circle-minus" class="text-danger me-1" /> Chi phí (VNĐ) <small class="text-secondary fw-normal">(Mặc định 70% doanh thu)</small></label>
-                                <div class="tool-input-suffix">
+                                <div class="input-group input-group-lg">
                                     <input type="text" inputmode="numeric" class="form-control form-control-lg" id="expenses" value="1400000000" placeholder="1.400.000.000">
-                                    <span>VNĐ</span>
+                                    <span class="input-group-text">VNĐ</span>
                                 </div>
                             </div>
 
@@ -63,7 +63,7 @@
                         </div>
 
                         <div class="col-lg-7">
-                            <div class="tool-result h-100" data-result hidden aria-live="polite">
+                            <div class="panel-dark h-100" data-result hidden aria-live="polite">
                                 <div class="text-center mb-4">
                                     <span class="badge text-bg-success mb-2" data-exempt-badge hidden><x-icon name="gift" class="me-1" /> Miễn thuế TNDN</span>
                                     <p class="mb-1 opacity-75">Tổng thuế ước tính</p>
@@ -106,7 +106,7 @@
             </div>
 
             <div class="row g-4 mt-5">
-                @foreach ([['sprout', 'text-success', 'Miễn 3 năm đầu', 'DN mới thành lập được miễn thuế TNDN trong 3 năm đầu.'], ['percent', 'text-warning', 'Giảm 2% GTGT', 'Thuế GTGT giảm từ 10% xuống 8% đến hết năm 2026.'], ['shield-check', 'text-gold-dark', 'Thuế suất ưu đãi', 'DNNVV được hưởng thuế suất 15-17% thay vì 20% thông thường.']] as [$icon, $color, $title, $text])
+                @foreach ([['sprout', 'text-success', 'Miễn 3 năm đầu', 'DN mới thành lập được miễn thuế TNDN trong 3 năm đầu.'], ['percent', 'text-warning', 'Giảm 2% GTGT', 'Thuế GTGT giảm từ 10% xuống 8% đến hết năm 2026.'], ['shield-check', 'text-primary-emphasis', 'Thuế suất ưu đãi', 'DNNVV được hưởng thuế suất 15-17% thay vì 20% thông thường.']] as [$icon, $color, $title, $text])
                     <div class="col-md-4">
                         <div class="tool-info h-100 text-center">
                             <x-icon :name="$icon" class="{{ $color }} icon-lg mb-3" />

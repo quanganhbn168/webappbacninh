@@ -86,7 +86,7 @@
                             <div class="col">
                                 <button class="feature-card feature-card--link feature-card--row w-100 text-start" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">
                                     <span class="icon-tile"><x-icon :name="$icon" /></span>
-                                    <span><strong class="d-block text-dark">{{ $title }}</strong><span class="text-gold-dark fw-semibold">{{ $price }}</span></span>
+                                    <span><strong class="d-block text-dark">{{ $title }}</strong><span class="text-primary-emphasis fw-semibold">{{ $price }}</span></span>
                                 </button>
                             </div>
                         @endforeach

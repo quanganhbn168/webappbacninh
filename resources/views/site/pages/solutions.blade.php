@@ -37,7 +37,7 @@
                 @foreach ($industries as [$key, $name, $image, $text, $tags])
                     <div class="col" data-catalog-item data-categories="{{ $key }}" data-title="{{ $name }}">
                         <article class="media-card">
-                            <div class="media-card__image ratio-card"><img class="img-cover" src="{{ asset('images/'.$image) }}" alt="{{ $name }}" width="640" height="400" loading="lazy"></div>
+                            <div class="media-card__image ratio-card"><img class="w-100 h-100 object-fit-cover" src="{{ asset('images/'.$image) }}" alt="{{ $name }}" width="640" height="400" loading="lazy"></div>
                             <div class="media-card__body">
                                 <h3 class="media-card__title">{{ $name }}</h3>
                                 <p>{{ $text }}</p>

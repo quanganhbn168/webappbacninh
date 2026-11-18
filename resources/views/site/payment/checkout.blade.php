@@ -94,7 +94,7 @@
 
                 {{-- Right: Order Summary --}}
                 <div class="col-lg-5">
-                    <div class="order-summary">
+                    <div class="panel-dark">
                         <h5 class="fw-bold mb-4">
                             <x-icon name="shopping-cart" class="me-2" />
                             Thông tin đơn hàng

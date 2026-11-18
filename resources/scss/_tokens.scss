@@ -1,0 +1,52 @@
+// WebApp Bắc Ninh design tokens: the only place colours, radii, shadows and fonts are defined.
+// _bootstrap.scss feeds them to Bootstrap; the site and basic stylesheets read them directly.
+
+// Gold
+$gold-50: #fff8ea;
+$gold-100: #fff2d8;
+$gold-200: #ffe1a3;
+$gold: #ffac00;
+$gold-600: #ed9900;
+$gold-700: #b86e00; // icons and large text on white (3:1)
+$gold-800: #985e00; // body-size text and links on white (4.5:1)
+$gold-900: #6f4400; // link hover
+
+// Browns
+$ink: #342219; // headings, dark buttons
+$on-gold: #261c0e; // text on a gold background
+$brown: #3a2418; // dark sections
+$brown-2: #56361f;
+$on-dark: #eadbd0; // text on brown
+$on-dark-muted: #cdb9aa;
+$note: #6e5846; // handwritten notes
+
+// Neutrals
+$text: #242a31;
+$text-soft: #4c4843;
+$muted: #6b7079;
+$cream: #fcf7ef;
+$paper: #fbfaf8;
+$sand: #f4efe8; // image placeholders, neutral tags
+$border: #eeeae5;
+$border-strong: #cbbcb0;
+
+// States and channels
+$green: #1e8a55;
+$red: #d83b32;
+$blue: #086bd8;
+
+$radius-sm: .43rem;
+$radius: .65rem;
+$radius-lg: 1rem;
+
+$shadow-sm: 0 .18rem .8rem rgba(#352213, .05);
+$shadow: 0 .6rem 1.8rem rgba(#352213, .1);
+$shadow-lg: 0 1rem 3rem rgba(#321e0a, .14);
+
+$section-space: clamp(3rem, 6vw, 4.5rem);
+$header-height: 4.25rem;
+$header-height-sm: 3.75rem;
+
+$font-sans: 'Roboto Variable', Arial, sans-serif;
+$font-hand: 'Dancing Script Variable', cursive;
+$transition: .18s ease;

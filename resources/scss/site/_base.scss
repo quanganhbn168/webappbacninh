@@ -1,0 +1,246 @@
+// Page-wide rules, typography, buttons and small helpers.
+
+:root {
+    --header-height: #{$header-height};
+
+    @include media-breakpoint-down(sm) {
+        --header-height: #{$header-height-sm};
+    }
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-height) + 1rem);
+}
+body { -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; height: auto; }
+[hidden] { display: none !important; }
+a, button, summary { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: .18rem solid $gold-700; outline-offset: .2rem; }
+
+// Headings
+h1, .h1 {
+    font-size: clamp(2rem, 1.2rem + 2.6vw, 3rem);
+    letter-spacing: -.04em;
+    line-height: 1.08;
+}
+h2, .h2 {
+    font-size: clamp(1.5rem, 1.15rem + 1.1vw, 1.875rem);
+    font-weight: 750;
+    letter-spacing: -.022em;
+    line-height: 1.2;
+}
+h3, .h3 {
+    font-size: 1.14rem;
+    font-weight: 700;
+    letter-spacing: -.012em;
+    line-height: 1.3;
+}
+
+.eyebrow {
+    display: inline-block;
+    margin-bottom: .65rem;
+    color: $gold-800;
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+.lead-text {
+    color: $muted;
+    font-size: clamp(1rem, .95rem + .3vw, 1.15rem);
+    line-height: 1.55;
+}
+.text-hand {
+    font-family: $font-hand;
+    font-weight: 600;
+}
+
+.skip-link {
+    position: fixed;
+    top: -10rem;
+    left: 1rem;
+    z-index: 2000;
+    padding: .7rem 1rem;
+    background: $gold;
+    color: $on-gold;
+
+    &:focus { top: 1rem; }
+}
+
+// Buttons: Bootstrap variants with the site sizes. Outline buttons keep dark text for contrast.
+.btn {
+    --bs-btn-line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    min-height: 3.25rem;
+    white-space: nowrap;
+    transition: background $transition, border-color $transition, box-shadow $transition, transform $transition;
+
+    &:hover { transform: translateY(-1px); }
+    &:disabled { transform: none; }
+    .icon { width: 1.15rem; height: 1.15rem; }
+}
+.btn-sm {
+    --bs-btn-padding-x: 1rem;
+    --bs-btn-padding-y: .5rem;
+    --bs-btn-font-size: .9rem;
+    min-height: 2.5rem;
+}
+.btn-lg { min-height: 3.5rem; }
+.btn-primary:hover { box-shadow: 0 .2rem .75rem rgba($gold, .2); }
+.btn-outline-primary,
+.btn-outline-dark {
+    --bs-btn-color: #{$ink};
+    --bs-btn-bg: #fff;
+    --bs-btn-hover-color: #{$ink};
+    --bs-btn-hover-bg: #{$gold-50};
+    --bs-btn-active-color: #{$ink};
+    --bs-btn-active-bg: #{$gold-100};
+}
+.btn-outline-primary {
+    --bs-btn-border-color: #{$gold};
+    --bs-btn-hover-border-color: #{$gold};
+    --bs-btn-active-border-color: #{$gold};
+}
+.btn-outline-dark {
+    --bs-btn-border-color: #{$border-strong};
+    --bs-btn-hover-border-color: #{$gold-600};
+    --bs-btn-active-border-color: #{$gold-600};
+}
+.btn-outline-light {
+    --bs-btn-border-color: #{$on-dark-muted};
+    --bs-btn-hover-bg: #{rgba(#fff, .1)};
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-border-color: #fff;
+}
+.btn-link {
+    --bs-btn-color: #{$gold-800};
+    --bs-btn-hover-color: #{$gold-900};
+    min-height: 0;
+}
+.btn-icon {
+    min-width: 2.8rem;
+    min-height: 2.8rem;
+    padding: .5rem;
+    color: $ink;
+}
+.btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+.link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    color: $gold-800;
+    font-size: .95rem;
+    font-weight: 650;
+    white-space: nowrap;
+
+    .icon { width: 1rem; height: 1rem; transition: transform $transition; }
+    &:hover { color: $gold-900; }
+    &:hover .icon { transform: translateX(3px); }
+}
+
+// Sections
+.section { padding-block: $section-space; }
+.section:not([class*="section--"]) + .section:not([class*="section--"]) { padding-top: 0; }
+.section--cream { background: $cream; }
+.section--soft { background: $paper; }
+.section--dark {
+    background: $brown;
+    color: $on-dark;
+
+    :is(h1, h2, h3, h4, .h2, .h3) { color: #fff; }
+    .text-muted, .lead-text, .section-head p { color: $on-dark-muted !important; }
+    .eyebrow { color: $gold; }
+}
+
+.section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-bottom: 2rem;
+
+    > div { max-width: 46rem; }
+    h2 { margin-bottom: .5rem; }
+    p { margin: 0; color: $muted; }
+}
+.section-head--center {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    > div { margin-inline: auto; }
+}
+
+// Tags and lists
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .25rem .6rem;
+    border-radius: 50rem;
+    background: $sand;
+    color: $text-soft;
+    font-size: .78rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+.tag--gold {
+    background: $gold-100;
+    color: $gold-800;
+}
+
+.check-list {
+    display: grid;
+    gap: .65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        position: relative;
+        padding-left: 1.75rem;
+        line-height: 1.45;
+    }
+    li::before {
+        content: "";
+        position: absolute;
+        top: .15rem;
+        left: 0;
+        width: 1.1rem;
+        height: 1.1rem;
+        border-radius: 50%;
+        background: $green url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12 4 4 8-8'/%3E%3C/svg%3E") center / .72rem no-repeat;
+    }
+}
+.check-list--gold li::before { background-color: $gold; }
+.check-list--dot li::before {
+    top: .4rem;
+    width: .65rem;
+    height: .65rem;
+    background: $gold;
+    box-shadow: 0 0 0 .25rem $gold-100;
+}
+.check-list--2col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    @include media-breakpoint-down(sm) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.ratio-card {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: $sand;
+}

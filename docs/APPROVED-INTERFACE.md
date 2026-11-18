@@ -11,7 +11,13 @@ Giao diện public giữ thiết kế đã duyệt (màu vàng #ffac00, nâu đ�
   - `projects/`, `articles/`, `themes/`, `services/`, `operations/`, `tools/index.blade.php`
   - `partials/`: lưới dịch vụ, dải hợp tác Agency, quy trình 5 bước, module mở rộng — dùng lại ở nhiều trang.
 - Component: `resources/views/components/` (xem README).
-- CSS: `resources/css/site/{base,chrome,hero,cards,blocks,content,catalog,tools}.css`.
+- CSS (Sass, mỗi layout nạp một file):
+  - `resources/scss/_tokens.scss`: màu, bo góc, đổ bóng, font. Chỉ khai báo màu ở đây.
+  - `resources/scss/_bootstrap.scss`: Bootstrap 5.3 cấu hình từ token (chỉ các phần đang dùng).
+  - `resources/scss/_common.scss`: mixin `surface()` cho thẻ trắng, icon, khung tối `.panel-dark`.
+  - `resources/scss/site.scss` (layout `site`) gồm `site/_base`, `_layout`, `_components`, `_pages`.
+  - `resources/scss/basic.scss` (layout `basic`): trang lỗi, đăng nhập, thanh toán.
+  - Landing page có CSS riêng trong `resources/css/landing/`.
 
 ## Nội dung nào sửa ở đâu
 
@@ -29,7 +35,8 @@ Banner đầu trang: để trống trong admin thì dùng nội dung viết sẵ
 - Không dùng Font Awesome; icon dùng `<x-icon>`.
 - Form tư vấn: `<x-lead-form>` gửi `POST /lien-he` (JSON khi có JavaScript, form thường khi không), lưu vào Admin → Liên hệ. Nút có `data-consult="…"` mở modal tư vấn và điền sẵn nhu cầu; `data-domain` mở modal kiểm tra tên miền (`/domain-check`).
 - Lọc danh sách ngắn bằng `data-catalog` (sản phẩm, dự án, giải pháp); kho giao diện dùng `data-theme-library`; blog phân trang phía máy chủ.
-- Màu chữ vàng trên nền trắng dùng `--gold-text`/`--gold-700` để đủ tương phản; nền vàng dùng chữ nâu đậm.
+- Màu chữ vàng trên nền trắng dùng `$gold-700` (chữ lớn, icon; `.text-primary`) hoặc `$gold-800` (chữ thường, link; `.text-primary-emphasis`) để đủ tương phản; nền vàng dùng chữ `$on-gold`.
+- Ưu tiên class/utility của Bootstrap (`input-group`, `object-fit-cover`, `position-*`…) trước khi viết class mới; thẻ trắng mới dùng `@include surface`.
 - Ảnh dưới màn hình đầu dùng `loading="lazy"` và có `width`/`height`.
 
 ## Tài nguyên tự host

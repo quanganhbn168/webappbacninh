@@ -10,7 +10,7 @@
     data-featured="{{ $theme->featured_score }}"
     data-name="{{ $theme->name }}">
     <div class="media-card__image ratio-card">
-        <img class="img-cover" src="{{ $theme->image_url }}" alt="" width="640" height="400" loading="lazy" decoding="async">
+        <img class="w-100 h-100 object-fit-cover" src="{{ $theme->image_url }}" alt="" width="640" height="400" loading="lazy" decoding="async">
         <div class="theme-card__badges">
             @if (filled($theme->badge))
                 <span @class(['theme-card__badge', 'theme-card__badge--hot' => $theme->badge === 'Bán chạy', 'theme-card__badge--new' => $theme->badge === 'Mới'])>{{ $theme->badge }}</span>

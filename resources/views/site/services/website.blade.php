@@ -29,7 +29,7 @@
                     @foreach ($landingServices as $service)
                         <div class="col">
                             <article class="media-card">
-                                <a class="media-card__image ratio-card" href="{{ $service->url }}" tabindex="-1" aria-hidden="true"><img class="img-cover" src="{{ $service->image_url }}" alt="" width="640" height="400" loading="lazy"></a>
+                                <a class="media-card__image ratio-card" href="{{ $service->url }}" tabindex="-1" aria-hidden="true"><img class="w-100 h-100 object-fit-cover" src="{{ $service->image_url }}" alt="" width="640" height="400" loading="lazy"></a>
                                 <div class="media-card__body">
                                     <p class="eyebrow mb-0">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</p>
                                     <h3 class="media-card__title"><a href="{{ $service->url }}">{{ $service->title }}</a></h3>

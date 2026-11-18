@@ -10,10 +10,9 @@ export default defineConfig({
   plugins: [
     laravel({
       input: [
-        'resources/scss/bootstrap.scss',
-        'resources/css/site.css',
+        'resources/scss/site.scss',
         'resources/js/site.js',
-        'resources/css/basic.css',
+        'resources/scss/basic.scss',
         'resources/js/basic.js',
         'resources/css/filament/admin/theme.css',
         'resources/css/landing/purehome.css',

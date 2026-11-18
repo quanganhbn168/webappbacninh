@@ -1,0 +1,790 @@
+// Cards and content blocks. Every white card is built on the surface() mixin from _common.scss.
+
+// Icon tile: gold icon on a pale square.
+.icon-tile {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: $radius;
+    background: $gold-50;
+    color: $gold-600;
+
+    .icon { width: 1.5rem; height: 1.5rem; }
+}
+.icon-tile--lg { width: 3.75rem; height: 3.75rem; }
+
+// Feature card: icon, title, short text. Stacked by default, side by side with --row.
+.feature-card {
+    @include surface;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: 100%;
+    padding: 1.4rem;
+    color: inherit;
+    transition: border-color $transition, box-shadow $transition, transform $transition;
+
+    h3 { margin-bottom: .35rem; font-size: 1.02rem; }
+    p { margin: 0; color: $muted; font-size: .9rem; line-height: 1.5; }
+
+    .section--dark & {
+        border-color: rgba(#fff, .12);
+        background: rgba(#fff, .05);
+        box-shadow: none;
+
+        h3 { color: #fff; }
+        p { color: $on-dark-muted; }
+        .icon-tile { background: rgba(#fff, .08); color: $gold; }
+    }
+}
+.feature-card--link:hover {
+    border-color: $gold-200;
+    box-shadow: $shadow;
+    color: inherit;
+    transform: translateY(-2px);
+}
+.feature-card--row {
+    flex-direction: row;
+    align-items: flex-start;
+}
+.feature-card__number {
+    color: $gold-700;
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+// Media card: image on top, body below. Used by projects, posts, products and themes.
+.media-card {
+    @include surface;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    transition: box-shadow $transition, transform $transition;
+
+    &:hover {
+        box-shadow: $shadow;
+        transform: translateY(-2px);
+    }
+}
+.media-card__image {
+    position: relative;
+    display: block;
+
+    img { transition: transform .35s; }
+    .media-card:hover & img { transform: scale(1.03); }
+}
+.media-card__badge {
+    position: absolute;
+    bottom: .9rem;
+    left: .9rem;
+    padding: .28rem .65rem;
+    border-radius: $radius-sm;
+    background: $gold;
+    color: $on-gold;
+    font-size: .75rem;
+    font-weight: 700;
+}
+.media-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: .6rem;
+    padding: 1.25rem 1.35rem 1.4rem;
+
+    > p { margin: 0; color: $muted; font-size: .9rem; line-height: 1.5; }
+    .link-arrow, .tag { position: relative; z-index: 1; }
+}
+.media-card__title {
+    margin: 0;
+    font-size: 1.05rem;
+
+    a { color: inherit; }
+    a:hover { color: $gold-800; }
+    // Makes the whole card clickable.
+    a::after { content: ""; position: absolute; inset: 0; }
+}
+.media-card__meta {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    margin: auto 0 0 !important;
+    padding-top: .25rem;
+    font-size: .82rem !important;
+}
+.media-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin-top: .25rem;
+}
+.media-card__actions {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .6rem;
+    margin-top: auto;
+    padding-top: .75rem;
+}
+.media-card--center {
+    .media-card__body { text-align: center; }
+    .media-card__tags { justify-content: center; }
+}
+.media-card--featured {
+    .media-card__image { aspect-ratio: 16 / 9; }
+    .media-card__title { font-size: clamp(1.25rem, 1rem + .8vw, 1.6rem); }
+}
+.media-card--row {
+    flex-direction: row;
+    min-height: 9.5rem;
+
+    .media-card__image {
+        flex: 0 0 36%;
+        aspect-ratio: auto;
+
+        @include media-breakpoint-down(md) { flex-basis: 34%; }
+    }
+    .media-card__body { padding: 1rem 1.15rem; }
+    .media-card__title { font-size: 1rem; line-height: 1.4; }
+}
+
+// Product tile (home strip).
+.product-strip {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 1rem;
+
+    @include media-breakpoint-down(xl) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    @include media-breakpoint-down(md) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.product-tile {
+    @include surface;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: $ink;
+    transition: transform $transition, box-shadow $transition;
+
+    &:hover {
+        box-shadow: $shadow;
+        color: $ink;
+        transform: translateY(-2px);
+    }
+}
+.product-tile__image {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: $sand;
+}
+.product-tile__name {
+    padding: .75rem .5rem;
+    font-size: .9rem;
+    font-weight: 650;
+    text-align: center;
+}
+
+// Price and add-on cards
+.price-card {
+    @include surface;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: 100%;
+    padding: 1.6rem 1.5rem;
+
+    h3 { margin: 0; font-size: 1.1rem; }
+    .check-list { font-size: .9rem; }
+    .btn { width: 100%; }
+
+    &.is-featured {
+        border: 2px solid $gold;
+        box-shadow: 0 .8rem 2rem rgba($gold, .14);
+    }
+}
+.price-card__badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    padding: .3rem .9rem;
+    border-radius: $radius-sm;
+    background: $gold;
+    color: $on-gold;
+    font-size: .78rem;
+    font-weight: 700;
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+}
+.price-card__summary { margin: -.5rem 0 0; color: $muted; font-size: .88rem; }
+.price-card__price {
+    margin: 0;
+    color: $gold-700;
+    font-size: clamp(1.5rem, 1.2rem + .9vw, 1.9rem);
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1.1;
+
+    small { margin-inline: .15rem; color: $gold-800; font-size: .9rem; font-weight: 600; }
+}
+
+.addon-card {
+    @include surface;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+    height: 100%;
+    padding: 1.5rem;
+
+    h3 { margin: 0; font-size: 1.05rem; }
+    strong { color: $gold-800; }
+    p { margin: 0; color: $muted; font-size: .9rem; }
+    .btn-link { align-self: flex-start; margin-top: auto; padding: 0; }
+}
+
+// Process steps
+.steps {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @include media-breakpoint-down(xl) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @include media-breakpoint-down(md) { grid-template-columns: minmax(0, 1fr); }
+}
+.step {
+    @include surface;
+    position: relative;
+    padding: 1.25rem;
+
+    h3 { margin-bottom: .4rem; font-size: 1rem; }
+    p { margin: 0; color: $muted; font-size: .88rem; line-height: 1.5; }
+
+    &:not(:last-child)::after {
+        content: "›";
+        position: absolute;
+        top: 1.6rem;
+        right: -1.05rem;
+        color: $gold-600;
+        font-size: 1.3rem;
+        font-weight: 700;
+
+        @include media-breakpoint-down(xl) { display: none; }
+    }
+}
+.step__top {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    margin-bottom: 1rem;
+}
+.step__number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: $radius-sm;
+    background: $gold;
+    color: $on-gold;
+    font-size: 1.15rem;
+    font-weight: 800;
+}
+.step__icon { width: 1.6rem; height: 1.6rem; color: $ink; }
+
+// Testimonial
+.quote-card {
+    @include surface;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    height: 100%;
+    margin: 0;
+    padding: 1.6rem;
+
+    blockquote {
+        flex: 1;
+        margin: 0;
+        color: $text-soft;
+        font-size: .95rem;
+        line-height: 1.6;
+    }
+    figcaption {
+        display: flex;
+        align-items: center;
+        gap: .8rem;
+        color: $muted;
+        font-size: .82rem;
+
+        img { width: 3rem; height: 3rem; border-radius: 50%; object-fit: cover; }
+        strong { display: block; color: $ink; font-size: .95rem; }
+    }
+}
+.quote-card__mark { width: 2rem; height: 2rem; color: $gold; }
+.quote-card__stars {
+    display: flex;
+    gap: .15rem;
+    color: $gold;
+
+    .icon { width: 1rem; height: 1rem; fill: currentColor; }
+}
+
+// Module pills
+.module-list {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 1rem;
+
+    @include media-breakpoint-down(xl) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @include media-breakpoint-down(md) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.module-pill {
+    @include surface($radius: $radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    min-height: 3.4rem;
+    padding: .6rem 1rem;
+    color: $ink;
+    font-size: .9rem;
+    font-weight: 600;
+    transition: border-color $transition, background $transition;
+
+    &:hover { border-color: $gold; background: $gold-50; }
+    .icon { width: 1.3rem; height: 1.3rem; color: $gold-600; }
+}
+
+// Chip filters / tabs and catalog toolbar
+.chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+}
+.chip {
+    @include surface($shadow: false, $radius: $radius-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    min-height: 2.6rem;
+    padding: .5rem 1.1rem;
+    color: $ink;
+    font-size: .9rem;
+    font-weight: 600;
+    transition: background $transition, border-color $transition;
+
+    &:hover { border-color: $gold; }
+    &.active, &[aria-selected="true"] {
+        border-color: $gold;
+        background: $gold;
+        color: $on-gold;
+    }
+}
+.catalog-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .form-control, .form-select { min-width: 13rem; }
+
+    @include media-breakpoint-down(sm) {
+        > * { flex: 1 1 100%; }
+        .form-control, .form-select { width: 100%; min-width: 0; }
+    }
+}
+.search-field {
+    position: relative;
+
+    .icon {
+        position: absolute;
+        top: 50%;
+        left: .8rem;
+        width: 1.1rem;
+        height: 1.1rem;
+        color: $muted;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+    .form-control { padding-left: 2.4rem; }
+}
+.empty-state {
+    padding: 3rem 1rem;
+    border: 1px dashed $border-strong;
+    border-radius: $radius;
+    color: $muted;
+    text-align: center;
+}
+
+// FAQ (details/summary)
+.faq {
+    display: grid;
+    gap: 1rem;
+}
+.faq--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+
+    @include media-breakpoint-down(lg) { grid-template-columns: minmax(0, 1fr); }
+}
+.faq__item {
+    @include surface;
+
+    summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.1rem 1.25rem;
+        color: $ink;
+        font-weight: 600;
+        list-style: none;
+        cursor: pointer;
+
+        &::-webkit-details-marker { display: none; }
+        .icon { width: 1.1rem; height: 1.1rem; color: $muted; transition: transform .2s; }
+    }
+    &[open] summary { color: $gold-800; }
+    &[open] summary .icon { transform: rotate(180deg); }
+}
+.faq__answer {
+    padding: 0 1.25rem 1.2rem;
+    color: $muted;
+    line-height: 1.6;
+}
+
+// Comparison table
+.compare-table {
+    margin: 0;
+    overflow: hidden;
+    border-radius: $radius;
+    background: #fff;
+    font-size: .9rem;
+
+    th, td {
+        padding: .9rem 1rem;
+        border-color: $border;
+        text-align: center;
+        vertical-align: middle;
+    }
+    thead th { background: $cream; color: $ink; font-weight: 700; }
+    tbody th { color: $text-soft; font-weight: 500; text-align: left; }
+    .icon { width: 1.2rem; height: 1.2rem; color: $green; }
+    .is-price { color: $gold-800; font-weight: 700; }
+}
+
+// Dark call-to-action band
+.cta-section { padding-top: 0 !important; }
+.cta-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+    padding: clamp(1.75rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 3rem);
+    border-radius: $radius-lg;
+    background: radial-gradient(120% 140% at 100% 0%, $brown-2, $brown 55%);
+    color: $on-dark;
+    box-shadow: $shadow;
+
+    h2 { margin-bottom: .4rem; color: #fff; }
+    p { margin: 0; color: $on-dark-muted; }
+
+    @include media-breakpoint-down(sm) {
+        .btn-row .btn { flex: 1 1 100%; }
+    }
+}
+
+// Split band: copy, image and a checklist on cream.
+.split-band {
+    padding-block: $section-space;
+    background: linear-gradient(110deg, #fdf8f0, #fbf1e1);
+
+    h2 { margin-bottom: .75rem; }
+    .lead-text { margin-bottom: 1.75rem; }
+}
+.split-band__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, .9fr);
+    align-items: center;
+    gap: 2rem;
+
+    @include media-breakpoint-down(lg) { grid-template-columns: minmax(0, 1fr); }
+}
+.split-band__image {
+    width: 100%;
+    max-height: 16rem;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+
+    @include media-breakpoint-down(lg) { max-height: 14rem; }
+}
+.split-band__note {
+    margin: 1.5rem 0 0;
+    color: $note;
+    font-size: 1.6rem;
+    line-height: 1.1;
+    transform: rotate(-4deg);
+}
+
+// Lead panel: gold copy card next to the form.
+.lead-panel {
+    display: grid;
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    overflow: hidden;
+    border-radius: $radius-lg;
+    background: #fff;
+    box-shadow: $shadow-lg;
+
+    .section--dark & { color: $text; }
+
+    @include media-breakpoint-down(lg) { grid-template-columns: minmax(0, 1fr); }
+}
+.lead-panel__copy {
+    padding: clamp(1.75rem, 4vw, 2.75rem);
+    background: linear-gradient(140deg, #d89300, #c07d00);
+    color: #fff6e6;
+
+    h2 { color: #fff; }
+    .eyebrow { color: $gold-200; }
+}
+.lead-panel__contacts {
+    display: grid;
+    gap: .9rem;
+    margin-top: 1.75rem;
+
+    a { display: flex; align-items: center; gap: .8rem; color: #fff; }
+    small { display: block; color: $gold-200; font-size: .78rem; }
+    .icon {
+        width: 2.4rem;
+        height: 2.4rem;
+        padding: .55rem;
+        border-radius: 50%;
+        background: rgba(#fff, .15);
+    }
+}
+.lead-panel__form { padding: clamp(1.5rem, 4vw, 2.5rem); }
+
+// Media + text split used by detail pages.
+.media-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4rem);
+
+    @include media-breakpoint-down(lg) { grid-template-columns: minmax(0, 1fr); }
+}
+.media-split__image {
+    position: relative;
+
+    img {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        border-radius: $radius;
+        box-shadow: $shadow;
+    }
+}
+.note-card {
+    position: absolute;
+    right: -1rem;
+    bottom: -1.5rem;
+    max-width: 18rem;
+    padding: 1rem 1.2rem;
+    border-radius: $radius;
+    background: $brown;
+    color: $on-dark;
+    box-shadow: $shadow;
+    font-size: .85rem;
+
+    strong { display: block; color: #fff; }
+
+    @include media-breakpoint-down(lg) {
+        position: static;
+        max-width: none;
+        margin-top: 1rem;
+    }
+}
+
+// Feature rows: image and copy, alternating sides.
+.feature-rows {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+}
+.feature-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4rem);
+    scroll-margin-top: calc(var(--header-height) + 1.5rem);
+
+    @include media-breakpoint-down(lg) { grid-template-columns: minmax(0, 1fr); }
+}
+.feature-row--reversed .feature-row__image {
+    order: 2;
+
+    @include media-breakpoint-down(lg) { order: 0; }
+}
+.feature-row__image img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: $radius;
+    box-shadow: $shadow;
+}
+.feature-row__body {
+    h3 { margin-bottom: .75rem; }
+    .lead-text { margin-bottom: 1.25rem; }
+    .check-list { margin-bottom: 1.75rem; }
+}
+.feature-row__note {
+    position: absolute;
+    right: 0;
+    bottom: -1rem;
+    margin: 0;
+    color: $note;
+    font-size: 1.45rem;
+    transform: rotate(-4deg);
+
+    @include media-breakpoint-down(lg) { display: none; }
+}
+
+// Featured wide card (projects)
+.featured-card {
+    @include surface($radius: $radius-lg);
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    overflow: hidden;
+
+    @include media-breakpoint-down(lg) { grid-template-columns: minmax(0, 1fr); }
+}
+.featured-card__image {
+    width: 100%;
+    height: 100%;
+    min-height: 18rem;
+    object-fit: cover;
+}
+.featured-card__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    padding: clamp(1.5rem, 4vw, 3rem);
+
+    .tag { align-self: flex-start; }
+}
+
+// Lists
+.info-list {
+    display: grid;
+    gap: .9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    > li {
+        @include surface($shadow: false);
+        display: flex;
+        gap: 1rem;
+        padding: 1rem 1.2rem;
+    }
+    h3 { margin-bottom: .25rem; font-size: 1rem; }
+    p { margin: 0; color: $muted; font-size: .9rem; }
+}
+
+.numbered-grid {
+    @include surface($shadow: false);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    list-style: none;
+    counter-reset: item;
+
+    li {
+        padding: 1.25rem;
+        border-right: 1px solid $border;
+        border-bottom: 1px solid $border;
+        counter-increment: item;
+        font-weight: 600;
+    }
+    li::before {
+        content: counter(item, decimal-leading-zero);
+        display: block;
+        margin-bottom: 1.25rem;
+        color: $gold-800;
+        font-size: .85rem;
+        font-weight: 800;
+    }
+
+    @include media-breakpoint-down(lg) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.numbered-grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    @include media-breakpoint-down(lg) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+// Key facts under a detail title
+.fact-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2.5rem;
+    margin: 0 0 2rem;
+
+    dt { color: $muted; font-size: .8rem; font-weight: 500; }
+    dd { margin: 0; color: $ink; font-weight: 700; }
+}
+
+// Image gallery with thumbnails
+.gallery__main {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: $radius;
+    background: $sand;
+    box-shadow: $shadow;
+}
+.gallery__thumbs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+    gap: .6rem;
+    margin-top: .75rem;
+}
+.gallery__thumb {
+    overflow: hidden;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: $radius-sm;
+    background: none;
+    opacity: .75;
+    transition: opacity $transition, border-color $transition;
+
+    img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+    &:hover, &.active { border-color: $gold; opacity: 1; }
+}
+
+// Callout box with a gold edge.
+.note-box {
+    @include surface;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 3vw, 2rem);
+    border-left: 4px solid $gold;
+
+    > div { flex: 1 1 24rem; }
+}

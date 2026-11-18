@@ -1,0 +1,388 @@
+// Page-specific pieces: long-form text, policies, articles, the theme catalog and free tools.
+
+// Long-form text: articles, policies and service content from the admin.
+.prose {
+    color: $text-soft;
+    font-size: 1.05rem;
+    line-height: 1.75;
+
+    > * + * { margin-top: 1.1em; }
+    > :first-child { margin-top: 0; }
+    h2 {
+        margin-top: 2em;
+        font-size: clamp(1.35rem, 1.1rem + .7vw, 1.65rem);
+        scroll-margin-top: calc(var(--header-height) + 1.5rem);
+    }
+    h3 { margin-top: 1.6em; font-size: 1.2rem; }
+    p, ul, ol { margin-bottom: 0; }
+    ul, ol { padding-left: 1.3rem; }
+    li + li { margin-top: .4em; }
+    li::marker { color: $gold-600; }
+    img { height: auto; border-radius: $radius; }
+    blockquote {
+        margin-inline: 0;
+        padding: 1rem 1.25rem;
+        border-left: 4px solid $gold;
+        border-radius: 0 $radius-sm $radius-sm 0;
+        background: $gold-50;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+    th, td { padding: .6rem .75rem; border: 1px solid $border; }
+}
+.prose a,
+.form-check-label a {
+    color: $gold-800;
+    text-decoration: underline;
+    text-underline-offset: .2em;
+}
+
+// Policy pages
+.legal-hero-icon {
+    align-items: center;
+    justify-content: center;
+    width: 11rem;
+    height: 11rem;
+    margin-left: auto;
+    border-radius: 50%;
+    background: #fff;
+    color: $gold-600;
+    box-shadow: $shadow;
+
+    .icon { width: 4.5rem; height: 4.5rem; }
+}
+.legal-toc {
+    @include surface($shadow: false);
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+    padding: 1.25rem;
+    font-size: .9rem;
+
+    @include media-breakpoint-up(lg) {
+        position: sticky;
+        top: calc(var(--header-height) + 1.5rem);
+    }
+
+    strong { margin-bottom: .5rem; color: $ink; }
+    a {
+        padding: .4rem .6rem;
+        border-radius: $radius-sm;
+        color: $muted;
+
+        &:hover { background: $gold-50; color: $gold-800; }
+    }
+}
+.legal-notice {
+    display: flex;
+    gap: .9rem;
+    margin-bottom: 1.5rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid $gold-200;
+    border-radius: $radius;
+    background: $gold-50;
+    color: $text-soft;
+
+    .icon { color: $gold-600; }
+    p { margin: 0; }
+}
+.legal-document {
+    @include surface($shadow: false);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+
+    article + article {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid $border;
+    }
+    article h2 { margin-top: 0; }
+}
+.legal-contact {
+    @include surface($shadow: false);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+}
+
+// Article page
+.article-hero { max-width: 52rem; }
+.article-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    align-items: start;
+    gap: clamp(2rem, 4vw, 3.5rem);
+
+    @include media-breakpoint-down(lg) { grid-template-columns: minmax(0, 1fr); }
+}
+.article-body { min-width: 0; }
+.article-cover {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin-bottom: 2rem;
+    object-fit: cover;
+    border-radius: $radius;
+}
+.article-intro {
+    margin-bottom: 1.5rem;
+    color: $ink;
+    font-size: 1.15rem;
+    font-weight: 500;
+    line-height: 1.65;
+}
+.article-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 3rem;
+    padding: 1.5rem;
+    border: 1px solid $gold-200;
+    border-radius: $radius;
+    background: $gold-50;
+
+    > div { flex: 1 1 18rem; }
+}
+.article-sidebar {
+    display: grid;
+    gap: 1.25rem;
+
+    @include media-breakpoint-up(lg) {
+        position: sticky;
+        top: calc(var(--header-height) + 1.5rem);
+    }
+
+    .legal-toc { position: static; }
+}
+.ad-banners {
+    display: grid;
+    gap: 1rem;
+
+    img { width: 100%; height: auto; border-radius: $radius; }
+}
+
+// Theme catalog (/kho-giao-dien)
+.theme-quick {
+    border-bottom: 1px solid $border;
+    background: #fff;
+}
+.theme-quick__track {
+    display: flex;
+    gap: .5rem;
+    overflow-x: auto;
+    padding-block: 1rem;
+    scrollbar-width: thin;
+}
+.theme-quick__item {
+    @include surface($shadow: false, $radius: $radius-sm);
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: .5rem;
+    min-height: 3rem;
+    padding: .6rem 1.1rem;
+    color: $ink;
+    font-size: .88rem;
+    font-weight: 600;
+    transition: background $transition, border-color $transition, color $transition;
+
+    .icon { width: 1.15rem; height: 1.15rem; color: $gold-600; }
+    &:hover { border-color: $gold; }
+    &.active {
+        border-color: $gold;
+        background: $gold;
+        color: $on-gold;
+
+        .icon { color: inherit; }
+    }
+}
+
+.theme-filter {
+    @include surface($shadow: false);
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.25rem;
+
+    .form-check { font-size: .88rem; }
+
+    @include media-breakpoint-up(lg) {
+        position: sticky;
+        top: calc(var(--header-height) + 1rem);
+    }
+    @include media-breakpoint-down(lg) {
+        .offcanvas-lg & { padding: 0; border: 0; }
+    }
+}
+.theme-filter__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: .75rem;
+    border-bottom: 1px solid $border;
+
+    @include media-breakpoint-down(lg) {
+        .offcanvas-lg & { display: none; }
+    }
+}
+.theme-filter__group {
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    .form-label { font-size: .85rem; font-weight: 700; }
+}
+.theme-resultbar {
+    @include surface($shadow: false, $radius: $radius-sm);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: .75rem 1rem;
+}
+
+.theme-card__badges {
+    position: absolute;
+    top: .75rem;
+    left: .75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+}
+.theme-card__badge {
+    padding: .22rem .55rem;
+    border-radius: $radius-sm;
+    background: rgba($on-gold, .85);
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 700;
+}
+.theme-card__badge--hot { background: $red; }
+.theme-card__badge--new { background: $green; }
+.theme-card__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: $muted;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+}
+.theme-card__code { color: $red; }
+.theme-card__footer {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-top: auto;
+    padding-top: .9rem;
+    border-top: 1px solid $border;
+
+    small { display: block; color: $muted; font-size: .75rem; }
+    strong { color: $gold-800; }
+}
+
+.order-card {
+    @include surface($shadow: $shadow);
+    position: sticky;
+    top: calc(var(--header-height) + 1rem);
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+    padding: 1.5rem;
+    border-top: 3px solid $gold-600;
+}
+.order-card__code {
+    align-self: flex-start;
+    margin-bottom: .5rem;
+    padding: .25rem .6rem;
+    border-radius: $radius-sm;
+    background: $ink;
+    color: #fff;
+    font-size: .78rem;
+    font-weight: 700;
+}
+.order-card__price {
+    color: $gold-800;
+    font-size: 1.9rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+.order-card__specs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .75rem;
+    margin: .75rem 0 1.25rem;
+    padding: 1rem 0;
+    border-block: 1px solid $border;
+
+    dt { color: $muted; font-size: .75rem; font-weight: 500; }
+    dd { margin: 0; color: $ink; font-size: .88rem; font-weight: 700; }
+
+    @include media-breakpoint-down(sm) { grid-template-columns: minmax(0, 1fr); }
+}
+
+// Free tools (resources/views/site/tools)
+.tool-toggle {
+    display: flex;
+    gap: .25rem;
+    padding: .25rem;
+    border: 1px solid $border;
+    border-radius: 50rem;
+    background: $cream;
+
+    .btn {
+        flex: 1;
+        min-height: 2.75rem;
+        border-radius: 50rem;
+        white-space: normal;
+    }
+}
+.tool-info {
+    @include surface($shadow: false);
+    padding: 1.25rem;
+}
+
+// Lunar calendar
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: .6rem;
+}
+.cal-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 5rem;
+    border: 1px solid transparent;
+    border-radius: $radius;
+    background: $paper;
+    cursor: pointer;
+    transition: background $transition, transform $transition, box-shadow $transition;
+
+    &:not(.empty):hover {
+        background: $sand;
+        box-shadow: $shadow-sm;
+        transform: translateY(-2px);
+    }
+    &.today {
+        border-color: $gold;
+        background: $gold-50;
+        color: $gold-800;
+
+        .lunar { color: $gold-700; }
+    }
+    &.empty { background: transparent; cursor: default; }
+    &.sunday .solar { color: $red; }
+
+    .solar { font-size: 1.5rem; font-weight: 700; line-height: 1; }
+    .lunar { margin-top: .3rem; color: $muted; font-size: .85rem; }
+}

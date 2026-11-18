@@ -1,0 +1,57 @@
+// Standalone pages without the site header and footer (layouts/basic.blade.php):
+// sign-in, errors, domain result and payment.
+@import '@fontsource-variable/roboto/index.css';
+
+@import 'bootstrap';
+@import 'common';
+
+// Icons here sit inline in headings and buttons, so they scale with the text.
+.icon {
+    width: 1.25em;
+    height: 1.25em;
+    vertical-align: -.2em;
+}
+
+.error-page__code {
+    font-size: clamp(5rem, 14vw, 8rem);
+    line-height: 1;
+}
+
+// Checkout: selectable payment methods.
+.payment-method {
+    border: 2px solid $border !important;
+    cursor: pointer;
+    transition: border-color $transition, box-shadow $transition, transform $transition;
+
+    &:hover {
+        box-shadow: $shadow;
+        transform: translateY(-3px);
+    }
+    &.active {
+        border-color: $gold !important;
+        background: $gold-50;
+    }
+}
+
+// SePay QR page
+.qr-code {
+    display: inline-block;
+    padding: 1.25rem;
+    border-radius: $radius-lg;
+    background: #fff;
+}
+.bank-info {
+    margin-top: 1.25rem;
+    padding: 1rem;
+    border-radius: $radius;
+    background: rgba(#fff, .1);
+}
+.copy-btn {
+    --bs-btn-color: #{$gold};
+    --bs-btn-hover-color: #{$gold-200};
+}
+.status-checking { animation: pulse 2s infinite; }
+
+@keyframes pulse {
+    50% { opacity: .5; }
+}

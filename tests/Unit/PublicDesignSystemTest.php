@@ -8,10 +8,9 @@ class PublicDesignSystemTest extends TestCase
 {
     public function test_public_css_uses_the_shared_type_scale_without_pixel_font_sizes(): void
     {
-        $files = array_merge(
-            [dirname(__DIR__, 2).'/resources/css/basic.css'],
-            glob(dirname(__DIR__, 2).'/resources/css/site/*.css'),
-        );
+        $scss = dirname(__DIR__, 2).'/resources/scss';
+        $files = array_merge(glob($scss.'/*.scss'), glob($scss.'/site/*.scss'));
+        $this->assertNotEmpty($files);
 
         foreach ($files as $file) {
             $css = (string) file_get_contents($file);
@@ -27,8 +26,7 @@ class PublicDesignSystemTest extends TestCase
     {
         $head = (string) file_get_contents(dirname(__DIR__, 2).'/resources/views/layouts/site.blade.php');
 
-        $this->assertStringContainsString('resources/scss/bootstrap.scss', $head);
-        $this->assertStringContainsString('resources/css/site.css', $head);
+        $this->assertStringContainsString('resources/scss/site.scss', $head);
         $this->assertStringNotContainsString('frontend/assets/css/', $head);
         $this->assertStringNotContainsString('fonts.googleapis.com', $head);
         $this->assertStringNotContainsString('fonts/filament/filament/inter', $head);

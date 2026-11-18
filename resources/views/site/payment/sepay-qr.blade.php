@@ -18,7 +18,7 @@
             </div>
 
             {{-- QR Container --}}
-            <div class="qr-container text-center">
+            <div class="panel-dark text-center">
                 {{-- QR Code --}}
                 <div class="qr-code mb-4">
                     <img src="https://img.vietqr.io/image/{{ $bank }}-{{ $account }}-compact2.png?amount={{ $amount }}&addInfo={{ urlencode($code) }}&accountName={{ urlencode($name) }}" 

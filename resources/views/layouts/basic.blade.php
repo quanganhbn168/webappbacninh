@@ -14,7 +14,7 @@
         @include('site.partials.favicon')
         {!! tracking_code('head') !!}
     @endif
-    @vite(['resources/scss/bootstrap.scss', 'resources/css/basic.css', 'resources/js/basic.js'])
+    @vite(['resources/scss/basic.scss', 'resources/js/basic.js'])
     @stack('head')
 </head>
 <body class="bg-light">

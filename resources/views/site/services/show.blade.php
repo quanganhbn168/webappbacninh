@@ -6,7 +6,7 @@
         <a class="btn btn-outline-dark" href="{{ route('themes.index') }}">Xem kho giao diện</a>
         <x-slot:meta>
             @if ($service->highlight)
-                <p class="fw-semibold text-gold-dark mt-3 mb-0">{{ $service->highlight }}</p>
+                <p class="fw-semibold text-primary-emphasis mt-3 mb-0">{{ $service->highlight }}</p>
             @endif
             <div class="page-hero__meta">
                 <span>Chi phí tham khảo <strong>{{ $service->price_label }}</strong></span>

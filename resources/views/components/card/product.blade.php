@@ -1,13 +1,13 @@
 @props(['product', 'variant' => 'full'])
 @if ($variant === 'tile')
     <a {{ $attributes->class(['product-tile']) }} href="{{ $product->detail_url ?: route('products') }}">
-        <span class="product-tile__image"><img class="img-cover" src="{{ $product->image_url }}" alt="" width="320" height="220" loading="lazy" decoding="async"></span>
+        <span class="product-tile__image"><img class="w-100 h-100 object-fit-cover" src="{{ $product->image_url }}" alt="" width="320" height="220" loading="lazy" decoding="async"></span>
         <span class="product-tile__name">{{ $product->name }}</span>
     </a>
 @else
     <article {{ $attributes->class(['media-card', 'media-card--center']) }}>
         <div class="media-card__image ratio-card">
-            <img class="img-cover" src="{{ $product->image_url }}" alt="{{ $product->name }}" width="640" height="400" loading="lazy" decoding="async">
+            <img class="w-100 h-100 object-fit-cover" src="{{ $product->image_url }}" alt="{{ $product->name }}" width="640" height="400" loading="lazy" decoding="async">
             <span class="media-card__badge">{{ $product->group?->badge() }}</span>
         </div>
         <div class="media-card__body">

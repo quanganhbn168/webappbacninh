@@ -12,8 +12,8 @@
                 <div class="row g-3 g-lg-4 row-cols-1 row-cols-sm-2 row-cols-lg-3">
                     @foreach ($tools as $tool)
                         <div class="col">
-                            <x-feature-card :icon="$tool->icon ?: 'wrench'" :title="$tool->name" :text="$tool->description" :href="url($tool->link)" class="tool-card">
-                                @if ($tool->badge)<span class="tag tag--gold tool-card__badge">{{ $tool->badge }}</span>@endif
+                            <x-feature-card :icon="$tool->icon ?: 'wrench'" :title="$tool->name" :text="$tool->description" :href="url($tool->link)" class="position-relative">
+                                @if ($tool->badge)<span class="tag tag--gold position-absolute top-0 end-0 m-3">{{ $tool->badge }}</span>@endif
                                 <span class="link-arrow mt-3">Dùng ngay <x-icon name="arrow-right" /></span>
                             </x-feature-card>
                         </div>

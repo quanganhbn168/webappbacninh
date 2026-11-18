@@ -1,7 +1,7 @@
 # WebApp Bắc Ninh
 
 Website giới thiệu dịch vụ của WebApp Bắc Ninh, kèm trang quản trị tự xây trên Filament.
-Nền tảng: Laravel 13, Filament 5, Livewire 4, Bootstrap 5.3 (giao diện public, Sass trong `resources/scss/bootstrap.scss`), Curator (thư viện ảnh), Filament Shield (phân quyền).
+Nền tảng: Laravel 13, Filament 5, Livewire 4, Bootstrap 5.3 (giao diện public, Sass trong `resources/scss/`), Curator (thư viện ảnh), Filament Shield (phân quyền).
 
 Hướng dẫn triển khai: [DEPLOYMENT.md](DEPLOYMENT.md). Giao diện đã duyệt: [docs/APPROVED-INTERFACE.md](docs/APPROVED-INTERFACE.md).
 
@@ -47,7 +47,7 @@ Giao diện public (chi tiết: [docs/APPROVED-INTERFACE.md](docs/APPROVED-INTER
 
 - Mỗi trang là một view Blade trong `resources/views/site/` (ví dụ `site/projects/index.blade.php`, `site/projects/show.blade.php`), kế thừa `layouts/site.blade.php`.
 - Khối dùng chung là Blade component trong `resources/views/components/`: `<x-hero>`, `<x-section-head>`, `<x-feature-card>`, `<x-card.project|post|product|theme|price|package|quote>`, `<x-steps>`, `<x-faq>`, `<x-cta-banner>`, `<x-lead-form>`, `<x-lead-section>`, `<x-ad-banners>`, `<x-icon>`.
-- CSS: Bootstrap 5 (`resources/scss/bootstrap.scss`, chỉ các phần đang dùng) rồi `resources/css/site.css` (token, header/footer, thẻ, khối nội dung).
+- CSS: Sass trong `resources/scss/`: token màu `_tokens.scss` cấu hình cho Bootstrap 5 (`_bootstrap.scss`, chỉ các phần đang dùng); `site.scss` cho trang public, `basic.scss` cho trang đăng nhập/lỗi/thanh toán. Mỗi layout nạp một file.
 - Icon: `<x-icon name="phone" />`, bộ SVG trong `resources/icons/icons.json` (Lucide + logo thương hiệu từ Simple Icons). Thêm icon: sửa danh sách trong `scripts/build-icons.mjs` rồi chạy `node scripts/build-icons.mjs`. Ô chọn icon trong admin dùng `App\Filament\Forms\IconPicker`.
 - JavaScript: `resources/js/site.js` (plugin Bootstrap cần dùng + các module trong `resources/js/site/`: form tư vấn, lọc danh mục, kho giao diện, thư viện ảnh, ToolKit cho trang công cụ).
 - JS riêng của một trang nằm ở `resources/js/tools/<trang>.js` hoặc `resources/js/payment/<trang>.js`, nạp bằng `@push('scripts') @vite('resources/js/tools/<trang>.js') @endpush`; Vite tự nhận file mới trong hai thư mục này. Không viết `<script>`, `<style>` hay `onclick=` thẳng trong view.

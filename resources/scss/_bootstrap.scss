@@ -1,69 +1,60 @@
-// Bootstrap 5 for the public site, tuned to the approved WebApp Bắc Ninh design.
-// Site components live in resources/css/site/*.css and load after this file.
+// Bootstrap 5.3 configured from the design tokens. Focus rings, checked inputs, pagination and
+// nav pills all derive from $primary and $component-active-*, so they need no overrides here.
+@import 'tokens';
 
-$primary: #ffac00;
-$secondary: #342219;
-$dark: #342219;
-$light: #fcf7ef;
-$success: #1e8a55;
-$danger: #d83b32;
+$primary: $gold;
+$secondary: $muted;
+$success: $green;
+$danger: $red;
+$light: $cream;
+$dark: $ink;
+$color-contrast-dark: $on-gold;
+$primary-text-emphasis: $gold-800;
+$primary-bg-subtle: $gold-100;
+$primary-border-subtle: $gold-200;
 
-$body-color: #242a31;
-$body-bg: #fff;
-$headings-color: #342219;
-$link-color: #985e00;
+$body-color: $text;
+$body-secondary-color: $muted;
+$headings-color: $ink;
+$link-color: $gold-800;
+$link-hover-color: $gold-900;
 $link-decoration: none;
 $link-hover-decoration: none;
-$border-color: #eeeae5;
+$border-color: $border;
+$component-active-color: $on-gold;
 
-$font-family-sans-serif: 'Roboto Variable', Arial, sans-serif;
+$font-family-sans-serif: $font-sans;
 $font-weight-bold: 700;
 $headings-font-weight: 800;
-$line-height-base: 1.5;
 
-$border-radius: .43rem;
+$border-radius: $radius-sm;
 $border-radius-sm: .3rem;
-$border-radius-lg: .65rem;
+$border-radius-lg: $radius;
+$border-radius-xl: $radius-lg;
+$box-shadow-sm: $shadow-sm;
+$box-shadow: $shadow;
+$box-shadow-lg: $shadow-lg;
+$card-border-radius: $radius-lg;
 
 $btn-font-weight: 650;
 $btn-padding-x: 1.5rem;
 $btn-padding-y: .8rem;
 $btn-padding-x-lg: 1.4rem;
 $btn-padding-y-lg: .9rem;
-$btn-box-shadow: none;
-$btn-focus-box-shadow: 0 0 0 .2rem rgba(255, 172, 0, .35);
-
-$input-border-color: #d5d9df;
-$input-focus-border-color: #ffac00;
-$input-focus-box-shadow: 0 0 0 .2rem rgba(255, 172, 0, .25);
 $input-padding-y: .65rem;
 $input-padding-x: .9rem;
-
-$breadcrumb-divider-color: #727780;
-$breadcrumb-active-color: #727780;
+$input-border-color: $border-strong;
+$input-focus-border-color: $gold;
+$breadcrumb-divider-color: $border-strong;
+$breadcrumb-active-color: $muted;
 
 $container-max-widths: (sm: 540px, md: 720px, lg: 960px, xl: 1140px, xxl: 1292px);
 $container-padding-x: 2rem;
 
-$accordion-button-active-bg: #fff8ea;
-$accordion-button-active-color: #342219;
-$accordion-button-focus-box-shadow: 0 0 0 .2rem rgba(255, 172, 0, .25);
-$nav-pills-link-active-bg: #ffac00;
-$nav-pills-link-active-color: #261c0e;
-$pagination-color: #342219;
-$pagination-active-bg: #ffac00;
-$pagination-active-border-color: #ffac00;
-$pagination-active-color: #261c0e;
-$pagination-focus-box-shadow: 0 0 0 .2rem rgba(255, 172, 0, .25);
-$form-check-input-checked-bg-color: #ffac00;
-$form-check-input-checked-border-color: #ffac00;
-$form-check-input-focus-box-shadow: 0 0 0 .2rem rgba(255, 172, 0, .25);
-$form-switch-focus-color: #ffac00;
-
 $enable-shadows: false;
 $enable-negative-margins: true;
 
-// Only the Bootstrap parts the site uses (no accordion, carousel, popover, tooltip, progress, placeholders).
+// Only the parts the pages use (no accordion, carousel, popover, tooltip, progress, placeholders).
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
 @import 'bootstrap/scss/variables-dark';
@@ -97,3 +88,8 @@ $enable-negative-margins: true;
 @import 'bootstrap/scss/spinners';
 @import 'bootstrap/scss/helpers';
 @import 'bootstrap/scss/utilities/api';
+
+// Plain gold fails contrast as text on white; keep it for fills and use the darker gold for text.
+.text-primary {
+    color: $gold-700 !important;
+}

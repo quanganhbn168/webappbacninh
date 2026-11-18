@@ -61,7 +61,7 @@
                         <p class="lead-text mt-3 mb-0">Mẫu được sử dụng như điểm xuất phát. Khi triển khai, WebApp Bắc Ninh sẽ thay nhận diện, nội dung và điều chỉnh cấu trúc theo doanh nghiệp.</p>
                     </div>
                     <div class="col-lg-7">
-                        <ul class="check-list check-list--gold two-columns">
+                        <ul class="check-list check-list--gold check-list--2col">
                             @foreach ($theme->audiences as $item)<li>{{ $item }}</li>@endforeach
                         </ul>
                     </div>
@@ -82,7 +82,7 @@
                     @endif
                     @if ($theme->included_features)
                         <div class="col-lg-7">
-                            <div class="feature-card"><h3>Chức năng và tiêu chuẩn bàn giao</h3><ul class="check-list two-columns">@foreach ($theme->included_features as $feature)<li>{{ $feature }}</li>@endforeach</ul></div>
+                            <div class="feature-card"><h3>Chức năng và tiêu chuẩn bàn giao</h3><ul class="check-list check-list--2col">@foreach ($theme->included_features as $feature)<li>{{ $feature }}</li>@endforeach</ul></div>
                         </div>
                     @endif
                 </div>

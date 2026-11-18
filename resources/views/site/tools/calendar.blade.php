@@ -14,11 +14,11 @@
             <div class="card shadow-lg border-0 mb-5 overflow-hidden">
                 <div class="row g-0">
                     <!-- Left: Solar Date -->
-                    <div class="col-md-6 tool-result rounded-0 p-5 d-flex flex-column justify-content-center align-items-center position-relative">
+                    <div class="col-md-6 panel-dark rounded-0 p-5 d-flex flex-column justify-content-center align-items-center position-relative">
                         <div class="position-absolute" style="top: 20px; left: 20px; opacity: 0.5; font-size: 5rem;">
                             <x-icon name="sun" />
                         </div>
-                        <h5 class="text-uppercase letter-spacing-2 mb-3">Dương Lịch</h5>
+                        <h5 class="text-uppercase mb-3">Dương Lịch</h5>
                         <h1 class="display-1 fw-bold mb-0" id="todayDay">--</h1>
                         <h3 class="fw-light mb-0" id="todayMonthYear">--/----</h3>
                         <p class="mt-3 mb-0 text-white-50" id="todayWeekday">Thứ --</p>
@@ -29,7 +29,7 @@
                         <div class="position-absolute" style="top: 20px; right: 20px; opacity: 0.1; font-size: 5rem; color: #000;">
                             <x-icon name="moon" />
                         </div>
-                        <h5 class="text-uppercase letter-spacing-2 mb-3 text-secondary">Âm Lịch</h5>
+                        <h5 class="text-uppercase mb-3 text-secondary">Âm Lịch</h5>
                         <h1 class="display-1 fw-bold text-dark mb-0" id="lunarDay">--</h1>
                         <h3 class="fw-light text-muted mb-0" id="lunarMonthYear">--/----</h3>
                         <p class="mt-3 mb-0 text-danger fw-bold" id="canChi">-- --</p>

@@ -9,14 +9,12 @@
         @foreach ($taxTools as $key => $tool)
             @continue($key === $current)
             <div class="col-md-6">
-                <a href="{{ route($tool['route']) }}" class="card tool-link-card h-100 text-decoration-none border-0 shadow-sm">
-                    <div class="card-body d-flex align-items-center">
-                        <span class="d-inline-flex align-items-center justify-content-center rounded-3 icon-tile me-3" style="width: 3rem; height: 3rem"><x-icon :name="$tool['icon']" /></span>
-                        <span>
-                            <span class="d-block fw-bold text-dark">{{ $tool['title'] }}</span>
-                            <small class="text-secondary">{{ $tool['text'] }}</small>
-                        </span>
-                    </div>
+                <a href="{{ route($tool['route']) }}" class="feature-card feature-card--link feature-card--row align-items-center">
+                    <span class="icon-tile"><x-icon :name="$tool['icon']" /></span>
+                    <span>
+                        <span class="d-block fw-bold text-dark">{{ $tool['title'] }}</span>
+                        <small class="text-secondary">{{ $tool['text'] }}</small>
+                    </span>
                 </a>
             </div>
         @endforeach

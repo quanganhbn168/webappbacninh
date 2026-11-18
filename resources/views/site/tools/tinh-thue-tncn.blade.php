@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="text-center mb-5">
-                <span class="badge text-bg-danger bg-opacity-10 text-danger px-3 py-2 mb-3 fw-bold tool-hero__badge">
+                <span class="badge text-bg-danger bg-opacity-10 text-danger px-3 py-2 mb-3 fw-bold">
                     <x-icon name="flame" class="me-1" /> Luật mới 2026
                 </span>
                 <h1 class="display-5 fw-bold mb-3">
@@ -28,9 +28,9 @@
                         <div class="col-lg-6">
                             <div class="mb-4">
                                 <label class="form-label fw-bold" for="gross-income"><x-icon name="banknote" class="text-success me-1" /> Tổng thu nhập (Gross)</label>
-                                <div class="tool-input-suffix">
+                                <div class="input-group input-group-lg">
                                     <input type="text" inputmode="numeric" class="form-control form-control-lg" id="gross-income" value="30000000" placeholder="30.000.000">
-                                    <span>VNĐ</span>
+                                    <span class="input-group-text">VNĐ</span>
                                 </div>
                             </div>
 
@@ -51,24 +51,24 @@
                                         <label class="form-check-label small" for="auto-insurance">Tự động</label>
                                     </div>
                                 </div>
-                                <div class="tool-input-suffix">
+                                <div class="input-group input-group-lg">
                                     <input type="text" inputmode="numeric" class="form-control form-control-lg" id="insurance" value="0" disabled>
-                                    <span>VNĐ</span>
+                                    <span class="input-group-text">VNĐ</span>
                                 </div>
                             </div>
 
                             <div class="mb-4">
                                 <label class="form-label fw-bold" for="other-deductions"><x-icon name="circle-minus" class="text-secondary me-1" /> Các khoản giảm trừ khác</label>
-                                <div class="tool-input-suffix">
+                                <div class="input-group input-group-lg">
                                     <input type="text" inputmode="numeric" class="form-control form-control-lg" id="other-deductions" value="0" placeholder="0">
-                                    <span>VNĐ</span>
+                                    <span class="input-group-text">VNĐ</span>
                                 </div>
                                 <small class="text-secondary">Từ thiện, quỹ hưu trí tự nguyện...</small>
                             </div>
                         </div>
 
                         <div class="col-lg-6">
-                            <div class="tool-result h-100" data-show-if="total_tax" hidden aria-live="polite">
+                            <div class="panel-dark h-100" data-show-if="total_tax" hidden aria-live="polite">
                                 <div class="text-center mb-4">
                                     <p class="mb-1 opacity-75">Thuế TNCN phải nộp</p>
                                     <p class="display-4 fw-bold mb-0" data-field="total_tax" data-format="money"></p>

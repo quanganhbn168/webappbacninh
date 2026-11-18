@@ -1,0 +1,17 @@
+// Public site stylesheet (layouts/site.blade.php): Bootstrap plus the site components.
+//   _tokens.scss           colours, radii, shadows, fonts
+//   _bootstrap.scss        Bootstrap configured from the tokens
+//   _common.scss           surface() mixin, icons, dark panel (shared with basic.scss)
+//   site/_base.scss        typography, buttons, sections, tags, lists
+//   site/_layout.scss      header, nav, footer, floating buttons, page hero
+//   site/_components.scss  cards and content blocks
+//   site/_pages.scss       articles, policies, theme catalog, free tools
+@import '@fontsource-variable/roboto/index.css';
+@import '@fontsource-variable/dancing-script/index.css';
+
+@import 'bootstrap';
+@import 'common';
+@import 'site/base';
+@import 'site/layout';
+@import 'site/components';
+@import 'site/pages';

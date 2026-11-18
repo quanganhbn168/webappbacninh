@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="text-center mb-5">
-                <span class="badge text-bg-success bg-opacity-10 text-success px-3 py-2 mb-3 fw-bold tool-hero__badge">
+                <span class="badge text-bg-success bg-opacity-10 text-success px-3 py-2 mb-3 fw-bold">
                     <x-icon name="store" class="me-1" /> Hộ kinh doanh
                 </span>
                 <h1 class="display-5 fw-bold mb-3"><x-icon name="store" class="text-primary me-2" />Tính thuế Hộ kinh doanh</h1>
@@ -40,15 +40,15 @@
                     <div class="row g-4">
                         <div class="col-lg-5">
                             <label class="form-label fw-bold" for="revenue"><x-icon name="banknote" class="text-success me-1" /> Doanh thu năm (VNĐ)</label>
-                            <div class="tool-input-suffix">
+                            <div class="input-group input-group-lg">
                                 <input type="text" inputmode="numeric" class="form-control form-control-lg" id="revenue" value="600000000" placeholder="600.000.000">
-                                <span>VNĐ</span>
+                                <span class="input-group-text">VNĐ</span>
                             </div>
                             <small class="text-secondary">Ngưỡng miễn thuế: <strong data-threshold>500 triệu</strong>/năm</small>
                         </div>
 
                         <div class="col-lg-7">
-                            <div class="tool-result h-100" data-result hidden aria-live="polite">
+                            <div class="panel-dark h-100" data-result hidden aria-live="polite">
                                 <div class="text-center py-4" data-exempt hidden>
                                     <x-icon name="circle-check" class="icon-xl mb-3" />
                                     <p class="h4 fw-bold">Không phải nộp thuế!</p>

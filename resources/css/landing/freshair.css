@@ -1,4 +1,4 @@
-@import '../fonts.css';
+@import './fonts.css';
 
 :root { font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #142132; background: white; font-synthesis: none; --fa-green: #086832; --fa-red: #ff1830; --fa-blue: #0953bb; --fa-border: #e0e7ee; }
 * { box-sizing: border-box; }

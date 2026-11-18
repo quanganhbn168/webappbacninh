@@ -19,7 +19,9 @@
 .site-nav .nav-link:hover, .site-nav .nav-link:focus-visible { color: #bd7900; }
 .site-nav .nav-link.active { color: var(--gold-700); }
 .site-nav__toggle { display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 0; background: none; color: inherit; }
-.site-nav__toggle::after { margin-left: 0; }
+.site-nav__toggle::after { display: none; }
+.site-nav__caret { width: .95rem; height: .95rem; transition: transform .2s; }
+.site-nav__toggle[aria-expanded="true"] .site-nav__caret, .site-nav__dropdown:hover .site-nav__caret { transform: rotate(180deg); }
 .site-nav__panel {
     --bs-dropdown-border-color: var(--border); --bs-dropdown-border-radius: .6rem; --bs-dropdown-padding-x: .5rem; --bs-dropdown-padding-y: .5rem;
     --bs-dropdown-link-hover-bg: var(--gold-50); --bs-dropdown-link-active-bg: var(--gold-50); --bs-dropdown-link-active-color: #262322;
@@ -35,9 +37,9 @@
     .site-nav__list { height: 100%; align-items: stretch; gap: 1.5rem; }
     .site-nav .nav-item { display: flex; align-items: center; }
     .site-nav .nav-link { position: relative; height: 100%; display: inline-flex; align-items: center; padding: 0 !important; }
-    .site-nav .nav-link.active::after { content: ""; position: absolute; right: 0; bottom: 0; left: 0; height: .2rem; background: #ffd778; }
+    .site-nav .nav-link.active::after { content: ""; position: absolute; right: 0; bottom: 1.15rem; left: 0; height: 2px; border-radius: 2px; background: var(--gold); }
     .site-nav__dropdown { position: relative; gap: .15rem; }
-    .site-nav__toggle { width: 1rem; height: 100%; }
+    .site-nav__toggle { width: 1.2rem; height: 100%; }
     .site-nav__panel { top: calc(100% - .15rem) !important; left: -1.25rem; margin-top: 0; }
     /* Open on hover too; click and keyboard use Bootstrap's dropdown. */
     .site-nav__dropdown:hover > .site-nav__panel, .site-nav__dropdown:focus-within > .site-nav__panel { display: block; }
@@ -45,7 +47,6 @@
 }
 @media (min-width: 992px) and (max-width: 1199.98px) {
     .site-nav__list { gap: 1rem; }
-    .site-header__actions .btn-outline-dark { display: none !important; }
 }
 @media (max-width: 991.98px) {
     .site-nav { --bs-offcanvas-width: min(22rem, 88vw); }

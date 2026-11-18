@@ -32,6 +32,7 @@ final class DefaultMenus
                 ['title' => 'Sản phẩm', 'url' => '/san-pham'],
                 ['title' => 'Dự án', 'url' => '/du-an'],
                 ['title' => 'Bảng giá', 'url' => '/bang-gia'],
+                ['title' => 'Công cụ', 'url' => '/cong-cu'],
                 ['title' => 'Blog', 'url' => '/kien-thuc'],
                 ['title' => 'Liên hệ', 'url' => '/lien-he'],
             ]],

@@ -16,7 +16,7 @@
                             @if ($item['children'] !== [])
                                 <li class="nav-item dropdown site-nav__dropdown">
                                     <a @class(['nav-link', 'active' => $active]) href="{{ $item['url'] }}" @if ($active) aria-current="page" @endif @if ($item['new_tab']) target="_blank" rel="noopener" @endif>{{ $item['title'] }}</a>
-                                    <button class="dropdown-toggle site-nav__toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="Mở danh sách {{ mb_strtolower($item['title']) }}"></button>
+                                    <button class="dropdown-toggle site-nav__toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="Mở danh sách {{ mb_strtolower($item['title']) }}"><x-icon name="chevron-down" class="site-nav__caret" /></button>
                                     <ul class="dropdown-menu site-nav__panel">
                                         @foreach ($item['children'] as $child)
                                             <li>
@@ -36,14 +36,12 @@
                         @endforeach
                     </ul>
                     <div class="site-nav__actions d-lg-none">
-                        <a class="btn btn-outline-dark" href="{{ route('products') }}">Xem Demo</a>
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn</button>
                     </div>
                 </div>
             </div>
 
             <div class="site-header__actions">
-                <a class="btn btn-outline-dark d-none d-sm-inline-flex" href="{{ route('products') }}">Xem Demo</a>
                 <button class="btn btn-primary d-none d-sm-inline-flex" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn</button>
                 <button class="btn btn-icon d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#site-nav" aria-controls="site-nav" aria-label="Mở menu">
                     <x-icon name="menu" />

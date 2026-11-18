@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AdBanners;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\AdBanners\Pages\CreateAdBanner;
 use App\Filament\Resources\AdBanners\Pages\EditAdBanner;
 use App\Filament\Resources\AdBanners\Pages\ListAdBanners;
@@ -21,7 +22,7 @@ class AdBannerResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Website;
 
     protected static ?string $navigationLabel = 'Banner quảng cáo';
 
@@ -29,7 +30,7 @@ class AdBannerResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Banner quảng cáo';
 
-    protected static ?int $navigationSort = 16;
+    protected static ?int $navigationSort = 40;
 
     protected static ?string $recordTitleAttribute = 'name';
 

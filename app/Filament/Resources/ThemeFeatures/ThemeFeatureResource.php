@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ThemeFeatures;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\ThemeFeatures\Pages\ManageThemeFeatures;
 use App\Models\ThemeFeature;
 use BackedEnum;
@@ -22,7 +23,7 @@ class ThemeFeatureResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAdjustmentsHorizontal;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Kho giao diện';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Portfolio;
 
     protected static ?string $navigationLabel = 'Tính năng giao diện';
 
@@ -30,7 +31,7 @@ class ThemeFeatureResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Tính năng giao diện';
 
-    protected static ?int $navigationSort = 52;
+    protected static ?int $navigationSort = 50;
 
     protected static ?string $recordTitleAttribute = 'name';
 

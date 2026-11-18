@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Menus;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Forms\IconPicker;
 use App\Filament\Resources\Menus\Pages\EditMenu;
 use App\Filament\Resources\Menus\Pages\ListMenus;
@@ -31,7 +32,7 @@ class MenuResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBars3;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Website;
 
     protected static ?string $navigationLabel = 'Menu';
 
@@ -39,7 +40,7 @@ class MenuResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Menu';
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 20;
 
     protected static ?string $recordTitleAttribute = 'name';
 

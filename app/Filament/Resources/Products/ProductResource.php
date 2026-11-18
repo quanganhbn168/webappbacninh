@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
@@ -21,7 +22,7 @@ class ProductResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCube;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Services;
 
     protected static ?string $navigationLabel = 'Sản phẩm';
 
@@ -29,7 +30,7 @@ class ProductResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Sản phẩm';
 
-    protected static ?int $navigationSort = 12;
+    protected static ?int $navigationSort = 40;
 
     protected static ?string $recordTitleAttribute = 'name';
 

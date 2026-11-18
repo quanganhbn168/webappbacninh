@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Testimonials;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\Testimonials\Pages\CreateTestimonial;
 use App\Filament\Resources\Testimonials\Pages\EditTestimonial;
 use App\Filament\Resources\Testimonials\Pages\ListTestimonials;
@@ -21,7 +22,7 @@ class TestimonialResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Portfolio;
 
     protected static ?string $navigationLabel = 'Đánh giá khách hàng';
 
@@ -29,7 +30,7 @@ class TestimonialResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Đánh giá khách hàng';
 
-    protected static ?int $navigationSort = 14;
+    protected static ?int $navigationSort = 60;
 
     protected static ?string $recordTitleAttribute = 'name';
 

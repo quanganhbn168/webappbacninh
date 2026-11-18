@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PricingPlans;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\PricingPlans\Pages\CreatePricingPlan;
 use App\Filament\Resources\PricingPlans\Pages\EditPricingPlan;
 use App\Filament\Resources\PricingPlans\Pages\ListPricingPlans;
@@ -21,7 +22,7 @@ class PricingPlanResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCurrencyDollar;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Services;
 
     protected static ?string $navigationLabel = 'Bảng giá';
 
@@ -29,7 +30,7 @@ class PricingPlanResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Bảng giá';
 
-    protected static ?int $navigationSort = 13;
+    protected static ?int $navigationSort = 50;
 
     protected static ?string $recordTitleAttribute = 'name';
 

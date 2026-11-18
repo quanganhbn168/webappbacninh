@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Templates;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\Templates\Pages\CreateTemplate;
 use App\Filament\Resources\Templates\Pages\EditTemplate;
 use App\Filament\Resources\Templates\Pages\ListTemplates;
@@ -21,7 +22,7 @@ class TemplateResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSwatch;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Kho giao diện';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Portfolio;
 
     protected static ?string $navigationLabel = 'Giao diện';
 
@@ -29,7 +30,7 @@ class TemplateResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Giao diện';
 
-    protected static ?int $navigationSort = 50;
+    protected static ?int $navigationSort = 30;
 
     protected static ?string $recordTitleAttribute = 'name';
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProjectCategories;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\ProjectCategories\Pages\ManageProjectCategories;
 use App\Models\ProjectCategory;
 use BackedEnum;
@@ -22,7 +23,7 @@ class ProjectCategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFolder;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Portfolio;
 
     protected static ?string $navigationLabel = 'Nhóm dự án';
 
@@ -30,7 +31,7 @@ class ProjectCategoryResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Nhóm dự án';
 
-    protected static ?int $navigationSort = 11;
+    protected static ?int $navigationSort = 20;
 
     protected static ?string $recordTitleAttribute = 'name';
 

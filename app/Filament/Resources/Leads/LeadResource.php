@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Leads;
 
+use App\Filament\NavigationGroup;
 use App\Models\Lead;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Textarea;
@@ -20,7 +21,7 @@ class LeadResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-inbox';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|\UnitEnum|null $navigationGroup = NavigationGroup::Customers;
 
     protected static ?string $navigationLabel = 'Yêu cầu liên hệ';
 
@@ -28,7 +29,20 @@ class LeadResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Yêu cầu liên hệ';
 
-    protected static ?int $navigationSort = 80;
+    protected static ?int $navigationSort = 10;
+
+    /** Number of requests nobody has handled yet, shown next to the sidebar item. */
+    public static function getNavigationBadge(): ?string
+    {
+        $new = Lead::query()->where('status', 'new')->count();
+
+        return $new > 0 ? (string) $new : null;
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        return 'danger';
+    }
 
     public static function canCreate(): bool
     {

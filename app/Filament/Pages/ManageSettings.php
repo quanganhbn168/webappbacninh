@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\NavigationGroup;
 use App\Domain\Settings\Actions\LoadSiteSettings;
 use App\Domain\Settings\Actions\SaveSiteSettings;
 use App\Domain\Settings\Rules\SquareRasterImage;
@@ -36,7 +37,7 @@ class ManageSettings extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Hệ thống';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::System;
 
     protected static ?string $navigationLabel = 'Cài đặt website';
 

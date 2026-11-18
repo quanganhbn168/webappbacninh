@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Domain\Site\Actions\ResolveFaviconAssets;
+use App\Filament\NavigationGroup;
 use Awcodes\Curator\CuratorPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -14,7 +15,6 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -43,6 +43,15 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            // Group order comes from the NavigationGroup enum.
+            ->navigationGroups(NavigationGroup::class)
+            // Filament capitalises every word of labels in breadcrumbs and headings
+            // ("Danh Mục Dịch Vụ"); Vietnamese labels are kept as written.
+            ->bootUsing(function (Panel $panel): void {
+                foreach ($panel->getResources() as $resource) {
+                    $resource::titleCaseModelLabel(false);
+                }
+            })
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -51,7 +60,6 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -65,8 +73,8 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->plugins([
-                FilamentShieldPlugin::make(),
-                CuratorPlugin::make()->label('Tệp')->pluralLabel('Thư viện ảnh')->navigationGroup('Nội dung')->navigationSort(90),
+                FilamentShieldPlugin::make()->navigationGroup(NavigationGroup::System)->navigationSort(20),
+                CuratorPlugin::make()->label('Tệp')->pluralLabel('Thư viện ảnh')->navigationGroup(NavigationGroup::Website)->navigationSort(60),
             ])
             ->authMiddleware([
                 Authenticate::class,

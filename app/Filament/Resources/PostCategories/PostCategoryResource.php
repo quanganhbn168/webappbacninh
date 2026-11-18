@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PostCategories;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\PostCategories\Pages\CreatePostCategory;
 use App\Filament\Resources\PostCategories\Pages\EditPostCategory;
 use App\Filament\Resources\PostCategories\Pages\ListPostCategories;
@@ -19,9 +20,9 @@ class PostCategoryResource extends Resource
 {
     protected static ?string $model = PostCategory::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Blog';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Blog;
 
     protected static ?string $navigationLabel = 'Danh mục tin tức';
 
@@ -29,7 +30,7 @@ class PostCategoryResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Danh mục tin tức';
 
-    protected static ?int $navigationSort = 41;
+    protected static ?int $navigationSort = 20;
 
     protected static ?string $recordTitleAttribute = 'name';
 

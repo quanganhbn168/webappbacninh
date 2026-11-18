@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TemplateCategories;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\TemplateCategories\Pages\ManageTemplateCategories;
 use App\Models\TemplateCategory;
 use BackedEnum;
@@ -22,7 +23,7 @@ class TemplateCategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Kho giao diện';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Portfolio;
 
     protected static ?string $navigationLabel = 'Ngành giao diện';
 
@@ -30,7 +31,7 @@ class TemplateCategoryResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Ngành giao diện';
 
-    protected static ?int $navigationSort = 51;
+    protected static ?int $navigationSort = 40;
 
     protected static ?string $recordTitleAttribute = 'name';
 

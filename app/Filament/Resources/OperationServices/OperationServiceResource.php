@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\OperationServices;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\OperationServices\Pages\CreateOperationService;
 use App\Filament\Resources\OperationServices\Pages\EditOperationService;
 use App\Filament\Resources\OperationServices\Pages\ListOperationServices;
@@ -19,9 +20,9 @@ class OperationServiceResource extends Resource
 {
     protected static ?string $model = OperationService::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedServerStack;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Services;
 
     protected static ?string $navigationLabel = 'Dịch vụ vận hành';
 

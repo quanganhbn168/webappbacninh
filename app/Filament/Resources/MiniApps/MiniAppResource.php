@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MiniApps;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\MiniApps\Pages\CreateMiniApp;
 use App\Filament\Resources\MiniApps\Pages\EditMiniApp;
 use App\Filament\Resources\MiniApps\Pages\ListMiniApps;
@@ -21,7 +22,7 @@ class MiniAppResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedWrenchScrewdriver;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Website;
 
     protected static ?string $navigationLabel = 'Công cụ miễn phí';
 
@@ -29,7 +30,7 @@ class MiniAppResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Công cụ miễn phí';
 
-    protected static ?int $navigationSort = 15;
+    protected static ?int $navigationSort = 50;
 
     protected static ?string $recordTitleAttribute = 'name';
 

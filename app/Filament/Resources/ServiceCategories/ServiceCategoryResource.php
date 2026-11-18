@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ServiceCategories;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\ServiceCategories\Pages\CreateServiceCategory;
 use App\Filament\Resources\ServiceCategories\Pages\EditServiceCategory;
 use App\Filament\Resources\ServiceCategories\Pages\ListServiceCategories;
@@ -19,9 +20,9 @@ class ServiceCategoryResource extends Resource
 {
     protected static ?string $model = ServiceCategory::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Services;
 
     protected static ?string $navigationLabel = 'Danh mục dịch vụ';
 
@@ -29,7 +30,7 @@ class ServiceCategoryResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Danh mục dịch vụ';
 
-    protected static ?int $navigationSort = 21;
+    protected static ?int $navigationSort = 20;
 
     protected static ?string $recordTitleAttribute = 'name';
 

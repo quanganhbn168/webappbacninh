@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LandingPages;
 
+use App\Filament\NavigationGroup;
 use App\Filament\Resources\LandingPages\Pages\CreateLandingPage;
 use App\Filament\Resources\LandingPages\Pages\EditLandingPage;
 use App\Filament\Resources\LandingPages\Pages\ListLandingPages;
@@ -21,7 +22,7 @@ class LandingPageResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRocketLaunch;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Nội dung';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Website;
 
     protected static ?string $navigationLabel = 'Landing page';
 
@@ -29,7 +30,7 @@ class LandingPageResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Landing page';
 
-    protected static ?int $navigationSort = 15;
+    protected static ?int $navigationSort = 30;
 
     protected static ?string $recordTitleAttribute = 'name';
 

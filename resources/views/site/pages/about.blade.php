@@ -3,7 +3,7 @@
 @section('content')
     <x-hero eyebrow="WebApp Bắc Ninh" title="Thiết kế website và đồng hành vận hành cho doanh nghiệp"
         lead="Chúng tôi tập trung vào website dễ hiểu, dễ sử dụng và có thể tiếp tục phát triển bằng nội dung, SEO, tích hợp và phần mềm khi doanh nghiệp thực sự cần."
-        :image="asset('frontend/assets/images/about-bacninh.webp')" image-alt="Đội ngũ WebApp Bắc Ninh">
+        :image="asset('images/about-bacninh.webp')" image-alt="Đội ngũ WebApp Bắc Ninh">
         <a class="btn btn-primary" href="{{ route('projects.index') }}">Xem dự án <x-icon name="arrow-right" /></a>
         <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Trao đổi nhu cầu</button>
     </x-hero>
@@ -51,7 +51,7 @@
     <section class="section section--dark">
         <div class="container">
             <div class="media-split">
-                <div class="media-split__image"><img src="{{ asset('frontend/assets/images/project-software.webp') }}" alt="Năng lực phát triển website và phần mềm" width="720" height="540" loading="lazy"></div>
+                <div class="media-split__image"><img src="{{ asset('images/project-software.webp') }}" alt="Năng lực phát triển website và phần mềm" width="720" height="540" loading="lazy"></div>
                 <div>
                     <p class="eyebrow">Năng lực triển khai</p>
                     <h2 class="mb-4">Từ giao diện đến hệ thống phía sau</h2>

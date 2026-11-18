@@ -3,7 +3,7 @@
 @section('content')
     <x-hero title="Giải pháp số phù hợp" highlight="với từng doanh nghiệp"
         lead="Chúng tôi kết nối website, phần mềm và vận hành thành giải pháp tổng thể, phù hợp với đặc thù từng ngành nghề, giúp doanh nghiệp tăng trưởng bền vững trong kỷ nguyên số."
-        :image="asset('frontend/images/solutions-hero.webp')" image-alt="Giải pháp số cho doanh nghiệp">
+        :image="asset('images/solutions-hero.webp')" image-alt="Giải pháp số cho doanh nghiệp">
         <a class="btn btn-primary" href="#giai-phap">Tìm giải pháp phù hợp <x-icon name="arrow-right" /></a>
         <a class="btn btn-outline-dark" href="{{ route('products') }}">Xem sản phẩm</a>
         <x-slot:after>
@@ -37,7 +37,7 @@
                 @foreach ($industries as [$key, $name, $image, $text, $tags])
                     <div class="col" data-catalog-item data-categories="{{ $key }}" data-title="{{ $name }}">
                         <article class="media-card">
-                            <div class="media-card__image ratio-card"><img class="img-cover" src="{{ asset('frontend/images/'.$image) }}" alt="{{ $name }}" width="640" height="400" loading="lazy"></div>
+                            <div class="media-card__image ratio-card"><img class="img-cover" src="{{ asset('images/'.$image) }}" alt="{{ $name }}" width="640" height="400" loading="lazy"></div>
                             <div class="media-card__body">
                                 <h3 class="media-card__title">{{ $name }}</h3>
                                 <p>{{ $text }}</p>

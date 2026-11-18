@@ -22,7 +22,7 @@ class TestimonialSeeder extends Seeder
                 'name' => $row['name'],
                 'role' => $row['role'],
                 'quote' => $row['quote'],
-                'avatar_id' => $images->execute('frontend/images/'.$row['avatar'], 'testimonials', $row['name'])?->id,
+                'avatar_id' => $images->execute('images/'.$row['avatar'], 'testimonials', $row['name'])?->id,
                 'rating' => 5,
                 'order' => $order + 1,
                 'is_active' => true,

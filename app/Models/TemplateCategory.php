@@ -41,7 +41,7 @@ class TemplateCategory extends Model implements HasMedia
             return $this->getFirstMediaUrl('featured');
         }
 
-        return $this->image ? asset($this->image) : asset('images/no-image.jpg');
+        return $this->image ? asset($this->image) : asset('images/placeholder.svg');
     }
 
     public function getOgImageUrlAttribute(): string

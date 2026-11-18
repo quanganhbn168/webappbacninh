@@ -3,7 +3,7 @@
 @section('content')
     <x-hero eyebrow="Sau khi website đi vào hoạt động" title="Website không tự tạo giá trị nếu không được duy trì"
         lead="WebApp Bắc Ninh hỗ trợ phần kỹ thuật, nội dung, SEO và cập nhật định kỳ để doanh nghiệp không phải tuyển ngay một đội riêng."
-        :image="asset('frontend/assets/images/seo-operation.webp')" image-alt="Dịch vụ vận hành website và SEO">
+        :image="asset('images/seo-operation.webp')" image-alt="Dịch vụ vận hành website và SEO">
         <a class="btn btn-primary" href="#nhom-cong-viec">Xem dịch vụ <x-icon name="arrow-right" /></a>
         <a class="btn btn-outline-dark" href="#de-xuat-goi">Nhận đề xuất gói</a>
     </x-hero>

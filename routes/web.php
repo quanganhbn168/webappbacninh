@@ -22,7 +22,11 @@ use App\Http\Controllers\ThumbnailController;
 use App\Http\Controllers\ToolController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/landing/{slug}', [LandingPageController::class, 'show'])->name('landing.show');
+// Images moved from /frontend/images and /frontend/assets/images to /images; keep old links working.
+Route::get('/frontend/{path}', fn (string $path) => redirect('/images/'.basename($path), 301))
+    ->where('path', '(assets/)?images/[A-Za-z0-9._-]+');
+
+Route::get('/landing/{slug}',[LandingPageController::class, 'show'])->name('landing.show');
 
 Route::get('/profile/bac-be-bong', function () {
     return view('site.profile.bac-be-bong');

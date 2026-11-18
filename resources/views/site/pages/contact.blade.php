@@ -3,7 +3,7 @@
 @section('content')
     <x-hero title="Liên hệ với chúng tôi" highlight="Cùng bắt đầu dự án của bạn"
         lead="Chúng tôi luôn sẵn sàng lắng nghe và đồng hành cùng bạn trong việc xây dựng website, phát triển phần mềm và triển khai các giải pháp vận hành số hiệu quả cho doanh nghiệp."
-        :image="asset('frontend/images/contact-hero.webp')" image-alt="Tư vấn viên trao đổi với khách hàng">
+        :image="asset('images/contact-hero.webp')" image-alt="Tư vấn viên trao đổi với khách hàng">
         <a class="btn btn-primary" href="#gui-yeu-cau">Trao đổi về dự án <x-icon name="arrow-right" /></a>
         @if (site_config('phone_href'))
             <a class="btn btn-outline-dark" href="tel:{{ site_config('phone_href') }}"><x-icon name="phone" /> {{ site_config('phone') }}</a>

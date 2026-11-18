@@ -20,6 +20,14 @@ class FrontendSiteTest extends TestCase
 {
     use DatabaseTransactions;
 
+    public function test_old_frontend_image_links_redirect_to_images(): void
+    {
+        $this->get('/frontend/images/hero-home.webp')->assertRedirect('/images/hero-home.webp')->assertStatus(301);
+        $this->get('/frontend/assets/images/about-bacninh.webp')->assertRedirect('/images/about-bacninh.webp');
+        $this->assertFileExists(public_path('images/hero-home.webp'));
+        $this->assertFileExists(public_path('images/about-bacninh.webp'));
+    }
+
     public function test_all_static_and_listing_pages_render(): void
     {
         foreach (['/', '/dich-vu', '/hosting-domain-email', '/giai-phap', '/san-pham', '/gioi-thieu', '/lien-he', '/bang-gia', '/hop-tac-agency', '/thiet-ke-website', '/kho-giao-dien', '/du-an', '/kien-thuc', '/dich-vu-van-hanh', '/cong-cu', '/chinh-sach-bao-mat', '/dieu-khoan-su-dung', '/chinh-sach-bao-hanh', '/quy-trinh-thanh-toan'] as $uri) {
@@ -27,7 +35,7 @@ class FrontendSiteTest extends TestCase
         }
 
         $this->get('/')
-            ->assertSee('/frontend/images/hero-home.webp', false)
+            ->assertSee('/images/hero-home.webp', false)
             ->assertSee('/build/assets/site-', false)
             ->assertDontSee('/frontend/assets/css/', false)
             ->assertDontSee('fonts.googleapis.com', false)

@@ -19,7 +19,7 @@ class OperationServiceSeeder extends Seeder
                 continue;
             }
 
-            $image = fn (string $path): ?int => $images->execute('frontend/'.$path, 'services', $row['title'])?->id;
+            $image = fn (string $path): ?int => $images->execute('images/'.$path, 'services', $row['title'])?->id;
 
             OperationService::query()->create(Arr::except($row, ['image', 'secondary_image']) + [
                 'image_id' => $image($row['image']),
@@ -51,8 +51,8 @@ class OperationServiceSeeder extends Seeder
                 'meta_title' => 'Hosting và bảo trì website tại Bắc Ninh | WebApp Bắc Ninh',
                 'meta_description' => 'Dịch vụ hosting và bảo trì website tại Bắc Ninh: backup, SSL, tên miền, cập nhật hệ thống, kiểm tra form và hỗ trợ xử lý lỗi.',
                 'order' => 0,
-                'image' => 'assets/images/project-software.webp',
-                'secondary_image' => 'assets/images/hero-industrial.webp',
+                'image' => 'project-software.webp',
+                'secondary_image' => 'hero-industrial.webp',
                 'audiences' => [
                     'Doanh nghiệp đã có website nhưng không có nhân sự kỹ thuật',
                     'Website WordPress, Laravel hoặc hệ thống riêng cần theo dõi định kỳ',
@@ -183,8 +183,8 @@ class OperationServiceSeeder extends Seeder
                 'meta_title' => 'Quản trị và đăng bài website tại Bắc Ninh | WebApp Bắc Ninh',
                 'meta_description' => 'Dịch vụ quản trị và đăng bài website: cập nhật bài viết, sản phẩm, dự án, banner, chuẩn hóa ảnh và kiểm tra hiển thị sau đăng.',
                 'order' => 1,
-                'image' => 'assets/images/about-bacninh.webp',
-                'secondary_image' => 'assets/images/project-corporate.webp',
+                'image' => 'about-bacninh.webp',
+                'secondary_image' => 'project-corporate.webp',
                 'audiences' => [
                     'Doanh nghiệp có bài viết, sản phẩm hoặc dự án mới hàng tháng',
                     'Đội kinh doanh có dữ liệu nhưng không quen quản trị website',
@@ -315,8 +315,8 @@ class OperationServiceSeeder extends Seeder
                 'meta_title' => 'Dịch vụ SEO website tại Bắc Ninh | WebApp Bắc Ninh',
                 'meta_description' => 'Dịch vụ SEO website tại Bắc Ninh: technical SEO, từ khóa, tối ưu trang dịch vụ, bài viết, internal link, Search Console và báo cáo định kỳ.',
                 'order' => 2,
-                'image' => 'assets/images/seo-operation.webp',
-                'secondary_image' => 'assets/images/project-software.webp',
+                'image' => 'seo-operation.webp',
+                'secondary_image' => 'project-software.webp',
                 'audiences' => [
                     'Doanh nghiệp muốn có khách hàng từ Google trong dài hạn',
                     'Website đã có nhưng chưa có cấu trúc từ khóa và trang đích rõ',
@@ -447,8 +447,8 @@ class OperationServiceSeeder extends Seeder
                 'meta_title' => 'Dịch vụ nội dung Facebook cơ bản | WebApp Bắc Ninh',
                 'meta_description' => 'Dịch vụ nội dung Facebook cơ bản cho doanh nghiệp: lịch chủ đề, viết bài, gợi ý hình ảnh và đồng bộ nội dung với website.',
                 'order' => 3,
-                'image' => 'assets/images/agency-partnership.webp',
-                'secondary_image' => 'assets/images/about-bacninh.webp',
+                'image' => 'agency-partnership.webp',
+                'secondary_image' => 'about-bacninh.webp',
                 'audiences' => [
                     'Doanh nghiệp có fanpage nhưng đăng bài thiếu đều đặn',
                     'Đội bán hàng cần nội dung cơ bản để duy trì hiện diện',
@@ -579,8 +579,8 @@ class OperationServiceSeeder extends Seeder
                 'meta_title' => 'Nâng cấp và tích hợp website tại Bắc Ninh | WebApp Bắc Ninh',
                 'meta_description' => 'Nâng cấp website, thêm landing page, form lead, tracking, Zalo OA, thanh toán, API, CRM và module quản lý theo nhu cầu doanh nghiệp.',
                 'order' => 4,
-                'image' => 'assets/images/project-software.webp',
-                'secondary_image' => 'assets/images/project-ecommerce.webp',
+                'image' => 'project-software.webp',
+                'secondary_image' => 'project-ecommerce.webp',
                 'audiences' => [
                     'Website đang hoạt động nhưng thiếu chức năng phục vụ kinh doanh',
                     'Doanh nghiệp cần kết nối website với Zalo, thanh toán hoặc CRM',
@@ -711,8 +711,8 @@ class OperationServiceSeeder extends Seeder
                 'meta_title' => 'Đo lường và báo cáo hiệu quả website | WebApp Bắc Ninh',
                 'meta_description' => 'Cấu hình GA4, Search Console, theo dõi click gọi điện, Zalo, form liên hệ, nguồn truy cập và báo cáo hiệu quả website định kỳ.',
                 'order' => 5,
-                'image' => 'assets/images/seo-operation.webp',
-                'secondary_image' => 'assets/images/project-software.webp',
+                'image' => 'seo-operation.webp',
+                'secondary_image' => 'project-software.webp',
                 'audiences' => [
                     'Doanh nghiệp chưa cài GA4 hoặc Search Console đúng cách',
                     'Website có traffic nhưng không biết khách đã liên hệ từ đâu',

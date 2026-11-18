@@ -19,7 +19,7 @@ class ServiceSeeder extends Seeder
                 continue;
             }
 
-            $image = fn (string $path): ?int => $images->execute('frontend/'.$path, 'services', $row['title'])?->id;
+            $image = fn (string $path): ?int => $images->execute('images/'.$path, 'services', $row['title'])?->id;
 
             Service::query()->create(Arr::except($row, ['image', 'secondary_image']) + [
                 'image_id' => $image($row['image']),
@@ -52,8 +52,8 @@ class ServiceSeeder extends Seeder
                 'meta_title' => 'Thiết kế website doanh nghiệp tại Bắc Ninh | WebApp Bắc Ninh',
                 'meta_description' => 'Thiết kế website doanh nghiệp tại Bắc Ninh: giới thiệu năng lực, sản phẩm, dịch vụ, dự án, tuyển dụng và form nhận khách hàng. Dễ quản trị, SEO nền tảng.',
                 'order' => 0,
-                'image' => 'assets/images/project-corporate.webp',
-                'secondary_image' => 'assets/images/about-bacninh.webp',
+                'image' => 'project-corporate.webp',
+                'secondary_image' => 'about-bacninh.webp',
                 'audiences' => [
                     'Doanh nghiệp sản xuất và nhà máy trong khu công nghiệp',
                     'Công ty thương mại, phân phối và xuất nhập khẩu',
@@ -184,8 +184,8 @@ class ServiceSeeder extends Seeder
                 'meta_title' => 'Thiết kế website bán hàng tại Bắc Ninh | WebApp Bắc Ninh',
                 'meta_description' => 'Thiết kế website bán hàng tại Bắc Ninh với danh mục sản phẩm, giỏ hàng, đơn hàng, thanh toán, vận chuyển và quản trị dễ sử dụng.',
                 'order' => 1,
-                'image' => 'assets/images/project-ecommerce.webp',
-                'secondary_image' => 'assets/images/seo-operation.webp',
+                'image' => 'project-ecommerce.webp',
+                'secondary_image' => 'seo-operation.webp',
                 'audiences' => [
                     'Cửa hàng muốn nhận đơn trực tiếp trên website',
                     'Nhà phân phối có nhiều nhóm sản phẩm và bảng giá',
@@ -317,8 +317,8 @@ class ServiceSeeder extends Seeder
                 'meta_title' => 'Thiết kế landing page tại Bắc Ninh | WebApp Bắc Ninh',
                 'meta_description' => 'Thiết kế landing page tại Bắc Ninh cho quảng cáo, tuyển sinh, sự kiện, ra mắt sản phẩm và dịch vụ. Tối ưu mobile, form lead và tracking.',
                 'order' => 2,
-                'image' => 'assets/images/project-landing.webp',
-                'secondary_image' => 'assets/images/project-tour.webp',
+                'image' => 'project-landing.webp',
+                'secondary_image' => 'project-tour.webp',
                 'audiences' => [
                     'Chiến dịch chạy quảng cáo Facebook hoặc Google',
                     'Sự kiện, hội thảo, tuyển sinh và đăng ký tham dự',
@@ -450,8 +450,8 @@ class ServiceSeeder extends Seeder
                 'meta_title' => 'Thiết kế lại website cũ tại Bắc Ninh | WebApp Bắc Ninh',
                 'meta_description' => 'Dịch vụ thiết kế lại website cũ tại Bắc Ninh: nâng cấp giao diện, mobile, tốc độ, SEO, quản trị và chuyển dữ liệu an toàn.',
                 'order' => 3,
-                'image' => 'assets/images/project-software.webp',
-                'secondary_image' => 'assets/images/hero-industrial.webp',
+                'image' => 'project-software.webp',
+                'secondary_image' => 'hero-industrial.webp',
                 'audiences' => [
                     'Website đã dùng nhiều năm và giao diện lỗi thời',
                     'Trang tải chậm, lỗi mobile hoặc thường xuyên phát sinh lỗi',

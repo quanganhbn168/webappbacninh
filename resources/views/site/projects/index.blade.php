@@ -3,7 +3,7 @@
 @section('content')
     <x-hero title="Dự án tiêu biểu" highlight="Từ ý tưởng đến giải pháp thực tế"
         lead="Khám phá các hướng triển khai website và phần mềm cho doanh nghiệp. Từ những ý tưởng ban đầu đến các giải pháp website, phần mềm hiệu quả và bền vững."
-        :image="asset('frontend/images/projects-hero.webp')" image-alt="Website và phần mềm đã triển khai trên nhiều thiết bị">
+        :image="asset('images/projects-hero.webp')" image-alt="Website và phần mềm đã triển khai trên nhiều thiết bị">
         <a class="btn btn-primary" href="#du-an">Khám phá dự án <x-icon name="arrow-right" /></a>
         <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Trao đổi dự án của bạn</button>
     </x-hero>

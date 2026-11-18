@@ -73,7 +73,7 @@ abstract class FrontendController extends Controller
             'pageDescription' => site_config('default_meta_description', ''),
             'pageKeywords' => site_config('default_meta_keywords', ''),
             'canonicalUrl' => request()->url(),
-            'ogImage' => site_config('default_og_image') ?: asset('frontend/images/hero-home.webp'),
+            'ogImage' => site_config('default_og_image') ?: asset('images/hero-home.webp'),
             'ogType' => 'website',
             'ogImageAlt' => site_config('name'),
             'robots' => 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',

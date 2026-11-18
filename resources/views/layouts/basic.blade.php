@@ -9,7 +9,7 @@
     @hasSection('meta_description')<meta name="description" content="@yield('meta_description')">@endif
     @hasSection('meta_keywords')<meta name="keywords" content="@yield('meta_keywords')">@endif
     @hasSection('error-page')
-        <link rel="icon" type="image/svg+xml" href="/frontend/images/favicon.svg">
+        <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
     @else
         @include('site.partials.favicon')
         {!! tracking_code('head') !!}

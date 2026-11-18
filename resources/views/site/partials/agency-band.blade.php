@@ -10,7 +10,7 @@
                     <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận hồ sơ năng lực</button>
                 </div>
             </div>
-            <img class="split-band__image" src="{{ asset('frontend/images/agency-handshake.webp') }}" alt="Hai đối tác trao đổi hợp tác" width="640" height="420" loading="lazy">
+            <img class="split-band__image" src="{{ asset('images/agency-handshake.webp') }}" alt="Hai đối tác trao đổi hợp tác" width="640" height="420" loading="lazy">
             <div>
                 <ul class="check-list check-list--gold">
                     @foreach ($benefits ?? ['Giải pháp linh hoạt, chi phí tốt', 'Đảm bảo chất lượng & tiến độ', 'Hỗ trợ kỹ thuật chuyên sâu', 'Đồng hành lâu dài, cùng phát triển'] as $benefit)

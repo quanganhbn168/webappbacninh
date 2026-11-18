@@ -3,7 +3,7 @@
 @section('content')
     <x-hero eyebrow="Dịch vụ WebApp Bắc Ninh" title="Giải pháp dịch vụ toàn diện" highlight="cho doanh nghiệp"
         lead="Chúng tôi cung cấp dịch vụ thiết kế website, phát triển phần mềm, CRM, booking, SEO, quảng cáo và vận hành số, giúp doanh nghiệp tối ưu quy trình, tăng trưởng bền vững với sự đồng hành lâu dài."
-        :image="asset('frontend/images/hero-services.webp')" image-alt="Giải pháp website và phần mềm quản trị doanh nghiệp trên máy tính">
+        :image="asset('images/hero-services.webp')" image-alt="Giải pháp website và phần mềm quản trị doanh nghiệp trên máy tính">
         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn miễn phí <x-icon name="arrow-right" /></button>
         <a class="btn btn-outline-dark" href="{{ route('about') }}">Xem hồ sơ năng lực</a>
         <x-slot:after>
@@ -28,7 +28,7 @@
         <div class="container">
             <x-section-head title="Dịch vụ nổi bật" lead="Những dịch vụ được nhiều doanh nghiệp lựa chọn nhất tại WebApp Bắc Ninh." />
             <div class="feature-rows">
-                <x-feature-row id="thiet-ke-website" :image="asset('frontend/images/service-website.webp')" title="Thiết kế Website theo ngành"
+                <x-feature-row id="thiet-ke-website" :image="asset('images/service-website.webp')" title="Thiết kế Website theo ngành"
                     text="Thiết kế website chuyên nghiệp, phù hợp đặc thù từng ngành nghề, chuẩn SEO và tối ưu trải nghiệm người dùng." note="Website chuyên nghiệp – Tạo lợi thế cạnh tranh!">
                     <ul class="check-list check-list--gold">
                         <li>Giao diện hiện đại, chuẩn thương hiệu</li>
@@ -39,7 +39,7 @@
                     </ul>
                     <div class="btn-row"><a class="btn btn-outline-primary" href="{{ route('services.index') }}">Xem dịch vụ thiết kế website</a></div>
                 </x-feature-row>
-                <x-feature-row id="phan-mem" reversed :image="asset('frontend/images/service-software.webp')" title="Phần mềm doanh nghiệp theo yêu cầu"
+                <x-feature-row id="phan-mem" reversed :image="asset('images/service-software.webp')" title="Phần mềm doanh nghiệp theo yêu cầu"
                     text="Phát triển phần mềm quản lý, hệ thống nội bộ theo quy trình riêng của doanh nghiệp, giúp tối ưu vận hành và tăng hiệu suất.">
                     <ul class="check-list check-list--gold">
                         <li>Phân tích và thiết kế theo nhu cầu thực tế</li>
@@ -50,7 +50,7 @@
                     </ul>
                     <div class="btn-row"><button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn</button></div>
                 </x-feature-row>
-                <x-feature-row id="crm-booking" :image="asset('frontend/images/service-crm.webp')" title="CRM / Booking cho doanh nghiệp dịch vụ"
+                <x-feature-row id="crm-booking" :image="asset('images/service-crm.webp')" title="CRM / Booking cho doanh nghiệp dịch vụ"
                     text="Giải pháp quản lý khách hàng và đặt lịch thông minh, giúp doanh nghiệp tự động hóa quy trình, tăng tỷ lệ chuyển đổi." note="Quản lý khách hàng – Dễ dàng hơn mỗi ngày!">
                     <ul class="check-list check-list--gold">
                         <li>Quản lý khách hàng tập trung</li>
@@ -61,7 +61,7 @@
                     </ul>
                     <div class="btn-row"><a class="btn btn-outline-primary" href="{{ route('products') }}?loai=crm">Xem sản phẩm CRM</a></div>
                 </x-feature-row>
-                <x-feature-row id="seo-quang-cao" reversed :image="asset('frontend/images/service-marketing.webp')" title="SEO, quảng cáo & vận hành số"
+                <x-feature-row id="seo-quang-cao" reversed :image="asset('images/service-marketing.webp')" title="SEO, quảng cáo & vận hành số"
                     text="Tăng trưởng bền vững với các giải pháp SEO, quảng cáo đa kênh và vận hành số toàn diện.">
                     <ul class="check-list check-list--gold">
                         <li>Tối ưu SEO tổng thể, lên top bền vững</li>

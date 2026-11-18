@@ -3,7 +3,7 @@
 @section('content')
     <x-hero title="Tin tức & Kiến thức" highlight="Đồng hành cùng doanh nghiệp"
         lead="Chia sẻ kiến thức hữu ích về website, phần mềm, marketing và vận hành số, giúp doanh nghiệp bắt kịp xu hướng và phát triển bền vững."
-        :image="asset('frontend/images/news-hero.webp')" image-alt="Bài viết kiến thức trên laptop và máy tính bảng" />
+        :image="asset('images/news-hero.webp')" image-alt="Bài viết kiến thức trên laptop và máy tính bảng" />
 
     @if ($featured->isNotEmpty())
         <section class="section">

@@ -119,7 +119,7 @@ class BlogManagementTest extends TestCase
     public function test_header_and_footer_use_configured_brand_logo(): void
     {
         $settings = app(WebsiteSettings::class);
-        $settings->site_logo_wide = 'frontend/images/favicon.svg';
+        $settings->site_logo_wide = 'images/favicon.svg';
         $settings->save();
         app()->forgetInstance('site.settings');
         $html = $this->get('/')->assertOk()->getContent();

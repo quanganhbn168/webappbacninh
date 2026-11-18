@@ -132,7 +132,7 @@ class Template extends Model
 
     protected function imageUrl(): Attribute
     {
-        return Attribute::get(fn (): string => $this->image?->url ?? frontend_asset('assets/images/project-corporate.webp'));
+        return Attribute::get(fn (): string => $this->image?->url ?? asset('images/project-corporate.webp'));
     }
 
     /**

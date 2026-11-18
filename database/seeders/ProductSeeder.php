@@ -20,7 +20,7 @@ class ProductSeeder extends Seeder
             }
 
             Product::query()->create(Arr::except($row, 'image') + [
-                'image_id' => $images->execute('frontend/images/'.$row['image'], 'products', $row['name'])?->id,
+                'image_id' => $images->execute('images/'.$row['image'], 'products', $row['name'])?->id,
                 'order' => $order + 1,
                 'is_active' => true,
             ]);

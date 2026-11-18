@@ -22,7 +22,7 @@ class ProjectSeeder extends Seeder
 
             [$categorySlug, $categoryName] = $row['category'];
             $category = ProjectCategory::query()->firstOrCreate(['slug' => $categorySlug], ['name' => $categoryName]);
-            $image = fn (string $path): ?int => $images->execute('frontend/'.$path, 'projects', $row['title'])?->id;
+            $image = fn (string $path): ?int => $images->execute('images/'.$path, 'projects', $row['title'])?->id;
 
             Project::query()->create(Arr::except($row, ['category', 'image', 'gallery']) + [
                 'project_category_id' => $category->id,
@@ -79,11 +79,11 @@ class ProjectSeeder extends Seeder
                 ],
                 'is_featured' => true,
                 'order' => 0,
-                'image' => 'assets/images/project-corporate.webp',
+                'image' => 'project-corporate.webp',
                 'gallery' => [
-                    'assets/images/project-corporate.webp',
-                    'assets/images/hero-industrial.webp',
-                    'assets/images/about-bacninh.webp',
+                    'project-corporate.webp',
+                    'hero-industrial.webp',
+                    'about-bacninh.webp',
                 ],
             ],
             [
@@ -124,11 +124,11 @@ class ProjectSeeder extends Seeder
                 ],
                 'is_featured' => true,
                 'order' => 1,
-                'image' => 'assets/images/project-ecommerce.webp',
+                'image' => 'project-ecommerce.webp',
                 'gallery' => [
-                    'assets/images/project-ecommerce.webp',
-                    'assets/images/project-corporate.webp',
-                    'assets/images/project-software.webp',
+                    'project-ecommerce.webp',
+                    'project-corporate.webp',
+                    'project-software.webp',
                 ],
             ],
             [
@@ -169,11 +169,11 @@ class ProjectSeeder extends Seeder
                 ],
                 'is_featured' => true,
                 'order' => 2,
-                'image' => 'assets/images/project-tour.webp',
+                'image' => 'project-tour.webp',
                 'gallery' => [
-                    'assets/images/project-tour.webp',
-                    'assets/images/project-landing.webp',
-                    'assets/images/hero-industrial.webp',
+                    'project-tour.webp',
+                    'project-landing.webp',
+                    'hero-industrial.webp',
                 ],
             ],
             [
@@ -213,11 +213,11 @@ class ProjectSeeder extends Seeder
                 ],
                 'is_featured' => true,
                 'order' => 3,
-                'image' => 'assets/images/project-school.webp',
+                'image' => 'project-school.webp',
                 'gallery' => [
-                    'assets/images/project-school.webp',
-                    'assets/images/project-corporate.webp',
-                    'assets/images/about-bacninh.webp',
+                    'project-school.webp',
+                    'project-corporate.webp',
+                    'about-bacninh.webp',
                 ],
             ],
             [
@@ -259,11 +259,11 @@ class ProjectSeeder extends Seeder
                 ],
                 'is_featured' => true,
                 'order' => 4,
-                'image' => 'assets/images/project-landing.webp',
+                'image' => 'project-landing.webp',
                 'gallery' => [
-                    'assets/images/project-landing.webp',
-                    'assets/images/project-ecommerce.webp',
-                    'assets/images/seo-operation.webp',
+                    'project-landing.webp',
+                    'project-ecommerce.webp',
+                    'seo-operation.webp',
                 ],
             ],
             [
@@ -304,11 +304,11 @@ class ProjectSeeder extends Seeder
                 ],
                 'is_featured' => true,
                 'order' => 5,
-                'image' => 'assets/images/project-software.webp',
+                'image' => 'project-software.webp',
                 'gallery' => [
-                    'assets/images/project-software.webp',
-                    'assets/images/seo-operation.webp',
-                    'assets/images/agency-partnership.webp',
+                    'project-software.webp',
+                    'seo-operation.webp',
+                    'agency-partnership.webp',
                 ],
             ],
         ];

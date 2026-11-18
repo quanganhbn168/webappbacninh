@@ -3,7 +3,7 @@
 @section('content')
     <x-hero eyebrow="Dịch vụ thiết kế website" title="Website rõ nội dung," highlight="dễ quản trị và có khả năng bán hàng."
         lead="WebApp Bắc Ninh thiết kế website theo mục tiêu thực tế của doanh nghiệp: giới thiệu năng lực, nhận khách hàng, bán sản phẩm, chạy chiến dịch hoặc xây nền tảng nội dung lâu dài."
-        :image="asset('frontend/assets/images/hero-industrial.webp')" image-alt="Dịch vụ thiết kế website tại Bắc Ninh">
+        :image="asset('images/hero-industrial.webp')" image-alt="Dịch vụ thiết kế website tại Bắc Ninh">
         <a class="btn btn-primary" href="#tu-van-website">Nhận tư vấn & báo giá <x-icon name="arrow-right" /></a>
         <a class="btn btn-outline-dark" href="{{ route('themes.index') }}">Xem kho giao diện</a>
         <x-slot:meta>
@@ -133,7 +133,7 @@
                             @endforeach
                         </div>
                     </div>
-                    <div class="media-split__image"><img src="{{ asset('frontend/assets/images/seo-operation.webp') }}" alt="Dịch vụ SEO và vận hành website" width="720" height="540" loading="lazy"></div>
+                    <div class="media-split__image"><img src="{{ asset('images/seo-operation.webp') }}" alt="Dịch vụ SEO và vận hành website" width="720" height="540" loading="lazy"></div>
                 </div>
             </div>
         </section>

@@ -34,7 +34,7 @@ class TemplateSeeder extends Seeder
 
             [$industrySlug, $industryName] = $row['industry'];
             $category = TemplateCategory::query()->firstOrCreate(['slug' => $industrySlug], ['name' => $industryName]);
-            $image = fn (string $file): ?int => $images->execute('frontend/assets/images/'.$file, 'showcase', $row['name'])?->id;
+            $image = fn (string $file): ?int => $images->execute('images/'.$file, 'showcase', $row['name'])?->id;
 
             $template = Template::query()->create(Arr::except($row, ['industry', 'image', 'gallery', 'features']) + [
                 'template_category_id' => $category->id,

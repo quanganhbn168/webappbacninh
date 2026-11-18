@@ -35,7 +35,7 @@ trait HasServiceContent
 
     protected function imageUrl(): Attribute
     {
-        return Attribute::get(fn (): string => $this->image?->url ?? frontend_asset('assets/images/hero-industrial.webp'));
+        return Attribute::get(fn (): string => $this->image?->url ?? asset('images/hero-industrial.webp'));
     }
 
     protected function secondaryImageUrl(): Attribute

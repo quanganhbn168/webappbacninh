@@ -17,7 +17,7 @@ class ApprovedInterfaceTest extends TestCase
             $this->assertStringNotContainsString('cdn.tailwindcss.com', $html);
             $this->assertStringNotContainsString('fonts.googleapis.com', $html);
             $this->assertStringNotContainsString('adminlte', strtolower($html));
-            preg_match_all('~(?:src|data-image)="(/frontend/images/[^"?]+)"~', $html, $matches);
+            preg_match_all('~(?:src|data-image)="(/images/[^"?]+)"~', $html, $matches);
             foreach (array_unique($matches[1]) as $asset) {
                 $this->assertFileExists(public_path(ltrim($asset, '/')), $uri.': '.$asset);
             }

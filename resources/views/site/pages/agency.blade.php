@@ -3,7 +3,7 @@
 @section('content')
     <x-hero variant="dark" eyebrow="Đối tác kỹ thuật phía sau" title="Agency tập trung khách hàng. Chúng tôi phụ trách phần website."
         lead="Nhận triển khai website, landing page, bảo trì hoặc từng module theo hình thức giới thiệu khách, đồng triển khai và white-label."
-        :image="asset('frontend/assets/images/agency-partnership.webp')" image-alt="Hợp tác kỹ thuật với agency">
+        :image="asset('images/agency-partnership.webp')" image-alt="Hợp tác kỹ thuật với agency">
         <a class="btn btn-primary" href="#mo-hinh">Xem mô hình hợp tác <x-icon name="arrow-right" /></a>
         <a class="btn btn-outline-light" href="#agency-contact">Trao đổi dự án</a>
     </x-hero>

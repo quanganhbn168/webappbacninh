@@ -180,13 +180,6 @@ if (! function_exists('setting')) {
     }
 }
 
-if (! function_exists('frontend_asset')) {
-    function frontend_asset(string $path): string
-    {
-        return asset('frontend/'.ltrim($path, '/'));
-    }
-}
-
 if (! function_exists('absolute_url')) {
     function absolute_url(string $path = ''): string
     {

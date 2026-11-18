@@ -22,8 +22,9 @@ class SlugController extends Controller
         return match ($slugEntry->reference_type) {
             Template::class => redirect()->route('themes.show', $slugEntry->key, 301),
             TemplateCategory::class => redirect()->route('themes.index', status: 301),
-            Post::class => redirect()->route('articles.show', $slugEntry->key, 301),
-            PostCategory::class => redirect()->route('articles.category', $slugEntry->key, 301),
+            // Blog posts and categories live at the site root: /{bai-viet}, /{danh-muc}.
+            Post::class => app(ArticleController::class)->detail($slugEntry->key),
+            PostCategory::class => app(ArticleController::class)->category($slugEntry->key),
             Service::class => app(ServiceController::class)->detail($slugEntry->reference),
             ServiceCategory::class => app(ServiceController::class)->servicesByCate($slugEntry->reference),
             default => abort(404),

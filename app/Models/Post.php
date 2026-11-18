@@ -76,7 +76,7 @@ class Post extends Model implements HasMedia
 
     protected function url(): Attribute
     {
-        return Attribute::get(fn (): string => route('articles.show', $this->slug));
+        return Attribute::get(fn (): string => route('slug.handle', $this->slug));
     }
 
     protected function categorySlug(): Attribute

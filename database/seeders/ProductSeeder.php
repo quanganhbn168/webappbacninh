@@ -49,7 +49,7 @@ class ProductSeeder extends Seeder
                 'summary' => 'Hệ thống đặt lịch, đặt phòng, đặt dịch vụ trực tuyến, quản lý lịch hẹn và khách hàng.'],
             ['name' => 'Mini ERP', 'group' => 'erp', 'image' => 'erp.webp', 'is_featured' => true, 'detail_url' => '/giai-phap', 'tags' => ['ERP', 'Bán hàng', 'Kho hàng'],
                 'summary' => 'Phần mềm quản lý tổng thể: bán hàng, kho, nhân sự, tài chính... phù hợp doanh nghiệp vừa và nhỏ.'],
-            ['name' => 'Phần mềm theo yêu cầu', 'group' => 'custom', 'image' => 'custom.webp', 'is_featured' => false, 'detail_url' => '/dich-vu#phan-mem', 'tags' => ['Tùy chỉnh', 'API', 'Tích hợp'],
+            ['name' => 'Phần mềm theo yêu cầu', 'group' => 'custom', 'image' => 'custom.webp', 'is_featured' => false, 'detail_url' => '/dich-vu/phan-mem', 'tags' => ['Tùy chỉnh', 'API', 'Tích hợp'],
                 'summary' => 'Phát triển phần mềm theo đặc thù nghiệp vụ, tích hợp hệ thống và mở rộng tính năng linh hoạt.'],
         ];
     }

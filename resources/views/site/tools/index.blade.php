@@ -23,5 +23,5 @@
         </div>
     </section>
 
-    <x-cta-banner title="Cần một công cụ riêng cho doanh nghiệp?" text="Chúng tôi phát triển công cụ tính toán, báo giá, đặt lịch hoặc quản lý theo nghiệp vụ của bạn." need="Công cụ theo yêu cầu" :secondary-href="route('services.overview').'#phan-mem'" secondary-label="Phần mềm theo yêu cầu" />
+    <x-cta-banner title="Cần một công cụ riêng cho doanh nghiệp?" text="Chúng tôi phát triển công cụ tính toán, báo giá, đặt lịch hoặc quản lý theo nghiệp vụ của bạn." need="Công cụ theo yêu cầu" :secondary-href="route('services.detail', 'phan-mem')" secondary-label="Phần mềm theo yêu cầu" />
 @endsection

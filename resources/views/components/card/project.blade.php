@@ -1,5 +1,5 @@
 @props(['project', 'heading' => 'h3'])
-<article {{ $attributes->class(['media-card']) }}>
+<article {{ $attributes->class(['media-card', 'project-card']) }}>
     <a class="media-card__image ratio-card" href="{{ $project->url }}" tabindex="-1" aria-hidden="true">
         <img class="w-100 h-100 object-fit-cover" src="{{ $project->image_url }}" alt="" width="640" height="400" loading="lazy" decoding="async">
         <span class="media-card__badge">{{ $project->category_label }}</span>
@@ -9,6 +9,9 @@
         @if ($project->excerpt)
             <p>{{ \Illuminate\Support\Str::limit($project->excerpt, 150) }}</p>
         @endif
-        <a class="link-arrow mt-auto" href="{{ $project->url }}">Xem chi tiết <x-icon name="arrow-right" /></a>
+        <div class="project-card__foot mt-auto">
+            <a class="link-arrow" href="{{ $project->url }}">Xem chi tiết <x-icon name="arrow-right" /></a>
+            @if (filled($project->cost))<strong class="project-card__cost">{{ $project->cost }}</strong>@endif
+        </div>
     </div>
 </article>

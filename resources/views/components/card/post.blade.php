@@ -5,7 +5,7 @@
     </a>
     <div class="media-card__body">
         @if ($post->category)
-            <a class="tag tag--gold align-self-start" href="{{ route('articles.category', $post->category->slug) }}">{{ $post->category_label }}</a>
+            <a class="tag tag--gold align-self-start" href="{{ $post->category->url }}">{{ $post->category_label }}</a>
         @endif
         <{{ $heading }} @class(['media-card__title', 'h3' => $variant !== 'featured', 'h2' => $variant === 'featured'])><a href="{{ $post->url }}">{{ $post->title }}</a></{{ $heading }}>
         @if ($variant !== 'row' && $post->excerpt)

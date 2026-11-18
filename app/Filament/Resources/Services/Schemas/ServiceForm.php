@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Services\Schemas;
 
+use App\Enums\ServiceSection;
 use App\Filament\Forms\IconPicker;
 use App\Filament\Forms\ServiceContentFields;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
@@ -33,7 +34,11 @@ class ServiceForm
                                 TextInput::make('title')->label('Tên dịch vụ')->required()->maxLength(255),
                                 TextInput::make('slug')->label('Đường dẫn')->required()->maxLength(255)->alphaDash()->unique(ignoreRecord: true),
                                 Toggle::make('is_landing')->label('Có trang landing riêng')->live()
-                                    ->helperText('Bật: trang thiết kế sẵn tại /thiet-ke-website/đường-dẫn với gói giá, FAQ… Tắt: trang nội dung đơn giản tại /đường-dẫn.')
+                                    ->helperText('Bật: trang thiết kế sẵn với gói giá, FAQ… (địa chỉ theo mục bên dưới). Tắt: trang nội dung đơn giản tại /đường-dẫn.')
+                                    ->columnSpanFull(),
+                                Select::make('section')->label('Mục hiển thị')->options(ServiceSection::class)
+                                    ->default(ServiceSection::Website)->required()->native(false)->visible($isLanding)
+                                    ->helperText('Thiết kế website: /thiet-ke-website/đường-dẫn. Dịch vụ khác (phần mềm, CRM, SEO…): /dich-vu/đường-dẫn và hiện ở trang Dịch vụ.')
                                     ->columnSpanFull(),
                                 Select::make('service_category_id')->label('Danh mục')->relationship('category', 'name')
                                     ->searchable()->preload(),

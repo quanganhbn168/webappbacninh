@@ -6,7 +6,7 @@
         <div class="container">
             <div class="article-hero">
                 <x-breadcrumbs :items="$breadcrumbs" />
-                <a class="tag tag--gold mb-3" href="{{ $article->category ? route('articles.category', $article->category->slug) : route('articles.index') }}">{{ $article->category_label }}</a>
+                <a class="tag tag--gold mb-3" href="{{ $article->category ? $article->category->url : route('articles.index') }}">{{ $article->category_label }}</a>
                 <h1>{{ $article->title }}</h1>
                 @if ($article->excerpt)
                     <p class="page-hero__lead">{{ $article->excerpt }}</p>

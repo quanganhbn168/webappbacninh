@@ -3,7 +3,11 @@
 @section('content')
     <x-hero :eyebrow="$service->eyebrow_label" :title="$service->title" :lead="$service->description" :image="$service->image_url" :image-alt="$service->title">
         <a class="btn btn-primary" href="#lien-he-dich-vu">{{ $service->cta_label }} <x-icon name="arrow-right" /></a>
-        <a class="btn btn-outline-dark" href="{{ route('themes.index') }}">Xem kho giao diện</a>
+        @if ($service->section === \App\Enums\ServiceSection::Website)
+            <a class="btn btn-outline-dark" href="{{ route('themes.index') }}">Xem kho giao diện</a>
+        @else
+            <a class="btn btn-outline-dark" href="{{ route('pricing') }}">Xem bảng giá</a>
+        @endif
         <x-slot:meta>
             @if ($service->highlight)
                 <p class="fw-semibold text-primary-emphasis mt-3 mb-0">{{ $service->highlight }}</p>
@@ -33,7 +37,7 @@
                     </div>
                     <div>
                         <p class="eyebrow">Bài toán thường gặp</p>
-                        <h2 class="mb-4">Website cần xử lý đúng vấn đề trước khi thêm hiệu ứng.</h2>
+                        <h2 class="mb-4">Cần xử lý đúng vấn đề trước khi bắt tay vào làm.</h2>
                         <ul class="info-list">
                             @foreach ($service->problems as $problem)
                                 <li><span class="icon-tile"><x-icon :name="$problem['icon'] ?? 'circle-help'" /></span><div><h3>{{ $problem['title'] }}</h3><p>{{ $problem['text'] ?? '' }}</p></div></li>
@@ -48,8 +52,8 @@
     @if ($service->pages)
         <section class="section section--soft">
             <div class="container">
-                <x-section-head eyebrow="Phạm vi triển khai" title="Các trang và nội dung cốt lõi" lead="Danh sách được điều chỉnh theo dữ liệu thực tế. Không bắt doanh nghiệp mua những trang không dùng đến." />
-                <ol class="numbered-grid">@foreach ($service->pages as $page)<li>{{ $page }}</li>@endforeach</ol>
+                <x-section-head eyebrow="Phạm vi triển khai" title="Hạng mục triển khai cốt lõi" lead="Danh sách được điều chỉnh theo dữ liệu thực tế. Không bắt doanh nghiệp mua những hạng mục không dùng đến." />
+                <ol class="scope-grid">@foreach ($service->pages as $page)<li>{{ $page }}</li>@endforeach</ol>
             </div>
         </section>
     @endif
@@ -57,7 +61,7 @@
     @if ($service->features)
         <section class="section section--dark">
             <div class="container">
-                <x-section-head eyebrow="Giá trị bàn giao" title="Không chỉ đẹp khi xem bản demo" lead="Website phải dễ sử dụng, dễ cập nhật và có nền tảng để doanh nghiệp tiếp tục phát triển." center />
+                <x-section-head eyebrow="Giá trị bàn giao" title="Không chỉ đẹp khi xem bản demo, mà dùng được hằng ngày" lead="Sản phẩm phải dễ sử dụng, dễ cập nhật và có nền tảng để doanh nghiệp tiếp tục phát triển." center />
                 <div class="row g-3 g-lg-4 row-cols-1 row-cols-sm-2 row-cols-lg-3">
                     @foreach ($service->features as $feature)
                         <div class="col"><x-feature-card :icon="$feature['icon'] ?? 'check'" :title="$feature['title']" :text="$feature['text'] ?? null" /></div>

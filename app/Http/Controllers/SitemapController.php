@@ -38,7 +38,7 @@ class SitemapController extends Controller
                 ->where('published_at', '<=', now())
                 ->get()
                 ->each(fn (Post $post) => $sitemap->add($this->url(
-                    route('articles.show', ['slug' => $post->slug]),
+                    $post->url,
                     $post->updated_at,
                     0.8,
                     Url::CHANGE_FREQUENCY_WEEKLY,

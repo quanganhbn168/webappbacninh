@@ -2,17 +2,17 @@
 
 @section('content')
     <x-hero eyebrow="Kho giao diện website" title="Chọn mẫu phù hợp." highlight="Chúng tôi tùy chỉnh theo doanh nghiệp."
+        :image="$themes->first()?->image_url ?? asset('images/products-hero.webp')" image-alt="Giao diện website mẫu hiển thị trên máy tính, máy tính bảng và điện thoại"
         lead="Kho giao diện giúp anh/chị hình dung nhanh phong cách website trước khi triển khai. Mỗi mẫu có thể thay màu sắc, hình ảnh, nội dung, bố cục và bổ sung chức năng theo nhu cầu thực tế.">
         <a class="btn btn-primary" href="#kho">Xem các mẫu giao diện <x-icon name="arrow-right" /></a>
         <a class="btn btn-outline-dark" href="#tu-van-mau">Chưa biết chọn mẫu nào?</a>
-        <x-slot:aside>
-            <div class="stat-panel">
-                <div><strong>{{ $themes->count() }}</strong><span>Mẫu minh họa</span></div>
-                <div><strong>{{ $industries->count() }}</strong><span>Nhóm ngành nghề</span></div>
-                <div><strong>100%</strong><span>Tùy chỉnh nội dung</span></div>
-                <div><strong>Mobile</strong><span>Tối ưu responsive</span></div>
+        <x-slot:meta>
+            <div class="page-hero__meta">
+                <span><strong>{{ $themes->count() }}</strong> mẫu giao diện</span>
+                <span><strong>{{ $industries->count() }}</strong> nhóm ngành nghề</span>
+                <span><strong>Responsive</strong> mọi thiết bị</span>
             </div>
-        </x-slot:aside>
+        </x-slot:meta>
     </x-hero>
 
     <div data-theme-library>

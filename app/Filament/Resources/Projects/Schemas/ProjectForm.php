@@ -71,6 +71,8 @@ class ProjectForm
                         TextInput::make('industry')->label('Ngành')->maxLength(255)->placeholder('Sản xuất'),
                         TextInput::make('website_type')->label('Loại dự án')->maxLength(255),
                         TextInput::make('duration')->label('Thời gian thực hiện')->maxLength(100)->placeholder('4 tuần'),
+                        TextInput::make('cost')->label('Chi phí tham khảo')->maxLength(255)->placeholder('Từ 25 triệu')
+                            ->helperText('Chữ tự do, ví dụ "Từ 25 triệu" hoặc "Liên hệ báo giá". Bỏ trống sẽ ẩn.'),
                         TextInput::make('year')->label('Năm')->numeric()->minValue(2000)->maxValue(2100)->default(now()->year),
                         TextInput::make('link')->label('Link website')->url()->maxLength(255),
                     ])->columns(1),

@@ -33,7 +33,7 @@ class PostCategoryForm
                                 }
                             }),
                         Hidden::make('slug_manually_edited')->default(false)->dehydrated(false),
-                        PermalinkInput::make('slug')->prefix(url('/kien-thuc/danh-muc').'/')
+                        PermalinkInput::make('slug')->prefix(url('/').'/')
                             ->afterStateUpdated(fn (Set $set) => $set('slug_manually_edited', true)),
                         Textarea::make('description')->label('Mô tả')->rows(4),
                     ])->columns(1),

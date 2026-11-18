@@ -2,7 +2,7 @@
 
 @section('content')
     @php($gallery = $theme->gallery_urls ?: [$theme->image_url])
-    <section class="page-hero page-hero--compact">
+    <section class="page-hero page-hero--detail">
         <div class="container">
             <x-breadcrumbs :items="$breadcrumbs" />
             <div class="row g-4 g-lg-5 align-items-start">

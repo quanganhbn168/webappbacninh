@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasSlug;
 use Awcodes\Curator\Models\Media;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -46,6 +47,12 @@ class PostCategory extends Model
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class, 'category_id');
+    }
+
+    /** Categories are served from the site root, like posts. */
+    protected function url(): Attribute
+    {
+        return Attribute::get(fn (): string => route('slug.handle', $this->slug));
     }
 
     public function scopeActive($query)

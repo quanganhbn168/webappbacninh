@@ -23,7 +23,7 @@ class PricingPlanSeeder extends Seeder
     /**
      * @return array<int, array<string, mixed>>
      */
-    private function plans(): array
+    public function plans(): array
     {
         return [
             ['group' => 'website', 'name' => 'Landing Page', 'price_prefix' => 'Từ', 'price' => '3.000.000đ',
@@ -61,6 +61,10 @@ class PricingPlanSeeder extends Seeder
                 'summary' => 'Đăng ký tên miền, email doanh nghiệp chuyên nghiệp.'],
             ['group' => 'addon', 'name' => 'Chăm sóc Website', 'icon' => 'shield-check', 'price_prefix' => 'Từ', 'price' => '500.000đ', 'price_suffix' => '/tháng',
                 'summary' => 'Cập nhật nội dung, backup, kiểm tra bảo mật định kỳ.'],
+            ['group' => 'hosting_addon', 'name' => 'Tên miền', 'icon' => 'globe', 'price' => 'Theo giá thị trường'],
+            ['group' => 'hosting_addon', 'name' => 'Email doanh nghiệp', 'icon' => 'mail', 'price_prefix' => 'Từ', 'price' => '50.000đ', 'price_suffix' => '/tháng'],
+            ['group' => 'hosting_addon', 'name' => 'SSL cao cấp', 'icon' => 'lock', 'price_prefix' => 'Từ', 'price' => '300.000đ', 'price_suffix' => '/năm'],
+            ['group' => 'hosting_addon', 'name' => 'Sao lưu dữ liệu', 'icon' => 'hard-drive', 'price_prefix' => 'Từ', 'price' => '300.000đ', 'price_suffix' => '/tháng'],
             ['group' => 'addon', 'name' => 'CRM & Phần mềm riêng', 'icon' => 'chart-column', 'price' => 'Liên hệ báo giá',
                 'summary' => 'Tư vấn và phát triển theo yêu cầu doanh nghiệp.'],
         ];

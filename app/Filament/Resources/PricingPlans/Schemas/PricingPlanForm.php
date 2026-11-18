@@ -4,7 +4,6 @@ namespace App\Filament\Resources\PricingPlans\Schemas;
 
 use App\Enums\PricingGroup;
 use App\Filament\Forms\IconPicker;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -23,7 +22,7 @@ class PricingPlanForm
                 Group::make([
                     Section::make('Gói giá')->schema([
                         Select::make('group')->label('Nhóm')->options(PricingGroup::options())->required()->native(false)
-                            ->helperText('Website hiện ở trang chủ, Dịch vụ, Thiết kế website; Hosting ở trang Hosting; Chăm sóc ở trang Dịch vụ vận hành.'),
+                            ->helperText('Website hiện ở trang chủ, Dịch vụ, Thiết kế website; Hosting ở trang Hosting; Add-on Hosting ở cuối trang Hosting; Chăm sóc ở trang Dịch vụ vận hành.'),
                         TextInput::make('name')->label('Tên gói')->required()->maxLength(255),
                         Group::make([
                             TextInput::make('price_prefix')->label('Chữ trước giá')->maxLength(30)->placeholder('Từ'),
@@ -31,9 +30,10 @@ class PricingPlanForm
                             TextInput::make('price_suffix')->label('Chữ sau giá')->maxLength(30)->placeholder('/năm'),
                         ])->columns(3),
                         Textarea::make('summary')->label('Mô tả ngắn')->rows(2),
-                        Repeater::make('features')->label('Hạng mục trong gói')
-                            ->simple(TextInput::make('value')->required()->maxLength(255))
-                            ->addActionLabel('Thêm hạng mục')->reorderable()->defaultItems(0),
+                        Textarea::make('features')->label('Hạng mục trong gói')->rows(6)
+                            ->helperText('Mỗi dòng một hạng mục. Dán thẳng từ Excel hoặc Word được.')
+                            ->formatStateUsing(fn (mixed $state): string => is_array($state) ? implode("\n", $state) : (string) $state)
+                            ->dehydrateStateUsing(fn (?string $state): array => array_values(array_filter(array_map('trim', preg_split('/\R/', (string) $state))))),
                     ])->columns(1),
                 ])->columnSpan(['default' => 1, 'lg' => 2]),
                 Group::make([

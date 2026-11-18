@@ -18,6 +18,10 @@ img { max-width: 100%; height: auto; }
 a, button, summary { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: .18rem solid $gold-700; outline-offset: .2rem; }
 
+// Headings break into even lines (never a lone last word); paragraphs avoid orphans.
+h1, h2, h3, h4, .h1, .h2, .h3 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+
 // Headings
 h1, .h1 {
     font-size: clamp(2rem, 1.2rem + 2.6vw, 3rem);
@@ -170,7 +174,6 @@ h3, .h3 {
     gap: 1rem 2rem;
     margin-bottom: 2rem;
 
-    > div { max-width: 46rem; }
     h2 { margin-bottom: .5rem; }
     p { margin: 0; color: $muted; }
 }

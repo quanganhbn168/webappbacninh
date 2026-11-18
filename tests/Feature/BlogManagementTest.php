@@ -30,8 +30,28 @@ class BlogManagementTest extends TestCase
         $this->assertSame(Str::slug($name).'-2', $post->slug);
         $post->update(['slug' => 'Đường dẫn mới '.Str::random(8)]);
         $this->assertDatabaseHas('slugs', ['key' => $post->slug, 'reference_id' => $post->id, 'reference_type' => Post::class]);
-        $this->get('/'.$category->slug)->assertRedirect(route('articles.category', $category->slug));
-        $this->get(route('articles.category', $category->slug))->assertOk()->assertSee($name);
+        $this->assertSame(url('/'.$category->slug), $category->url);
+        $this->get('/'.$category->slug)->assertOk()->assertSee($name);
+    }
+
+    public function test_blog_lives_at_blog_and_old_paths_are_gone_without_redirects(): void
+    {
+        $post = Post::query()->published()->firstOrFail();
+
+        $this->assertSame(url('/'.$post->slug), $post->url);
+        $this->get('/blog')->assertOk()->assertSee($post->title);
+        foreach (['/kien-thuc', '/kien-thuc/'.$post->slug, '/tin-tuc', '/blog/'.$post->slug] as $old) {
+            $this->get($old)->assertNotFound();
+        }
+    }
+
+    public function test_a_post_or_category_cannot_take_the_path_of_a_fixed_page(): void
+    {
+        $category = PostCategory::create(['name' => 'Liên hệ', 'is_active' => true]);
+        $post = Post::create(['title' => 'Bài', 'slug' => 'bang-gia', 'content' => '<p>Test</p>']);
+
+        $this->assertSame('lien-he-2', $category->slug);
+        $this->assertSame('bang-gia-2', $post->slug);
     }
 
     public function test_admin_forms_and_contact_inbox_render(): void
@@ -60,7 +80,7 @@ class BlogManagementTest extends TestCase
         $this->assertEquals($media->id, $post->featured_media_id);
         $this->assertEquals($og->id, $post->og_media_id);
         $post->update(['og_image' => 'legacy/old-og.jpg']);
-        $this->get(route('articles.show', $post->slug))->assertOk()->assertSee('property="og:image" content="'.$og->url.'"', false)->assertDontSee('legacy/old-og.jpg');
+        $this->get($post->url)->assertOk()->assertSee('property="og:image" content="'.$og->url.'"', false)->assertDontSee('legacy/old-og.jpg');
         Livewire::actingAs($this->admin(), 'admin')->test(EditPost::class, ['record' => $post->id])
             ->fillForm(['og_media_id' => [], 'title' => $title.' sửa'])
             ->call('save')->assertHasNoFormErrors();
@@ -68,7 +88,7 @@ class BlogManagementTest extends TestCase
         $this->assertNull($post->og_media_id);
         $this->assertSame(Str::slug($title), $post->slug);
         $this->assertSame($media->url, $post->og_image_url);
-        $this->get(route('articles.show', $post->slug))->assertOk()->assertSee($media->url, false)->assertDontSee('legacy/old-og.jpg');
+        $this->get($post->url)->assertOk()->assertSee($media->url, false)->assertDontSee('legacy/old-og.jpg');
         Livewire::actingAs($this->admin(), 'admin')->test(EditPost::class, ['record' => $post->id])
             ->set('data.featured_media_id', [])->call('save')->assertHasNoFormErrors();
         $this->assertNull($post->fresh()->featured_media_id);
@@ -77,12 +97,12 @@ class BlogManagementTest extends TestCase
 
     public function test_featured_layout_has_one_main_and_three_side_articles_and_hides_future_posts(): void
     {
-        $response = $this->get('/kien-thuc')->assertOk();
+        $response = $this->get('/blog')->assertOk();
         $this->assertSame(1, substr_count($response->getContent(), 'media-card--featured'));
         $this->assertSame(3, substr_count($response->getContent(), 'media-card--row'));
         $post = Post::create(['content' => '<p>Test</p>', 'title' => 'Scheduled '.Str::random(10), 'is_published' => true, 'published_at' => now()->addDay()]);
-        $this->get(route('articles.show', $post->slug))->assertNotFound();
-        $this->get('/kien-thuc')->assertDontSee($post->title);
+        $this->get($post->url)->assertNotFound();
+        $this->get('/blog')->assertDontSee($post->title);
     }
 
     public function test_category_curator_images_and_seo_are_used_on_its_public_page(): void
@@ -96,7 +116,7 @@ class BlogManagementTest extends TestCase
             ->call('create')->assertHasNoFormErrors();
         $category = PostCategory::where('name', $title)->firstOrFail();
         $this->assertEquals($media->id, $category->image_id);
-        $this->get(route('articles.category', $category->slug))->assertOk()
+        $this->get($category->url)->assertOk()
             ->assertSee('SEO '.$title)->assertSee('Mô tả danh mục kiểm thử')->assertSee($media->url, false);
     }
 

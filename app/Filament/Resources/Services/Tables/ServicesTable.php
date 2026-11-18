@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Services\Tables;
 
+use App\Enums\ServiceSection;
+use App\Models\Service;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -17,6 +19,8 @@ class ServicesTable
         return $table
             ->columns([
                 TextColumn::make('title')->label('Dịch vụ')->searchable()->sortable(),
+                TextColumn::make('section')->label('Mục')->badge()
+                    ->formatStateUsing(fn (ServiceSection $state, Service $record): string => $record->is_landing ? ($state === ServiceSection::Website ? 'Thiết kế website' : 'Dịch vụ') : 'Trang đơn giản'),
                 TextColumn::make('category.name')->label('Danh mục')->searchable(),
                 TextColumn::make('menu_key')->label('Mã menu')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('order')->label('Thứ tự')->sortable(),

@@ -415,6 +415,8 @@
     }
     .page-hero__highlight { color: inherit; }
 }
+// Detail pages (theme): breadcrumb, copy, gallery and an order card, so the padding is on the hero itself
+.page-hero--detail { padding-block: 1.75rem 3.5rem; }
 .page-hero--compact .page-hero__grid {
     min-height: 0;
     padding-block: 2rem 2.5rem;
@@ -469,6 +471,15 @@
     span { display: block; color: $muted; font-size: .8rem; line-height: 1.35; }
 }
 
+// "Phù hợp với ai" list of a service landing page: two columns, padded like the other trust rows.
+.trust-row__checks {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .85rem 2.5rem;
+    margin: 0;
+    padding: 1.5rem 0;
+}
+
 .stat-panel {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -507,6 +518,7 @@
 @include media-breakpoint-down(sm) {
     .page-hero .btn-row .btn { flex: 1 1 100%; }
     .trust-row__list { gap: 1rem; }
+    .trust-row__checks { grid-template-columns: 1fr; }
     .trust-row__item {
         align-items: flex-start;
         gap: .6rem;

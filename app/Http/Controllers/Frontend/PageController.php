@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Enums\PricingGroup;
 use App\Enums\ProductGroup;
+use App\Enums\ServiceSection;
 use App\Models\OperationService;
 use App\Models\PricingPlan;
 use App\Models\Product;
@@ -19,7 +20,8 @@ class PageController extends FrontendController
     public function services(): View
     {
         return $this->sitePage('services', 'site.pages.services', [
-            'landingServices' => Service::query()->active()->where('is_landing', true)->ordered()->get(),
+            'landingServices' => Service::query()->active()->where('is_landing', true)->where('section', ServiceSection::Website)->ordered()->get(),
+            'generalServices' => Service::query()->active()->where('is_landing', true)->where('section', ServiceSection::General)->ordered()->get(),
             'operationServices' => OperationService::query()->active()->ordered()->get(),
             'plans' => PricingPlan::query()->inGroup(PricingGroup::Website)->take(4)->get(),
             'schemaType' => 'Service',
@@ -30,6 +32,7 @@ class PageController extends FrontendController
     {
         return $this->sitePage('hosting', 'site.pages.hosting', [
             'plans' => PricingPlan::query()->inGroup(PricingGroup::Hosting)->get(),
+            'addons' => PricingPlan::query()->inGroup(PricingGroup::HostingAddon)->get(),
             'schemaType' => 'Service',
         ]);
     }

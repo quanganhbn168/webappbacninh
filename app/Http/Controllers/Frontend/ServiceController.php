@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Enums\PricingGroup;
+use App\Enums\ServiceSection;
 use App\Models\OperationService;
 use App\Models\PricingPlan;
 use App\Models\Service;
@@ -15,7 +16,7 @@ class ServiceController extends FrontendController
     public function index(): View
     {
         return $this->sitePage('website-design', 'site.services.website', [
-            'landingServices' => Service::query()->active()->where('is_landing', true)->ordered()->get(),
+            'landingServices' => Service::query()->active()->where('is_landing', true)->where('section', ServiceSection::Website)->ordered()->get(),
             'operationServices' => OperationService::query()->active()->ordered()->take(4)->get(),
             'plans' => PricingPlan::query()->inGroup(PricingGroup::Website)->take(4)->get(),
             'schemaType' => 'Service',
@@ -29,7 +30,26 @@ class ServiceController extends FrontendController
             return $this->dynamicDetail($service);
         }
 
-        $landing = Service::query()->active()->where('is_landing', true)->with(['image', 'secondaryImage'])->where('slug', $service)->firstOrFail();
+        return $this->landingPage($service, ServiceSection::Website);
+    }
+
+    /** Landing pages of the non-website services, under /dich-vu/{slug}. */
+    public function general(string $slug): View|RedirectResponse
+    {
+        return $this->landingPage($slug, ServiceSection::General);
+    }
+
+    /**
+     * A landing page is served only under its own section; the other prefix
+     * redirects to it so old links and mistyped prefixes still land.
+     */
+    private function landingPage(string $slug, ServiceSection $section): View|RedirectResponse
+    {
+        $landing = Service::query()->active()->where('is_landing', true)->with(['image', 'secondaryImage'])->where('slug', $slug)->firstOrFail();
+
+        if ($landing->section !== $section) {
+            return redirect()->to($landing->url, 301);
+        }
 
         return $this->page('site.services.show', [
             'service' => $landing,
@@ -41,7 +61,7 @@ class ServiceController extends FrontendController
             'schemaFaqs' => $landing->faqs ?? [],
             'breadcrumbs' => [
                 ['name' => 'Trang chủ', 'url' => route('home')],
-                ['name' => 'Thiết kế website', 'url' => route('services.index')],
+                $section->parent(),
                 ['name' => $landing->title, 'url' => $landing->url],
             ],
         ]);

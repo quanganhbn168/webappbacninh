@@ -3,10 +3,10 @@
     @foreach ([
         ['monitor', 'Thiết kế Website', 'Website doanh nghiệp, bán hàng chuẩn SEO', route('services.index')],
         ['app-window', 'Landing Page', 'Trang đích tối ưu chuyển đổi', route('services.show', 'landing-page')],
-        ['brain', 'Phần mềm doanh nghiệp', 'Phát triển phần mềm theo nghiệp vụ riêng', route('services.overview').'#phan-mem'],
-        ['calendar-check', 'CRM & Booking', 'Quản lý khách hàng, đặt lịch, tự động hóa', route('services.overview').'#crm-booking'],
-        ['rocket', 'SEO & Nội dung', 'Tối ưu SEO, sản xuất nội dung chuẩn tìm kiếm', route('operations.index')],
-        ['megaphone', 'Quảng cáo & Tracking', 'Triển khai quảng cáo, đo lường hiệu quả', route('services.overview').'#seo-quang-cao'],
+        ['brain', 'Phần mềm doanh nghiệp', 'Phát triển phần mềm theo nghiệp vụ riêng', route('services.detail', 'phan-mem')],
+        ['calendar-check', 'CRM & Booking', 'Quản lý khách hàng, đặt lịch, tự động hóa', route('services.detail', 'crm-booking')],
+        ['rocket', 'SEO & Nội dung', 'Tối ưu SEO, sản xuất nội dung chuẩn tìm kiếm', route('services.detail', 'seo-quang-cao')],
+        ['megaphone', 'Quảng cáo & Tracking', 'Triển khai quảng cáo, đo lường hiệu quả', route('services.detail', 'seo-quang-cao')],
         ['server', 'Hosting / Domain / Email', 'Hạ tầng ổn định, bảo mật cao', route('hosting')],
         ['settings', 'Chăm sóc & Vận hành Website', 'Bảo trì, cập nhật, hỗ trợ dài hạn', route('operations.index')],
     ] as [$icon, $title, $text, $href])

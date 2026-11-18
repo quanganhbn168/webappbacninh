@@ -15,7 +15,7 @@
                     <h1>{{ $project->title }}</h1>
                     <p class="page-hero__lead">{{ $project->excerpt }}</p>
                     <dl class="fact-list">
-                        @foreach (['Khách hàng' => $project->client, 'Loại dự án' => $project->website_type, 'Thời gian' => $project->duration] as $label => $value)
+                        @foreach (['Khách hàng' => $project->client, 'Loại dự án' => $project->website_type, 'Thời gian' => $project->duration, 'Chi phí tham khảo' => $project->cost] as $label => $value)
                             @if ($value)
                                 <div><dt>{{ $label }}</dt><dd>{{ $value }}</dd></div>
                             @endif
@@ -48,9 +48,9 @@
         <section class="section section--soft">
             <div class="container">
                 <div class="row g-4">
-                    @foreach ([['Bài toán ban đầu', $project->challenge], ['Giải pháp triển khai', $project->solution]] as [$title, $text])
+                    @foreach ([['target', 'Bài toán ban đầu', $project->challenge], ['lightbulb', 'Giải pháp triển khai', $project->solution]] as [$icon, $title, $text])
                         @if ($text)
-                            <div class="col-lg-6"><x-feature-card :number="str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT)" :title="$title" :text="$text" /></div>
+                            <div class="col-lg-6"><x-feature-card :icon="$icon" :title="$title" :text="$text" /></div>
                         @endif
                     @endforeach
                 </div>
@@ -66,7 +66,7 @@
                         <div class="col-lg-7">
                             <p class="eyebrow">Phạm vi bàn giao</p>
                             <h2 class="mb-4">Những hạng mục chính trong dự án</h2>
-                            <ol class="numbered-grid numbered-grid--3">
+                            <ol class="scope-grid scope-grid--2">
                                 @foreach ($project->deliverables as $item)
                                     <li>{{ $item }}</li>
                                 @endforeach
@@ -75,7 +75,7 @@
                     @endif
                     @if ($project->technologies)
                         <div class="col-lg-5">
-                            <div class="feature-card">
+                            <div class="feature-card h-auto">
                                 <h2 class="h3 mb-0">Công nghệ và nền tảng</h2>
                                 <p>Ưu tiên dễ vận hành và có khả năng mở rộng.</p>
                                 <div class="media-card__tags">

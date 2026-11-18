@@ -1,7 +1,7 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero eyebrow="Kiến thức" :title="$category->name" :lead="$category->description" :image="$category->image?->url" :image-alt="$category->name" class="page-hero--compact" />
+    <x-hero eyebrow="Blog" :title="$category->name" :lead="$category->description" :image="$category->image?->url" :image-alt="$category->name" class="page-hero--compact" />
 
     <section class="section">
         <div class="container">

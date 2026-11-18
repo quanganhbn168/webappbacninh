@@ -30,7 +30,7 @@ class FrontendSiteTest extends TestCase
 
     public function test_all_static_and_listing_pages_render(): void
     {
-        foreach (['/', '/dich-vu', '/hosting-domain-email', '/giai-phap', '/san-pham', '/gioi-thieu', '/lien-he', '/bang-gia', '/hop-tac-agency', '/thiet-ke-website', '/kho-giao-dien', '/du-an', '/kien-thuc', '/dich-vu-van-hanh', '/cong-cu', '/chinh-sach-bao-mat', '/dieu-khoan-su-dung', '/chinh-sach-bao-hanh', '/quy-trinh-thanh-toan'] as $uri) {
+        foreach (['/', '/dich-vu', '/hosting-domain-email', '/giai-phap', '/san-pham', '/gioi-thieu', '/lien-he', '/bang-gia', '/hop-tac-agency', '/thiet-ke-website', '/kho-giao-dien', '/du-an', '/blog', '/dich-vu-van-hanh', '/cong-cu', '/chinh-sach-bao-mat', '/dieu-khoan-su-dung', '/chinh-sach-bao-hanh', '/quy-trinh-thanh-toan'] as $uri) {
             $this->get($uri)->assertOk()->assertSee(site_config('name'));
         }
 
@@ -129,8 +129,8 @@ class FrontendSiteTest extends TestCase
 
     public function test_all_dynamic_pages_render(): void
     {
-        foreach (Service::query()->active()->where('is_landing', true)->pluck('slug') as $slug) {
-            $this->get('/thiet-ke-website/'.$slug)->assertOk();
+        foreach (Service::query()->active()->where('is_landing', true)->get() as $service) {
+            $this->get($service->url)->assertOk();
         }
         foreach (Template::query()->active()->pluck('slug') as $slug) {
             $this->get('/kho-giao-dien/'.$slug)->assertOk();
@@ -139,7 +139,7 @@ class FrontendSiteTest extends TestCase
             $this->get('/du-an/'.$slug)->assertOk();
         }
         foreach (Post::query()->published()->pluck('slug') as $slug) {
-            $this->get('/kien-thuc/'.$slug)->assertOk();
+            $this->get('/'.$slug)->assertOk();
         }
         foreach (OperationService::query()->active()->pluck('slug') as $slug) {
             $this->get('/dich-vu-van-hanh/'.$slug)->assertOk();
@@ -157,13 +157,13 @@ class FrontendSiteTest extends TestCase
     {
         $this->get('/kho-giao-dien/khong-ton-tai')->assertNotFound();
         $this->get('/du-an/khong-ton-tai')->assertNotFound();
-        $this->get('/kien-thuc/khong-ton-tai')->assertNotFound();
+        $this->get('/bai-viet-khong-ton-tai')->assertNotFound();
     }
 
     public function test_navigation_connects_the_approved_pages(): void
     {
         $response = $this->get('/')->assertOk();
-        foreach (['/dich-vu', '/giai-phap', '/san-pham', '/du-an', '/bang-gia', '/kien-thuc', '/lien-he'] as $path) {
+        foreach (['/dich-vu', '/giai-phap', '/san-pham', '/du-an', '/bang-gia', '/blog', '/lien-he'] as $path) {
             $response->assertSee('href="'.$path.'"', false);
         }
         $response->assertSee('aria-label="Mở danh sách dịch vụ"', false)
@@ -256,7 +256,7 @@ class FrontendSiteTest extends TestCase
 
         $post = Post::published()->firstOrFail();
         $post->update(['title' => 'Bài viết quản trị '.$suffix]);
-        $this->get('/kien-thuc')->assertOk()->assertSee($post->title);
+        $this->get('/blog')->assertOk()->assertSee($post->title);
 
         $operation = OperationService::query()->where('is_active', true)->firstOrFail();
         $operation->update(['title' => 'Vận hành quản trị '.$suffix]);

@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/frontend/{path}', fn (string $path) => redirect('/images/'.basename($path), 301))
     ->where('path', '(assets/)?images/[A-Za-z0-9._-]+');
 
-Route::get('/landing/{slug}',[LandingPageController::class, 'show'])->name('landing.show');
+Route::get('/landing/{slug}', [LandingPageController::class, 'show'])->name('landing.show');
 
 Route::get('/profile/bac-be-bong', function () {
     return view('site.profile.bac-be-bong');
@@ -53,20 +53,17 @@ Route::controller(PageController::class)->group(function (): void {
 });
 
 Route::get('/du-an', [ProjectController::class, 'index'])->name('projects.index');
-Route::get('/kien-thuc', [ArticleController::class, 'index'])->name('articles.index');
-Route::redirect('/tin-tuc', '/kien-thuc', 301);
+Route::get('/blog', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('/cong-cu', [ToolController::class, 'index'])->name('tools.index');
 
 Route::get('/thiet-ke-website', [ServiceController::class, 'index'])->name('services.index');
 Route::get('/thiet-ke-website/{slug}', [ServiceController::class, 'detail'])->name('services.show');
+Route::get('/dich-vu/{slug}', [ServiceController::class, 'general'])->name('services.detail');
 
 Route::get('/kho-giao-dien', [ThemeController::class, 'index'])->name('themes.index');
 Route::get('/kho-giao-dien/{slug}', [ThemeController::class, 'detail'])->name('themes.show');
 
 Route::get('/du-an/{slug}', [ProjectController::class, 'detail'])->name('projects.show');
-
-Route::get('/kien-thuc/danh-muc/{slug}', [ArticleController::class, 'category'])->name('articles.category');
-Route::get('/kien-thuc/{slug}', [ArticleController::class, 'detail'])->name('articles.show');
 
 Route::get('/dich-vu-van-hanh', [OperationServiceController::class, 'index'])->name('operations.index');
 Route::get('/dich-vu-van-hanh/{slug}', [OperationServiceController::class, 'detail'])->name('operations.show');
@@ -78,8 +75,6 @@ Route::get('/favicon.ico', [SiteIconController::class, 'favicon'])->name('site.f
 Route::get('/apple-touch-icon.png', [SiteIconController::class, 'appleTouchIcon'])->name('site.apple-touch-icon');
 Route::get('/apple-touch-icon-precomposed.png', [SiteIconController::class, 'appleTouchIcon'])->name('site.apple-touch-icon-precomposed');
 Route::redirect('/contact', '/lien-he', 301);
-Route::redirect('/blog', '/kien-thuc', 301);
-Route::get('/blog/{slug}', fn (string $slug) => redirect()->route('articles.show', $slug, 301));
 Route::get('/search', fn () => redirect()->route('articles.index'))->name('search');
 
 Route::get('/login', [CustomerAuthController::class, 'showLoginForm'])->name('login');

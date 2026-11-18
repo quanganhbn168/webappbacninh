@@ -42,8 +42,8 @@ class ArticleController extends FrontendController
             'schemaType' => 'CollectionPage',
             'breadcrumbs' => [
                 ['name' => 'Trang chủ', 'url' => route('home')],
-                ['name' => 'Kiến thức', 'url' => route('articles.index')],
-                ['name' => $category->name, 'url' => route('articles.category', $category->slug)],
+                ['name' => 'Blog', 'url' => route('articles.index')],
+                ['name' => $category->name, 'url' => $category->url],
             ],
         ]);
     }
@@ -72,7 +72,7 @@ class ArticleController extends FrontendController
             ],
             'breadcrumbs' => [
                 ['name' => 'Trang chủ', 'url' => route('home')],
-                ['name' => 'Kiến thức', 'url' => route('articles.index')],
+                ['name' => 'Blog', 'url' => route('articles.index')],
                 ['name' => $article->title, 'url' => $article->url],
             ],
         ]);

@@ -30,6 +30,7 @@ class Project extends Model
         'year',
         'client',
         'duration',
+        'cost',
         'website_type',
         'challenge',
         'solution',

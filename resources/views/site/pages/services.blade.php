@@ -39,39 +39,18 @@
                     </ul>
                     <div class="btn-row"><a class="btn btn-outline-primary" href="{{ route('services.index') }}">Xem dịch vụ thiết kế website</a></div>
                 </x-feature-row>
-                <x-feature-row id="phan-mem" reversed :image="asset('images/service-software.webp')" title="Phần mềm doanh nghiệp theo yêu cầu"
-                    text="Phát triển phần mềm quản lý, hệ thống nội bộ theo quy trình riêng của doanh nghiệp, giúp tối ưu vận hành và tăng hiệu suất.">
-                    <ul class="check-list check-list--gold">
-                        <li>Phân tích và thiết kế theo nhu cầu thực tế</li>
-                        <li>Ứng dụng công nghệ hiện đại, bảo mật cao</li>
-                        <li>Tích hợp dễ dàng với hệ thống hiện có</li>
-                        <li>Mở rộng linh hoạt theo quy mô doanh nghiệp</li>
-                        <li>Hỗ trợ và bảo trì lâu dài</li>
-                    </ul>
-                    <div class="btn-row"><button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn</button></div>
-                </x-feature-row>
-                <x-feature-row id="crm-booking" :image="asset('images/service-crm.webp')" title="CRM / Booking cho doanh nghiệp dịch vụ"
-                    text="Giải pháp quản lý khách hàng và đặt lịch thông minh, giúp doanh nghiệp tự động hóa quy trình, tăng tỷ lệ chuyển đổi." note="Quản lý khách hàng – Dễ dàng hơn mỗi ngày!">
-                    <ul class="check-list check-list--gold">
-                        <li>Quản lý khách hàng tập trung</li>
-                        <li>Đặt lịch online, nhắc lịch tự động</li>
-                        <li>Theo dõi doanh thu, hiệu suất nhân viên</li>
-                        <li>Tích hợp Zalo, Email, SMS</li>
-                        <li>Hỗ trợ spa, phòng khám, giáo dục, dịch vụ…</li>
-                    </ul>
-                    <div class="btn-row"><a class="btn btn-outline-primary" href="{{ route('products') }}?loai=crm">Xem sản phẩm CRM</a></div>
-                </x-feature-row>
-                <x-feature-row id="seo-quang-cao" reversed :image="asset('images/service-marketing.webp')" title="SEO, quảng cáo & vận hành số"
-                    text="Tăng trưởng bền vững với các giải pháp SEO, quảng cáo đa kênh và vận hành số toàn diện.">
-                    <ul class="check-list check-list--gold">
-                        <li>Tối ưu SEO tổng thể, lên top bền vững</li>
-                        <li>Triển khai quảng cáo Google, Facebook, Zalo</li>
-                        <li>Thiết lập hệ thống đo lường, tracking</li>
-                        <li>Tư vấn chiến lược nội dung và marketing</li>
-                        <li>Hỗ trợ vận hành, tối ưu liên tục</li>
-                    </ul>
-                    <div class="btn-row"><a class="btn btn-outline-primary" href="{{ route('operations.index') }}">Xem dịch vụ vận hành</a></div>
-                </x-feature-row>
+                @foreach ($generalServices as $service)
+                    <x-feature-row :id="$service->slug" :reversed="$loop->odd" :image="$service->image_url" :title="$service->title" :text="$service->description" :note="$service->highlight">
+                        @if ($service->features)
+                            <ul class="check-list check-list--gold">
+                                @foreach (array_slice($service->features, 0, 5) as $feature)
+                                    <li>{{ $feature['title'] }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
+                        <div class="btn-row"><a class="btn btn-outline-primary" href="{{ $service->url }}">Xem chi tiết dịch vụ</a></div>
+                    </x-feature-row>
+                @endforeach
             </div>
         </div>
     </section>

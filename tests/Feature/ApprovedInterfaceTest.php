@@ -8,7 +8,7 @@ class ApprovedInterfaceTest extends TestCase
 {
     public function test_approved_pages_use_local_assets_and_shared_navigation(): void
     {
-        foreach (['/', '/dich-vu', '/hosting-domain-email', '/giai-phap', '/san-pham', '/du-an', '/bang-gia', '/kien-thuc', '/lien-he'] as $uri) {
+        foreach (['/', '/dich-vu', '/hosting-domain-email', '/giai-phap', '/san-pham', '/du-an', '/bang-gia', '/blog', '/lien-he'] as $uri) {
             $response = $this->get($uri)->assertOk();
             $response->assertSee('/build/assets/site-', false);
             $html = $response->getContent();

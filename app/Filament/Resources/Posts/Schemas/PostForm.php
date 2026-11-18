@@ -36,7 +36,7 @@ class PostForm
                                 }
                             }),
                         Hidden::make('slug_manually_edited')->default(false)->dehydrated(false),
-                        PermalinkInput::make('slug')->prefix(url('/kien-thuc').'/')
+                        PermalinkInput::make('slug')->prefix(url('/').'/')
                             ->afterStateUpdated(fn (Set $set) => $set('slug_manually_edited', true)),
                         Textarea::make('summary')->label('Mô tả ngắn')->rows(4),
                         RichEditor::make('content')->label('Nội dung')->required()

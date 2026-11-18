@@ -11,6 +11,7 @@ enum PricingGroup: string implements HasLabel
     case Hosting = 'hosting';
     case Care = 'care';
     case Addon = 'addon';
+    case HostingAddon = 'hosting_addon';
 
     public function getLabel(): string
     {
@@ -25,6 +26,7 @@ enum PricingGroup: string implements HasLabel
             self::Hosting => 'Hosting / Domain / Email',
             self::Care => 'Chăm sóc & Vận hành',
             self::Addon => 'Dịch vụ bổ sung',
+            self::HostingAddon => 'Add-on Hosting (trang Hosting)',
         };
     }
 

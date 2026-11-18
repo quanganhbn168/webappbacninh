@@ -82,11 +82,11 @@
                 </div>
                 <div class="col-lg-8">
                     <div class="row g-3 row-cols-1 row-cols-sm-2">
-                        @foreach ([['globe', 'Tên miền', 'Theo giá thị trường'], ['mail', 'Email doanh nghiệp', 'Từ 50.000đ/tháng'], ['lock', 'SSL cao cấp', 'Từ 300.000đ/năm'], ['hard-drive', 'Sao lưu dữ liệu', 'Từ 300.000đ/tháng']] as [$icon, $title, $price])
+                        @foreach ($addons as $addon)
                             <div class="col">
                                 <button class="feature-card feature-card--link feature-card--row w-100 text-start" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">
-                                    <span class="icon-tile"><x-icon :name="$icon" /></span>
-                                    <span><strong class="d-block text-dark">{{ $title }}</strong><span class="text-primary-emphasis fw-semibold">{{ $price }}</span></span>
+                                    <span class="icon-tile"><x-icon :name="$addon->icon ?: 'layers'" /></span>
+                                    <span><strong class="d-block text-dark">{{ $addon->name }}</strong><span class="text-primary-emphasis fw-semibold">{{ $addon->priceText() }}</span></span>
                                 </button>
                             </div>
                         @endforeach

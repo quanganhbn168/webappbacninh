@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ServiceSection;
 use App\Traits\HasServiceContent;
 use App\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -20,6 +21,7 @@ class Service extends Model
         'title',
         'slug',
         'is_landing',
+        'section',
         'menu_key',
         'eyebrow',
         'highlight',
@@ -46,10 +48,12 @@ class Service extends Model
 
     protected $attributes = [
         'is_landing' => false,
+        'section' => 'website',
     ];
 
     protected $casts = [
         'is_landing' => 'boolean',
+        'section' => ServiceSection::class,
         'is_active' => 'boolean',
         'audiences' => 'array',
         'problems' => 'array',
@@ -65,13 +69,13 @@ class Service extends Model
     }
 
     /**
-     * Landing services have a designed page under /thiet-ke-website; the
-     * others are simple pages served from the site root.
+     * Landing services have a designed page under /thiet-ke-website or /dich-vu
+     * (by section); the others are simple pages served from the site root.
      */
     protected function url(): Attribute
     {
         return Attribute::get(fn (): string => $this->is_landing
-            ? route('services.show', $this->slug)
+            ? route($this->section->routeName(), $this->slug)
             : route('slug.handle', $this->slug));
     }
 

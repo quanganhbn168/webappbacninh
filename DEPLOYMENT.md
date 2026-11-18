@@ -1,6 +1,6 @@
 # Production deployment
 
-The web server document root must point to the repository's `public` directory.
+The web server document root must point to the repository's `public` directory. The server needs Node 20 or newer and pnpm (not npm).
 
 ## Required environment values
 

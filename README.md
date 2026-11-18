@@ -60,6 +60,8 @@ Mỗi resource Filament mới cần quyền Shield: tạo trong migration bằng
 
 ## Chạy trên máy
 
+Cần Node 20 trở lên (Tailwind 4 không chạy trên Node 18) và pnpm, không dùng npm.
+
 ```bash
 composer install && pnpm install
 cp .env.example .env && php artisan key:generate && php artisan curator:token

@@ -11,7 +11,7 @@
     @endif
     <meta name="robots" content="{{ $robots }}">
     <link rel="canonical" href="{{ $canonicalUrl }}">
-    @include('partials.site.favicon')
+    @include('site.partials.favicon')
     @if (site_config('google_site_verification'))
         <meta name="google-site-verification" content="{{ site_config('google_site_verification') }}">
     @endif
@@ -33,7 +33,7 @@
 <body @class([$bodyClass ?? null])>
     {!! tracking_code('body_start') !!}
     <a class="skip-link" href="#main-content">Bỏ qua menu, đến nội dung</a>
-    @include('partials.site.header')
+    @include('site.partials.header')
     <main id="main-content" tabindex="-1">
         @if (session('success'))
             <div class="container pt-4">
@@ -42,9 +42,9 @@
         @endif
         @yield('content')
     </main>
-    @include('partials.site.footer')
-    @include('partials.site.floating-actions')
-    @include('partials.site.modals')
+    @include('site.partials.footer')
+    @include('site.partials.floating-actions')
+    @include('site.partials.modals')
     @stack('scripts')
     {!! tracking_code('body_end') !!}
 </body>

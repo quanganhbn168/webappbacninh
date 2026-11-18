@@ -63,7 +63,7 @@ class DomainController extends Controller
             ];
         }
 
-        return view('frontend.domain.result', compact('domain', 'status', 'suggestions'));
+        return view('site.domain.result', compact('domain', 'status', 'suggestions'));
     }
 
     private function queryWhois($server, $domain)

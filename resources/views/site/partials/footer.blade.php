@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row gy-4 site-footer__grid">
             <div class="col-lg-3 col-md-6">
-                @include('partials.site.brand')
+                @include('site.partials.brand')
                 <p class="site-footer__about">Đồng hành cùng doanh nghiệp trong hành trình chuyển đổi số với những giải pháp website, phần mềm và vận hành hiệu quả.</p>
                 @if ($socialChannels['footer'] !== [])
                     <div class="site-footer__social">

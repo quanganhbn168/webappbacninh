@@ -7,6 +7,6 @@
             <x-breadcrumbs :items="$breadcrumbs" class="mb-0" />
         </div>
         @yield('tool-content')
-        @include('tools.partials.more-tools')
+        @include('site.tools.partials.more-tools')
     </div>
 @endsection

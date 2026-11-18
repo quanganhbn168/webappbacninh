@@ -117,7 +117,7 @@
                 @endforeach
             </div>
 
-            @include('tools.partials.tax-links', ['current' => 'sme'])
+            @include('site.tools.partials.tax-links', ['current' => 'sme'])
         </div>
     </div>
 </div>

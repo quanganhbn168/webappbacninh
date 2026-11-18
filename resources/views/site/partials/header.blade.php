@@ -2,7 +2,7 @@
 <header class="site-header">
     <nav class="navbar navbar-expand-lg h-100 p-0" aria-label="Điều hướng chính">
         <div class="container site-header__inner">
-            @include('partials.site.brand')
+            @include('site.partials.brand')
 
             <div class="offcanvas offcanvas-end site-nav" tabindex="-1" id="site-nav" aria-labelledby="site-nav-title">
                 <div class="offcanvas-header">

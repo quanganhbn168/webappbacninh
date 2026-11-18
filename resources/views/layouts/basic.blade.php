@@ -11,7 +11,7 @@
     @hasSection('error-page')
         <link rel="icon" type="image/svg+xml" href="/frontend/images/favicon.svg">
     @else
-        @include('partials.site.favicon')
+        @include('site.partials.favicon')
         {!! tracking_code('head') !!}
     @endif
     @vite(['resources/scss/bootstrap.scss', 'resources/css/basic.css', 'resources/js/basic.js'])

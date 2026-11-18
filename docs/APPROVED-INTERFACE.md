@@ -5,7 +5,7 @@ Giao diện public giữ thiết kế đã duyệt (màu vàng #ffac00, nâu đ�
 ## Cấu trúc
 
 - Layout: `resources/views/layouts/site.blade.php` (trang public), `layouts/tool.blade.php` (trang công cụ, kế thừa `site`), `layouts/basic.blade.php` (đăng nhập, lỗi 404/500/503, thanh toán).
-- Header, footer, nút liên hệ nổi, modal tư vấn/kiểm tra tên miền: `resources/views/partials/site/`.
+- Header, footer, nút liên hệ nổi, modal tư vấn/kiểm tra tên miền: `resources/views/site/partials/`.
 - Trang: `resources/views/site/`
   - `home.blade.php`, `pages/{services,hosting,solutions,products,pricing,contact,about,agency}.blade.php`, `pages/legal/*.blade.php`
   - `projects/`, `articles/`, `themes/`, `services/`, `operations/`, `tools/index.blade.php`

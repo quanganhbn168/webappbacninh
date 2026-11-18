@@ -18,7 +18,7 @@ class CustomerAuthController extends Controller
 {
     public function showLoginForm()
     {
-        return view('frontend.auth.login');
+        return view('site.auth.login');
     }
 
     public function login(Request $request)
@@ -41,7 +41,7 @@ class CustomerAuthController extends Controller
 
     public function showRegistrationForm()
     {
-        return view('frontend.auth.register');
+        return view('site.auth.register');
     }
 
     public function register(Request $request)

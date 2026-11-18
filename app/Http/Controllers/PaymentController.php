@@ -28,7 +28,7 @@ class PaymentController extends Controller
         $providers = $this->paymentService->getAvailableProviders();
         $defaultProvider = $this->paymentService->getDefaultProvider();
 
-        return view('payment.checkout', compact('order', 'providers', 'defaultProvider'));
+        return view('site.payment.checkout', compact('order', 'providers', 'defaultProvider'));
     }
 
     /**
@@ -128,7 +128,7 @@ class PaymentController extends Controller
     {
         session()->forget('pending_payment');
 
-        return view('payment.cancel');
+        return view('site.payment.cancel');
     }
 
     /**
@@ -141,7 +141,7 @@ class PaymentController extends Controller
             'message' => 'Không có thông tin thanh toán.',
         ]);
 
-        return view('payment.result', compact('result'));
+        return view('site.payment.result', compact('result'));
     }
 
     /**
@@ -200,7 +200,7 @@ class PaymentController extends Controller
         $name = $request->get('name', setting('sepay_account_name') ?: 'WebApp Bac Ninh');
         $return_url = $request->get('return_url', route('payment.result'));
 
-        return view('payment.sepay-qr', compact(
+        return view('site.payment.sepay-qr', compact(
             'order_id', 'amount', 'code', 'bank', 'account', 'name', 'return_url'
         ));
     }

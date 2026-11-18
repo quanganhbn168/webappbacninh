@@ -33,7 +33,7 @@
                         <div class="col"><x-card.post :post="$post" /></div>
                     @endforeach
                 </div>
-                <div class="mt-5">{{ $posts->links('partials.site.pagination') }}</div>
+                <div class="mt-5">{{ $posts->links('site.partials.pagination') }}</div>
             @endif
         </div>
     </section>

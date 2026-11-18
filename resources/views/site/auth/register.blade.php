@@ -70,7 +70,7 @@
                                 <button type="submit" class="btn btn-primary btn-lg shadow-sm fw-bold">Đăng ký ngay</button>
                             </div>
 
-                            @include('frontend.auth.partials.social-buttons', ['label' => 'Hoặc đăng ký với'])
+                            @include('site.auth.partials.social-buttons', ['label' => 'Hoặc đăng ký với'])
                         </form>
 
                         <div class="text-center">

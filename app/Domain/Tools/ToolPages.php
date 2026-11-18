@@ -3,7 +3,7 @@
 namespace App\Domain\Tools;
 
 /**
- * SEO data of the free tool pages (resources/views/tools). The /cong-cu list itself
+ * SEO data of the free tool pages (resources/views/site/tools). The /cong-cu list itself
  * comes from the mini apps managed in the admin.
  */
 final class ToolPages

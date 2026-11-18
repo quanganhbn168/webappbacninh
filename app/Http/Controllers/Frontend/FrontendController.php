@@ -46,13 +46,13 @@ abstract class FrontendController extends Controller
     }
 
     /**
-     * A free tool page (resources/views/tools), inside the site chrome under /cong-cu.
+     * A free tool page (resources/views/site/tools), inside the site chrome under /cong-cu.
      */
     protected function toolPage(string $key, array $data = []): View
     {
         $tool = ToolPages::PAGES[$key];
 
-        return $this->page('tools.'.$key, $data + [
+        return $this->page('site.tools.'.$key, $data + [
             'pageTitle' => $tool['title'].' | '.site_config('name'),
             'pageDescription' => $tool['description'],
             'pageKeywords' => $tool['keywords'],

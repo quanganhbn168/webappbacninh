@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/landing/{slug}', [LandingPageController::class, 'show'])->name('landing.show');
 
 Route::get('/profile/bac-be-bong', function () {
-    return view('profile.bac-be-bong');
+    return view('site.profile.bac-be-bong');
 });
 Route::get('/', HomeController::class)->name('home');
 

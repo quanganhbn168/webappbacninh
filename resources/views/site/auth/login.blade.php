@@ -55,7 +55,7 @@
                                 <button type="submit" class="btn btn-primary btn-lg shadow-sm fw-bold">Đăng nhập</button>
                             </div>
 
-                            @include('frontend.auth.partials.social-buttons', ['label' => 'Hoặc đăng nhập với'])
+                            @include('site.auth.partials.social-buttons', ['label' => 'Hoặc đăng nhập với'])
                         </form>
 
                         <div class="text-center">

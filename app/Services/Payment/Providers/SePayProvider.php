@@ -6,6 +6,8 @@ use App\Services\Payment\Contracts\PaymentGatewayInterface;
 use App\Services\Payment\DTO\PaymentRequest;
 use App\Services\Payment\DTO\PaymentResult;
 use App\Services\Payment\Enums\PaymentStatus;
+use Illuminate\Support\Facades\Schema;
+use SePay\SePay\Models\SePayTransaction;
 
 /**
  * SePay Provider - Bank Transfer via QR Code
@@ -14,7 +16,8 @@ use App\Services\Payment\Enums\PaymentStatus;
  * 1. User sees QR code with payment info
  * 2. User transfers money via banking app
  * 3. SePay detects transfer → fires webhook
- * 4. Our SePayWebhookListener processes webhook
+ * 4. The package stores it in sepay_transactions; the QR page polls
+ *    payment.sepay.status, then payment/callback/sepay confirms it again here
  * 
  * Uses official package: sepayvn/laravel-sepay
  */
@@ -28,14 +31,45 @@ class SePayProvider implements PaymentGatewayInterface
 
     public function __construct()
     {
-        // Read from database settings first, fallback to config/env
-        $this->webhookToken = setting('sepay_webhook_token') ?: config('sepay.webhook_token', '');
-        $this->matchPattern = setting('sepay_match_pattern') ?: config('sepay.pattern', 'SE');
-        
+        // Settings first, then config/env. Cast to string: config() returns null, not the
+        // default, when SEPAY_WEBHOOK_TOKEN is missing from .env.
+        $this->webhookToken = (string) (setting('sepay_webhook_token') ?: config('sepay.webhook_token'));
+        $this->matchPattern = (string) (setting('sepay_match_pattern') ?: config('sepay.pattern') ?: 'SE');
+
         // Bank account info for QR generation
-        $this->bankName = setting('sepay_bank_name') ?: 'MBBank';
-        $this->bankAccount = setting('sepay_bank_account') ?: '';
-        $this->accountName = setting('sepay_account_name') ?: 'WebApp Bac Ninh';
+        $this->bankName = (string) (setting('sepay_bank_name') ?: 'MBBank');
+        $this->bankAccount = (string) (setting('sepay_bank_account') ?: '');
+        $this->accountName = (string) (setting('sepay_account_name') ?: 'WebApp Bac Ninh');
+    }
+
+    /**
+     * The transfer content the customer must type: pattern + order id, e.g. SEDEMO1731900000.
+     */
+    public function paymentCode(string $orderId): string
+    {
+        return $this->matchPattern.$orderId;
+    }
+
+    /**
+     * The incoming transfer recorded by the SePay webhook for this order, if any.
+     * Banks may drop punctuation from the content, so the code is matched on letters and digits only.
+     */
+    public function findIncomingTransfer(string $orderId, int $minAmount = 0): ?SePayTransaction
+    {
+        $code = $this->paymentCode($orderId);
+        $needle = strtoupper((string) preg_replace('/[^A-Za-z0-9]/', '', $code));
+        if ($orderId === '' || $needle === '' || ! Schema::hasTable('sepay_transactions')) {
+            return null;
+        }
+
+        return SePayTransaction::query()
+            ->where('transferType', 'in')
+            ->when($minAmount > 0, fn ($query) => $query->where('transferAmount', '>=', $minAmount))
+            ->latest('id')
+            ->limit(200)
+            ->get()
+            ->first(fn (SePayTransaction $transfer): bool => $transfer->code === $code
+                || str_contains(strtoupper((string) preg_replace('/[^A-Za-z0-9]/', '', $transfer->content)), $needle));
     }
 
     public function getName(): string
@@ -87,17 +121,8 @@ class SePayProvider implements PaymentGatewayInterface
      */
     public function createPaymentUrl(PaymentRequest $request): string
     {
-        // Generate unique payment code with pattern
-        $paymentCode = $this->matchPattern . $request->orderId;
-        
-        // Build VietQR URL for bank transfer
-        // Format: https://img.vietqr.io/image/{bankId}-{accountNo}-compact2.png?amount={}&addInfo={}&accountName={}
-        $qrParams = http_build_query([
-            'amount' => (int) $request->amount,
-            'addInfo' => $paymentCode,
-            'accountName' => $this->accountName,
-        ]);
-        
+        $paymentCode = $this->paymentCode($request->orderId);
+
         // Return our internal payment page with QR info
         return route('payment.sepay.qr', [
             'order_id' => $request->orderId,
@@ -111,43 +136,33 @@ class SePayProvider implements PaymentGatewayInterface
     }
 
     /**
-     * Verify webhook from SePay.
-     * This is called when we receive a webhook from SePay package.
+     * Called when the QR page sends the customer back (payment/callback/sepay?order_id=…).
+     * The redirect itself proves nothing; payment is confirmed only by a transfer the
+     * SePay webhook stored for this order (at least the expected amount, when known).
      */
     public function verifyCallback(array $data): PaymentResult
     {
-        // For SePay, webhook is handled by the package's SePayWebhookEvent
-        // This method is called from our SePayWebhookListener
-        
-        $orderId = $data['code'] ?? '';
-        $transactionId = (string) ($data['id'] ?? '');
-        $amount = $data['transferAmount'] ?? 0;
-        $transferType = $data['transferType'] ?? '';
-        $content = $data['content'] ?? '';
-        
-        // Remove pattern prefix from code to get order ID
-        if (str_starts_with($orderId, $this->matchPattern)) {
-            $orderId = substr($orderId, strlen($this->matchPattern));
-        }
-        
-        if ($transferType === 'in') {
-            return new PaymentResult(
-                success: true,
-                status: PaymentStatus::COMPLETED,
-                transactionId: $transactionId,
+        $orderId = (string) ($data['order_id'] ?? '');
+        $transfer = $this->findIncomingTransfer($orderId, (int) ($data['expected_amount'] ?? 0));
+
+        if (! $transfer) {
+            return PaymentResult::failed(
+                message: 'Chưa nhận được chuyển khoản cho đơn hàng này.',
                 orderId: $orderId,
-                amount: (float) $amount,
-                message: 'Thanh toán thành công qua SePay',
-                bankCode: $data['gateway'] ?? null,
-                paymentMethod: 'Bank Transfer (SePay)',
                 rawData: $data,
             );
         }
 
-        return PaymentResult::failed(
-            message: 'Giao dịch không hợp lệ',
+        return new PaymentResult(
+            success: true,
+            status: PaymentStatus::COMPLETED,
+            transactionId: (string) $transfer->id,
             orderId: $orderId,
-            rawData: $data,
+            amount: (float) $transfer->transferAmount,
+            message: 'Thanh toán thành công qua SePay',
+            bankCode: $transfer->gateway,
+            paymentMethod: 'Bank Transfer (SePay)',
+            rawData: $transfer->toArray(),
         );
     }
 
@@ -164,13 +179,13 @@ class SePayProvider implements PaymentGatewayInterface
     public function queryTransaction(string $transactionId): PaymentResult
     {
         // SePay stores transactions in sepay_transactions table via package
-        $transaction = \SePay\SePay\Models\SePayTransaction::find($transactionId);
+        $transaction = SePayTransaction::find($transactionId);
         
         if ($transaction) {
             return PaymentResult::success(
                 transactionId: (string) $transaction->id,
                 orderId: $transaction->code ?? '',
-                amount: (float) $transaction->transfer_amount,
+                amount: (float) $transaction->transferAmount,
                 rawData: $transaction->toArray(),
             );
         }

@@ -10,6 +10,7 @@ APP_DEBUG=false
 CACHE_PREFIX=webappbacninh_cache_
 SETTINGS_CACHE_ENABLED=true
 SETTINGS_CACHE_MEMO=true
+SEPAY_WEBHOOK_TOKEN=   # API key from my.sepay.vn; the SePay webhook answers 503 until it is set
 ```
 
 Keep the remaining database, mail, queue and application secrets in the server `.env`; never commit that file.

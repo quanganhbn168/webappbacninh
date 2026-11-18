@@ -4,7 +4,7 @@
 @section('meta_description', 'Thanh toán qua chuyển khoản ngân hàng với SePay')
 
 @section('content')
-<div class="container py-5" data-status-url="{{ url('/api/payment/sepay/status/'.$order_id) }}" data-success-url="{{ ($return_url ?? url('/payment/result')).'?status=success&order_id='.urlencode($order_id) }}">
+<div class="container py-5" data-status-url="{{ route('payment.sepay.status', $order_id) }}" data-success-url="{{ $return_url.(str_contains($return_url, '?') ? '&' : '?').'order_id='.urlencode($order_id) }}">
     <div class="row justify-content-center">
         <div class="col-lg-6">
             

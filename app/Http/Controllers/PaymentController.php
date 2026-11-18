@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\Payment\PaymentService;
 use App\Services\Payment\DTO\PaymentRequest;
+use App\Services\Payment\Providers\SePayProvider;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -20,7 +21,7 @@ class PaymentController extends Controller
     {
         // For demo, we'll create a sample order
         $order = [
-            'id' => $request->order_id ?? 'DEMO_' . time(),
+            'id' => $request->order_id ?? 'DEMO' . time(),
             'amount' => (float) ($request->amount ?? 100000),
             'description' => $request->description ?? 'Thanh toán đơn hàng demo',
         ];
@@ -98,7 +99,11 @@ class PaymentController extends Controller
 
         try {
             // Verify callback with provider
-            $result = $this->paymentService->verifyCallback($request->all(), $provider);
+            // The amount stored when the payment started, so a provider can check what was paid.
+            $pending = session('pending_payment', []);
+            $expected = ($pending['order_id'] ?? null) === $request->input('order_id') ? ($pending['amount'] ?? 0) : 0;
+
+            $result = $this->paymentService->verifyCallback($request->all() + ['expected_amount' => $expected], $provider);
 
             // Clear pending payment session
             session()->forget('pending_payment');
@@ -192,16 +197,38 @@ class PaymentController extends Controller
      */
     public function sepayQr(Request $request)
     {
-        $order_id = $request->get('order_id', 'DEMO_' . time());
+        $order_id = $request->get('order_id', 'DEMO' . time());
         $amount = $request->get('amount', 0);
-        $code = $request->get('code', 'SE' . $order_id);
+        $code = $this->sePay()->paymentCode($order_id);
         $bank = $request->get('bank', setting('sepay_bank_name') ?: 'MBBank');
         $account = $request->get('account', setting('sepay_bank_account') ?: '');
         $name = $request->get('name', setting('sepay_account_name') ?: 'WebApp Bac Ninh');
-        $return_url = $request->get('return_url', route('payment.result'));
+        // Only send the customer back to this site.
+        $return_url = (string) $request->get('return_url');
+        if (parse_url($return_url, PHP_URL_HOST) !== $request->getHost()) {
+            $return_url = route('payment.result');
+        }
 
         return view('site.payment.sepay-qr', compact(
             'order_id', 'amount', 'code', 'bank', 'account', 'name', 'return_url'
         ));
+    }
+
+    /**
+     * Polled by the SePay QR page: has the bank transfer for this order arrived?
+     */
+    public function sepayStatus(string $orderId): JsonResponse
+    {
+        $pending = session('pending_payment', []);
+        $amount = ($pending['order_id'] ?? null) === $orderId ? (int) ($pending['amount'] ?? 0) : 0;
+
+        return response()->json([
+            'status' => $this->sePay()->findIncomingTransfer($orderId, $amount) ? 'completed' : 'pending',
+        ]);
+    }
+
+    private function sePay(): SePayProvider
+    {
+        return $this->paymentService->provider('sepay');
     }
 }

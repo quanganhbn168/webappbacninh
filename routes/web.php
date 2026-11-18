@@ -120,6 +120,7 @@ Route::prefix('payment')->group(function (): void {
     Route::get('/result', [PaymentController::class, 'result'])->name('payment.result');
     Route::post('/api/process', [PaymentController::class, 'processApi'])->name('payment.api.process');
     Route::get('/sepay/qr', [PaymentController::class, 'sepayQr'])->name('payment.sepay.qr');
+    Route::get('/sepay/status/{orderId}', [PaymentController::class, 'sepayStatus'])->name('payment.sepay.status')->middleware('throttle:30,1');
 });
 
 Route::post('/subscribe', fn () => back()->with('success', 'Cảm ơn bạn đã để lại email, chúng tôi sẽ liên hệ sớm!'))->name('subscribe.email');

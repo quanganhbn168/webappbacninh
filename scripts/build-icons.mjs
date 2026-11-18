@@ -1,7 +1,7 @@
 // Builds resources/icons/icons.json: the icon set used by <x-icon> and the admin icon pickers.
 // Outline icons come from lucide-static, brand logos from simple-icons.
 // Add a name to one of the lists below and run: node scripts/build-icons.mjs
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -34,7 +34,6 @@ const brands = {
     facebook: 'facebook',
     messenger: 'messenger',
     youtube: 'youtube',
-    zalo: 'zalo',
     telegram: 'telegram',
     whatsapp: 'whatsapp',
     tiktok: 'tiktok',
@@ -57,6 +56,17 @@ for (const name of outline) {
 }
 for (const [name, slug] of Object.entries(brands)) {
     icons[`brand-${name}`] = { body: inner(readFileSync(resolve(root, 'node_modules/simple-icons/icons', `${slug}.svg`), 'utf8')), brand: true };
+}
+
+// Our own single-colour brand marks (resources/icons/custom/<name>.svg → brand-<name>), used where
+// Simple Icons only has a wordmark (Zalo). Paths must carry no fill; they are scaled into the 24px box.
+const customDir = resolve(root, 'resources/icons/custom');
+for (const file of readdirSync(customDir).filter(f => f.endsWith('.svg'))) {
+    const svg = readFileSync(resolve(customDir, file), 'utf8');
+    const [, , width, height] = (svg.match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 24 24').split(/\s+/).map(Number);
+    const scale = +(24 / Math.max(width, height)).toFixed(4);
+    const body = inner(svg);
+    icons[`brand-${file.replace(/\.svg$/, '')}`] = { body: scale === 1 ? body : `<g transform="scale(${scale})">${body}</g>`, brand: true };
 }
 
 const sorted = Object.fromEntries(Object.entries(icons).sort(([a], [b]) => a.localeCompare(b)));

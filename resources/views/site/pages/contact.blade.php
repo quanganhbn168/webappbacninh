@@ -10,7 +10,7 @@
         @endif
     </x-hero>
 
-    <section class="section pb-0">
+    <section class="section">
         <div class="container">
             <h2 class="visually-hidden">Thông tin liên hệ</h2>
             <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-lg-4">

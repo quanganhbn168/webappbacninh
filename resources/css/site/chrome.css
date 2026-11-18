@@ -37,7 +37,8 @@
     .site-nav__list { height: 100%; align-items: stretch; gap: 1.5rem; }
     .site-nav .nav-item { display: flex; align-items: center; }
     .site-nav .nav-link { position: relative; height: 100%; display: inline-flex; align-items: center; padding: 0 !important; }
-    .site-nav .nav-link.active::after { content: ""; position: absolute; right: 0; bottom: 1.15rem; left: 0; height: 2px; border-radius: 2px; background: var(--gold); }
+    /* Measured from the vertical centre of the text, so it sits just under the word whatever the link height. */
+    .site-nav .nav-link.active::after { content: ""; position: absolute; top: calc(50% + .8em); right: 0; left: 0; height: 2px; border-radius: 2px; background: var(--gold); }
     .site-nav__dropdown { position: relative; gap: .15rem; }
     .site-nav__toggle { width: 1.2rem; height: 100%; }
     .site-nav__panel { top: calc(100% - .15rem) !important; left: -1.25rem; margin-top: 0; }

@@ -8,22 +8,34 @@ export function track(name, params = {}) {
     }
 }
 
+// Event name sent to GA4 for each kind of contact link, recognised by its address.
+// To count a new channel, add a line here: ['click_<name>', /pattern matching its links/].
 const CONTACT_LINKS = [
     ['click_phone', /^tel:/i],
     ['click_zalo', /(^|\/\/)(www\.)?(zalo\.me|chat\.zalo\.me|zaloapp\.com)/i],
     ['click_messenger', /(^|\/\/)(www\.)?(m\.me|messenger\.com)\//i],
+    ['click_whatsapp', /(^|\/\/)(www\.)?(wa\.me|api\.whatsapp\.com|web\.whatsapp\.com|whatsapp\.com\/send)/i],
+    ['click_telegram', /(^|\/\/)(www\.)?(t\.me|telegram\.me)\//i],
+    ['click_email', /^mailto:/i],
 ];
 
-function linkLocation(link) {
-    if (link.closest('.floating-actions')) return 'floating';
-    if (link.closest('header')) return 'header';
-    if (link.closest('footer')) return 'footer';
+function linkLocation(element) {
+    if (element.closest('.floating-actions')) return 'floating';
+    if (element.closest('header')) return 'header';
+    if (element.closest('footer')) return 'footer';
     return 'content';
 }
 
-// Calls and Zalo chats are how most customers get in touch: count each tap on those links.
+// Counts taps on contact links (call, Zalo, WhatsApp…), and on any element marked
+// data-ga-event="event_name" — the way to track a button without touching this file.
 export function initContactTracking() {
     document.addEventListener('click', (event) => {
+        const marked = event.target.closest?.('[data-ga-event]');
+        if (marked) {
+            track(marked.dataset.gaEvent, { link_location: linkLocation(marked), page_path: window.location.pathname });
+            return;
+        }
+
         const link = event.target.closest?.('a[href]');
         if (!link) return;
         const href = link.getAttribute('href');

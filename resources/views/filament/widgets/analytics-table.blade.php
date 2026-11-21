@@ -28,6 +28,9 @@
                                             @else
                                                 <span class="relative block truncate text-gray-950 dark:text-white" title="{{ $cell }}">{{ $cell }}</span>
                                             @endif
+                                            @if (! empty($row['sub']))
+                                                <span class="relative block truncate text-xs text-gray-500 dark:text-gray-400" title="{{ $row['sub'] }}">{{ $row['sub'] }}</span>
+                                            @endif
                                         </td>
                                     @else
                                         <td class="whitespace-nowrap px-2 py-2 text-right tabular-nums text-gray-700 dark:text-gray-300">{{ $cell }}</td>

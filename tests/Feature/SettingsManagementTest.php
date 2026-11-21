@@ -88,6 +88,10 @@ class SettingsManagementTest extends TestCase
         $this->get('/login')
             ->assertOk()
             ->assertSee('googletagmanager.com/gtag/js?id=G-TEST123', false);
+
+        // A signed-in admin looking at the site is not counted as a visitor.
+        $this->actingAs($this->superAdmin(), 'admin')->get('/')->assertOk()
+            ->assertDontSee('gtag/js?id=G-TEST123', false)->assertDontSee('tracking-body-end-test', false);
     }
 
     public function test_standard_validation_opens_the_error_flow_and_shows_a_danger_notification(): void

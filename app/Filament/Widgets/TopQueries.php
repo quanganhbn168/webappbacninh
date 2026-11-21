@@ -7,7 +7,7 @@ use App\Domain\Analytics\AnalyticsReports;
 /** Search terms that bring the site up in Google (Search Console). */
 class TopQueries extends AnalyticsTable
 {
-    protected static ?int $sort = 7;
+    protected static ?int $sort = 9;
 
     public static function canView(): bool
     {

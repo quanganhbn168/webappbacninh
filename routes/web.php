@@ -7,6 +7,7 @@ use App\Http\Controllers\Frontend\ArticleController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\LandingPageController;
 use App\Http\Controllers\Frontend\LeadController;
+use App\Http\Controllers\Frontend\LegacyArticleRedirectController;
 use App\Http\Controllers\Frontend\OperationServiceController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\ProjectController;
@@ -54,6 +55,11 @@ Route::controller(PageController::class)->group(function (): void {
 
 Route::get('/du-an', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/blog', [ArticleController::class, 'index'])->name('articles.index');
+// The blog moved from /kien-thuc to /blog and the site root; Google still shows the old links.
+Route::redirect('/kien-thuc', '/blog', 301);
+Route::redirect('/tin-tuc', '/blog', 301);
+Route::get('/kien-thuc/danh-muc/{slug}', [LegacyArticleRedirectController::class, 'category'])->where('slug', '[a-z0-9-]+');
+Route::get('/kien-thuc/{slug}', [LegacyArticleRedirectController::class, 'post'])->where('slug', '[a-z0-9-]+');
 Route::get('/cong-cu', [ToolController::class, 'index'])->name('tools.index');
 
 Route::get('/thiet-ke-website', [ServiceController::class, 'index'])->name('services.index');

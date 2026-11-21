@@ -7,7 +7,7 @@ use App\Domain\Analytics\AnalyticsReports;
 /** Pages that get the most clicks from Google (Search Console). */
 class SearchPages extends AnalyticsTable
 {
-    protected static ?int $sort = 8;
+    protected static ?int $sort = 10;
 
     public static function canView(): bool
     {
@@ -36,7 +36,7 @@ class SearchPages extends AnalyticsTable
 
         return array_map(fn (array $row, float $bar): array => [
             'cells' => [$row['label'], self::number($row['clicks']), self::number($row['impressions']), self::number($row['position'], 1)],
-            'href' => url($row['label']),
+            'href' => $row['url'],
             'bar' => $bar,
         ], $rows, $bars);
     }

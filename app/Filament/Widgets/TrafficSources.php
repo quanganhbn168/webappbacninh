@@ -4,7 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Domain\Analytics\AnalyticsReports;
 
-/** Where visits come from (GA4 default channel group) and on which devices. */
+/** Where visits come from (GA4 default channel group); devices have their own chart. */
 class TrafficSources extends AnalyticsTable
 {
     protected static ?int $sort = 6;
@@ -23,8 +23,6 @@ class TrafficSources extends AnalyticsTable
         'Unassigned' => 'Chưa xác định',
     ];
 
-    private const DEVICES = ['desktop' => 'Máy tính', 'mobile' => 'Điện thoại', 'tablet' => 'Máy tính bảng', 'smart tv' => 'TV'];
-
     public static function canView(): bool
     {
         return app(AnalyticsReports::class)->ga4Configured();
@@ -37,7 +35,7 @@ class TrafficSources extends AnalyticsTable
 
     protected function source(): string
     {
-        return 'Google Analytics 4 · kèm thiết bị ở cuối bảng';
+        return 'Google Analytics 4';
     }
 
     protected function columns(): array
@@ -47,25 +45,12 @@ class TrafficSources extends AnalyticsTable
 
     protected function rows(): array
     {
-        $period = $this->ga4Period();
-        $channels = $this->reports()->ga4Channels($period);
-        $devices = $this->reports()->ga4Devices($period);
+        $channels = $this->reports()->ga4Channels($this->ga4Period());
         $bars = self::bars($channels, 'value');
-        $deviceTotal = array_sum(array_column($devices, 'value')) ?: 1;
 
-        $rows = array_map(fn (array $row, float $bar): array => [
+        return array_map(fn (array $row, float $bar): array => [
             'cells' => [self::CHANNELS[$row['label']] ?? $row['label'], self::number($row['value']), self::number($row['extra'])],
             'bar' => $bar,
         ], $channels, $bars);
-
-        foreach ($devices as $device) {
-            $rows[] = ['cells' => [
-                (self::DEVICES[$device['label']] ?? ucfirst($device['label'])).' · '.self::number($device['value'] / $deviceTotal * 100).'% người dùng',
-                self::number($device['extra']),
-                '',
-            ]];
-        }
-
-        return $rows;
     }
 }

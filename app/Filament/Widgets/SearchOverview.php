@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use App\Domain\Analytics\AnalyticsReports;
 use App\Domain\Analytics\AnalyticsUnavailable;
 use App\Filament\Widgets\Concerns\ReadsAnalytics;
+use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -55,7 +56,29 @@ class SearchOverview extends StatsOverviewWidget
             self::compared('Lượt nhấp', self::number($now['clicks']), $now['clicks'], $before['clicks'], array_column($daily, 'clicks')),
             self::compared('Lượt hiển thị', self::number($now['impressions']), $now['impressions'], $before['impressions'], array_column($daily, 'impressions')),
             self::compared('Tỷ lệ nhấp (CTR)', self::number($now['ctr'] * 100, 1).'%', $now['ctr'], $before['ctr']),
-            self::compared('Vị trí trung bình', self::number($now['position'], 1), $now['position'], $before['position'], lowerIsBetter: true),
+            self::position($now['position'], $before['position']),
         ];
+    }
+
+    /**
+     * Rank 1 is the top, so a smaller number is better: the change reads as places gained
+     * or lost ("Tăng 1,3 bậc") rather than a percentage that grows when the site drops.
+     */
+    private static function position(float $now, float $before): Stat
+    {
+        $stat = Stat::make('Vị trí trung bình', self::number($now, 1));
+        if ($before == 0.0 || $now == 0.0) {
+            return $stat->description('Kỳ trước chưa có số liệu')->color('gray');
+        }
+
+        $gained = round($before - $now, 1);
+        if (abs($gained) < 0.1) {
+            return $stat->description('Giữ nguyên so với kỳ trước')->color('gray');
+        }
+
+        return $stat
+            ->description(($gained > 0 ? 'Tăng ' : 'Tụt ').self::number(abs($gained), 1).' bậc so với kỳ trước')
+            ->descriptionIcon($gained > 0 ? Heroicon::ArrowTrendingUp : Heroicon::ArrowTrendingDown)
+            ->color($gained > 0 ? 'success' : 'danger');
     }
 }

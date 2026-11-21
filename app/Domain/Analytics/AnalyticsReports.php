@@ -124,7 +124,7 @@ class AnalyticsReports
      */
     public function searchTotals(Period $period): array
     {
-        return $this->remember('gsc.totals.'.$period->key(), 360, fn (): array => [
+        return $this->remember('gsc.main.totals.'.$period->key(), 360, fn (): array => [
             'current' => $this->searchTotal($period),
             'previous' => $this->searchTotal($period->previous()),
         ]);
@@ -133,7 +133,7 @@ class AnalyticsReports
     /** @return array<string, array{clicks: int, impressions: int}> keyed by Y-m-d */
     public function searchDaily(Period $period): array
     {
-        return $this->remember('gsc.daily.'.$period->key(), 360, function () use ($period): array {
+        return $this->remember('gsc.main.daily.'.$period->key(), 360, function () use ($period): array {
             $days = $this->emptyDays($period, ['clicks' => 0, 'impressions' => 0]);
             foreach ($this->search($period, ['date'], 1000) as $row) {
                 if (isset($days[$row['keys'][0] ?? ''])) {
@@ -148,19 +148,91 @@ class AnalyticsReports
     /** @return array<int, array{label: string, clicks: int, impressions: int, ctr: float, position: float}> */
     public function searchTopQueries(Period $period, int $limit = 10): array
     {
-        return $this->remember('gsc.queries.'.$limit.'.'.$period->key(), 360, fn (): array => $this->searchRanking($period, 'query', $limit));
+        return $this->remember('gsc.main.queries.'.$limit.'.'.$period->key(), 360, fn (): array => $this->searchRanking($period, 'query', $limit));
     }
 
-    /** @return array<int, array{label: string, clicks: int, impressions: int, ctr: float, position: float}> label is the path */
+    /**
+     * label is the path on the main site, or the rest of the URL for another host or protocol
+     * (a domain property also counts subdomains and http://, www. copies of a page).
+     *
+     * @return array<int, array{label: string, url: string, clicks: int, impressions: int, ctr: float, position: float}>
+     */
     public function searchTopPages(Period $period, int $limit = 10): array
     {
-        return $this->remember('gsc.pages.'.$limit.'.'.$period->key(), 360, fn (): array => array_map(
-            fn (array $row): array => ['label' => parse_url($row['label'], PHP_URL_PATH) ?: '/'] + $row,
+        return $this->remember('gsc.main.pages.'.$limit.'.'.$period->key(), 360, fn (): array => array_map(
+            fn (array $row): array => ['label' => $this->pageLabel($row['label']), 'url' => $row['label']] + $row,
             $this->searchRanking($period, 'page', $limit),
         ));
     }
 
+    /**
+     * "Quick wins": search terms on page 1 bottom or page 2 (position 8 – 20) with the most
+     * impressions, and the page Google shows for each. A small push moves them into the top 5.
+     *
+     * @return array<int, array{query: string, page: string, url: string, clicks: int, impressions: int, ctr: float, position: float}>
+     */
+    public function searchOpportunities(Period $period, int $limit = 10): array
+    {
+        return $this->remember('gsc.main.opportunities.'.$limit.'.'.$period->key(), 360, function () use ($period, $limit): array {
+            $rows = array_filter(
+                $this->search($period, ['query', 'page'], 1000),
+                fn (array $row): bool => $row['position'] >= 7.5 && $row['position'] < 20.5,
+            );
+            usort($rows, fn (array $a, array $b): int => $b['impressions'] <=> $a['impressions']);
+
+            return array_map(fn (array $row): array => [
+                'query' => (string) $row['keys'][0],
+                'page' => $this->pageLabel((string) $row['keys'][1]),
+                'url' => (string) $row['keys'][1],
+                'clicks' => (int) $row['clicks'],
+                'impressions' => (int) $row['impressions'],
+                'ctr' => (float) $row['ctr'],
+                'position' => (float) $row['position'],
+            ], array_slice($rows, 0, $limit));
+        });
+    }
+
     // ---------------- internals ----------------
+
+    /** "/bang-gia" on https://main-host, otherwise the URL without "https://": cnetpos.example.vn/, http://www.example.vn/. */
+    private function pageLabel(string $url): string
+    {
+        $host = $this->mainHost();
+        $origin = 'https://'.$host;
+
+        if ($host !== '' && ($url === $origin || str_starts_with($url, $origin.'/') || str_starts_with($url, $origin.'?'))) {
+            return '/'.ltrim(substr($url, strlen($origin)), '/');
+        }
+
+        return preg_replace('#^https://#', '', $url);
+    }
+
+    /** example.vn for "sc-domain:example.vn", www.example.vn for "https://www.example.vn/". */
+    private function mainHost(): string
+    {
+        $site = (string) config('services.google_analytics.gsc_site_url');
+
+        return str_starts_with($site, 'sc-domain:') ? substr($site, 10) : (string) parse_url($site, PHP_URL_HOST);
+    }
+
+    /**
+     * A domain property also reports every subdomain (other sites hosted under it); keep
+     * only the main site, with its http:// and www. copies that redirect to it.
+     *
+     * @return array<string, mixed>
+     */
+    private function mainSiteFilter(): array
+    {
+        if (! str_starts_with((string) config('services.google_analytics.gsc_site_url'), 'sc-domain:')) {
+            return [];
+        }
+
+        return ['dimensionFilterGroups' => [['filters' => [[
+            'dimension' => 'page',
+            'operator' => 'includingRegex',
+            'expression' => '^https?://(www\.)?'.str_replace('.', '\.', $this->mainHost()).'([/?#]|$)',
+        ]]]]];
+    }
 
     /** @return array<int, array{label: string, value: int, extra: int}> */
     private function ga4Ranking(Period $period, string $dimension, array $metrics, int $limit): array
@@ -231,7 +303,7 @@ class AnalyticsReports
         return $this->call("https://searchconsole.googleapis.com/webmasters/v3/sites/{$site}/searchAnalytics/query", $period->range() + [
             'dimensions' => $dimensions,
             'rowLimit' => $limit,
-        ], 'Search Console')['rows'] ?? [];
+        ] + $this->mainSiteFilter(), 'Search Console')['rows'] ?? [];
     }
 
     /** @return array<string, mixed> */

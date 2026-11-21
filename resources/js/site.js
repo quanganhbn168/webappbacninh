@@ -7,6 +7,7 @@ import { initThemeLibrary } from './site/theme-library';
 import { initGalleries } from './site/gallery';
 import { initHeader } from './site/header';
 import { initScrollTop } from './site/scroll-top';
+import { initContactTracking } from './site/analytics';
 import './site/toolkit';
 
 // Only the plugins the site uses; pages reach them through window.bootstrap.
@@ -18,3 +19,4 @@ initThemeLibrary();
 initGalleries();
 initHeader();
 initScrollTop();
+initContactTracking();

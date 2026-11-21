@@ -34,15 +34,32 @@ class BlogManagementTest extends TestCase
         $this->get('/'.$category->slug)->assertOk()->assertSee($name);
     }
 
-    public function test_blog_lives_at_blog_and_old_paths_are_gone_without_redirects(): void
+    public function test_blog_lives_at_blog_and_old_kien_thuc_links_redirect_to_the_new_addresses(): void
     {
         $post = Post::query()->published()->firstOrFail();
 
         $this->assertSame(url('/'.$post->slug), $post->url);
         $this->get('/blog')->assertOk()->assertSee($post->title);
-        foreach (['/kien-thuc', '/kien-thuc/'.$post->slug, '/tin-tuc', '/blog/'.$post->slug] as $old) {
-            $this->get($old)->assertNotFound();
-        }
+        $this->get('/blog/'.$post->slug)->assertNotFound();
+        $this->get('/kien-thuc')->assertRedirect('/blog')->assertStatus(301);
+        $this->get('/tin-tuc')->assertRedirect('/blog')->assertStatus(301);
+        $this->get('/kien-thuc/'.$post->slug)->assertRedirect($post->url)->assertStatus(301);
+        $this->get('/kien-thuc/khong-con-bai-nay')->assertRedirect(route('articles.index'))->assertStatus(301);
+    }
+
+    public function test_an_old_category_link_finds_the_category_renamed_away_from_a_fixed_page(): void
+    {
+        $category = PostCategory::create(['name' => 'Thiết kế website', 'is_active' => true]);
+
+        $this->assertSame('thiet-ke-website-2', $category->slug);
+        $this->get('/kien-thuc/danh-muc/thiet-ke-website')->assertRedirect($category->url)->assertStatus(301);
+    }
+
+    public function test_index_php_paths_redirect_to_the_clean_url(): void
+    {
+        $this->get('/index.php/anh-cover')->assertStatus(301)->assertRedirect(url('/anh-cover'));
+        $this->get('/index.php/lien-he?x=1')->assertStatus(301)->assertRedirect(url('/lien-he?x=1'));
+        $this->get('/index.php')->assertStatus(301)->assertHeader('Location', url('/').'/');
     }
 
     public function test_a_post_or_category_cannot_take_the_path_of_a_fixed_page(): void

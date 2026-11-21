@@ -1,4 +1,5 @@
 import { toast } from './toast';
+import { track } from './analytics';
 
 const csrf = () => document.querySelector('meta[name="csrf-token"]')?.content ?? '';
 
@@ -38,10 +39,11 @@ async function submit(event) {
         if (!response.ok) {
             throw new Error(Object.values(payload.errors ?? {}).flat()[0] ?? payload.message ?? 'Không thể gửi yêu cầu. Vui lòng thử lại.');
         }
+        const modal = form.closest('.modal');
+        track('generate_lead', { form_location: modal ? 'popup' : 'page', page_path: window.location.pathname, need: data.get('need') || undefined });
         form.reset();
         form.classList.remove('was-validated');
         showStatus(form, payload.message, true);
-        const modal = form.closest('.modal');
         if (modal) {
             window.bootstrap.Modal.getInstance(modal)?.hide();
             toast(payload.message);

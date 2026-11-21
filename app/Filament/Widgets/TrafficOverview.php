@@ -67,21 +67,42 @@ class TrafficOverview extends StatsOverviewWidget
             self::compared('Sự kiện chính', self::number($now['keyEvents']), $now['keyEvents'], $before['keyEvents'])
                 ->extraAttributes(['title' => 'Các sự kiện được đánh dấu là "sự kiện chính" trong GA4, ví dụ gửi form, bấm gọi.']),
             $leads,
+            $this->conversionStat($now['sessions'], $before['sessions']),
             $this->realtimeStat(),
         ];
     }
 
     private function leadStat(): Stat
     {
-        $period = $this->ga4Period();
-        $previous = $period->previous();
-        $count = fn ($p): int => Lead::query()->whereBetween('created_at', [$p->start->startOfDay(), $p->end->endOfDay()])->count();
-        $now = $count($period);
+        [$now, $before] = $this->leadCounts();
 
-        return self::compared('Khách gửi liên hệ', self::number($now), $now, $count($previous))
+        return self::compared('Khách gửi liên hệ', self::number($now), $now, $before)
             ->icon(Heroicon::OutlinedUserPlus)
             ->url(LeadResource::getUrl('index'));
     }
+
+    /** Contact requests per 100 sessions, this period and the one before. */
+    private function conversionStat(float $sessions, float $previousSessions): Stat
+    {
+        [$leads, $previousLeads] = $this->leadCounts();
+        $rate = $sessions > 0 ? $leads / $sessions : 0.0;
+        $previousRate = $previousSessions > 0 ? $previousLeads / $previousSessions : 0.0;
+
+        return self::compared('Tỷ lệ ra liên hệ', self::number($rate * 100, 1).'%', $rate, $previousRate)
+            ->extraAttributes(['title' => 'Số khách gửi liên hệ chia cho số phiên truy cập.']);
+    }
+
+    /** @return array{0: int, 1: int} leads in the period and in the one before */
+    private function leadCounts(): array
+    {
+        $period = $this->ga4Period();
+        $count = fn ($p): int => Lead::query()->whereBetween('created_at', [$p->start->startOfDay(), $p->end->endOfDay()])->count();
+
+        return $this->leadCounts ??= [$count($period), $count($period->previous())];
+    }
+
+    /** @var array{0: int, 1: int}|null */
+    private ?array $leadCounts = null;
 
     private function realtimeStat(): Stat
     {

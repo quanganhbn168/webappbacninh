@@ -11,7 +11,8 @@ final class RenderTrackingCode
 
     public function execute(): TrackingCodeData
     {
-        if (! $this->settings->enabled) {
+        // A signed-in admin checking the site is not a visitor: keep them out of GA4 and the pixels.
+        if (! $this->settings->enabled || auth('admin')->check()) {
             return new TrackingCodeData('', '', '');
         }
 

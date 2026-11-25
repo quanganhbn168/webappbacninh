@@ -172,6 +172,7 @@ class FrontendSiteTest extends TestCase
         $this->assertStringEndsWith('/', $graph['WebSite']['url']);
         $this->assertContains(parse_url(site_config('site_url'), PHP_URL_HOST), $graph['WebSite']['alternateName']);
         $this->assertFalse($graph->has('BreadcrumbList'));
+        $this->assertSame(1, substr_count($response->getContent(), '<h1'));
     }
 
     public function test_unknown_dynamic_pages_return_404(): void

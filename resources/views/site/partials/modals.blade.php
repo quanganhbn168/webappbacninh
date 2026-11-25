@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="consult-modal-title">Đăng ký tư vấn</h1>
+                <h2 class="modal-title h1 fs-5" id="consult-modal-title">Đăng ký tư vấn</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
             </div>
             <div class="modal-body">
@@ -16,7 +16,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="domain-modal-title">Kiểm tra tên miền</h1>
+                <h2 class="modal-title h1 fs-5" id="domain-modal-title">Kiểm tra tên miền</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
             </div>
             <div class="modal-body">

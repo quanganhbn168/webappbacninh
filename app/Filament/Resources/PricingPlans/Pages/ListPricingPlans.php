@@ -17,7 +17,8 @@ class ListPricingPlans extends ListRecords
         return [
             'all' => Tab::make('Tất cả'),
             'table' => Tab::make('Bảng giá chung')->modifyQueryUsing(fn (Builder $query) => $query->where('show_in_table', true)),
-            'service' => Tab::make('Theo dịch vụ')->modifyQueryUsing(fn (Builder $query) => $query->whereNotNull('priceable_id')),
+            'service' => Tab::make('Theo dịch vụ')->modifyQueryUsing(fn (Builder $query) => $query
+                ->where(fn (Builder $query) => $query->whereHas('services')->orWhereHas('operationServices'))),
         ];
     }
 

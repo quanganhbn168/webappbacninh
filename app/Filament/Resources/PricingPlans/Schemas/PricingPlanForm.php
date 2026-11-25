@@ -4,10 +4,6 @@ namespace App\Filament\Resources\PricingPlans\Schemas;
 
 use App\Enums\PricingGroup;
 use App\Filament\Forms\IconPicker;
-use App\Models\OperationService;
-use App\Models\Service;
-use Filament\Forms\Components\MorphToSelect;
-use Filament\Forms\Components\MorphToSelect\Type;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -42,13 +38,11 @@ class PricingPlanForm
                 ])->columnSpan(['default' => 1, 'lg' => 2]),
                 Group::make([
                     Section::make('Gói hiện ở đâu')->schema([
-                        MorphToSelect::make('priceable')->label('Thuộc dịch vụ')
-                            ->types([
-                                Type::make(Service::class)->label('Dịch vụ')->titleAttribute('title'),
-                                Type::make(OperationService::class)->label('Dịch vụ vận hành')->titleAttribute('title'),
-                            ])
-                            ->searchable()->preload(),
-                        Text::make('Trang của dịch vụ được chọn hiện gói này; gói đứng đầu là "Giá từ" của dịch vụ.'),
+                        Select::make('services')->label('Dịch vụ dùng gói này')
+                            ->relationship('services', 'title')->multiple()->preload(),
+                        Select::make('operationServices')->label('Dịch vụ vận hành dùng gói này')
+                            ->relationship('operationServices', 'title')->multiple()->preload(),
+                        Text::make('Một gói dùng được cho nhiều dịch vụ. Cũng có thể chọn gói ngay trong form dịch vụ.'),
                         Toggle::make('show_in_table')->label('Hiện ở bảng giá chung')->default(true)->live(),
                         Select::make('group')->label('Nhóm trong bảng giá')->options(PricingGroup::options())->native(false)
                             ->required(fn (Get $get): bool => (bool) $get('show_in_table'))

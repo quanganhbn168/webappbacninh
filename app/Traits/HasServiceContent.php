@@ -7,7 +7,7 @@ use Awcodes\Curator\Models\Media;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * Shared by website services and operation services: Curator images,
@@ -17,22 +17,21 @@ trait HasServiceContent
 {
     public static function bootHasServiceContent(): void
     {
-        // Plans of a deleted service go with it; those also in the shared table stay there.
-        static::deleted(function (self $service): void {
-            $service->pricingPlans()->where('show_in_table', false)->delete();
-            $service->pricingPlans()->update(['priceable_type' => null, 'priceable_id' => null]);
-        });
+        // The plans stay in the price table: other services may use them.
+        static::deleted(fn (self $service) => $service->pricingPlans()->detach());
     }
 
-    public function pricingPlans(): MorphMany
+    /** The plans of the price table this service picked. */
+    public function pricingPlans(): MorphToMany
     {
-        return $this->morphMany(PricingPlan::class, 'priceable');
+        return $this->morphToMany(PricingPlan::class, 'priceable');
     }
 
-    /** The plans shown on the service page, the first one giving "Giá từ". */
-    public function plans(): MorphMany
+    /** The plans shown on the service page, in price table order; the first one gives "Giá từ". */
+    public function plans(): MorphToMany
     {
-        return $this->pricingPlans()->where('is_active', true)->orderBy('order')->orderBy('id');
+        return $this->pricingPlans()->where('pricing_plans.is_active', true)
+            ->orderBy('pricing_plans.order')->orderBy('pricing_plans.id');
     }
 
     public function image(): BelongsTo

@@ -28,11 +28,12 @@ class PricingPlansTable
         return $table
             ->defaultSort('order')
             ->reorderable('order')
-            ->modifyQueryUsing(fn (Builder $query) => $query->with('priceable'))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['services', 'operationServices']))
             ->columns([
                 TextInputColumn::make('name')->label('Gói')->searchable()->rules(['required', 'max:255']),
-                TextColumn::make('service')->label('Thuộc dịch vụ')->wrap()->placeholder('—')
-                    ->state(fn (PricingPlan $record): ?string => $record->priceable?->title),
+                TextColumn::make('used_by')->label('Dịch vụ dùng')->wrap()->placeholder('—')
+                    ->state(fn (PricingPlan $record): array => $record->services->concat($record->operationServices)->pluck('title')->all())
+                    ->listWithLineBreaks()->limitList(2),
                 TextColumn::make('group')->label('Bảng giá chung')->badge()->placeholder('Không hiện')
                     ->state(fn (PricingPlan $record): ?string => $record->show_in_table ? $record->group?->label() : null),
                 TextInputColumn::make('price_prefix')->label('Trước giá')->rules(['nullable', 'max:30']),

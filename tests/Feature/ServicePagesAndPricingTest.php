@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Domain\Pricing\ImportServicePrices;
 use App\Enums\PricingGroup;
 use App\Filament\Resources\PricingPlans\Pages\CreatePricingPlan;
 use App\Filament\Resources\PricingPlans\Pages\EditPricingPlan;
@@ -12,6 +11,7 @@ use App\Models\PricingPlan;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\User;
+use Database\Seeders\PricingPlanSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
@@ -81,66 +81,68 @@ class ServicePagesAndPricingTest extends TestCase
         $this->assertSame($plan->price, $copy->price);
     }
 
-    public function test_a_price_typed_once_in_the_table_shows_on_the_service_and_in_the_shared_table(): void
+    public function test_one_plan_typed_in_the_table_serves_several_services(): void
     {
-        $service = Service::query()->active()->where('is_landing', true)->firstOrFail();
-        $service->pricingPlans()->delete();
-        $this->get($service->url)->assertOk()->assertSee('Liên hệ để tư vấn')->assertDontSee('price-card', false);
+        [$first, $second] = Service::query()->active()->where('is_landing', true)->ordered()->take(2)->get()->all();
+        $first->pricingPlans()->detach();
+        $second->pricingPlans()->detach();
+        $this->get($first->url)->assertOk()->assertSee('Liên hệ để tư vấn')->assertDontSee('price-card', false);
 
         $name = 'Gói thử '.Str::random(8);
         Livewire::actingAs($this->admin(), 'admin')->test(CreatePricingPlan::class)
             ->fillForm([
                 'name' => $name, 'price_prefix' => 'Từ', 'price' => '1.111.000đ', 'features' => 'Hạng mục A',
-                'priceable_type' => Service::class, 'priceable_id' => $service->id, 'show_in_table' => false,
+                'services' => [$first->id], 'show_in_table' => false,
             ])
             ->call('create')->assertHasNoFormErrors();
         $plan = PricingPlan::query()->where('name', $name)->firstOrFail();
 
-        $this->assertTrue($plan->priceable->is($service));
-        $this->assertSame('Từ 1.111.000đ', $service->fresh()->price_label);
-        $this->get($service->url)->assertSee($name)->assertSee('Hạng mục A')->assertSee('Từ 1.111.000đ');
-        $this->get(route('services.index'))->assertSee('Từ 1.111.000đ');
+        // The second service picks the same plan from its own form.
+        Livewire::actingAs($this->admin(), 'admin')->test(EditService::class, ['record' => $second->getRouteKey()])
+            ->fillForm(['pricingPlans' => [$plan->id]])
+            ->call('save')->assertHasNoFormErrors();
+
+        $this->assertEqualsCanonicalizing([$first->id, $second->id], $plan->services()->pluck('services.id')->all());
+        foreach ([$first, $second] as $service) {
+            $this->assertSame('Từ 1.111.000đ', $service->fresh()->price_label);
+            $this->get($service->url)->assertSee($name)->assertSee('Hạng mục A')->assertSee('Từ 1.111.000đ');
+        }
         $this->get(route('pricing'))->assertDontSee($name);
 
         $plan->update(['show_in_table' => true, 'group' => 'website', 'price' => '2.222.000đ', 'order' => 0]);
-        foreach ([$service->url, route('pricing'), route('home')] as $url) {
+        foreach ([$first->url, $second->url, route('pricing'), route('home')] as $url) {
             $this->get($url)->assertSee($name)->assertSee('2.222.000đ')->assertDontSee('1.111.000đ');
         }
-
-        Livewire::actingAs($this->admin(), 'admin')->test(EditService::class, ['record' => $service->getRouteKey()])
-            ->assertSee($name.': Từ 2.222.000đ');
-        Livewire::actingAs($this->admin(), 'admin')->test(ListPricingPlans::class)->assertCanSeeTableRecords([$plan]);
+        Livewire::actingAs($this->admin(), 'admin')->test(ListPricingPlans::class)
+            ->assertCanSeeTableRecords([$plan])
+            ->set('activeTab', 'service')->assertCanSeeTableRecords([$plan]);
     }
 
-    public function test_plans_of_a_deleted_service_leave_with_it_unless_the_shared_table_shows_them(): void
+    public function test_deleting_a_service_keeps_its_plans_for_the_others(): void
     {
         $service = Service::query()->create(['title' => 'Dịch vụ tạm', 'slug' => 'dich-vu-tam-'.Str::lower(Str::random(6)), 'is_active' => true]);
-        $own = $service->pricingPlans()->create(['name' => 'Riêng', 'price' => '1đ', 'show_in_table' => false]);
-        $shared = $service->pricingPlans()->create(['name' => 'Chung', 'price' => '2đ', 'group' => 'website']);
+        $plan = PricingPlan::query()->create(['name' => 'Gói dùng chung', 'price' => '1đ', 'show_in_table' => false]);
+        $service->pricingPlans()->attach($plan);
 
         $service->delete();
 
-        $this->assertNull(PricingPlan::find($own->id));
-        $this->assertNull($shared->fresh()->priceable_id);
+        $this->assertNotNull($plan->fresh());
+        $this->assertSame(0, $plan->services()->count());
     }
 
-    public function test_old_service_prices_move_into_the_table_once(): void
+    public function test_the_website_and_landing_services_start_with_their_plans(): void
     {
-        $service = Service::query()->create(['title' => 'Dịch vụ cũ', 'slug' => 'dich-vu-cu-'.Str::lower(Str::random(6)), 'is_active' => true]);
-        $packages = [
-            ['name' => 'Cơ bản', 'price' => 'Từ 500.000đ/tháng', 'desc' => 'Mô tả', 'items' => ['A'], 'featured' => true],
-            ['name' => 'Riêng', 'price' => 'Báo giá riêng'],
-        ];
+        $landing = Service::query()->where('slug', 'landing-page')->firstOrFail();
+        $business = Service::query()->where('slug', 'website-doanh-nghiep')->firstOrFail();
+        $landing->pricingPlans()->detach();
+        $business->pricingPlans()->detach();
 
-        app(ImportServicePrices::class)->execute($service, $packages, 'Từ 9 triệu');
-        app(ImportServicePrices::class)->execute($service, $packages, 'Từ 9 triệu');
+        (new PricingPlanSeeder)->linkServices();
+        (new PricingPlanSeeder)->linkServices();
 
-        $plans = $service->plans()->get();
-        $this->assertSame(['Cơ bản', 'Riêng'], $plans->pluck('name')->all());
-        $this->assertSame(['Từ', '500.000đ', '/tháng'], [$plans[0]->price_prefix, $plans[0]->price, $plans[0]->price_suffix]);
-        $this->assertSame('Báo giá riêng', $plans[1]->price);
-        $this->assertSame('Từ 500.000đ/tháng', $service->price_label);
-        $this->assertFalse($plans[0]->show_in_table);
+        $this->assertSame(['Landing Page', 'Landing cơ bản', 'Landing quảng cáo'], $landing->plans()->pluck('name')->all());
+        $this->assertSame(['Website Cơ bản', 'Website Nâng cao', 'Website Cao cấp / WebApp'], $business->plans()->pluck('name')->all());
+        $this->get($landing->url)->assertSee('Từ 6.000.000đ')->assertSee('Từ 9.000.000đ');
     }
 
     public function test_a_project_cost_shows_on_its_page_and_card_and_is_hidden_when_empty(): void

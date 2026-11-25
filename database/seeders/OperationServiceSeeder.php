@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Domain\Media\Actions\ImportLocalImage;
-use App\Domain\Pricing\SeedServicePrices;
 use App\Models\OperationService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
@@ -22,13 +21,11 @@ class OperationServiceSeeder extends Seeder
 
             $image = fn (string $path): ?int => $images->execute('images/'.$path, 'services', $row['title'])?->id;
 
-            $service = OperationService::query()->create(Arr::except($row, ['image', 'secondary_image', 'price_from', 'packages']) + [
+            OperationService::query()->create(Arr::except($row, ['image', 'secondary_image']) + [
                 'image_id' => $image($row['image']),
                 'secondary_image_id' => $image($row['secondary_image']),
                 'is_active' => true,
             ]);
-
-            app(SeedServicePrices::class)->execute($service, $row);
         }
     }
 
@@ -47,7 +44,6 @@ class OperationServiceSeeder extends Seeder
                 'highlight' => 'Không để doanh nghiệp tự xoay xở khi website chậm, lỗi hoặc hết hạn dịch vụ.',
                 'description' => 'WebApp Bắc Ninh theo dõi hosting, tên miền, SSL, sao lưu dữ liệu và hỗ trợ kỹ thuật định kỳ để website duy trì ổn định sau bàn giao.',
                 'icon' => 'server',
-                'price_from' => 'Từ 500.000đ/tháng',
                 'cadence' => 'Theo tháng hoặc năm',
                 'cta' => null,
                 'need_value' => 'Hosting và bảo trì website',
@@ -123,39 +119,6 @@ class OperationServiceSeeder extends Seeder
                         'text' => 'Xử lý phát sinh, ghi nhận công việc và đề xuất cải thiện.',
                     ],
                 ],
-                'packages' => [
-                    [
-                        'name' => 'Care Basic',
-                        'price' => 'Từ 500.000đ/tháng',
-                        'items' => [
-                            'Backup định kỳ',
-                            'Kiểm tra SSL và tên miền',
-                            'Hỗ trợ lỗi cơ bản',
-                            'Báo cáo ngắn',
-                        ],
-                    ],
-                    [
-                        'name' => 'Care Plus',
-                        'price' => 'Từ 1.000.000đ/tháng',
-                        'items' => [
-                            'Toàn bộ Care Basic',
-                            'Cập nhật hệ thống',
-                            'Kiểm tra tốc độ và form',
-                            'Ưu tiên hỗ trợ',
-                        ],
-                        'featured' => true,
-                    ],
-                    [
-                        'name' => 'Theo hệ thống',
-                        'price' => 'Báo giá riêng',
-                        'items' => [
-                            'Website nhiều chức năng',
-                            'Nhiều máy chủ hoặc website',
-                            'Quy trình hỗ trợ riêng',
-                            'SLA theo thỏa thuận',
-                        ],
-                    ],
-                ],
                 'faqs' => [
                     [
                         'q' => 'Bảo trì có bao gồm sửa mọi chức năng mới không?',
@@ -179,7 +142,6 @@ class OperationServiceSeeder extends Seeder
                 'highlight' => 'Nội dung, sản phẩm, dự án và banner được cập nhật đúng cấu trúc, đúng lịch.',
                 'description' => 'Dịch vụ phù hợp doanh nghiệp có dữ liệu mới nhưng thiếu người chuẩn hóa hình ảnh, trình bày nội dung và kiểm tra hiển thị sau khi đăng.',
                 'icon' => 'file-pen',
-                'price_from' => 'Từ 1.500.000đ/tháng',
                 'cadence' => 'Theo số lượng nội dung',
                 'cta' => null,
                 'need_value' => 'Quản trị và đăng bài website',
@@ -255,39 +217,6 @@ class OperationServiceSeeder extends Seeder
                         'text' => 'Gửi danh sách đường dẫn và khối lượng đã thực hiện.',
                     ],
                 ],
-                'packages' => [
-                    [
-                        'name' => 'Cập nhật cơ bản',
-                        'price' => 'Từ 1.500.000đ/tháng',
-                        'items' => [
-                            'Tối đa 8 nội dung',
-                            'Chuẩn hóa ảnh cơ bản',
-                            'Cập nhật banner nhỏ',
-                            'Báo cáo đường dẫn',
-                        ],
-                    ],
-                    [
-                        'name' => 'Nội dung định kỳ',
-                        'price' => 'Từ 3.000.000đ/tháng',
-                        'items' => [
-                            'Tối đa 16 nội dung',
-                            'Biên tập trình bày',
-                            'Internal link cơ bản',
-                            'Ưu tiên lịch cập nhật',
-                        ],
-                        'featured' => true,
-                    ],
-                    [
-                        'name' => 'Theo khối lượng',
-                        'price' => 'Báo giá riêng',
-                        'items' => [
-                            'Catalog sản phẩm lớn',
-                            'Nhập dữ liệu hàng loạt',
-                            'Nhiều website',
-                            'Yêu cầu trình bày riêng',
-                        ],
-                    ],
-                ],
                 'faqs' => [
                     [
                         'q' => 'Bên nào chịu trách nhiệm viết nội dung?',
@@ -311,7 +240,6 @@ class OperationServiceSeeder extends Seeder
                 'highlight' => 'SEO bắt đầu từ cấu trúc đúng, nội dung đúng nhu cầu và đo lường đều đặn.',
                 'description' => 'WebApp Bắc Ninh triển khai technical SEO, nghiên cứu từ khóa, tối ưu trang dịch vụ, bài viết và liên kết nội bộ theo khả năng đầu tư thực tế của doanh nghiệp.',
                 'icon' => 'search-check',
-                'price_from' => 'Từ 3.500.000đ/tháng',
                 'cadence' => 'Tối thiểu 3 - 6 tháng',
                 'cta' => null,
                 'need_value' => 'SEO website',
@@ -387,39 +315,6 @@ class OperationServiceSeeder extends Seeder
                         'text' => 'Đo lường kết quả, cập nhật kế hoạch và tiếp tục cải thiện.',
                     ],
                 ],
-                'packages' => [
-                    [
-                        'name' => 'SEO nền tảng',
-                        'price' => 'Từ 3.500.000đ/tháng',
-                        'items' => [
-                            'Technical SEO cơ bản',
-                            'Tối ưu 2 trang dịch vụ',
-                            '2 bài viết/tháng',
-                            'Báo cáo Search Console',
-                        ],
-                    ],
-                    [
-                        'name' => 'SEO tăng trưởng',
-                        'price' => 'Từ 6.000.000đ/tháng',
-                        'items' => [
-                            'Audit và tối ưu sâu',
-                            '4 trang dịch vụ',
-                            '4 bài viết/tháng',
-                            'Tracking và báo cáo',
-                        ],
-                        'featured' => true,
-                    ],
-                    [
-                        'name' => 'Theo ngành',
-                        'price' => 'Báo giá riêng',
-                        'items' => [
-                            'Ngành cạnh tranh cao',
-                            'Nhiều nhóm sản phẩm',
-                            'Nhiều địa phương',
-                            'Chiến lược nội dung riêng',
-                        ],
-                    ],
-                ],
                 'faqs' => [
                     [
                         'q' => 'SEO bao lâu mới có kết quả?',
@@ -443,7 +338,6 @@ class OperationServiceSeeder extends Seeder
                 'highlight' => 'Một chủ đề có thể được triển khai thành bài website, bài Facebook và nội dung tư vấn bán hàng.',
                 'description' => 'Dịch vụ tập trung vào lịch chủ đề, nội dung cơ bản và cách dẫn khách từ mạng xã hội về website khi phù hợp.',
                 'icon' => 'brand-facebook',
-                'price_from' => 'Từ 2.000.000đ/tháng',
                 'cadence' => 'Theo lịch nội dung tháng',
                 'cta' => null,
                 'need_value' => 'Nội dung Facebook cơ bản',
@@ -519,39 +413,6 @@ class OperationServiceSeeder extends Seeder
                         'text' => 'Gửi file nội dung hoặc đăng theo quyền truy cập được cấp.',
                     ],
                 ],
-                'packages' => [
-                    [
-                        'name' => 'Duy trì cơ bản',
-                        'price' => 'Từ 2.000.000đ/tháng',
-                        'items' => [
-                            '8 bài/tháng',
-                            'Lịch chủ đề',
-                            'Gợi ý hình ảnh',
-                            '1 vòng chỉnh sửa',
-                        ],
-                    ],
-                    [
-                        'name' => 'Đồng bộ website',
-                        'price' => 'Từ 3.500.000đ/tháng',
-                        'items' => [
-                            '12 bài/tháng',
-                            'Chuyển đổi nội dung website',
-                            'Gắn link và CTA',
-                            'Báo cáo nội dung',
-                        ],
-                        'featured' => true,
-                    ],
-                    [
-                        'name' => 'Theo chiến dịch',
-                        'price' => 'Báo giá riêng',
-                        'items' => [
-                            'Ra mắt sản phẩm',
-                            'Sự kiện hoặc tuyển sinh',
-                            'Landing page đi kèm',
-                            'Khối lượng riêng',
-                        ],
-                    ],
-                ],
                 'faqs' => [
                     [
                         'q' => 'Gói này có bao gồm chạy quảng cáo Facebook không?',
@@ -575,7 +436,6 @@ class OperationServiceSeeder extends Seeder
                 'highlight' => 'Không cần làm lại toàn bộ website nếu nền tảng hiện tại vẫn có thể mở rộng.',
                 'description' => 'WebApp Bắc Ninh khảo sát hệ thống đang dùng, xác định khả năng mở rộng và triển khai landing page, form lead, Zalo OA, thanh toán, API hoặc module quản lý.',
                 'icon' => 'puzzle',
-                'price_from' => 'Khảo sát và báo giá riêng',
                 'cadence' => 'Theo từng hạng mục',
                 'cta' => null,
                 'need_value' => 'Nâng cấp và tích hợp website',
@@ -651,39 +511,6 @@ class OperationServiceSeeder extends Seeder
                         'text' => 'Hướng dẫn sử dụng, bảo hành và tiếp nhận phát sinh.',
                     ],
                 ],
-                'packages' => [
-                    [
-                        'name' => 'Nâng cấp nhỏ',
-                        'price' => 'Từ 3 triệu',
-                        'items' => [
-                            'Landing page nhỏ',
-                            'Form và tracking',
-                            'Thay đổi giao diện',
-                            'Tính năng đơn giản',
-                        ],
-                    ],
-                    [
-                        'name' => 'Tích hợp nghiệp vụ',
-                        'price' => 'Từ 10 triệu',
-                        'items' => [
-                            'Thanh toán hoặc API',
-                            'Phân quyền',
-                            'Luồng dữ liệu',
-                            'Kiểm thử và bàn giao',
-                        ],
-                        'featured' => true,
-                    ],
-                    [
-                        'name' => 'Module theo yêu cầu',
-                        'price' => 'Báo giá riêng',
-                        'items' => [
-                            'CRM hoặc booking',
-                            'Nhiều vai trò',
-                            'Báo cáo riêng',
-                            'Triển khai theo giai đoạn',
-                        ],
-                    ],
-                ],
                 'faqs' => [
                     [
                         'q' => 'Website cũ có chắc chắn nâng cấp được không?',
@@ -707,7 +534,6 @@ class OperationServiceSeeder extends Seeder
                 'highlight' => 'Không chỉ xem tổng lượt truy cập; cần đo hành động có giá trị với doanh nghiệp.',
                 'description' => 'WebApp Bắc Ninh cấu hình GA4, Search Console và các sự kiện quan trọng như click gọi điện, Zalo, gửi form hoặc chọn mẫu giao diện.',
                 'icon' => 'chart-line',
-                'price_from' => 'Từ 1.500.000đ',
                 'cadence' => 'Thiết lập một lần hoặc báo cáo tháng',
                 'cta' => null,
                 'need_value' => 'Đo lường và báo cáo website',
@@ -781,39 +607,6 @@ class OperationServiceSeeder extends Seeder
                         'step' => '04',
                         'title' => 'Báo cáo và cải thiện',
                         'text' => 'Đọc số liệu theo mục tiêu và đề xuất việc cần ưu tiên.',
-                    ],
-                ],
-                'packages' => [
-                    [
-                        'name' => 'Thiết lập cơ bản',
-                        'price' => 'Từ 1.500.000đ',
-                        'items' => [
-                            'GA4',
-                            'Search Console',
-                            'Click hotline và Zalo',
-                            'Kiểm thử dữ liệu',
-                        ],
-                    ],
-                    [
-                        'name' => 'Tracking chuyển đổi',
-                        'price' => 'Từ 3.000.000đ',
-                        'items' => [
-                            'Toàn bộ thiết lập cơ bản',
-                            'Theo dõi form',
-                            'UTM và nguồn lead',
-                            'Dashboard báo cáo',
-                        ],
-                        'featured' => true,
-                    ],
-                    [
-                        'name' => 'Báo cáo định kỳ',
-                        'price' => 'Từ 1.000.000đ/tháng',
-                        'items' => [
-                            'Tổng hợp chỉ số',
-                            'Phân tích trang và nguồn',
-                            'Đề xuất cải thiện',
-                            'Họp báo cáo khi cần',
-                        ],
                     ],
                 ],
                 'faqs' => [

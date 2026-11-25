@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Domain\Media\Actions\ImportLocalImage;
-use App\Domain\Pricing\SeedServicePrices;
 use App\Models\Service;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
@@ -31,14 +30,12 @@ class ServiceSeeder extends Seeder
 
             $image = fn (string $path): ?int => $images->execute('images/'.$path, 'services', $row['title'])?->id;
 
-            $service = Service::query()->create(Arr::except($row, ['image', 'secondary_image', 'price_from', 'packages']) + [
+            $service = Service::query()->create(Arr::except($row, ['image', 'secondary_image']) + [
                 'image_id' => $image($row['image']),
                 'secondary_image_id' => $image($row['secondary_image']),
                 'is_landing' => true,
                 'is_active' => true,
             ]);
-
-            app(SeedServicePrices::class)->execute($service, $row);
 
             // An earlier migration runs this seeder before the card columns exist.
             if (isset(self::CARDS[$row['slug']]) && Schema::hasColumn('services', 'show_in_grid')) {
@@ -62,7 +59,6 @@ class ServiceSeeder extends Seeder
                 'highlight' => 'Nền tảng giới thiệu năng lực, sản phẩm và dự án rõ ràng.',
                 'description' => 'Dành cho công ty sản xuất, thương mại và dịch vụ cần một website đủ tin cậy để gửi khách hàng, đối tác, đại lý và ứng viên.',
                 'icon' => 'building-2',
-                'price_from' => 'Từ 8 triệu',
                 'timeline' => '2 - 4 tuần',
                 'cta' => 'Nhận cấu trúc website doanh nghiệp',
                 'need_value' => 'Thiết kế website doanh nghiệp',
@@ -135,42 +131,6 @@ class ServiceSeeder extends Seeder
                         'text' => 'Có gói hosting, bảo trì, đăng bài và SEO định kỳ.',
                     ],
                 ],
-                'packages' => [
-                    [
-                        'name' => 'Khởi đầu',
-                        'price' => 'Từ 8 triệu',
-                        'desc' => 'Website giới thiệu gọn, đủ trang cơ bản.',
-                        'items' => [
-                            'Giao diện tùy chỉnh',
-                            'Trang nội dung cơ bản',
-                            'Form và bản đồ',
-                            'SEO kỹ thuật nền tảng',
-                        ],
-                    ],
-                    [
-                        'name' => 'Tăng trưởng',
-                        'price' => 'Từ 15 triệu',
-                        'desc' => 'Cấu trúc chuyên sâu cho bán hàng và nội dung.',
-                        'items' => [
-                            'Thiết kế riêng theo ngành',
-                            'Dự án và hồ sơ năng lực',
-                            'Landing page dịch vụ',
-                            'Tracking và kế hoạch nội dung',
-                        ],
-                        'featured' => true,
-                    ],
-                    [
-                        'name' => 'Đa ngôn ngữ',
-                        'price' => 'Báo giá riêng',
-                        'desc' => 'Dành cho doanh nghiệp xuất khẩu hoặc nhiều thị trường.',
-                        'items' => [
-                            'Nhiều ngôn ngữ',
-                            'Danh mục sản phẩm lớn',
-                            'Phân quyền nội dung',
-                            'Tích hợp theo nhu cầu',
-                        ],
-                    ],
-                ],
                 'faqs' => [
                     [
                         'q' => 'Website doanh nghiệp cần chuẩn bị những nội dung gì?',
@@ -194,7 +154,6 @@ class ServiceSeeder extends Seeder
                 'highlight' => 'Tập trung sản phẩm, đơn hàng và dữ liệu khách hàng về một nơi.',
                 'description' => 'Phù hợp cửa hàng, nhà phân phối và doanh nghiệp muốn chủ động kênh bán hàng thay vì phụ thuộc hoàn toàn vào mạng xã hội hoặc sàn thương mại điện tử.',
                 'icon' => 'shopping-cart',
-                'price_from' => 'Từ 15 triệu',
                 'timeline' => '3 - 6 tuần',
                 'cta' => 'Nhận tư vấn website bán hàng',
                 'need_value' => 'Thiết kế website bán hàng',
@@ -268,42 +227,6 @@ class ServiceSeeder extends Seeder
                         'text' => 'Gắn Analytics, Pixel và các sự kiện mua hàng quan trọng.',
                     ],
                 ],
-                'packages' => [
-                    [
-                        'name' => 'Catalog',
-                        'price' => 'Từ 12 triệu',
-                        'desc' => 'Trưng bày sản phẩm, nhận yêu cầu báo giá.',
-                        'items' => [
-                            'Danh mục sản phẩm',
-                            'Tìm kiếm cơ bản',
-                            'Form báo giá',
-                            'Quản trị nội dung',
-                        ],
-                    ],
-                    [
-                        'name' => 'Bán hàng',
-                        'price' => 'Từ 18 triệu',
-                        'desc' => 'Đủ giỏ hàng, đặt hàng và quản lý đơn.',
-                        'items' => [
-                            'Giỏ hàng và checkout',
-                            'Quản lý đơn hàng',
-                            'Mã giảm giá cơ bản',
-                            'Thông báo đơn mới',
-                        ],
-                        'featured' => true,
-                    ],
-                    [
-                        'name' => 'Theo nghiệp vụ',
-                        'price' => 'Báo giá riêng',
-                        'desc' => 'Tích hợp kho, thanh toán, vận chuyển hoặc hệ thống khác.',
-                        'items' => [
-                            'API và đồng bộ',
-                            'Phân quyền nâng cao',
-                            'Nhiều kho / chi nhánh',
-                            'Báo cáo theo yêu cầu',
-                        ],
-                    ],
-                ],
                 'faqs' => [
                     [
                         'q' => 'Website bán hàng có bắt buộc tích hợp thanh toán online không?',
@@ -327,7 +250,6 @@ class ServiceSeeder extends Seeder
                 'highlight' => 'Dùng cho quảng cáo, tuyển sinh, sự kiện và dịch vụ trọng điểm.',
                 'description' => 'Một trang đích được xây theo luồng thuyết phục rõ ràng, giúp khách hàng hiểu lợi ích, xem bằng chứng và để lại thông tin hoặc liên hệ ngay.',
                 'icon' => 'target',
-                'price_from' => 'Từ 6,5 triệu',
                 'timeline' => '7 - 15 ngày',
                 'cta' => 'Nhận bố cục landing page',
                 'need_value' => 'Thiết kế landing page',
@@ -401,42 +323,6 @@ class ServiceSeeder extends Seeder
                         'text' => 'Có thể thay CTA, tiêu đề hoặc gói giá để tối ưu sau khi chạy.',
                     ],
                 ],
-                'packages' => [
-                    [
-                        'name' => 'Landing cơ bản',
-                        'price' => 'Từ 6,5 triệu',
-                        'desc' => 'Một trang đích rõ thông tin và form đăng ký.',
-                        'items' => [
-                            'Thiết kế responsive',
-                            'Tối đa 8 section',
-                            'Form lead',
-                            'SEO và chia sẻ cơ bản',
-                        ],
-                    ],
-                    [
-                        'name' => 'Landing quảng cáo',
-                        'price' => 'Từ 9 triệu',
-                        'desc' => 'Tập trung chuyển đổi và đo lường chiến dịch.',
-                        'items' => [
-                            'Nội dung theo hành trình',
-                            'Tracking và UTM',
-                            'CTA cố định',
-                            'Tối ưu tốc độ',
-                        ],
-                        'featured' => true,
-                    ],
-                    [
-                        'name' => 'Landing nâng cao',
-                        'price' => 'Báo giá riêng',
-                        'desc' => 'Có tính toán, booking, thanh toán hoặc chức năng riêng.',
-                        'items' => [
-                            'Logic biểu mẫu',
-                            'Tích hợp API',
-                            'Thanh toán / đặt lịch',
-                            'Dashboard dữ liệu',
-                        ],
-                    ],
-                ],
                 'faqs' => [
                     [
                         'q' => 'Landing page khác website thông thường ở điểm nào?',
@@ -460,7 +346,6 @@ class ServiceSeeder extends Seeder
                 'highlight' => 'Cải thiện giao diện, tốc độ, quản trị và khả năng tạo khách hàng.',
                 'description' => 'Không phải lúc nào cũng cần bỏ toàn bộ website. WebApp Bắc Ninh kiểm tra cấu trúc, nội dung, dữ liệu và hệ thống hiện tại để đề xuất phần nên giữ, phần cần thay và cách chuyển đổi an toàn.',
                 'icon' => 'refresh-cw',
-                'price_from' => 'Khảo sát trước',
                 'timeline' => '2 - 6 tuần',
                 'cta' => 'Yêu cầu kiểm tra website cũ',
                 'need_value' => 'Thiết kế lại website cũ',
@@ -533,42 +418,6 @@ class ServiceSeeder extends Seeder
                         'text' => 'Kiểm tra lỗi 404, Search Console, form và tốc độ sau khi đưa vào sử dụng.',
                     ],
                 ],
-                'packages' => [
-                    [
-                        'name' => 'Làm mới giao diện',
-                        'price' => 'Từ 10 triệu',
-                        'desc' => 'Giữ nền tảng hiện tại nếu mã nguồn còn phù hợp.',
-                        'items' => [
-                            'Thiết kế giao diện mới',
-                            'Responsive',
-                            'Tối ưu trang chính',
-                            'Kiểm tra chức năng cũ',
-                        ],
-                    ],
-                    [
-                        'name' => 'Xây lại có chuyển dữ liệu',
-                        'price' => 'Từ 18 triệu',
-                        'desc' => 'Dùng nền tảng mới và chuyển phần dữ liệu còn giá trị.',
-                        'items' => [
-                            'Audit và backup',
-                            'Phát triển website mới',
-                            'Chuyển dữ liệu',
-                            'Redirect và kiểm thử',
-                        ],
-                        'featured' => true,
-                    ],
-                    [
-                        'name' => 'Hệ thống phức tạp',
-                        'price' => 'Báo giá riêng',
-                        'desc' => 'Website bán hàng, thành viên hoặc có tích hợp nghiệp vụ.',
-                        'items' => [
-                            'Phân tích database',
-                            'Chuyển đổi theo giai đoạn',
-                            'API và tích hợp',
-                            'Kế hoạch downtime',
-                        ],
-                    ],
-                ],
                 'faqs' => [
                     [
                         'q' => 'Làm lại website có mất thứ hạng Google không?',
@@ -593,7 +442,6 @@ class ServiceSeeder extends Seeder
                 'highlight' => 'Từ quản lý nội bộ đến hệ thống nghiệp vụ, xây đúng theo cách doanh nghiệp đang vận hành.',
                 'description' => 'Phát triển phần mềm quản lý, hệ thống nội bộ và công cụ nghiệp vụ theo quy trình riêng, giúp giảm việc thủ công, thống nhất dữ liệu và tăng hiệu suất đội ngũ.',
                 'icon' => 'brain',
-                'price_from' => 'Báo giá theo phạm vi',
                 'timeline' => '4 - 12 tuần',
                 'cta' => 'Nhận tư vấn phần mềm',
                 'need_value' => 'Phần mềm doanh nghiệp theo yêu cầu',
@@ -630,11 +478,6 @@ class ServiceSeeder extends Seeder
                     ['icon' => 'layers', 'title' => 'Mở rộng theo quy mô', 'text' => 'Kiến trúc cho phép thêm chức năng mà không phải làm lại từ đầu.'],
                     ['icon' => 'headset', 'title' => 'Bảo trì lâu dài', 'text' => 'Sao lưu, vá lỗi, nâng cấp và hỗ trợ kỹ thuật sau bàn giao.'],
                 ],
-                'packages' => [
-                    ['name' => 'Công cụ nhỏ', 'price' => 'Báo giá theo phạm vi', 'desc' => 'Một nghiệp vụ cụ thể như quản lý đơn, công việc hoặc báo giá.', 'items' => ['Khảo sát nhanh', 'Một luồng nghiệp vụ chính', 'Phân quyền cơ bản', 'Hướng dẫn sử dụng']],
-                    ['name' => 'Hệ thống quản lý', 'price' => 'Báo giá theo phạm vi', 'desc' => 'Nhiều phân hệ liên thông cho một bộ phận hoặc cả doanh nghiệp.', 'items' => ['Nhiều phân hệ liên thông', 'Báo cáo và dashboard', 'Tích hợp hệ thống', 'Đào tạo người dùng'], 'featured' => true],
-                    ['name' => 'Nền tảng riêng', 'price' => 'Báo giá riêng', 'desc' => 'Hệ thống lớn, nhiều chi nhánh hoặc mô hình SaaS.', 'items' => ['Kiến trúc mở rộng', 'Nhiều chi nhánh / đơn vị', 'API cho bên thứ ba', 'Vận hành và bảo trì dài hạn']],
-                ],
                 'faqs' => [
                     ['q' => 'Làm phần mềm theo yêu cầu mất bao lâu?', 'a' => 'Công cụ nhỏ thường 4 đến 6 tuần, hệ thống nhiều phân hệ từ 2 đến 3 tháng. Sau khảo sát sẽ có lộ trình và mốc bàn giao từng giai đoạn.'],
                     ['q' => 'Chi phí được tính như thế nào?', 'a' => 'Chi phí phụ thuộc phạm vi nghiệp vụ, số phân hệ và mức tích hợp. Sau buổi khảo sát, WebApp Bắc Ninh gửi báo giá chi tiết theo từng hạng mục để doanh nghiệp chủ động lựa chọn.'],
@@ -651,7 +494,6 @@ class ServiceSeeder extends Seeder
                 'highlight' => 'Một nơi để biết khách là ai, đã đặt gì và cần chăm sóc lúc nào.',
                 'description' => 'Giải pháp quản lý khách hàng và đặt lịch cho spa, phòng khám, giáo dục và doanh nghiệp dịch vụ: gom dữ liệu về một chỗ, nhắc lịch tự động và theo dõi doanh thu.',
                 'icon' => 'calendar-check',
-                'price_from' => 'Báo giá theo phạm vi',
                 'timeline' => '3 - 8 tuần',
                 'cta' => 'Nhận tư vấn CRM & Booking',
                 'need_value' => 'CRM / Booking cho doanh nghiệp dịch vụ',
@@ -687,11 +529,6 @@ class ServiceSeeder extends Seeder
                     ['icon' => 'chart-column', 'title' => 'Báo cáo doanh thu', 'text' => 'Theo dõi doanh thu, khách mới, khách quay lại theo ngày, tuần, tháng.'],
                     ['icon' => 'headset', 'title' => 'Hỗ trợ triển khai', 'text' => 'Nhập dữ liệu khách cũ, đào tạo nhân viên và hỗ trợ trong giai đoạn đầu.'],
                 ],
-                'packages' => [
-                    ['name' => 'Đặt lịch', 'price' => 'Báo giá theo phạm vi', 'desc' => 'Website kèm đặt lịch online cho một cơ sở.', 'items' => ['Đặt lịch online', 'Lịch nhân viên', 'Nhắc lịch tự động', 'Quản lý khách cơ bản']],
-                    ['name' => 'CRM dịch vụ', 'price' => 'Báo giá theo phạm vi', 'desc' => 'Quản lý khách, lịch và doanh thu cho cơ sở dịch vụ.', 'items' => ['Hồ sơ khách hàng', 'Gói và liệu trình', 'Tích hợp Zalo, Email, SMS', 'Báo cáo doanh thu'], 'featured' => true],
-                    ['name' => 'Nhiều chi nhánh', 'price' => 'Báo giá riêng', 'desc' => 'Chuỗi cơ sở cần quản lý tập trung.', 'items' => ['Nhiều chi nhánh', 'Phân quyền theo cơ sở', 'Báo cáo tổng hợp', 'Tích hợp theo nhu cầu']],
-                ],
                 'faqs' => [
                     ['q' => 'Có dùng thử trước khi triển khai không?', 'a' => 'Có bản demo để xem luồng đặt lịch và quản lý khách. Sau khi chốt nhu cầu, hệ thống được cấu hình theo dịch vụ và quy trình của doanh nghiệp.'],
                     ['q' => 'Nhập dữ liệu khách hiện có thế nào?', 'a' => 'Dữ liệu từ Excel hoặc phần mềm cũ có thể được chuẩn hóa và nhập vào hệ thống khi triển khai.'],
@@ -707,7 +544,6 @@ class ServiceSeeder extends Seeder
                 'highlight' => 'Kéo đúng khách về website và đo được từng đồng chi ra.',
                 'description' => 'Tối ưu SEO, triển khai quảng cáo Google, Facebook, Zalo và thiết lập đo lường để doanh nghiệp biết kênh nào đem lại khách hàng thật.',
                 'icon' => 'rocket',
-                'price_from' => 'Báo giá theo phạm vi',
                 'timeline' => '1 - 3 tháng thấy kết quả đầu',
                 'cta' => 'Nhận tư vấn SEO & quảng cáo',
                 'need_value' => 'SEO, quảng cáo và tracking',
@@ -742,11 +578,6 @@ class ServiceSeeder extends Seeder
                     ['icon' => 'file-text', 'title' => 'Nội dung chuẩn tìm kiếm', 'text' => 'Bài viết và trang dịch vụ viết theo ý định tìm kiếm của khách.'],
                     ['icon' => 'chart-column', 'title' => 'Báo cáo minh bạch', 'text' => 'Số liệu thực tế mỗi tháng kèm nhận định và việc sẽ làm tiếp.'],
                     ['icon' => 'settings', 'title' => 'Tối ưu liên tục', 'text' => 'Điều chỉnh từ khóa, mẫu quảng cáo và ngân sách theo kết quả.'],
-                ],
-                'packages' => [
-                    ['name' => 'Nền tảng đo lường', 'price' => 'Báo giá theo phạm vi', 'desc' => 'Thiết lập một lần để mọi hoạt động sau đó đo được.', 'items' => ['Google Analytics, Search Console', 'Pixel và sự kiện chuyển đổi', 'Kiểm tra kỹ thuật SEO', 'Báo cáo hiện trạng']],
-                    ['name' => 'SEO định kỳ', 'price' => 'Báo giá theo phạm vi', 'desc' => 'Tăng thứ hạng và lượng khách tự nhiên.', 'items' => ['Nghiên cứu từ khóa', 'Tối ưu trang và nội dung', 'Báo cáo hằng tháng', 'Đề xuất tháng sau'], 'featured' => true],
-                    ['name' => 'Quảng cáo & tăng trưởng', 'price' => 'Báo giá theo ngân sách', 'desc' => 'Kết hợp SEO và quảng cáo để tăng khách ngay.', 'items' => ['Chiến dịch Google, Facebook, Zalo', 'Tối ưu liên tục', 'Tracking chuyển đổi', 'Chiến lược nội dung']],
                 ],
                 'faqs' => [
                     ['q' => 'SEO bao lâu thì có kết quả?', 'a' => 'Thông thường từ 3 đến 6 tháng tùy độ cạnh tranh của từ khóa và hiện trạng website. Những cải thiện về kỹ thuật và đo lường có thể thấy sớm hơn.'],

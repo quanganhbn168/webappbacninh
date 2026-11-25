@@ -3,10 +3,26 @@
 namespace Database\Seeders;
 
 use App\Models\PricingPlan;
+use App\Models\Service;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class PricingPlanSeeder extends Seeder
 {
+    /** Table plans each service page shows from the start. */
+    private const SERVICE_PLANS = [
+        'landing-page' => ['Landing Page'],
+        'website-doanh-nghiep' => ['Website Cơ bản', 'Website Nâng cao', 'Website Cao cấp / WebApp'],
+    ];
+
+    /** The landing page offers above the one in the shared table. */
+    private const LANDING_PLANS = [
+        ['name' => 'Landing cơ bản', 'price' => '6.000.000đ', 'summary' => 'Một trang đích rõ thông tin và form đăng ký.',
+            'features' => ['Thiết kế responsive', 'Tối đa 8 section', 'Form lead', 'SEO và chia sẻ cơ bản']],
+        ['name' => 'Landing quảng cáo', 'price' => '9.000.000đ', 'summary' => 'Tập trung chuyển đổi và đo lường chiến dịch.',
+            'features' => ['Nội dung theo hành trình', 'Tracking và UTM', 'CTA cố định', 'Tối ưu tốc độ'], 'is_featured' => true, 'badge' => 'Được quan tâm'],
+    ];
+
     /**
      * Creates the reference plans once; plans edited in the admin are never overwritten.
      */
@@ -18,6 +34,47 @@ class PricingPlanSeeder extends Seeder
                 $plan + ['order' => $order + 1, 'is_active' => true],
             );
         }
+
+        $this->linkServices();
+    }
+
+    /**
+     * Gives the website and landing services their plans; a service that already
+     * has plans is left alone.
+     *
+     * @param  array<int, array<string, mixed>>  $landingPackages  wording once typed on the landing service
+     */
+    public function linkServices(array $landingPackages = []): void
+    {
+        // An earlier migration runs this seeder before services can pick plans.
+        if (! Schema::hasTable('priceables')) {
+            return;
+        }
+
+        foreach (self::SERVICE_PLANS as $slug => $names) {
+            $service = Service::query()->where('slug', $slug)->first();
+            if (! $service || $service->pricingPlans()->exists()) {
+                continue;
+            }
+
+            $plans = PricingPlan::query()->where('group', 'website')->whereIn('name', $names)->pluck('id');
+
+            if ($slug === 'landing-page') {
+                $typed = collect($landingPackages)->keyBy('name');
+                foreach (self::LANDING_PLANS as $order => $plan) {
+                    $package = $typed->get($plan['name']);
+                    $plans->push(PricingPlan::query()->firstOrCreate(
+                        ['name' => $plan['name'], 'show_in_table' => false],
+                        array_replace($plan, array_filter([
+                            'summary' => $package['desc'] ?? null,
+                            'features' => $package['items'] ?? null,
+                        ])) + ['price_prefix' => 'Từ', 'cta_label' => 'Nhận báo giá', 'order' => 100 + $order, 'is_active' => true],
+                    )->id);
+                }
+            }
+
+            $service->pricingPlans()->attach($plans->all());
+        }
     }
 
     /**
@@ -28,13 +85,13 @@ class PricingPlanSeeder extends Seeder
         return [
             ['group' => 'website', 'name' => 'Landing Page', 'price_prefix' => 'Từ', 'price' => '3.000.000đ',
                 'features' => ['Thiết kế theo yêu cầu', 'Tối ưu hiển thị đa thiết bị', 'Tích hợp form, tracking', 'Bàn giao nhanh']],
-            ['group' => 'website', 'name' => 'Website Cơ bản', 'price' => '12.000.000đ', 'is_featured' => true, 'badge' => 'Phổ biến nhất',
+            ['group' => 'website', 'name' => 'Website Cơ bản', 'price' => '8.000.000đ', 'is_featured' => true, 'badge' => 'Phổ biến nhất',
                 'features' => ['Đầy đủ tính năng cơ bản', 'Chuẩn SEO, tốc độ cao', 'Dễ dàng quản trị', 'Hỗ trợ 12 tháng']],
-            ['group' => 'website', 'name' => 'Website Nâng cao', 'price' => '16.000.000đ',
+            ['group' => 'website', 'name' => 'Website Nâng cao', 'price' => '15.000.000đ',
                 'features' => ['Thiết kế theo thương hiệu', 'Tích hợp tính năng nâng cao', 'Tối ưu SEO & bảo mật', 'Hỗ trợ 12 tháng']],
             ['group' => 'website', 'name' => 'Website Cao cấp / WebApp', 'price_prefix' => 'Từ', 'price' => '22.000.000đ',
                 'features' => ['Theo yêu cầu riêng', 'Tích hợp phần mềm, API', 'Bảo mật & hiệu năng cao', 'Hỗ trợ lâu dài']],
-            ['group' => 'software', 'name' => 'CRM & Phần mềm theo yêu cầu', 'price' => 'Báo giá theo phạm vi', 'cta_label' => 'Nhận báo giá',
+            ['group' => 'software', 'name' => 'CRM & Phần mềm theo yêu cầu', 'price' => 'Liên hệ', 'cta_label' => 'Nhận báo giá',
                 'summary' => 'Báo giá theo phạm vi nghiệp vụ',
                 'features' => ['Khảo sát quy trình thực tế', 'Phân quyền & quản lý dữ liệu', 'Tích hợp hệ thống theo nhu cầu', 'Bàn giao và đào tạo sử dụng']],
             ['group' => 'hosting', 'name' => 'Hosting Basic', 'price' => '1.500.000đ', 'price_suffix' => '/năm', 'cta_label' => 'Đăng ký ngay',
@@ -46,13 +103,13 @@ class PricingPlanSeeder extends Seeder
             ['group' => 'hosting', 'name' => 'Hosting Pro', 'price' => '4.500.000đ', 'price_suffix' => '/năm', 'cta_label' => 'Đăng ký ngay',
                 'summary' => 'Phù hợp website lớn, traffic cao',
                 'features' => ['Dung lượng 30GB SSD', 'Băng thông không giới hạn', 'SSL miễn phí', 'Email doanh nghiệp (10 tài khoản)', 'Backup nhiều phiên bản']],
-            ['group' => 'care', 'name' => 'Chăm sóc kỹ thuật', 'price_prefix' => 'Từ', 'price' => '500.000đ', 'price_suffix' => '/tháng',
+            ['group' => 'care', 'name' => 'Chăm sóc kỹ thuật', 'price' => 'Liên hệ',
                 'summary' => 'Phù hợp website ít cập nhật nhưng cần hoạt động ổn định.',
                 'features' => ['Hosting và backup', 'Kiểm tra định kỳ', 'Hỗ trợ lỗi kỹ thuật', 'Cập nhật nhỏ']],
-            ['group' => 'care', 'name' => 'Quản trị nội dung', 'price_prefix' => 'Từ', 'price' => '1.500.000đ', 'price_suffix' => '/tháng',
+            ['group' => 'care', 'name' => 'Quản trị nội dung', 'price' => 'Liên hệ',
                 'summary' => 'Phù hợp doanh nghiệp có bài viết, sản phẩm và dự án mới.',
                 'features' => ['Đăng nội dung định kỳ', 'Chuẩn hóa ảnh và bài', 'Cập nhật banner, dịch vụ', 'Báo cáo khối lượng']],
-            ['group' => 'care', 'name' => 'Website tăng trưởng', 'price_prefix' => 'Từ', 'price' => '3.500.000đ', 'price_suffix' => '/tháng', 'is_featured' => true, 'badge' => 'Đầy đủ nhất',
+            ['group' => 'care', 'name' => 'Website tăng trưởng', 'price' => 'Liên hệ', 'is_featured' => true, 'badge' => 'Đầy đủ nhất',
                 'summary' => 'Phù hợp doanh nghiệp muốn duy trì cả kỹ thuật, nội dung và SEO.',
                 'features' => ['Chăm sóc kỹ thuật', 'Nội dung định kỳ', 'SEO và Search Console', 'Báo cáo và đề xuất tháng sau']],
             ['group' => 'addon', 'name' => 'Hosting Website', 'icon' => 'server', 'price_prefix' => 'Từ', 'price' => '500.000đ', 'price_suffix' => '/năm',

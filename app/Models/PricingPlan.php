@@ -5,19 +5,17 @@ namespace App\Models;
 use App\Enums\PricingGroup;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * Every price of the site's services. A plan shows in the shared table (/bang-gia,
- * home…), on the page of the service it belongs to, or both.
+ * home…), on the pages of the services that picked it, or both.
  */
 class PricingPlan extends Model
 {
     protected $fillable = [
         'group',
         'show_in_table',
-        'priceable_type',
-        'priceable_id',
         'name',
         'icon',
         'price_prefix',
@@ -41,10 +39,14 @@ class PricingPlan extends Model
         'order' => 'integer',
     ];
 
-    /** The service or operation service whose page shows this plan. */
-    public function priceable(): MorphTo
+    public function services(): MorphToMany
     {
-        return $this->morphTo();
+        return $this->morphedByMany(Service::class, 'priceable');
+    }
+
+    public function operationServices(): MorphToMany
+    {
+        return $this->morphedByMany(OperationService::class, 'priceable');
     }
 
     public function scopeActive(Builder $query): Builder

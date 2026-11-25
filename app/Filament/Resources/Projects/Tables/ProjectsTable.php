@@ -20,12 +20,13 @@ class ProjectsTable
             ->defaultSort('order')
             ->columns([
                 CuratorColumn::make('image')->label('Ảnh')->size(48),
+                TextColumn::make('code')->label('Mã')->searchable()->sortable(),
                 TextColumn::make('title')
                     ->label('Dự án')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('category.name')->label('Nhóm')->sortable(),
-                TextColumn::make('industry')->label('Ngành')->searchable(),
+                TextColumn::make('industries.name')->label('Ngành')->badge()->searchable(),
                 TextColumn::make('year')->label('Năm')->sortable(),
                 IconColumn::make('is_featured')->label('Nổi bật')->boolean(),
                 IconColumn::make('is_active')->label('Hiển thị')->boolean(),
@@ -34,6 +35,7 @@ class ProjectsTable
             ])
             ->filters([
                 SelectFilter::make('project_category_id')->label('Nhóm')->relationship('category', 'name'),
+                SelectFilter::make('industries')->label('Ngành')->relationship('industries', 'name')->multiple()->preload(),
                 TernaryFilter::make('is_active')->label('Hiển thị'),
                 TernaryFilter::make('is_featured')->label('Nổi bật'),
             ])

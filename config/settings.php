@@ -14,6 +14,7 @@ return [
         App\Settings\SocialSettings::class,
         App\Settings\TrackingSettings::class,
         App\Settings\FaviconSettings::class,
+        App\Settings\ProjectSettings::class,
     ],
 
     /*

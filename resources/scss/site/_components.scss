@@ -788,16 +788,25 @@
     @include media-breakpoint-down(sm) { grid-template-columns: 1fr; }
 }
 
-// Key facts under a detail title
-.fact-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
-    gap: 1rem 1.5rem;
+// Key facts under a detail title, as a striped table
+.fact-table {
+    overflow: hidden;
     margin: 0 0 2rem;
-    padding-block: 1.1rem;
-    border-block: 1px solid $border;
+    border: 1px solid $border;
+    border-radius: $radius;
+    background: #fff;
 
-    dt { color: $muted; font-size: .8rem; font-weight: 500; }
+    > div {
+        display: grid;
+        grid-template-columns: minmax(8rem, 36%) minmax(0, 1fr);
+        align-items: baseline;
+        gap: 1rem;
+        padding: .8rem 1.1rem;
+
+        &:nth-child(odd) { background: $gold-50; }
+        + div { border-top: 1px solid $border; }
+    }
+    dt { color: $muted; font-size: .85rem; font-weight: 500; }
     dd { margin: 0; color: $ink; font-weight: 700; }
 }
 

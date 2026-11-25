@@ -28,6 +28,69 @@
     }
     table { width: 100%; border-collapse: collapse; font-size: .95rem; }
     th, td { padding: .6rem .75rem; border: 1px solid $border; }
+    td > *, th > * { margin: 0; }
+
+    // Blocks produced by the admin RichEditor
+    span.color { color: var(--color); }
+    .lead { color: $ink; }
+    pre {
+        overflow-x: auto;
+        padding: 1rem 1.25rem;
+        border-radius: $radius-sm;
+        background: $ink;
+        color: #fff;
+
+        code { color: inherit; }
+    }
+    details {
+        padding: .85rem 1.1rem;
+        border: 1px solid $border;
+        border-radius: $radius-sm;
+
+        summary { color: $ink; font-weight: 600; cursor: pointer; }
+        [data-type="detailsContent"] { margin-top: .75rem; }
+    }
+    .grid-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+    }
+    .grid-layout-col {
+        min-width: 0;
+
+        > * + * { margin-top: .75em; }
+    }
+    @each $breakpoint in sm, md, lg, xl, xxl {
+        // The editor calls Bootstrap's xxl "2xl".
+        $name: if($breakpoint == xxl, "2xl", "#{$breakpoint}");
+
+        @include media-breakpoint-up($breakpoint) {
+            .grid-layout[data-from-breakpoint="#{$name}"] {
+                grid-template-columns: var(--cols);
+
+                > .grid-layout-col { grid-column: var(--col-span); }
+            }
+        }
+    }
+    .grid-layout[data-from-breakpoint="default"] {
+        grid-template-columns: var(--cols);
+
+        > .grid-layout-col { grid-column: var(--col-span); }
+    }
+}
+
+// Project story: "Bài toán" and "Giải pháp" with rich content
+.story-card {
+    @include surface;
+    height: 100%;
+    padding: 1.4rem;
+    overflow-x: auto;
+
+    > h2 { margin: 1rem 0 .75rem; font-size: 1.15rem; }
+    .prose { font-size: .98rem; }
+    .prose h1 { font-size: 1.4rem; }
+    .prose h2 { margin-top: 1.4em; font-size: 1.25rem; }
+    .prose h3 { font-size: 1.1rem; }
 }
 .prose a,
 .form-check-label a {
@@ -463,4 +526,90 @@
 
     .solar { font-size: 1.5rem; font-weight: 700; line-height: 1; }
     .lunar { margin-top: .3rem; color: $muted; font-size: .85rem; }
+}
+
+// Project detail: Swiper gallery (main slides with a thumbnail strip) and technology logos
+.project-gallery { min-width: 0; }
+.project-gallery__main {
+    border-radius: $radius-lg;
+    background: $sand;
+    box-shadow: $shadow;
+
+    img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+}
+.project-gallery__nav {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(#fff, .92);
+    color: $ink;
+    box-shadow: $shadow;
+    transform: translateY(-50%);
+    transition: background $transition, opacity $transition;
+
+    &--prev { left: .75rem; }
+    &--next { right: .75rem; }
+    &:hover { background: $gold; }
+    &.swiper-button-disabled { opacity: .35; }
+}
+.project-gallery__counter.swiper-pagination-fraction {
+    position: absolute;
+    z-index: 2;
+    inset: auto .75rem .75rem auto;
+    width: auto;
+    padding: .2rem .65rem;
+    border-radius: 999px;
+    background: rgba($ink, .75);
+    color: #fff;
+    font-size: .8rem;
+}
+.project-gallery__thumbs {
+    margin-top: .75rem;
+
+    .swiper-slide { width: 6.5rem; }
+    // Before Swiper starts it has not spaced the slides yet.
+    &:not(.swiper-initialized) .swiper-slide { margin-right: .75rem; }
+
+    button {
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        padding: 0;
+        border: 2px solid transparent;
+        border-radius: $radius-sm;
+        background: none;
+        opacity: .65;
+        transition: opacity $transition, border-color $transition;
+    }
+    img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+    button:hover,
+    .swiper-slide-thumb-active button { border-color: $gold; opacity: 1; }
+}
+.tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .5rem .85rem;
+        border: 1px solid $border;
+        border-radius: $radius-sm;
+        background: #fff;
+        color: $ink;
+        font-size: .9rem;
+        font-weight: 600;
+    }
 }

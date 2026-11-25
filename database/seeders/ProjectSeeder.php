@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Domain\Media\Actions\ImportLocalImage;
 use App\Models\Project;
 use App\Models\ProjectCategory;
+use App\Models\Technology;
+use App\Models\TemplateCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 
@@ -24,12 +26,14 @@ class ProjectSeeder extends Seeder
             $category = ProjectCategory::query()->firstOrCreate(['slug' => $categorySlug], ['name' => $categoryName]);
             $image = fn (string $path): ?int => $images->execute('images/'.$path, 'projects', $row['title'])?->id;
 
-            Project::query()->create(Arr::except($row, ['category', 'image', 'gallery']) + [
+            $project = Project::query()->create(Arr::except($row, ['category', 'image', 'gallery', 'industry', 'technologies']) + [
                 'project_category_id' => $category->id,
                 'image_id' => $image($row['image']),
                 'gallery' => array_values(array_filter(array_map($image, $row['gallery']))),
                 'is_active' => true,
             ]);
+            $project->industries()->sync([TemplateCategory::findOrCreateByName($row['industry'])->id]);
+            $project->technologies()->sync(array_map(fn (string $name): int => Technology::findOrCreateByName($name)->id, $row['technologies']));
         }
     }
 
@@ -53,7 +57,6 @@ class ProjectSeeder extends Seeder
                 'excerpt' => 'Tổ chức lại hồ sơ năng lực, nhóm sản phẩm, nhà máy, chứng nhận và dự án để hỗ trợ đội kinh doanh gửi khách hàng.',
                 'client' => 'Doanh nghiệp sản xuất tại Bắc Ninh',
                 'duration' => '4 tuần',
-                'website_type' => 'Website giới thiệu doanh nghiệp',
                 'challenge' => 'Thông tin doanh nghiệp nằm rải rác trong nhiều tài liệu, website cũ thiếu cấu trúc sản phẩm và không thể hiện rõ năng lực nhà máy.',
                 'solution' => 'Xây dựng lại hệ thống nội dung theo hành trình khách hàng: năng lực, sản phẩm, quy trình, chứng nhận, dự án và form tiếp nhận yêu cầu báo giá.',
                 'results' => [
@@ -99,7 +102,6 @@ class ProjectSeeder extends Seeder
                 'excerpt' => 'Chuẩn hóa danh mục, trang chi tiết sản phẩm, giỏ hàng và luồng tiếp nhận đơn để doanh nghiệp quản lý tập trung.',
                 'client' => 'Doanh nghiệp thương mại và phân phối',
                 'duration' => '5 tuần',
-                'website_type' => 'Website bán hàng',
                 'challenge' => 'Sản phẩm được giới thiệu qua nhiều kênh khác nhau, khách khó so sánh và nhân viên phải tiếp nhận đơn thủ công.',
                 'solution' => 'Thiết kế website theo danh mục sản phẩm, bộ lọc, trang chi tiết, giỏ hàng, đặt hàng và khu vực quản trị đơn hàng cơ bản.',
                 'results' => [
@@ -144,7 +146,6 @@ class ProjectSeeder extends Seeder
                 'excerpt' => 'Danh mục tour, lịch trình, điểm đến, chính sách và form tư vấn được sắp xếp để khách hàng dễ tìm và liên hệ.',
                 'client' => 'Đơn vị du lịch và lữ hành',
                 'duration' => '4 tuần',
-                'website_type' => 'Website dịch vụ du lịch',
                 'challenge' => 'Thông tin tour dài, nhiều lịch trình và mức giá khiến khách khó theo dõi trên mạng xã hội.',
                 'solution' => 'Xây dựng kho tour có phân loại, trang lịch trình chi tiết, điểm đến, bài viết kinh nghiệm và form tư vấn theo từng tour.',
                 'results' => [
@@ -189,7 +190,6 @@ class ProjectSeeder extends Seeder
                 'excerpt' => 'Giới thiệu khóa học, giáo viên, lịch khai giảng, tin hoạt động và tiếp nhận đăng ký tư vấn.',
                 'client' => 'Trung tâm đào tạo và giáo dục',
                 'duration' => '3 tuần',
-                'website_type' => 'Website giáo dục',
                 'challenge' => 'Thông tin khóa học và lịch khai giảng thường xuyên thay đổi, phụ huynh khó tìm lại nội dung trên fanpage.',
                 'solution' => 'Thiết kế hệ thống khóa học, giáo viên, lịch khai giảng, thư viện hoạt động và form đăng ký tư vấn tập trung.',
                 'results' => [
@@ -233,7 +233,6 @@ class ProjectSeeder extends Seeder
                 'excerpt' => 'Tập trung một dịch vụ, thông điệp bán hàng, bằng chứng, gói giá và form đăng ký cho chiến dịch quảng cáo.',
                 'client' => 'Doanh nghiệp dịch vụ',
                 'duration' => '7 - 10 ngày',
-                'website_type' => 'Landing page chuyển đổi',
                 'challenge' => 'Quảng cáo dẫn về trang chủ chung khiến thông điệp bị phân tán và khách không biết bước tiếp theo.',
                 'solution' => 'Xây dựng một trang đích riêng với thông điệp rõ, lợi ích, quy trình, bảng giá, câu hỏi thường gặp và CTA lặp lại hợp lý.',
                 'results' => [
@@ -279,7 +278,6 @@ class ProjectSeeder extends Seeder
                 'excerpt' => 'Quản lý khách hàng, lịch sử chăm sóc, công việc, báo giá và tiến độ trên một hệ thống thống nhất.',
                 'client' => 'Doanh nghiệp dịch vụ kỹ thuật',
                 'duration' => 'Theo giai đoạn',
-                'website_type' => 'WebApp quản lý nội bộ',
                 'challenge' => 'Dữ liệu khách hàng, báo giá và công việc nằm ở nhiều file, khó theo dõi trách nhiệm và lịch sử xử lý.',
                 'solution' => 'Phân tích quy trình rồi triển khai theo module: khách hàng, liên hệ, ghi chú, công việc, báo giá, thanh toán và báo cáo.',
                 'results' => [

@@ -21,7 +21,7 @@ class ProjectController extends FrontendController
 
     public function detail(string $slug): View
     {
-        $project = Project::query()->active()->with(['category', 'image'])->where('slug', $slug)->firstOrFail();
+        $project = Project::query()->active()->with(['category', 'image', 'industries', 'technologies.image'])->where('slug', $slug)->firstOrFail();
 
         return $this->page('site.projects.show', [
             'project' => $project,

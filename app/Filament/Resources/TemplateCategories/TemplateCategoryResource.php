@@ -25,11 +25,11 @@ class TemplateCategoryResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Portfolio;
 
-    protected static ?string $navigationLabel = 'Ngành giao diện';
+    protected static ?string $navigationLabel = 'Ngành nghề';
 
     protected static ?string $modelLabel = 'ngành';
 
-    protected static ?string $pluralModelLabel = 'Ngành giao diện';
+    protected static ?string $pluralModelLabel = 'Ngành nghề';
 
     protected static ?int $navigationSort = 40;
 
@@ -52,10 +52,12 @@ class TemplateCategoryResource extends Resource
                 TextColumn::make('name')->label('Tên')->searchable()->sortable(),
                 TextColumn::make('slug')->label('Mã lọc')->searchable(),
                 TextColumn::make('templates_count')->label('Số giao diện')->counts('templates')->sortable(),
+                TextColumn::make('projects_count')->label('Số dự án')->counts('projects')->sortable(),
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->hidden(fn (TemplateCategory $record): bool => $record->templates()->exists() || $record->projects()->exists()),
             ]);
     }
 

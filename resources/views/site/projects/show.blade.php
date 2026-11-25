@@ -1,5 +1,14 @@
 @extends('layouts.site')
 
+@push('head')
+    <link rel="stylesheet" href="{{ asset('vendor/swiper/swiper-bundle.min.css') }}">
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}"></script>
+    @vite('resources/js/projects/gallery.js')
+@endpush
+
 @section('content')
     @php($gallery = $project->gallery_urls ?: [$project->image_url])
     <section class="page-hero page-hero--compact">
@@ -9,13 +18,13 @@
                     <x-breadcrumbs :items="$breadcrumbs" />
                     <div class="d-flex flex-wrap gap-2 mb-3">
                         <span class="tag tag--gold">{{ $project->category_label }}</span>
-                        @if ($project->industry)<span class="tag">{{ $project->industry }}</span>@endif
+                        @foreach ($project->industries as $industry)<span class="tag">{{ $industry->name }}</span>@endforeach
                         @if ($project->year)<span class="tag">{{ $project->year }}</span>@endif
                     </div>
                     <h1>{{ $project->title }}</h1>
                     <p class="page-hero__lead">{{ $project->excerpt }}</p>
-                    <dl class="fact-list">
-                        @foreach (['Khách hàng' => $project->client, 'Loại dự án' => $project->website_type, 'Thời gian' => $project->duration, 'Chi phí tham khảo' => $project->cost] as $label => $value)
+                    <dl class="fact-table">
+                        @foreach (['Khách hàng' => $project->client, 'Loại dự án' => $project->category?->name, 'Thời gian' => $project->duration, 'Chi phí tham khảo' => $project->cost] as $label => $value)
                             @if ($value)
                                 <div><dt>{{ $label }}</dt><dd>{{ $value }}</dd></div>
                             @endif
@@ -28,15 +37,28 @@
                         @endif
                     </div>
                 </div>
-                <div class="gallery" data-gallery>
-                    <img class="gallery__main" src="{{ $gallery[0] }}" alt="{{ $project->title }}" width="800" height="520" data-gallery-main fetchpriority="high">
-                    @if (count($gallery) > 1)
-                        <div class="gallery__thumbs">
+                <div class="project-gallery" data-project-gallery>
+                    <div class="swiper project-gallery__main">
+                        <div class="swiper-wrapper">
                             @foreach ($gallery as $index => $url)
-                                <button type="button" @class(['gallery__thumb', 'active' => $index === 0]) data-gallery-image="{{ $url }}" aria-label="Xem ảnh {{ $index + 1 }}" aria-pressed="{{ $index === 0 ? 'true' : 'false' }}">
-                                    <img src="{{ $url }}" alt="" width="120" height="80" loading="lazy">
-                                </button>
+                                <div class="swiper-slide">
+                                    <img src="{{ $url }}" alt="{{ $project->title }}{{ $index ? ' - ảnh '.($index + 1) : '' }}" width="800" height="500" @if ($index) loading="lazy" @else fetchpriority="high" @endif>
+                                </div>
                             @endforeach
+                        </div>
+                        @if (count($gallery) > 1)
+                            <button class="project-gallery__nav project-gallery__nav--prev" type="button" aria-label="Ảnh trước"><x-icon name="chevron-left" /></button>
+                            <button class="project-gallery__nav project-gallery__nav--next" type="button" aria-label="Ảnh tiếp theo"><x-icon name="chevron-right" /></button>
+                            <span class="project-gallery__counter"></span>
+                        @endif
+                    </div>
+                    @if (count($gallery) > 1)
+                        <div class="swiper project-gallery__thumbs">
+                            <div class="swiper-wrapper">
+                                @foreach ($gallery as $index => $url)
+                                    <div class="swiper-slide"><button type="button" aria-label="Xem ảnh {{ $index + 1 }}"><img src="{{ $url }}" alt="" width="120" height="80" loading="lazy"></button></div>
+                                @endforeach
+                            </div>
                         </div>
                     @endif
                 </div>
@@ -44,13 +66,19 @@
         </div>
     </section>
 
-    @if ($project->challenge || $project->solution)
+    @if ($project->challenge_html || $project->solution_html)
         <section class="section section--soft">
             <div class="container">
                 <div class="row g-4">
-                    @foreach ([['target', 'Bài toán ban đầu', $project->challenge], ['lightbulb', 'Giải pháp triển khai', $project->solution]] as [$icon, $title, $text])
-                        @if ($text)
-                            <div class="col-lg-6"><x-feature-card :icon="$icon" :title="$title" :text="$text" /></div>
+                    @foreach ([['target', 'Bài toán ban đầu', $project->challenge_html], ['lightbulb', 'Giải pháp triển khai', $project->solution_html]] as [$icon, $title, $html])
+                        @if ($html)
+                            <div class="col-lg-6">
+                                <article class="story-card">
+                                    <span class="icon-tile"><x-icon :name="$icon" /></span>
+                                    <h2>{{ $title }}</h2>
+                                    <div class="prose">{!! $html !!}</div>
+                                </article>
+                            </div>
                         @endif
                     @endforeach
                 </div>
@@ -58,7 +86,7 @@
         </section>
     @endif
 
-    @if ($project->deliverables || $project->technologies)
+    @if ($project->deliverables || $project->technologies->isNotEmpty())
         <section class="section">
             <div class="container">
                 <div class="row g-4 g-lg-5">
@@ -73,16 +101,16 @@
                             </ol>
                         </div>
                     @endif
-                    @if ($project->technologies)
+                    @if ($project->technologies->isNotEmpty())
                         <div class="col-lg-5">
                             <div class="feature-card h-auto">
                                 <h2 class="h3 mb-0">Công nghệ và nền tảng</h2>
                                 <p>Ưu tiên dễ vận hành và có khả năng mở rộng.</p>
-                                <div class="media-card__tags">
+                                <ul class="tech-list">
                                     @foreach ($project->technologies as $technology)
-                                        <span class="tag tag--gold">{{ $technology }}</span>
+                                        <li>{{ $technology->logoHtml('1.5rem') }}<span>{{ $technology->name }}</span></li>
                                     @endforeach
-                                </div>
+                                </ul>
                             </div>
                         </div>
                     @endif

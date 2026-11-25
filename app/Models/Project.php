@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Domain\Projects\Actions\GenerateProjectCode;
 use App\Traits\HasCuratorGallery;
 use Awcodes\Curator\Models\Media;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -26,17 +28,14 @@ class Project extends Model
         'gallery',
         'excerpt',
         'link',
-        'industry',
         'year',
         'client',
         'duration',
         'cost',
-        'website_type',
         'challenge',
         'solution',
         'results',
         'deliverables',
-        'technologies',
         'meta_title',
         'meta_description',
         'is_featured',
@@ -48,11 +47,19 @@ class Project extends Model
         'gallery' => 'array',
         'results' => 'array',
         'deliverables' => 'array',
-        'technologies' => 'array',
         'year' => 'integer',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $project): void {
+            if (blank($project->code)) {
+                $project->code = app(GenerateProjectCode::class)->execute();
+            }
+        });
+    }
 
     public function getSlugOptions(): SlugOptions
     {
@@ -70,6 +77,17 @@ class Project extends Model
     public function image(): BelongsTo
     {
         return $this->belongsTo(Media::class, 'image_id');
+    }
+
+    /** Industries are shared with the theme catalog. */
+    public function industries(): BelongsToMany
+    {
+        return $this->belongsToMany(TemplateCategory::class, 'project_template_category')->orderBy('name');
+    }
+
+    public function technologies(): BelongsToMany
+    {
+        return $this->belongsToMany(Technology::class)->orderBy('order')->orderBy('name');
     }
 
     public function scopeActive(Builder $query): Builder
@@ -98,6 +116,25 @@ class Project extends Model
     protected function url(): Attribute
     {
         return Attribute::get(fn (): string => route('projects.show', $this->slug));
+    }
+
+    protected function challengeHtml(): Attribute
+    {
+        return Attribute::get(fn (): string => $this->richHtml($this->challenge));
+    }
+
+    protected function solutionHtml(): Attribute
+    {
+        return Attribute::get(fn (): string => $this->richHtml($this->solution));
+    }
+
+    /** Sanitized editor HTML; empty when the editor only holds blank paragraphs. */
+    private function richHtml(?string $content): string
+    {
+        $html = (string) str($content ?? '')->sanitizeHtml();
+        $text = html_entity_decode(strip_tags($html, ['img', 'hr', 'table']));
+
+        return preg_replace('/[\s\x{00A0}]+/u', '', $text) === '' ? '' : $html;
     }
 
     protected function categorySlug(): Attribute

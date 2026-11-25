@@ -21,6 +21,7 @@ export default defineConfig({
         'resources/js/landing/freshair.js',
         ...pageScripts('resources/js/tools'),
         ...pageScripts('resources/js/payment'),
+        ...pageScripts('resources/js/projects'),
       ],
       refresh: true,
     }),

@@ -6,7 +6,7 @@
 
 @push('scripts')
     <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}"></script>
-    @vite('resources/js/projects/gallery.js')
+    @vite(['resources/js/projects/gallery.js', 'resources/js/projects/story.js'])
 @endpush
 
 @section('content')
@@ -69,16 +69,24 @@
     @if ($project->challenge_html || $project->solution_html)
         <section class="section section--soft">
             <div class="container">
-                <div class="row g-4">
-                    @foreach ([['target', 'Bài toán ban đầu', $project->challenge_html], ['lightbulb', 'Giải pháp triển khai', $project->solution_html]] as [$icon, $title, $html])
+                <div class="d-grid gap-4">
+                    @foreach ([['challenge', 'target', 'Bài toán ban đầu', $project->challenge_html], ['solution', 'lightbulb', 'Giải pháp triển khai', $project->solution_html]] as [$key, $icon, $title, $html])
                         @if ($html)
-                            <div class="col-lg-6">
-                                <article class="story-card">
-                                    <span class="icon-tile"><x-icon :name="$icon" /></span>
-                                    <h2>{{ $title }}</h2>
-                                    <div class="prose">{!! $html !!}</div>
-                                </article>
-                            </div>
+                            <article class="story-card">
+                                <h2 class="story-card__header">
+                                    <button class="story-card__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#story-{{ $key }}" aria-expanded="true" aria-controls="story-{{ $key }}">
+                                        <span class="icon-tile"><x-icon :name="$icon" /></span>
+                                        <span>{{ $title }}</span>
+                                        <x-icon name="chevron-down" class="story-card__chevron" />
+                                    </button>
+                                </h2>
+                                <div class="collapse show" id="story-{{ $key }}">
+                                    <div class="story-card__body"><div class="prose">{!! $html !!}</div></div>
+                                    <div class="story-card__footer">
+                                        <button class="story-card__close" type="button" data-bs-toggle="collapse" data-bs-target="#story-{{ $key }}" aria-expanded="true" aria-controls="story-{{ $key }}">Thu gọn <x-icon name="chevron-up" /></button>
+                                    </div>
+                                </div>
+                            </article>
                         @endif
                     @endforeach
                 </div>

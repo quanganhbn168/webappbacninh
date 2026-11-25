@@ -40,17 +40,35 @@ class Technology extends Model
         return self::query()->firstOrCreate(['name' => trim($name)]);
     }
 
-    /** The uploaded logo, otherwise the built-in icon in the brand colour; empty when neither is set. */
+    /**
+     * The uploaded logo, otherwise the built-in icon in the brand colour; empty when neither is set.
+     * Always an <img>: the admin's HTML sanitizer removes inline <svg>.
+     */
     public function logoHtml(string $size = '1.25rem'): HtmlString
     {
-        $style = 'width:'.$size.';height:'.$size.';flex:none';
+        $src = $this->image?->url ?? $this->iconDataUri();
 
-        if ($this->image) {
-            return new HtmlString('<img src="'.e($this->image->url).'" alt="" style="'.$style.';object-fit:contain" loading="lazy">');
+        if ($src === null) {
+            return new HtmlString('');
         }
 
-        $color = preg_match('/^#[0-9a-f]{3,8}$/i', (string) $this->color) ? ';color:'.$this->color : '';
+        return new HtmlString('<img src="'.e($src).'" alt="" style="width:'.$size.';height:'.$size.';flex:none;object-fit:contain">');
+    }
 
-        return new HtmlString(str_replace('<svg ', '<svg style="'.$style.$color.'" ', (string) Icons::svg($this->icon)));
+    private function iconDataUri(): ?string
+    {
+        if (! Icons::has($this->icon)) {
+            return null;
+        }
+
+        // An image cannot inherit the text colour, so it is written into the SVG.
+        $color = preg_match('/^#[0-9a-f]{3,8}$/i', (string) $this->color) ? $this->color : '#374151';
+        $svg = str_replace(
+            ['<svg ', 'currentColor'],
+            ['<svg xmlns="http://www.w3.org/2000/svg" ', $color],
+            (string) Icons::svg($this->icon),
+        );
+
+        return 'data:image/svg+xml;base64,'.base64_encode($svg);
     }
 }

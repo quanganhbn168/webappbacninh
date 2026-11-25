@@ -79,24 +79,60 @@
     }
 }
 
-// Project story: "Bài toán" and "Giải pháp" with rich content
+// Project story: collapsible cards (header, body, footer) with rich content
 .story-card {
     @include surface;
-    height: 100%;
-    padding: 1.4rem;
-    overflow-x: auto;
+    overflow: hidden;
+    scroll-margin-top: calc(var(--header-height) + 1rem);
+}
+.story-card__header { margin: 0; font-size: 1.15rem; }
+.story-card__toggle {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+    width: 100%;
+    padding: 1rem 1.4rem;
+    border: 0;
+    background: $gold-50;
+    color: $ink;
+    font: inherit;
+    text-align: left;
 
-    > h2 { margin: 1rem 0 .75rem; font-size: 1.15rem; }
-    .prose { font-size: .98rem; }
+    .icon-tile { flex: none; background: #fff; }
+    &:focus-visible { outline-offset: -3px; }
+}
+.story-card__chevron {
+    margin-left: auto;
+    transition: transform $transition;
+
+    .collapsed & { transform: rotate(-90deg); }
+}
+.story-card__body {
+    overflow-x: auto;
+    padding: 1.4rem;
+    border-top: 1px solid $border;
+
+    .prose { font-size: 1rem; }
     .prose h1 { font-size: 1.4rem; }
     .prose h2 { margin-top: 1.4em; font-size: 1.25rem; }
     .prose h3 { font-size: 1.1rem; }
 }
-.prose a,
-.form-check-label a {
+.story-card__footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: .6rem 1.4rem;
+    border-top: 1px solid $border;
+}
+.story-card__close {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .25rem 0;
+    border: 0;
+    background: none;
     color: $gold-800;
-    text-decoration: underline;
-    text-underline-offset: .2em;
+    font-size: .9rem;
+    font-weight: 600;
 }
 
 // Policy pages

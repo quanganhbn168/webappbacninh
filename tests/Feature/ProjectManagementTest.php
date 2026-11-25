@@ -104,6 +104,8 @@ class ProjectManagementTest extends TestCase
         Livewire::actingAs($this->admin(), 'admin')->test(ManageTechnologies::class)
             ->assertOk()
             ->assertCanSeeTableRecords(Technology::query()->whereIn('name', ['PHP', 'Tailwind CSS'])->get())
+            // The logo survives the table's HTML sanitizer.
+            ->assertSee('src="data:image/svg', false)
             ->callAction('create', ['name' => 'Công nghệ thử', 'icon' => 'brand-php'])
             ->assertHasNoActionErrors();
 
@@ -142,6 +144,8 @@ class ProjectManagementTest extends TestCase
             ->assertSee('<mark>chú ý</mark>', false)
             ->assertSee('<table', false)
             ->assertSee('<summary>Xem thêm</summary>', false)
+            ->assertSee('class="collapse show" id="story-challenge"', false)
+            ->assertDontSee('id="story-solution"', false)
             ->assertSee('grid-layout-col', false)
             ->assertDontSee('javascript:alert', false)
             ->assertDontSee('Giải pháp triển khai');

@@ -187,6 +187,14 @@ if (! function_exists('absolute_url')) {
     }
 }
 
+if (! function_exists('canonical_url')) {
+    /** The home page is always written with its trailing slash; every other URL is left as it is. */
+    function canonical_url(string $url): string
+    {
+        return rtrim($url, '/') === rtrim(url('/'), '/') ? rtrim($url, '/').'/' : $url;
+    }
+}
+
 if (! function_exists('money')) {
     function money(int|float $value): string
     {

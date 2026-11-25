@@ -116,7 +116,7 @@ class SitemapController extends Controller
 
     private function url(string $url, mixed $updatedAt, float $priority, string $frequency): Url
     {
-        $tag = Url::create($url)
+        $tag = Url::create(canonical_url($url))
             ->setPriority($priority)
             ->setChangeFrequency($frequency);
 

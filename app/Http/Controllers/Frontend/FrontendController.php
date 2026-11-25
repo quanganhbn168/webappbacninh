@@ -92,7 +92,7 @@ abstract class FrontendController extends Controller
 
         $data['pageTitle'] = app(AppendSiteName::class)->execute((string) $data['pageTitle']);
 
-        $data['canonicalUrl'] = filled($data['canonicalUrl']) ? $data['canonicalUrl'] : request()->url();
+        $data['canonicalUrl'] = canonical_url(filled($data['canonicalUrl']) ? $data['canonicalUrl'] : request()->url());
         $data['ogImage'] = absolute_url((string) $data['ogImage']);
         $data['socialChannels'] = app(ResolveSocialChannels::class)->execute();
         $data['jsonLd'] ??= $this->buildJsonLd($data);
@@ -137,7 +137,7 @@ abstract class FrontendController extends Controller
             '@type' => 'ProfessionalService',
             '@id' => $organizationId,
             'name' => site_config('name'),
-            'url' => $siteUrl,
+            'url' => $siteUrl.'/',
             'telephone' => site_config('phone_href'),
             'contactPoint' => $contactPoints,
             'email' => site_config('email'),
@@ -152,19 +152,20 @@ abstract class FrontendController extends Controller
         $profiles = collect($data['socialChannels']['footer'])->whereIn('key', ['facebook', 'youtube'])->pluck('url')->values()->all();
         $organization += array_filter(['logo' => $logo, 'image' => $logo, 'sameAs' => $profiles]);
 
-        // Google picks the site name shown in results from this node; the domain comes last, as its fallback.
+        // Google picks the site name shown in results from this node. The domain is deliberately
+        // not an alternate name: listing it invites Google to show it instead of the real name.
         $name = (string) site_config('name');
+        $plainName = Str::ascii($name);
         $website = [
             '@type' => 'WebSite',
             '@id' => $siteUrl.'/#website',
             'url' => $siteUrl.'/',
             'name' => $name,
-            'alternateName' => array_values(array_unique(array_filter(
-                [Str::ascii($name), Str::lower((string) parse_url($siteUrl, PHP_URL_HOST))],
-                fn (string $alternate): bool => $alternate !== '' && $alternate !== $name,
-            ))),
             'publisher' => ['@id' => $organizationId],
         ];
+        if ($plainName !== '' && $plainName !== $name) {
+            $website['alternateName'] = [$plainName];
+        }
         $page = array_merge([
             '@type' => $data['schemaType'],
             '@id' => $canonicalUrl.'#webpage',
@@ -219,7 +220,7 @@ abstract class FrontendController extends Controller
                     '@type' => 'ListItem',
                     'position' => $index + 1,
                     'name' => $item['name'],
-                    'item' => $item['url'],
+                    'item' => canonical_url($item['url']),
                 ])->all(),
             ];
         }

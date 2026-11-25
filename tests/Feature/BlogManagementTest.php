@@ -53,7 +53,7 @@ class BlogManagementTest extends TestCase
         $category = PostCategory::create(['name' => 'Danh mục '.Str::random(10), 'is_active' => true]);
         $post = Post::create(['title' => 'Bài '.Str::random(10), 'category_id' => $category->id, 'content' => '<p>Test</p>', 'is_published' => true, 'published_at' => now()->subMinute()]);
         $trail = [
-            ['Trang chủ', route('home')],
+            ['Trang chủ', route('home').'/'],
             ['Kiến thức', route('articles.index')],
             [$category->name, $category->url],
             [$post->title, $post->url],

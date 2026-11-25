@@ -170,7 +170,16 @@ class FrontendSiteTest extends TestCase
 
         $this->assertSame(site_config('name'), $graph['WebSite']['name']);
         $this->assertStringEndsWith('/', $graph['WebSite']['url']);
-        $this->assertContains(parse_url(site_config('site_url'), PHP_URL_HOST), $graph['WebSite']['alternateName']);
+        $this->assertSame([Str::ascii(site_config('name'))], $graph['WebSite']['alternateName']);
+
+        // One spelling of the home page address everywhere search engines read it.
+        $home = url('/').'/';
+        $response->assertSee('<link rel="canonical" href="'.$home.'">', false)
+            ->assertSee('property="og:url" content="'.$home.'"', false);
+        $this->assertSame($home, $graph['WebPage']['url']);
+        $this->assertStringEndsWith('/', $graph['ProfessionalService']['url']);
+        $this->get('/sitemap.xml')->assertSee('<loc>'.$home.'</loc>', false);
+        $this->get('/lien-he')->assertSee('<link rel="canonical" href="'.url('/lien-he').'">', false);
         $this->assertFalse($graph->has('BreadcrumbList'));
         $this->assertSame(1, substr_count($response->getContent(), '<h1'));
     }

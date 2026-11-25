@@ -32,7 +32,6 @@ class Service extends Model
         'content',
         'image_id',
         'secondary_image_id',
-        'price_from',
         'timeline',
         'cta',
         'need_value',
@@ -40,7 +39,6 @@ class Service extends Model
         'problems',
         'pages',
         'features',
-        'packages',
         'faqs',
         'meta_title',
         'meta_description',
@@ -65,7 +63,6 @@ class Service extends Model
         'problems' => 'array',
         'pages' => 'array',
         'features' => 'array',
-        'packages' => 'array',
         'faqs' => 'array',
     ];
 

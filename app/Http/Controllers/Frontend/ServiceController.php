@@ -16,7 +16,7 @@ class ServiceController extends FrontendController
     public function index(): View
     {
         return $this->sitePage('website-design', 'site.services.website', [
-            'landingServices' => Service::query()->active()->where('is_landing', true)->where('section', ServiceSection::Website)->ordered()->get(),
+            'landingServices' => Service::query()->active()->with('plans')->where('is_landing', true)->where('section', ServiceSection::Website)->ordered()->get(),
             'operationServices' => OperationService::query()->active()->ordered()->take(4)->get(),
             'plans' => PricingPlan::query()->inGroup(PricingGroup::Website)->take(4)->get(),
             'schemaType' => 'Service',

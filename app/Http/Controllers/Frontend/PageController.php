@@ -21,9 +21,9 @@ class PageController extends FrontendController
     {
         return $this->sitePage('services', 'site.pages.services', [
             'gridServices' => Service::query()->inGrid()->get(),
-            'landingServices' => Service::query()->active()->where('is_landing', true)->where('section', ServiceSection::Website)->ordered()->get(),
+            'landingServices' => Service::query()->active()->with('plans')->where('is_landing', true)->where('section', ServiceSection::Website)->ordered()->get(),
             'generalServices' => Service::query()->active()->where('is_landing', true)->where('section', ServiceSection::General)->ordered()->get(),
-            'operationServices' => OperationService::query()->active()->ordered()->get(),
+            'operationServices' => OperationService::query()->active()->with('plans')->ordered()->get(),
             'plans' => PricingPlan::query()->inGroup(PricingGroup::Website)->take(4)->get(),
             'schemaType' => 'Service',
         ]);
@@ -59,7 +59,7 @@ class PageController extends FrontendController
 
     public function pricing(): View
     {
-        $plans = PricingPlan::query()->active()->get()->groupBy(fn (PricingPlan $plan): string => $plan->group->value);
+        $plans = PricingPlan::query()->inTable()->get()->groupBy(fn (PricingPlan $plan): string => $plan->group->value);
 
         return $this->sitePage('pricing', 'site.pages.pricing', [
             'plans' => $plans,

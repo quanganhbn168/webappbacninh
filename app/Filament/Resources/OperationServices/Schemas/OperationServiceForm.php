@@ -5,6 +5,7 @@ namespace App\Filament\Resources\OperationServices\Schemas;
 use App\Filament\Forms\SeoTitleInput;
 use App\Filament\Forms\IconPicker;
 use App\Filament\Forms\ServiceContentFields;
+use App\Filament\Forms\ServicePrices;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -32,11 +33,11 @@ class OperationServiceForm
                                 TextInput::make('menu_key')->label('Mã menu')->maxLength(100),
                                 TextInput::make('eyebrow')->label('Nhãn phụ')->maxLength(255),
                                 IconPicker::make('icon'),
-                                TextInput::make('price_from')->label('Giá từ')->maxLength(255)->placeholder('Từ 500.000đ/tháng'),
                                 TextInput::make('cadence')->label('Chu kỳ')->maxLength(255)->placeholder('Theo tháng'),
                                 TextInput::make('order')->label('Thứ tự')->numeric()->default(0),
                                 Toggle::make('is_active')->label('Đang hiển thị')->default(true),
                             ])->columns(2),
+                            ServicePrices::make(),
                             Section::make('Giới thiệu')->schema([
                                 Textarea::make('highlight')->label('Điểm nhấn')->rows(2),
                                 Textarea::make('description')->label('Mô tả ngắn')->rows(3),
@@ -56,7 +57,6 @@ class OperationServiceForm
                                 ServiceContentFields::cards('scope', 'Phạm vi công việc')->columnSpanFull(),
                                 ServiceContentFields::textList('deliverables', 'Sản phẩm bàn giao')->columnSpanFull(),
                                 ServiceContentFields::process()->columnSpanFull(),
-                                ServiceContentFields::packages()->columnSpanFull(),
                                 ServiceContentFields::faqs()->columnSpanFull(),
                             ])->columns(2),
                         ]),

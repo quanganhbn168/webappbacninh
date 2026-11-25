@@ -14,6 +14,7 @@ use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -27,10 +28,13 @@ class PricingPlansTable
         return $table
             ->defaultSort('order')
             ->reorderable('order')
-            ->defaultGroup('group')
+            ->modifyQueryUsing(fn (Builder $query) => $query->with('priceable'))
             ->columns([
                 TextInputColumn::make('name')->label('Gói')->searchable()->rules(['required', 'max:255']),
-                TextColumn::make('group')->label('Nhóm')->badge()->formatStateUsing(fn (PricingGroup $state): string => $state->label()),
+                TextColumn::make('service')->label('Thuộc dịch vụ')->wrap()->placeholder('—')
+                    ->state(fn (PricingPlan $record): ?string => $record->priceable?->title),
+                TextColumn::make('group')->label('Bảng giá chung')->badge()->placeholder('Không hiện')
+                    ->state(fn (PricingPlan $record): ?string => $record->show_in_table ? $record->group?->label() : null),
                 TextInputColumn::make('price_prefix')->label('Trước giá')->rules(['nullable', 'max:30']),
                 TextInputColumn::make('price')->label('Giá')->rules(['required', 'max:60']),
                 TextInputColumn::make('price_suffix')->label('Sau giá')->rules(['nullable', 'max:30']),

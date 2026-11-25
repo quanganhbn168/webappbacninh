@@ -15,22 +15,18 @@ class ServiceManagementTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function test_landing_packages_and_faqs_edited_in_the_admin_appear_on_the_service_page(): void
+    public function test_faqs_edited_in_the_admin_appear_on_the_service_page(): void
     {
         $service = Service::query()->where('is_landing', true)->firstOrFail();
 
         Livewire::actingAs($this->admin(), 'admin')->test(EditService::class, ['record' => $service->getRouteKey()])
             ->fillForm([
-                'packages' => [['name' => 'Gói Thử Nghiệm', 'price' => 'Từ 1 triệu', 'desc' => 'Mô tả gói', 'items' => ['Hạng mục A'], 'featured' => true]],
                 'faqs' => [['q' => 'Câu hỏi kiểm thử?', 'a' => 'Câu trả lời kiểm thử.']],
             ])
             ->call('save')
             ->assertHasNoFormErrors();
 
         $this->get($service->url)->assertOk()
-            ->assertSee('Gói Thử Nghiệm')
-            ->assertSee('Hạng mục A')
-            ->assertSee('Được quan tâm')
             ->assertSee('Câu hỏi kiểm thử?')
             ->assertSee('"@type":"FAQPage"', false);
     }
@@ -54,7 +50,6 @@ class ServiceManagementTest extends TestCase
             ->fillForm([
                 'title' => 'Vận hành thử',
                 'slug' => $slug,
-                'price_from' => 'Từ 300.000đ/tháng',
                 'scope' => [['icon' => 'check', 'title' => 'Kiểm tra định kỳ', 'text' => 'Mỗi tuần một lần']],
                 'process' => [['step' => '01', 'title' => 'Khảo sát', 'text' => 'Rà soát hiện trạng']],
                 'is_active' => true,

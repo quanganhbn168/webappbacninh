@@ -20,7 +20,6 @@ class OperationService extends Model
         'description',
         'image_id',
         'secondary_image_id',
-        'price_from',
         'cadence',
         'cta',
         'need_value',
@@ -28,7 +27,6 @@ class OperationService extends Model
         'scope',
         'deliverables',
         'process',
-        'packages',
         'faqs',
         'meta_title',
         'meta_description',
@@ -42,7 +40,6 @@ class OperationService extends Model
         'scope' => 'array',
         'deliverables' => 'array',
         'process' => 'array',
-        'packages' => 'array',
         'faqs' => 'array',
     ];
 

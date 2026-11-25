@@ -84,13 +84,13 @@
         </div>
     </section>
 
-    @if ($service->packages)
+    @if ($service->plans->isNotEmpty())
         <section class="section section--cream">
             <div class="container">
                 <x-section-head eyebrow="Mức đầu tư tham khảo" title="Chọn theo phạm vi thực tế" lead="Chi phí cuối cùng được xác định sau khi chốt dữ liệu, chức năng và tiến độ." center />
-                <div class="row g-4 row-cols-1 row-cols-md-{{ min(3, count($service->packages)) }} justify-content-center">
-                    @foreach ($service->packages as $package)
-                        <div class="col"><x-card.package :package="$package" :number="$loop->iteration" /></div>
+                <div class="row g-4 row-cols-1 row-cols-md-{{ min(3, $service->plans->count()) }} justify-content-center">
+                    @foreach ($service->plans as $plan)
+                        <div class="col"><x-card.package :plan="$plan" :number="$loop->iteration" /></div>
                     @endforeach
                 </div>
             </div>

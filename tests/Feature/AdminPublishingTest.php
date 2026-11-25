@@ -89,7 +89,6 @@ class AdminPublishingTest extends TestCase
                 'title' => 'Dịch vụ landing '.$suffix,
                 'slug' => $landing,
                 'is_landing' => true,
-                'price_from' => 'Từ 5 triệu',
                 'pages' => [['value' => 'Trang giới thiệu thử']],
                 'is_active' => true,
             ])

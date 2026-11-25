@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Domain\Media\Actions\ImportLocalImage;
+use App\Domain\Pricing\SeedServicePrices;
 use App\Models\Service;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
@@ -30,12 +31,14 @@ class ServiceSeeder extends Seeder
 
             $image = fn (string $path): ?int => $images->execute('images/'.$path, 'services', $row['title'])?->id;
 
-            $service = Service::query()->create(Arr::except($row, ['image', 'secondary_image']) + [
+            $service = Service::query()->create(Arr::except($row, ['image', 'secondary_image', 'price_from', 'packages']) + [
                 'image_id' => $image($row['image']),
                 'secondary_image_id' => $image($row['secondary_image']),
                 'is_landing' => true,
                 'is_active' => true,
             ]);
+
+            app(SeedServicePrices::class)->execute($service, $row);
 
             // An earlier migration runs this seeder before the card columns exist.
             if (isset(self::CARDS[$row['slug']]) && Schema::hasColumn('services', 'show_in_grid')) {

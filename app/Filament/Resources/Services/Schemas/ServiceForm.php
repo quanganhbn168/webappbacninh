@@ -6,6 +6,7 @@ use App\Filament\Forms\SeoTitleInput;
 use App\Enums\ServiceSection;
 use App\Filament\Forms\IconPicker;
 use App\Filament\Forms\ServiceContentFields;
+use App\Filament\Forms\ServicePrices;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -46,11 +47,11 @@ class ServiceForm
                                 TextInput::make('menu_key')->label('Mã menu')->maxLength(100),
                                 TextInput::make('eyebrow')->label('Nhãn phụ')->maxLength(255)->placeholder('WEBSITE DOANH NGHIỆP'),
                                 IconPicker::make('icon'),
-                                TextInput::make('price_from')->label('Giá từ')->maxLength(255)->placeholder('Từ 8 triệu'),
                                 TextInput::make('timeline')->label('Thời gian triển khai')->maxLength(255)->placeholder('2 - 4 tuần'),
                                 TextInput::make('order')->label('Thứ tự')->numeric()->default(0),
                                 Toggle::make('is_active')->label('Đang hiển thị')->default(true),
                             ])->columns(2),
+                            ServicePrices::make(),
                             Section::make('Ô dịch vụ ở trang chủ và trang Dịch vụ')->schema([
                                 Toggle::make('show_in_grid')->label('Hiện ô dịch vụ này')->default(true)->live()
                                     ->helperText('Các ô xếp theo "Thứ tự". Dịch vụ đang ẩn thì ô cũng ẩn.')
@@ -84,7 +85,6 @@ class ServiceForm
                                 ServiceContentFields::cards('problems', 'Vấn đề thường gặp')->columnSpanFull(),
                                 ServiceContentFields::textList('pages', 'Các trang đề xuất', 'Trang chủ')->columnSpanFull(),
                                 ServiceContentFields::cards('features', 'Tính năng nổi bật')->columnSpanFull(),
-                                ServiceContentFields::packages()->columnSpanFull(),
                                 ServiceContentFields::faqs()->columnSpanFull(),
                             ])->columns(2),
                         ]),

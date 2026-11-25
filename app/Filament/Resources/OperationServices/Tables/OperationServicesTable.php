@@ -18,7 +18,7 @@ class OperationServicesTable
             ->columns([
                 TextColumn::make('title')->label('Dịch vụ')->searchable()->sortable(),
                 TextColumn::make('menu_key')->label('Mã menu')->searchable(),
-                TextColumn::make('price_from')->label('Giá từ'),
+                TextColumn::make('price_label')->label('Giá từ'),
                 TextColumn::make('order')->label('Thứ tự')->sortable(),
                 IconColumn::make('is_active')->label('Hiển thị')->boolean(),
                 TextColumn::make('updated_at')->label('Cập nhật')->dateTime('d/m/Y H:i')->sortable(),

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Domain\Media\Actions\ImportLocalImage;
+use App\Domain\Pricing\SeedServicePrices;
 use App\Models\OperationService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
@@ -21,11 +22,13 @@ class OperationServiceSeeder extends Seeder
 
             $image = fn (string $path): ?int => $images->execute('images/'.$path, 'services', $row['title'])?->id;
 
-            OperationService::query()->create(Arr::except($row, ['image', 'secondary_image']) + [
+            $service = OperationService::query()->create(Arr::except($row, ['image', 'secondary_image', 'price_from', 'packages']) + [
                 'image_id' => $image($row['image']),
                 'secondary_image_id' => $image($row['secondary_image']),
                 'is_active' => true,
             ]);
+
+            app(SeedServicePrices::class)->execute($service, $row);
         }
     }
 

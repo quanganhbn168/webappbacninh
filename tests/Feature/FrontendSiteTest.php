@@ -175,6 +175,36 @@ class FrontendSiteTest extends TestCase
         $this->assertSame(1, substr_count($response->getContent(), '<h1'));
     }
 
+    public function test_service_cards_follow_the_services_in_the_admin(): void
+    {
+        $suffix = Str::lower(Str::random(10));
+        $service = Service::create([
+            'title' => 'Dịch vụ ERP '.$suffix, 'card_title' => 'ERP '.$suffix, 'slug' => 'erp-'.$suffix, 'icon' => 'code',
+            'is_landing' => true, 'section' => 'general', 'show_in_grid' => true, 'is_active' => true,
+        ]);
+
+        foreach (['/', '/dich-vu'] as $uri) {
+            $this->get($uri)->assertOk()->assertSee('ERP '.$suffix)->assertSee('href="'.$service->url.'"', false);
+        }
+
+        $service->update(['slug' => 'erp-moi-'.$suffix]);
+        $this->get('/')->assertSee('href="'.url('/dich-vu/erp-moi-'.$suffix).'"', false);
+
+        $service->update(['show_in_grid' => false]);
+        $this->get('/')->assertDontSee('ERP '.$suffix);
+
+        $service->update(['show_in_grid' => true, 'is_active' => false]);
+        $this->get('/')->assertDontSee('ERP '.$suffix);
+    }
+
+    public function test_a_simple_service_without_a_category_sits_under_the_services_page(): void
+    {
+        $suffix = Str::lower(Str::random(10));
+        $service = Service::create(['title' => 'Trang đơn '.$suffix, 'slug' => 'trang-don-'.$suffix, 'icon' => 'code', 'is_active' => true]);
+
+        $this->get($service->url)->assertOk()->assertSee('<a href="'.route('services.overview').'">Dịch vụ</a>', false);
+    }
+
     public function test_unknown_dynamic_pages_return_404(): void
     {
         $this->get('/kho-giao-dien/khong-ton-tai')->assertNotFound();

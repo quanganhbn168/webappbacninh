@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Enums\ServiceSection;
 use App\Traits\HasServiceContent;
 use App\Traits\HasSlug;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Service extends Model
 {
@@ -44,6 +46,9 @@ class Service extends Model
         'meta_description',
         'order',
         'is_active',
+        'show_in_grid',
+        'card_title',
+        'card_text',
     ];
 
     protected $attributes = [
@@ -55,6 +60,7 @@ class Service extends Model
         'is_landing' => 'boolean',
         'section' => ServiceSection::class,
         'is_active' => 'boolean',
+        'show_in_grid' => 'boolean',
         'audiences' => 'array',
         'problems' => 'array',
         'pages' => 'array',
@@ -77,6 +83,22 @@ class Service extends Model
         return Attribute::get(fn (): string => $this->is_landing
             ? route($this->section->routeName(), $this->slug)
             : route('slug.handle', $this->slug));
+    }
+
+    /** Services shown as cards on the home and services pages. */
+    public function scopeInGrid(Builder $query): Builder
+    {
+        return $query->active()->where('show_in_grid', true)->ordered();
+    }
+
+    protected function gridTitle(): Attribute
+    {
+        return Attribute::get(fn (): string => $this->card_title ?: (string) $this->title);
+    }
+
+    protected function gridText(): Attribute
+    {
+        return Attribute::get(fn (): string => $this->card_text ?: Str::limit((string) $this->description, 60));
     }
 
     protected function timelineLabel(): Attribute

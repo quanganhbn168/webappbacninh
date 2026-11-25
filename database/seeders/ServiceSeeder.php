@@ -6,9 +6,18 @@ use App\Domain\Media\Actions\ImportLocalImage;
 use App\Models\Service;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Schema;
 
 class ServiceSeeder extends Seeder
 {
+    /** Short wording of the service cards shown from the start. */
+    public const CARDS = [
+        'landing-page' => ['card_title' => 'Landing Page', 'card_text' => 'Trang đích tối ưu chuyển đổi'],
+        'phan-mem' => ['card_title' => 'Phần mềm doanh nghiệp', 'card_text' => 'Phát triển phần mềm theo nghiệp vụ riêng'],
+        'crm-booking' => ['card_title' => 'CRM & Booking', 'card_text' => 'Quản lý khách hàng, đặt lịch, tự động hóa'],
+        'seo-quang-cao' => ['card_title' => 'SEO, Quảng cáo & Tracking', 'card_text' => 'Tối ưu SEO, chạy quảng cáo, đo lường hiệu quả'],
+    ];
+
     /**
      * Creates the sample services once; services edited in the admin are never overwritten.
      */
@@ -21,12 +30,17 @@ class ServiceSeeder extends Seeder
 
             $image = fn (string $path): ?int => $images->execute('images/'.$path, 'services', $row['title'])?->id;
 
-            Service::query()->create(Arr::except($row, ['image', 'secondary_image']) + [
+            $service = Service::query()->create(Arr::except($row, ['image', 'secondary_image']) + [
                 'image_id' => $image($row['image']),
                 'secondary_image_id' => $image($row['secondary_image']),
                 'is_landing' => true,
                 'is_active' => true,
             ]);
+
+            // An earlier migration runs this seeder before the card columns exist.
+            if (isset(self::CARDS[$row['slug']]) && Schema::hasColumn('services', 'show_in_grid')) {
+                $service->update(self::CARDS[$row['slug']] + ['show_in_grid' => true]);
+            }
         }
     }
 

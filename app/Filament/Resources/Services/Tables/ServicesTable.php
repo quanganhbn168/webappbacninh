@@ -25,6 +25,7 @@ class ServicesTable
                 TextColumn::make('menu_key')->label('Mã menu')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('order')->label('Thứ tự')->sortable(),
                 IconColumn::make('is_active')->label('Hiển thị')->boolean(),
+                IconColumn::make('show_in_grid')->label('Ô dịch vụ')->boolean(),
                 TextColumn::make('updated_at')->label('Cập nhật')->dateTime('d/m/Y H:i')->sortable(),
             ])
             ->filters([

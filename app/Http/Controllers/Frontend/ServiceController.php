@@ -110,7 +110,7 @@ class ServiceController extends FrontendController
             'schemaData' => ['serviceType' => $service->title],
             'breadcrumbs' => [
                 ['name' => 'Trang chủ', 'url' => route('home')],
-                ['name' => $service->category?->name ?? 'Dịch vụ', 'url' => $service->category ? route('slug.handle', ['slug' => $service->category->slug]) : route('services.index')],
+                ['name' => $service->category?->name ?? 'Dịch vụ', 'url' => $service->category ? route('slug.handle', ['slug' => $service->category->slug]) : route('services.overview')],
                 ['name' => $service->title, 'url' => $service->url],
             ],
         ]);

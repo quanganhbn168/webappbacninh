@@ -20,6 +20,7 @@ class PageController extends FrontendController
     public function services(): View
     {
         return $this->sitePage('services', 'site.pages.services', [
+            'gridServices' => Service::query()->inGrid()->get(),
             'landingServices' => Service::query()->active()->where('is_landing', true)->where('section', ServiceSection::Website)->ordered()->get(),
             'generalServices' => Service::query()->active()->where('is_landing', true)->where('section', ServiceSection::General)->ordered()->get(),
             'operationServices' => OperationService::query()->active()->ordered()->get(),

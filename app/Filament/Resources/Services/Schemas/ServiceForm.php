@@ -51,6 +51,17 @@ class ServiceForm
                                 TextInput::make('order')->label('Thứ tự')->numeric()->default(0),
                                 Toggle::make('is_active')->label('Đang hiển thị')->default(true),
                             ])->columns(2),
+                            Section::make('Ô dịch vụ ở trang chủ và trang Dịch vụ')->schema([
+                                Toggle::make('show_in_grid')->label('Hiện ô dịch vụ này')->default(true)->live()
+                                    ->helperText('Các ô xếp theo "Thứ tự". Dịch vụ đang ẩn thì ô cũng ẩn.')
+                                    ->columnSpanFull(),
+                                TextInput::make('card_title')->label('Tên ngắn trên ô')->maxLength(60)
+                                    ->helperText('Để trống sẽ dùng tên dịch vụ.')
+                                    ->visible(fn (Get $get): bool => (bool) $get('show_in_grid')),
+                                TextInput::make('card_text')->label('Mô tả trên ô')->maxLength(120)
+                                    ->helperText('Để trống sẽ cắt từ mô tả ngắn.')
+                                    ->visible(fn (Get $get): bool => (bool) $get('show_in_grid')),
+                            ])->columns(2),
                             Section::make('Giới thiệu')->schema([
                                 Textarea::make('highlight')->label('Điểm nhấn')->rows(2),
                                 Textarea::make('description')->label('Mô tả ngắn')->rows(3),

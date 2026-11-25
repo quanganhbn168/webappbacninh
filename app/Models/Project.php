@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Domain\Media\Actions\BuildResponsiveImage;
 use App\Domain\Projects\Actions\GenerateProjectCode;
 use App\Traits\HasCuratorGallery;
 use Awcodes\Curator\Models\Media;
@@ -135,6 +136,34 @@ class Project extends Model
         $text = html_entity_decode(strip_tags($html, ['img', 'hr', 'table']));
 
         return preg_replace('/[\s\x{00A0}]+/u', '', $text) === '' ? '' : $html;
+    }
+
+    /** Card and banner image, in sizes for those frames. */
+    protected function cover(): Attribute
+    {
+        return Attribute::get(fn (): array => $this->image
+            ? app(BuildResponsiveImage::class)->execute($this->image, [480, 800, 1200])
+            : ['src' => $this->image_url, 'srcset' => null])->shouldCache();
+    }
+
+    /**
+     * Detail page slides: the whole image for the main frame, a 3:2 crop for the thumbnail.
+     *
+     * @return array<int, array{src: string, srcset: string|null, thumb: string}>
+     */
+    protected function slides(): Attribute
+    {
+        return Attribute::get(function (): array {
+            $images = app(BuildResponsiveImage::class);
+            $media = $this->gallery_media->isNotEmpty() ? $this->gallery_media : collect([$this->image])->filter();
+
+            if ($media->isEmpty()) {
+                return [['src' => $this->image_url, 'srcset' => null, 'thumb' => $this->image_url]];
+            }
+
+            return $media->map(fn (Media $item): array => $images->execute($item, [640, 960, 1280, 1920])
+                + ['thumb' => $images->execute($item, [240], 3 / 2)['src']])->all();
+        })->shouldCache();
     }
 
     protected function categorySlug(): Attribute

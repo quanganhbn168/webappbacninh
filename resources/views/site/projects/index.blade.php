@@ -13,7 +13,7 @@
             <div class="container">
                 <x-section-head title="Dự án nổi bật" lead="Một dự án tiêu biểu cho cách chúng tôi triển khai giao diện và giải pháp." />
                 <article class="featured-card">
-                    <img class="featured-card__image" src="{{ $featured->image_url }}" alt="{{ $featured->title }}" width="760" height="480" loading="lazy">
+                    <img class="featured-card__image" src="{{ $featured->cover['src'] }}" @if ($featured->cover['srcset']) srcset="{{ $featured->cover['srcset'] }}" sizes="(min-width: 992px) 60vw, 100vw" @endif alt="{{ $featured->title }}" width="760" height="480" loading="lazy">
                     <div class="featured-card__body">
                         <span class="tag tag--gold">{{ $featured->category_label }}</span>
                         <h3 class="h2">{{ $featured->title }}</h3>

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Pages\Schemas;
 
+use App\Filament\Forms\SeoTitleInput;
+use App\Models\Page;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -21,8 +23,9 @@ class PageForm
                     Section::make('SEO')->description('Hiển thị trên Google và khi chia sẻ lên mạng xã hội.')->schema([
                         TextInput::make('title')->label('Tên trang')->required()->maxLength(255)
                             ->helperText('Dùng ở breadcrumb và tiêu đề mặc định.'),
-                        TextInput::make('meta_title')->label('Tiêu đề SEO')->maxLength(255)
-                            ->helperText('Bỏ trống sẽ dùng "Tên trang | Tên website". Nên dưới 60 ký tự.'),
+                        SeoTitleInput::make('meta_title')
+                            ->suffix(fn (?Page $record): ?string => $record?->key === 'home' ? null : '| '.site_config('name'))
+                            ->helperText('Không cần gõ tên website, hệ thống tự thêm phía sau (trừ trang chủ). Nên dưới 60 ký tự.'),
                         Textarea::make('meta_description')->label('Mô tả SEO')->rows(3)->maxLength(500)
                             ->helperText('Bỏ trống sẽ dùng mô tả mặc định của trang. Nên 120 – 160 ký tự.'),
                         TextInput::make('meta_keywords')->label('Từ khóa')->maxLength(255),

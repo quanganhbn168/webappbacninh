@@ -571,7 +571,8 @@
     background: $sand;
     box-shadow: $shadow;
 
-    img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+    // The whole screenshot, never cropped or zoomed to fill the frame.
+    img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: contain; }
 }
 .project-gallery__nav {
     position: absolute;

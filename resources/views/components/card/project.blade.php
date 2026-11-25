@@ -1,7 +1,7 @@
 @props(['project', 'heading' => 'h3'])
 <article {{ $attributes->class(['media-card', 'project-card']) }}>
     <a class="media-card__image ratio-card" href="{{ $project->url }}" tabindex="-1" aria-hidden="true">
-        <img class="w-100 h-100 object-fit-cover" src="{{ $project->image_url }}" alt="" width="640" height="400" loading="lazy" decoding="async">
+        <img class="w-100 h-100 object-fit-cover" src="{{ $project->cover['src'] }}" @if ($project->cover['srcset']) srcset="{{ $project->cover['srcset'] }}" sizes="(min-width: 992px) 33vw, (min-width: 768px) 50vw, 100vw" @endif alt="" width="640" height="400" loading="lazy" decoding="async">
         <span class="media-card__badge">{{ $project->category_label }}</span>
     </a>
     <div class="media-card__body">

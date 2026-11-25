@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ServiceCategories\Schemas;
 
+use App\Filament\Forms\SeoTitleInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -27,7 +28,7 @@ class ServiceCategoryForm
                     ->columnSpanFull(),
                 Section::make('SEO')
                     ->schema([
-                        TextInput::make('meta_title')->label('Meta title')->maxLength(255),
+                        SeoTitleInput::make('meta_title'),
                         Textarea::make('meta_description')->label('Meta description')->rows(3),
                     ])
                     ->columns(2)

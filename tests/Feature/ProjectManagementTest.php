@@ -99,6 +99,50 @@ class ProjectManagementTest extends TestCase
         $this->assertSame(52, app(ProjectSettings::class)->refresh()->code_next);
     }
 
+    public function test_project_images_are_served_as_webp_sized_for_the_frame(): void
+    {
+        $project = Project::query()->where('slug', 'website-doanh-nghiep-san-xuat')->firstOrFail();
+        $media = $project->gallery_media->first();
+
+        $slide = $project->slides[0];
+        $this->assertStringContainsString('fm=webp', $slide['src']);
+        $this->assertStringContainsString(' 640w', $slide['srcset']);
+        // No size is larger than the uploaded original.
+        $this->assertStringContainsString(' '.min($media->width, 1920).'w', $slide['srcset']);
+        $this->assertStringNotContainsString(' '.($media->width + 1).'w', $slide['srcset']);
+
+        $this->get($slide['thumb'])->assertOk()->assertHeader('Content-Type', 'image/webp');
+        $this->get(route('projects.show', $project->slug))->assertOk()->assertSee('srcset=', false);
+    }
+
+    public function test_the_site_name_is_added_to_the_seo_title_once(): void
+    {
+        $project = Project::query()->where('slug', 'website-doanh-nghiep-san-xuat')->firstOrFail();
+        $name = site_config('name');
+        $title = fn (): string => '<title>'.e($this->get(route('projects.show', $project->slug))->viewData('pageTitle')).'</title>';
+
+        $project->update(['meta_title' => null]);
+        $this->assertSame('<title>'.e($project->title.' | '.$name).'</title>', $title());
+
+        $project->update(['meta_title' => 'Tiêu đề riêng']);
+        $this->assertSame('<title>'.e('Tiêu đề riêng | '.$name).'</title>', $title());
+
+        // Titles typed the old way, with the name, do not get it twice.
+        $project->update(['meta_title' => 'Tiêu đề cũ | '.$name]);
+        $this->assertSame('<title>'.e('Tiêu đề cũ | '.$name).'</title>', $title());
+    }
+
+    public function test_projects_can_be_shown_and_featured_from_the_list(): void
+    {
+        $project = Project::query()->where('slug', 'website-doanh-nghiep-san-xuat')->firstOrFail();
+
+        Livewire::actingAs($this->admin(), 'admin')->test(ListProjects::class)
+            ->assertTableColumnDoesNotExist('year')
+            ->call('updateTableColumnState', 'is_active', (string) $project->id, false);
+
+        $this->assertFalse($project->refresh()->is_active);
+    }
+
     public function test_technology_page_renders(): void
     {
         Livewire::actingAs($this->admin(), 'admin')->test(ManageTechnologies::class)

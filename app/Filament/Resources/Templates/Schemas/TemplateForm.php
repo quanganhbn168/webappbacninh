@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Templates\Schemas;
 
+use App\Filament\Forms\SeoTitleInput;
 use App\Enums\TemplateType;
 use App\Filament\Forms\PermalinkInput;
 use App\Models\Template;
@@ -70,8 +71,7 @@ class TemplateForm
                         self::list('customizations', 'Có thể tùy chỉnh', 'Đổi màu thương hiệu và logo'),
                     ])->columns(1),
                     Section::make('SEO')->collapsed()->schema([
-                        TextInput::make('meta_title')->label('Tiêu đề SEO')->maxLength(255)
-                            ->helperText('Bỏ trống sẽ dùng "Tên giao diện | Tên website".'),
+                        SeoTitleInput::make('meta_title'),
                         Textarea::make('meta_description')->label('Mô tả SEO')->rows(3)
                             ->helperText('Bỏ trống sẽ dùng mô tả ngắn.'),
                     ])->columns(1),

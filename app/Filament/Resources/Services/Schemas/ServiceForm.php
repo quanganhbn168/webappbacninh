@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Services\Schemas;
 
+use App\Filament\Forms\SeoTitleInput;
 use App\Enums\ServiceSection;
 use App\Filament\Forms\IconPicker;
 use App\Filament\Forms\ServiceContentFields;
@@ -78,7 +79,7 @@ class ServiceForm
                         ]),
                         Tab::make('SEO')->schema([
                             Section::make('SEO dịch vụ')->schema([
-                                TextInput::make('meta_title')->label('Tiêu đề SEO')->maxLength(255),
+                                SeoTitleInput::make('meta_title'),
                                 Textarea::make('meta_description')->label('Mô tả SEO')->rows(4),
                             ])->columns(1),
                         ]),

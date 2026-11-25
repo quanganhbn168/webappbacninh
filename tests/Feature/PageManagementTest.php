@@ -40,7 +40,7 @@ class PageManagementTest extends TestCase
         ]);
 
         $this->get(route('pricing'))
-            ->assertSee('<title>Bảng giá đã sửa | Kiểm thử</title>', false)
+            ->assertSee('<title>Bảng giá đã sửa | Kiểm thử | '.site_config('name').'</title>', false)
             ->assertSee('<meta name="description" content="Mô tả SEO kiểm thử cho bảng giá.">', false)
             ->assertSee('<meta name="robots" content="noindex, follow">', false)
             ->assertSee('Tiêu đề banner mới')
@@ -73,7 +73,7 @@ class PageManagementTest extends TestCase
             ->call('save')
             ->assertHasNoFormErrors();
 
-        $this->get(route('about'))->assertSee('<title>Về chúng tôi | Kiểm thử</title>', false);
+        $this->get(route('about'))->assertSee('<title>Về chúng tôi | Kiểm thử | '.site_config('name').'</title>', false);
     }
 
     private function admin(): User

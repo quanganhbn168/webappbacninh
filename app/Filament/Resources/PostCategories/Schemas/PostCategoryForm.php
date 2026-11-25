@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PostCategories\Schemas;
 
+use App\Filament\Forms\SeoTitleInput;
 use App\Filament\Forms\PermalinkInput;
 use App\Models\PostCategory;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
@@ -38,7 +39,7 @@ class PostCategoryForm
                         Textarea::make('description')->label('Mô tả')->rows(4),
                     ])->columns(1),
                     Section::make('SEO')->schema([
-                        TextInput::make('meta_title')->label('Tiêu đề SEO')->maxLength(255),
+                        SeoTitleInput::make('meta_title'),
                         Textarea::make('meta_description')->label('Mô tả SEO')->rows(3),
                     ])->columns(1),
                 ])->columnSpan(['default' => 1, 'lg' => 2]),

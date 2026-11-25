@@ -11,11 +11,15 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 
 class ListProjects extends ListRecords
 {
     protected static string $resource = ProjectResource::class;
+
+    /** The table has many columns; use the whole screen so none is cut off. */
+    protected Width|string|null $maxContentWidth = Width::Full;
 
     protected function getHeaderActions(): array
     {

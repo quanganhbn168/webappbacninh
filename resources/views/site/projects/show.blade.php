@@ -10,7 +10,7 @@
 @endpush
 
 @section('content')
-    @php($gallery = $project->gallery_urls ?: [$project->image_url])
+    @php($slides = $project->slides)
     <section class="page-hero page-hero--compact">
         <div class="container">
             <div class="page-hero__grid">
@@ -40,23 +40,23 @@
                 <div class="project-gallery" data-project-gallery>
                     <div class="swiper project-gallery__main">
                         <div class="swiper-wrapper">
-                            @foreach ($gallery as $index => $url)
+                            @foreach ($slides as $index => $slide)
                                 <div class="swiper-slide">
-                                    <img src="{{ $url }}" alt="{{ $project->title }}{{ $index ? ' - ảnh '.($index + 1) : '' }}" width="800" height="500" @if ($index) loading="lazy" @else fetchpriority="high" @endif>
+                                    <img src="{{ $slide['src'] }}" @if ($slide['srcset']) srcset="{{ $slide['srcset'] }}" sizes="(min-width: 992px) 50vw, 100vw" @endif alt="{{ $project->title }}{{ $index ? ' - ảnh '.($index + 1) : '' }}" width="800" height="500" @if ($index) loading="lazy" @else fetchpriority="high" @endif>
                                 </div>
                             @endforeach
                         </div>
-                        @if (count($gallery) > 1)
+                        @if (count($slides) > 1)
                             <button class="project-gallery__nav project-gallery__nav--prev" type="button" aria-label="Ảnh trước"><x-icon name="chevron-left" /></button>
                             <button class="project-gallery__nav project-gallery__nav--next" type="button" aria-label="Ảnh tiếp theo"><x-icon name="chevron-right" /></button>
                             <span class="project-gallery__counter"></span>
                         @endif
                     </div>
-                    @if (count($gallery) > 1)
+                    @if (count($slides) > 1)
                         <div class="swiper project-gallery__thumbs">
                             <div class="swiper-wrapper">
-                                @foreach ($gallery as $index => $url)
-                                    <div class="swiper-slide"><button type="button" aria-label="Xem ảnh {{ $index + 1 }}"><img src="{{ $url }}" alt="" width="120" height="80" loading="lazy"></button></div>
+                                @foreach ($slides as $index => $slide)
+                                    <div class="swiper-slide"><button type="button" aria-label="Xem ảnh {{ $index + 1 }}"><img src="{{ $slide['thumb'] }}" alt="" width="120" height="80" loading="lazy"></button></div>
                                 @endforeach
                             </div>
                         </div>

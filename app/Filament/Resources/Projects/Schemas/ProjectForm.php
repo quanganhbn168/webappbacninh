@@ -6,6 +6,7 @@ use App\Domain\Projects\Actions\GenerateProjectCode;
 use App\Filament\Forms\FullRichEditor;
 use App\Filament\Forms\IconPicker;
 use App\Filament\Forms\PermalinkInput;
+use App\Filament\Forms\SeoTitleInput;
 use App\Models\Project;
 use App\Models\Technology;
 use App\Models\TemplateCategory;
@@ -62,7 +63,7 @@ class ProjectForm
                         // Not constrained(): the tiles use Curator's square crop of each image.
                         CuratorPicker::make('gallery')->hiddenLabel()->multiple()->buttonLabel('Thêm ảnh')
                             ->extraAttributes(['class' => 'square-gallery-item'])
-                            ->helperText('Kéo biểu tượng mũi tên để sắp xếp. Ảnh số 1 mở đầu slider ở trang chi tiết.'),
+                            ->helperText('Nên dùng ảnh rộng từ 1600px. Kéo biểu tượng mũi tên để sắp xếp, ảnh số 1 mở đầu slider ở trang chi tiết.'),
                     ])->columns(1),
                     Section::make('Câu chuyện dự án')->schema([
                         FullRichEditor::make('challenge')->label('Bài toán ban đầu'),
@@ -76,8 +77,7 @@ class ProjectForm
                         self::technologies(),
                     ])->columns(1),
                     Section::make('SEO')->collapsed()->schema([
-                        TextInput::make('meta_title')->label('Tiêu đề SEO')->maxLength(255)
-                            ->helperText('Bỏ trống sẽ dùng "Tên dự án | Dự án Tên website".'),
+                        SeoTitleInput::make('meta_title'),
                         Textarea::make('meta_description')->label('Mô tả SEO')->rows(3)
                             ->helperText('Bỏ trống sẽ dùng mô tả ngắn.'),
                     ])->columns(1),

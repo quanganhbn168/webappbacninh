@@ -26,7 +26,7 @@ class ProjectController extends FrontendController
         return $this->page('site.projects.show', [
             'project' => $project,
             'relatedItems' => $project->related(),
-            'pageTitle' => $project->meta_title ?: $project->title.' | Dự án '.site_config('name'),
+            'pageTitle' => $project->meta_title ?: $project->title,
             'pageDescription' => $project->meta_description ?: (string) $project->excerpt,
             'ogImage' => $project->image_url,
             'schemaType' => 'CreativeWork',

@@ -33,7 +33,7 @@ enum NavigationGroup: string implements HasLabel
             self::Website => 'Website',
             self::Services => 'Dịch vụ & Bảng giá',
             self::Portfolio => 'Dự án & Giao diện',
-            self::Blog => 'Blog',
+            self::Blog => 'Kiến thức',
             self::System => 'Hệ thống',
         };
     }

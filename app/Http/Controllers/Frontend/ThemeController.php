@@ -40,6 +40,7 @@ class ThemeController extends FrontendController
             'ogImage' => $theme->image_url,
             'schemaType' => 'Product',
             'schemaData' => [
+                'name' => $theme->name,
                 'brand' => ['@type' => 'Brand', 'name' => site_config('name')],
                 'offers' => [
                     '@type' => 'Offer',

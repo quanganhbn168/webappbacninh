@@ -37,7 +37,7 @@ class ResolveUniqueSlug
     }
 
     /**
-     * First path segments of the site's own routes (/blog, /lien-he, /du-an…): a post or
+     * First path segments of the site's own routes (/kien-thuc, /lien-he, /du-an…): a post or
      * category served from the root with one of these slugs would never be reached.
      *
      * @return array<int, string>

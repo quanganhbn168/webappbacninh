@@ -6,6 +6,7 @@ use App\Models\MiniApp;
 use App\Models\OperationService;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\PostCategory;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\ServiceCategory;
@@ -41,6 +42,15 @@ class SitemapController extends Controller
                     $post->url,
                     $post->updated_at,
                     0.8,
+                    Url::CHANGE_FREQUENCY_WEEKLY,
+                )));
+
+            // Empty categories are left out until they have something to read.
+            PostCategory::active()->whereHas('posts', fn ($query) => $query->published())->get()
+                ->each(fn (PostCategory $category) => $sitemap->add($this->url(
+                    $category->url,
+                    $category->updated_at,
+                    0.7,
                     Url::CHANGE_FREQUENCY_WEEKLY,
                 )));
 

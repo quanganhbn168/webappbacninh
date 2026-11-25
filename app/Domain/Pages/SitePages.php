@@ -24,7 +24,7 @@ final class SitePages
         'themes' => ['themes.index', 'Kho giao diện', 'Kho giao diện website doanh nghiệp, bán hàng, landing page và website theo ngành. Lọc nhanh theo nhu cầu, lĩnh vực và mức đầu tư.'],
         'projects' => ['projects.index', 'Dự án', 'Các dự án website và phần mềm WebApp Bắc Ninh đã triển khai cho doanh nghiệp sản xuất, thương mại, giáo dục, du lịch.'],
         'pricing' => ['pricing', 'Bảng giá', 'Bảng giá thiết kế website, phần mềm, hosting và chăm sóc website minh bạch, tư vấn theo nhu cầu thực tế.'],
-        'articles' => ['articles.index', 'Blog', 'Bài viết thực dụng về thiết kế website, SEO nền tảng, hosting, bảo trì, quản trị nội dung và vận hành số.'],
+        'articles' => ['articles.index', 'Kiến thức', 'Bài viết thực dụng về thiết kế website, SEO nền tảng, hosting, bảo trì, quản trị nội dung và vận hành số.'],
         'tools' => ['tools.index', 'Công cụ miễn phí', 'Công cụ miễn phí: tính thuế TNCN, thuế hộ kinh doanh, thuế doanh nghiệp, tạo mã QR, lịch vạn niên, lấy ảnh cover video.'],
         'contact' => ['contact', 'Liên hệ', 'Liên hệ WebApp Bắc Ninh để tư vấn thiết kế website, phần mềm, hosting, bảo trì, SEO và hợp tác kỹ thuật.'],
         'about' => ['about', 'Giới thiệu', 'WebApp Bắc Ninh tập trung thiết kế website, đồng hành vận hành nội dung và triển khai kỹ thuật phù hợp doanh nghiệp nhỏ và vừa.'],

@@ -33,7 +33,7 @@ final class DefaultMenus
                 ['title' => 'Dự án', 'url' => '/du-an'],
                 ['title' => 'Bảng giá', 'url' => '/bang-gia'],
                 ['title' => 'Công cụ', 'url' => '/cong-cu'],
-                ['title' => 'Blog', 'url' => '/blog'],
+                ['title' => 'Kiến thức', 'url' => '/kien-thuc'],
                 ['title' => 'Liên hệ', 'url' => '/lien-he'],
             ]],
             Menu::FOOTER_SERVICES => ['name' => 'Dịch vụ', 'items' => [
@@ -57,7 +57,7 @@ final class DefaultMenus
                 ['title' => 'Giới thiệu', 'url' => '/gioi-thieu'],
                 ['title' => 'Dự án tiêu biểu', 'url' => '/du-an'],
                 ['title' => 'Bảng giá', 'url' => '/bang-gia'],
-                ['title' => 'Blog - Kiến thức', 'url' => '/blog'],
+                ['title' => 'Kiến thức', 'url' => '/kien-thuc'],
                 ['title' => 'Hợp tác Agency', 'url' => '/hop-tac-agency'],
                 ['title' => 'Liên hệ', 'url' => '/lien-he'],
             ]],

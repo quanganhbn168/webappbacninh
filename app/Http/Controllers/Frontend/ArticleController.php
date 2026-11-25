@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Models\Page;
 use App\Models\Post;
 use App\Models\PostCategory;
 use Illuminate\Contracts\View\View;
@@ -38,13 +39,9 @@ class ArticleController extends FrontendController
             'categories' => $this->categories(),
             'pageTitle' => $category->meta_title ?: $category->name.' | '.site_config('name'),
             'pageDescription' => $category->meta_description ?: ($category->description ?? ''),
-            'ogImage' => $category->ogMedia?->url ?: ($category->image?->url ?: site_config('default_og_image')),
+            'ogImage' => $category->ogMedia?->url ?: ($category->image?->url ?: $this->defaultOgImage()),
             'schemaType' => 'CollectionPage',
-            'breadcrumbs' => [
-                ['name' => 'Trang chủ', 'url' => route('home')],
-                ['name' => 'Blog', 'url' => route('articles.index')],
-                ['name' => $category->name, 'url' => $category->url],
-            ],
+            'breadcrumbs' => $this->breadcrumbs($category),
         ]);
     }
 
@@ -70,12 +67,24 @@ class ArticleController extends FrontendController
                 'dateModified' => $article->updated_at?->toIso8601String(),
                 'author' => ['@id' => rtrim((string) site_config('site_url'), '/').'/#organization'],
             ],
-            'breadcrumbs' => [
-                ['name' => 'Trang chủ', 'url' => route('home')],
-                ['name' => 'Blog', 'url' => route('articles.index')],
-                ['name' => $article->title, 'url' => $article->url],
-            ],
+            'breadcrumbs' => $this->breadcrumbs($article->category, $article),
         ]);
+    }
+
+    /**
+     * Trang chủ → Kiến thức → danh mục → bài viết, shown on the page and in the BreadcrumbList.
+     * URLs stay flat, so the hierarchy exists only here. A hidden category has no page to link to.
+     *
+     * @return array<int, array{name: string, url: string}>
+     */
+    private function breadcrumbs(?PostCategory $category, ?Post $article = null): array
+    {
+        return array_values(array_filter([
+            ['name' => 'Trang chủ', 'url' => route('home')],
+            ['name' => Page::for('articles')->title, 'url' => route('articles.index')],
+            $category?->is_active ? ['name' => $category->name, 'url' => $category->url] : null,
+            $article ? ['name' => $article->title, 'url' => $article->url] : null,
+        ]));
     }
 
     private function categories()

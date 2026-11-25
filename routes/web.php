@@ -21,6 +21,7 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\TenantRegisterController;
 use App\Http\Controllers\ThumbnailController;
 use App\Http\Controllers\ToolController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Images moved from /frontend/images and /frontend/assets/images to /images; keep old links working.
@@ -54,10 +55,12 @@ Route::controller(PageController::class)->group(function (): void {
 });
 
 Route::get('/du-an', [ProjectController::class, 'index'])->name('projects.index');
-Route::get('/blog', [ArticleController::class, 'index'])->name('articles.index');
-// The blog moved from /kien-thuc to /blog and the site root; Google still shows the old links.
-Route::redirect('/kien-thuc', '/blog', 301);
-Route::redirect('/tin-tuc', '/blog', 301);
+Route::get('/kien-thuc', [ArticleController::class, 'index'])->name('articles.index');
+// Former list addresses, keeping ?q= and ?page=. Posts and categories live at the site root.
+// /kien-thuc used to 301 to /blog and browsers remember that, which would loop: have them drop it.
+Route::get('/blog', fn (Request $request) => redirect()->route('articles.index', $request->query(), 301)
+    ->withHeaders(['Cache-Control' => 'no-store', 'Clear-Site-Data' => '"cache"']));
+Route::redirect('/tin-tuc', '/kien-thuc', 301);
 Route::get('/kien-thuc/danh-muc/{slug}', [LegacyArticleRedirectController::class, 'category'])->where('slug', '[a-z0-9-]+');
 Route::get('/kien-thuc/{slug}', [LegacyArticleRedirectController::class, 'post'])->where('slug', '[a-z0-9-]+');
 Route::get('/cong-cu', [ToolController::class, 'index'])->name('tools.index');

@@ -24,11 +24,11 @@ class PostResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Blog;
 
-    protected static ?string $navigationLabel = 'Tin tức';
+    protected static ?string $navigationLabel = 'Bài viết';
 
     protected static ?string $modelLabel = 'bài viết';
 
-    protected static ?string $pluralModelLabel = 'Tin tức';
+    protected static ?string $pluralModelLabel = 'Bài viết';
 
     protected static ?int $navigationSort = 10;
 

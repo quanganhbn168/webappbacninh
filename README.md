@@ -20,7 +20,7 @@ Hướng dẫn triển khai: [DEPLOYMENT.md](DEPLOYMENT.md). Giao diện đã du
 | Nội dung → Dịch vụ vận hành | `OperationService` | `/dich-vu-van-hanh`, `/dich-vu-van-hanh/{slug}` |
 | Nội dung → Dự án, Nhóm dự án | `Project`, `ProjectCategory` | `/du-an`, `/du-an/{slug}` |
 | Kho giao diện → Giao diện, Ngành, Tính năng | `Template`, `TemplateCategory`, `ThemeFeature` | `/kho-giao-dien`, `/kho-giao-dien/{slug}` |
-| Blog → Bài viết, Danh mục | `Post`, `PostCategory` | `/kien-thuc`, `/kien-thuc/{slug}` |
+| Kiến thức → Bài viết, Danh mục bài viết | `Post`, `PostCategory` | `/kien-thuc` (trang tổng), `/{slug}` (danh mục và bài viết) |
 | Nội dung → Menu | `Menu`, `MenuItem` | menu header và 3 cột link ở footer |
 | Nội dung → Liên hệ | `Lead` | form liên hệ trên các trang |
 | Cài đặt | `App\Settings\*` | logo, liên hệ, mạng xã hội, SEO, mã theo dõi, favicon |

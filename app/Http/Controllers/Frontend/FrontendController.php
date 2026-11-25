@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Page;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\View as ViewFacade;
+use Illuminate\Support\Str;
 
 abstract class FrontendController extends Controller
 {
@@ -76,7 +77,7 @@ abstract class FrontendController extends Controller
             'pageDescription' => site_config('default_meta_description', ''),
             'pageKeywords' => site_config('default_meta_keywords', ''),
             'canonicalUrl' => request()->url(),
-            'ogImage' => site_config('default_og_image') ?: asset('images/hero-home.webp'),
+            'ogImage' => $this->defaultOgImage(),
             'ogType' => 'website',
             'ogImageAlt' => site_config('name'),
             'robots' => 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
@@ -98,14 +99,20 @@ abstract class FrontendController extends Controller
 
         $data['canonicalUrl'] = filled($data['canonicalUrl']) ? $data['canonicalUrl'] : request()->url();
         $data['ogImage'] = absolute_url((string) $data['ogImage']);
-        $data['jsonLd'] ??= $this->buildJsonLd($data);
         $data['socialChannels'] = app(ResolveSocialChannels::class)->execute();
+        $data['jsonLd'] ??= $this->buildJsonLd($data);
 
         // Components (hero, breadcrumbs) read these without every view passing them along.
         ViewFacade::share('seoPage', $data['seoPage']);
         ViewFacade::share('pageBreadcrumbs', $data['breadcrumbs']);
 
         return view($view, $data);
+    }
+
+    /** The share image set in the admin is a path on the public disk, not a path from the site root. */
+    protected function defaultOgImage(): string
+    {
+        return site_asset_url(site_config('default_og_image'), 'images/hero-home.webp');
     }
 
     private function buildJsonLd(array $data): array
@@ -145,11 +152,22 @@ abstract class FrontendController extends Controller
                 'addressCountry' => 'VN',
             ],
         ];
+        $logo = site_asset_url(site_config('site_logo_square') ?: site_config('site_logo_wide'));
+        // Official profiles only; Zalo, Messenger and the like are chat links.
+        $profiles = collect($data['socialChannels']['footer'])->whereIn('key', ['facebook', 'youtube'])->pluck('url')->values()->all();
+        $organization += array_filter(['logo' => $logo, 'image' => $logo, 'sameAs' => $profiles]);
+
+        // Google picks the site name shown in results from this node; the domain comes last, as its fallback.
+        $name = (string) site_config('name');
         $website = [
             '@type' => 'WebSite',
             '@id' => $siteUrl.'/#website',
-            'url' => $siteUrl,
-            'name' => site_config('name'),
+            'url' => $siteUrl.'/',
+            'name' => $name,
+            'alternateName' => array_values(array_unique(array_filter(
+                [Str::ascii($name), Str::lower((string) parse_url($siteUrl, PHP_URL_HOST))],
+                fn (string $alternate): bool => $alternate !== '' && $alternate !== $name,
+            ))),
             'publisher' => ['@id' => $organizationId],
         ];
         $page = array_merge([
@@ -192,10 +210,12 @@ abstract class FrontendController extends Controller
             $graph[] = ['@type' => 'FAQPage', '@id' => $canonicalUrl.'#faq', 'mainEntity' => $faqItems];
         }
 
-        $breadcrumbs = $data['breadcrumbs'] ?: [
+        // The home page is the top of the trail, so it has none of its own.
+        $isHome = rtrim($canonicalUrl, '/') === rtrim(route('home'), '/');
+        $breadcrumbs = $data['breadcrumbs'] ?: ($isHome ? [] : [
             ['name' => 'Trang chủ', 'url' => route('home')],
             ['name' => $data['pageTitle'], 'url' => $canonicalUrl],
-        ];
+        ]);
         if (count($breadcrumbs) > 1) {
             $graph[] = [
                 '@type' => 'BreadcrumbList',

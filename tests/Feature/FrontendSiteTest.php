@@ -10,6 +10,7 @@ use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\Template;
 use App\Settings\ContactSettings;
+use App\Settings\SeoSettings;
 use App\Settings\SocialSettings;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Storage;
@@ -30,7 +31,7 @@ class FrontendSiteTest extends TestCase
 
     public function test_all_static_and_listing_pages_render(): void
     {
-        foreach (['/', '/dich-vu', '/hosting-domain-email', '/giai-phap', '/san-pham', '/gioi-thieu', '/lien-he', '/bang-gia', '/hop-tac-agency', '/thiet-ke-website', '/kho-giao-dien', '/du-an', '/blog', '/dich-vu-van-hanh', '/cong-cu', '/chinh-sach-bao-mat', '/dieu-khoan-su-dung', '/chinh-sach-bao-hanh', '/quy-trinh-thanh-toan'] as $uri) {
+        foreach (['/', '/dich-vu', '/hosting-domain-email', '/giai-phap', '/san-pham', '/gioi-thieu', '/lien-he', '/bang-gia', '/hop-tac-agency', '/thiet-ke-website', '/kho-giao-dien', '/du-an', '/kien-thuc', '/dich-vu-van-hanh', '/cong-cu', '/chinh-sach-bao-mat', '/dieu-khoan-su-dung', '/chinh-sach-bao-hanh', '/quy-trinh-thanh-toan'] as $uri) {
             $this->get($uri)->assertOk()->assertSee(site_config('name'));
         }
 
@@ -153,6 +154,26 @@ class FrontendSiteTest extends TestCase
             ->assertSee('"@type":"FAQPage"', false);
     }
 
+    public function test_home_page_names_the_website_for_search_engines(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('site/seo/chia-se.jpg', 'x');
+        $settings = app(SeoSettings::class);
+        $settings->default_og_image = 'site/seo/chia-se.jpg';
+        $settings->save();
+        app()->forgetInstance('site.settings');
+
+        $response = $this->get('/')->assertOk()
+            ->assertSee('property="og:image" content="'.asset('storage/site/seo/chia-se.jpg').'"', false);
+        preg_match('/<script type="application\/ld\+json">(.*?)<\/script>/s', $response->getContent(), $match);
+        $graph = collect(json_decode($match[1], true)['@graph'])->keyBy('@type');
+
+        $this->assertSame(site_config('name'), $graph['WebSite']['name']);
+        $this->assertStringEndsWith('/', $graph['WebSite']['url']);
+        $this->assertContains(parse_url(site_config('site_url'), PHP_URL_HOST), $graph['WebSite']['alternateName']);
+        $this->assertFalse($graph->has('BreadcrumbList'));
+    }
+
     public function test_unknown_dynamic_pages_return_404(): void
     {
         $this->get('/kho-giao-dien/khong-ton-tai')->assertNotFound();
@@ -163,7 +184,7 @@ class FrontendSiteTest extends TestCase
     public function test_navigation_connects_the_approved_pages(): void
     {
         $response = $this->get('/')->assertOk();
-        foreach (['/dich-vu', '/giai-phap', '/san-pham', '/du-an', '/bang-gia', '/blog', '/lien-he'] as $path) {
+        foreach (['/dich-vu', '/giai-phap', '/san-pham', '/du-an', '/bang-gia', '/kien-thuc', '/lien-he'] as $path) {
             $response->assertSee('href="'.$path.'"', false);
         }
         $response->assertSee('aria-label="Mở danh sách dịch vụ"', false)
@@ -256,7 +277,7 @@ class FrontendSiteTest extends TestCase
 
         $post = Post::published()->firstOrFail();
         $post->update(['title' => 'Bài viết quản trị '.$suffix]);
-        $this->get('/blog')->assertOk()->assertSee($post->title);
+        $this->get('/kien-thuc')->assertOk()->assertSee($post->title);
 
         $operation = OperationService::query()->where('is_active', true)->firstOrFail();
         $operation->update(['title' => 'Vận hành quản trị '.$suffix]);

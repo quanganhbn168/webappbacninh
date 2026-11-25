@@ -34,17 +34,47 @@ class BlogManagementTest extends TestCase
         $this->get('/'.$category->slug)->assertOk()->assertSee($name);
     }
 
-    public function test_blog_lives_at_blog_and_old_kien_thuc_links_redirect_to_the_new_addresses(): void
+    public function test_articles_live_at_kien_thuc_and_old_links_redirect_to_the_new_addresses(): void
     {
         $post = Post::query()->published()->firstOrFail();
 
         $this->assertSame(url('/'.$post->slug), $post->url);
-        $this->get('/blog')->assertOk()->assertSee($post->title);
+        $this->get('/kien-thuc')->assertOk()->assertSee($post->title);
         $this->get('/blog/'.$post->slug)->assertNotFound();
-        $this->get('/kien-thuc')->assertRedirect('/blog')->assertStatus(301);
-        $this->get('/tin-tuc')->assertRedirect('/blog')->assertStatus(301);
+        $this->get('/blog')->assertStatus(301)->assertRedirect(route('articles.index'))->assertHeader('Clear-Site-Data', '"cache"');
+        $this->get('/blog?page=2')->assertStatus(301)->assertRedirect(route('articles.index', ['page' => 2]));
+        $this->get('/tin-tuc')->assertStatus(301)->assertRedirect('/kien-thuc');
         $this->get('/kien-thuc/'.$post->slug)->assertRedirect($post->url)->assertStatus(301);
         $this->get('/kien-thuc/khong-con-bai-nay')->assertRedirect(route('articles.index'))->assertStatus(301);
+    }
+
+    public function test_breadcrumbs_run_through_kien_thuc_and_the_category(): void
+    {
+        $category = PostCategory::create(['name' => 'Danh mục '.Str::random(10), 'is_active' => true]);
+        $post = Post::create(['title' => 'Bài '.Str::random(10), 'category_id' => $category->id, 'content' => '<p>Test</p>', 'is_published' => true, 'published_at' => now()->subMinute()]);
+        $trail = [
+            ['Trang chủ', route('home')],
+            ['Kiến thức', route('articles.index')],
+            [$category->name, $category->url],
+            [$post->title, $post->url],
+        ];
+
+        $this->assertSame($trail, $this->breadcrumbList($post->url));
+        $this->assertSame(array_slice($trail, 0, 3), $this->breadcrumbList($category->url));
+        $this->get($post->url)->assertSee('<a href="'.$category->url.'">'.$category->name.'</a>', false);
+        $this->get('/sitemap.xml')->assertOk();
+
+        $category->update(['is_active' => false]);
+        $this->assertSame([$trail[0], $trail[1], $trail[3]], $this->breadcrumbList($post->url));
+    }
+
+    /** @return array<int, array{0: string, 1: string}> */
+    private function breadcrumbList(string $url): array
+    {
+        preg_match('/<script type="application\/ld\+json">(.*?)<\/script>/s', $this->get($url)->assertOk()->getContent(), $match);
+        $list = collect(json_decode($match[1], true)['@graph'])->firstWhere('@type', 'BreadcrumbList');
+
+        return array_map(fn (array $item): array => [$item['name'], $item['item']], $list['itemListElement']);
     }
 
     public function test_an_old_category_link_finds_the_category_renamed_away_from_a_fixed_page(): void
@@ -114,12 +144,12 @@ class BlogManagementTest extends TestCase
 
     public function test_featured_layout_has_one_main_and_three_side_articles_and_hides_future_posts(): void
     {
-        $response = $this->get('/blog')->assertOk();
+        $response = $this->get('/kien-thuc')->assertOk();
         $this->assertSame(1, substr_count($response->getContent(), 'media-card--featured'));
         $this->assertSame(3, substr_count($response->getContent(), 'media-card--row'));
         $post = Post::create(['content' => '<p>Test</p>', 'title' => 'Scheduled '.Str::random(10), 'is_published' => true, 'published_at' => now()->addDay()]);
         $this->get($post->url)->assertNotFound();
-        $this->get('/blog')->assertDontSee($post->title);
+        $this->get('/kien-thuc')->assertDontSee($post->title);
     }
 
     public function test_category_curator_images_and_seo_are_used_on_its_public_page(): void

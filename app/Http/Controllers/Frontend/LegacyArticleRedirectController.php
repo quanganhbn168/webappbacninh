@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 
 /**
- * The blog used to live under /kien-thuc/{bai-viet} and /kien-thuc/danh-muc/{danh-muc};
+ * Articles used to live under /kien-thuc/{bai-viet} and /kien-thuc/danh-muc/{danh-muc};
  * posts and categories now sit at the site root. Google still lists the old links, so each
  * one is sent to its new address with a 301. A slug that clashed with a fixed page got a
  * suffix on the move (thiet-ke-website → thiet-ke-website-blog), hence the prefix match.

@@ -205,6 +205,21 @@ class FrontendSiteTest extends TestCase
         $this->get($service->url)->assertOk()->assertSee('<a href="'.route('services.overview').'">Dịch vụ</a>', false);
     }
 
+    public function test_seo_titles_are_stored_without_the_site_name_and_rendered_with_it(): void
+    {
+        $name = site_config('name');
+        $service = Service::active()->where('is_landing', true)->firstOrFail();
+        $service->update(['meta_title' => 'Tiêu đề riêng | '.$name]);
+
+        (require database_path('migrations/2026_11_25_150000_remove_site_name_from_seo_titles.php'))->up();
+
+        $this->assertSame('Tiêu đề riêng', $service->fresh()->meta_title);
+        $this->get($service->url)->assertSee('<title>Tiêu đề riêng | '.$name.'</title>', false);
+
+        Page::query()->where('key', 'home')->firstOrFail()->update(['meta_title' => 'Trang chủ kiểm thử']);
+        $this->get('/')->assertSee('<title>Trang chủ kiểm thử | '.$name.'</title>', false);
+    }
+
     public function test_unknown_dynamic_pages_return_404(): void
     {
         $this->get('/kho-giao-dien/khong-ton-tai')->assertNotFound();

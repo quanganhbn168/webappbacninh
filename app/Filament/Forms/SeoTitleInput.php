@@ -5,8 +5,8 @@ namespace App\Filament\Forms;
 use Filament\Forms\Components\TextInput;
 
 /**
- * SEO title of a public page. The site name is added automatically
- * (App\Domain\Content\AppendSiteName), so the field shows it as a fixed suffix.
+ * SEO title of a public page. The site name is added when the page is rendered
+ * (App\Domain\Content\AppendSiteName), so the admin neither shows nor asks for it.
  */
 class SeoTitleInput extends TextInput
 {
@@ -16,8 +16,6 @@ class SeoTitleInput extends TextInput
 
         $this->label('Tiêu đề SEO')
             ->maxLength(255)
-            ->suffix(fn (): string => '| '.site_config('name'))
-            ->placeholder('Bỏ trống: tự lấy tên')
-            ->helperText('Không cần gõ tên website, hệ thống tự thêm phía sau.');
+            ->placeholder('Bỏ trống: tự lấy tên');
     }
 }

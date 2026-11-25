@@ -26,8 +26,6 @@ abstract class FrontendController extends Controller
                 : $page->title.' | '.site_config('name')),
             'pageDescription' => $page->meta_description ?: SitePages::description($key),
             'seoPage' => $page,
-            // The home page title is used exactly as written.
-            'appendSiteName' => $key !== 'home',
         ];
 
         if (filled($page->meta_keywords)) {
@@ -90,12 +88,9 @@ abstract class FrontendController extends Controller
             'schemaItems' => [],
             'breadcrumbs' => [],
             'seoPage' => null,
-            'appendSiteName' => true,
         ];
 
-        if ($data['appendSiteName']) {
-            $data['pageTitle'] = app(AppendSiteName::class)->execute((string) $data['pageTitle']);
-        }
+        $data['pageTitle'] = app(AppendSiteName::class)->execute((string) $data['pageTitle']);
 
         $data['canonicalUrl'] = filled($data['canonicalUrl']) ? $data['canonicalUrl'] : request()->url();
         $data['ogImage'] = absolute_url((string) $data['ogImage']);

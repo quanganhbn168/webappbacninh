@@ -43,7 +43,9 @@ return [
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
-            'throw' => false,
+            // Livewire ignores put()'s return value, so a silent failure would save
+            // a media record whose file does not exist.
+            'throw' => true,
             'report' => false,
         ],
 

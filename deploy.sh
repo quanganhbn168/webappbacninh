@@ -37,6 +37,12 @@ run_step "Clear compiled Laravel state and cache" php artisan optimize:clear
 run_step "Build production Laravel caches" php artisan optimize
 run_step "Restart queue workers" php artisan queue:restart
 
+# Run as root, the steps above leave root-owned folders that PHP cannot write to, so uploads fail.
+WEB_USER="${WEB_USER:-www}"
+if [ "$(id -u)" -eq 0 ]; then
+    run_step "Give storage and cache to $WEB_USER" chown -R "$WEB_USER:" storage bootstrap/cache
+fi
+
 run_step "Disable maintenance mode" php artisan up
 MAINTENANCE=0
 

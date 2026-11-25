@@ -25,6 +25,8 @@ bash deploy.sh
 
 The script stops on the first failed command and reports its line. It puts the site in maintenance mode, fast-forwards Git, installs the exact Composer and pnpm lockfiles, builds fingerprinted Vite assets, runs migrations, links public storage when the link is missing, rebuilds Laravel's production caches, restarts queue workers and brings the site back up. If a step fails the site stays in maintenance mode so visitors never see a half-deployed state; fix the error and run the script again, or run `php artisan up`.
 
+PHP must be able to write to `storage` and `bootstrap/cache`. When the script runs as root it hands both to the web user, `www` by default (override with `WEB_USER=www-data bash deploy.sh`). After running any other `artisan` command as root, restore ownership yourself: `chown -R www: storage bootstrap/cache`.
+
 Blog images from the old file manager are no longer imported on every deploy. Run `php artisan blog:import-media` once if a server still has posts that use them.
 
 ## One-time server setup

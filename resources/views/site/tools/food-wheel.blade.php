@@ -10,7 +10,7 @@
             <!-- Controls -->
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body">
-                    <h5 class="mb-3">Chọn tình trạng ví tiền của bạn:</h5>
+                    <h2 class="h5 mb-3">Chọn tình trạng ví tiền của bạn:</h2>
                     <div class="btn-group">
                         <label class="btn btn-outline-success active" data-mode="rich">
                             <input type="radio" name="mode" id="option1" checked> 💰 Đầu tháng (Giàu)
@@ -53,7 +53,7 @@
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-body text-center p-5">
                 <h3 class="text-uppercase text-muted mb-3">Trưa nay bạn sẽ ăn:</h3>
-                <h1 class="display-4 fw-bold text-primary mb-4" id="resultName">...</h1>
+                <p class="display-4 lh-sm fw-bold text-primary mb-4" id="resultName">...</p>
                 
                 <div id="resultImageContainer" class="mb-4">
                     <!-- Meme will be inserted here -->

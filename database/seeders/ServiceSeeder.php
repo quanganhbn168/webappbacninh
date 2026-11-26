@@ -6,7 +6,6 @@ use App\Domain\Media\Actions\ImportLocalImage;
 use App\Models\Service;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Schema;
 
 class ServiceSeeder extends Seeder
 {
@@ -21,10 +20,10 @@ class ServiceSeeder extends Seeder
     /**
      * Creates the sample services once; services edited in the admin are never overwritten.
      */
-    public function run(ImportLocalImage $images, ?array $only = null): void
+    public function run(ImportLocalImage $images): void
     {
         foreach ($this->services() as $row) {
-            if (($only !== null && ! in_array($row['slug'], $only, true)) || Service::query()->where('slug', $row['slug'])->exists()) {
+            if (Service::query()->where('slug', $row['slug'])->exists()) {
                 continue;
             }
 
@@ -37,8 +36,7 @@ class ServiceSeeder extends Seeder
                 'is_active' => true,
             ]);
 
-            // An earlier migration runs this seeder before the card columns exist.
-            if (isset(self::CARDS[$row['slug']]) && Schema::hasColumn('services', 'show_in_grid')) {
+            if (isset(self::CARDS[$row['slug']])) {
                 $service->update(self::CARDS[$row['slug']] + ['show_in_grid' => true]);
             }
         }

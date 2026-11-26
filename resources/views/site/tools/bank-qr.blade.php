@@ -49,7 +49,7 @@
 
                         <!-- Preview Column -->
                         <div class="col-md-5 text-center d-flex flex-column justify-content-center align-items-center bg-light rounded py-4">
-                            <h5 class="mb-3 text-muted">Mã VietQR Của Bạn</h5>
+                            <h2 class="h5 mb-3 text-muted">Mã VietQR Của Bạn</h2>
                             <div id="bankQrcode" class="bg-white p-3 shadow-sm rounded mb-3 d-flex align-items-center justify-content-center" style="min-height: 400px; width: 100%; max-width: 350px;">
                                 <div class="text-muted text-center">
                                     <x-icon name="landmark" class="icon-xl mb-3 text-secondary" /><br>
@@ -63,7 +63,7 @@
             </div>
 
             <div class="mt-4">
-                <h4><x-icon name="shield-check" class="text-success" /> VietQR Chuẩn Napas</h4>
+                <h3 class="h4"><x-icon name="shield-check" class="text-success" /> VietQR Chuẩn Napas</h3>
                 <p>Mã QR được tạo ra tuẩn thủ tiêu chuẩn VietQR của Napas. Hỗ trợ quét bằng tất cả các ứng dụng ngân hàng (Mobile Banking) và ví điện tử (MoMo, ZaloPay...) tại Việt Nam.</p>
             </div>
         </div>

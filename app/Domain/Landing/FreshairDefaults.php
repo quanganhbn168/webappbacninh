@@ -25,9 +25,9 @@ final class FreshairDefaults
             'brand_tagline' => 'Không khí sạch. Cuộc sống xanh',
             'product' => 'FreshAir S8',
             'product_full' => 'Máy lọc không khí FreshAir S8',
-            'hotline' => '1900 636 888',
+            'hotline' => '0900 000 000',
             'hotline_hours' => '8:00 - 22:00',
-            'email' => 'cskh@freshair.vn',
+            'email' => 'cskh@example.com',
 
             'sale_label' => 'SIÊU SALE HÔM NAY',
             'sale_text_a' => 'GIẢM ĐẾN 40%',
@@ -143,7 +143,7 @@ final class FreshairDefaults
             'faq_subtitle' => 'Giải đáp những thắc mắc phổ biến về máy lọc không khí FreshAir S8',
             'faqs' => [
                 ['question' => 'Máy lọc không khí FreshAir S8 phù hợp với diện tích bao nhiêu?', 'answer' => 'FreshAir S8 phù hợp cho không gian 20 - 50 m². Đặt máy ở vị trí thông thoáng và tránh che kín cửa hút, thoát khí để máy hoạt động hiệu quả.'],
-                ['question' => 'Chính sách bảo hành như thế nào?', 'answer' => 'FreshAir S8 được bảo hành chính hãng 24 tháng. Giữ hóa đơn hoặc thông tin đặt hàng và liên hệ hotline 1900 636 888 khi cần hỗ trợ.'],
+                ['question' => 'Chính sách bảo hành như thế nào?', 'answer' => 'FreshAir S8 được bảo hành chính hãng 24 tháng. Giữ hóa đơn hoặc thông tin đặt hàng và liên hệ hotline 0900 000 000 khi cần hỗ trợ.'],
                 ['question' => 'Màng lọc HEPA H13 có thể sử dụng trong bao lâu?', 'answer' => 'Thời gian thay màng lọc tham khảo là 6 - 12 tháng, tùy chất lượng không khí và tần suất sử dụng. Kiểm tra màng lọc định kỳ theo hướng dẫn sử dụng.'],
                 ['question' => 'Tôi có thể đổi trả hàng không?', 'answer' => 'Bạn được hỗ trợ đổi trả trong 7 ngày nếu sản phẩm có lỗi từ nhà sản xuất. Liên hệ FreshAir trước khi gửi lại sản phẩm để được hướng dẫn.'],
                 ['question' => 'Máy có tốn nhiều điện không?', 'answer' => 'Máy có công suất 28W, phù hợp sử dụng hàng ngày. Điện năng tiêu thụ thực tế phụ thuộc chế độ và thời gian hoạt động.'],

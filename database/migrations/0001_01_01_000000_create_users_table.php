@@ -14,14 +14,12 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            // Zalo does not share an email address.
+            $table->string('email')->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->string('avatar')->nullable();
-            $table->string('google_id')->nullable();
-            $table->string('facebook_id')->nullable();
-            $table->string('avatar_original')->nullable();
             $table->timestamps();
         });
 

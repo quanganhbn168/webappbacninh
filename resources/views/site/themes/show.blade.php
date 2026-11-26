@@ -1,106 +1,143 @@
 @extends('layouts.site')
 
+@push('head')
+    <link rel="stylesheet" href="{{ asset('vendor/swiper/swiper-bundle.min.css') }}">
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}"></script>
+    @vite('resources/js/projects/gallery.js')
+@endpush
+
 @section('content')
-    @php($gallery = $theme->gallery_urls ?: [$theme->image_url])
-    <section class="page-hero page-hero--detail">
+    @php
+        $slides = $theme->slides;
+        $tabs = array_filter([
+            'giao-dien' => 'Giao diện',
+            'tinh-nang' => $theme->included_features || $theme->customizations || $theme->audiences ? 'Tính năng' : null,
+            'cac-trang' => $theme->pages ? 'Các trang' : null,
+        ]);
+    @endphp
+    <section class="page-hero page-hero--detail theme-detail">
         <div class="container">
             <x-breadcrumbs :items="$breadcrumbs" />
-            <div class="row g-4 g-lg-5 align-items-start">
-                <div class="col-lg-8">
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                        @if (filled($theme->badge))<span class="tag tag--gold">{{ $theme->badge }}</span>@endif
-                        <span class="tag">{{ $theme->type_label }}</span>
-                        <span class="tag">{{ $theme->industry_label }}</span>
-                    </div>
-                    <h1>{{ $theme->name }}</h1>
-                    <p class="page-hero__lead">{{ $theme->description }}</p>
-                    <div class="gallery" data-gallery>
-                        <img class="gallery__main" src="{{ $gallery[0] }}" alt="{{ $theme->name }}" width="960" height="600" data-gallery-main fetchpriority="high">
-                        @if (count($gallery) > 1)
-                            <div class="gallery__thumbs">
-                                @foreach ($gallery as $index => $url)
-                                    <button type="button" @class(['gallery__thumb', 'active' => $index === 0]) data-gallery-image="{{ $url }}" aria-label="Xem ảnh {{ $index + 1 }}" aria-pressed="{{ $index === 0 ? 'true' : 'false' }}"><img src="{{ $url }}" alt="" width="120" height="80" loading="lazy"></button>
+            <div class="row g-4 g-lg-5">
+                <div class="col-lg-5 col-xl-4">
+                    <aside class="theme-summary">
+                        <p class="theme-summary__meta">
+                            <span>{{ $theme->code }} · @if ($theme->category)<a href="{{ $theme->category->url }}">{{ $theme->industry_label }}</a>@else{{ $theme->industry_label }}@endif</span>
+                            @if (filled($theme->badge))<span class="tag tag--gold">{{ $theme->badge }}</span>@endif
+                        </p>
+                        <h1>{{ $theme->name }}</h1>
+                        <p class="theme-summary__lead">{{ $theme->description }}</p>
+                        <dl class="theme-summary__specs">
+                            <div><dt>Loại website</dt><dd>{{ $theme->type_label }}</dd></div>
+                            @if ($theme->pages)<div><dt>Số trang</dt><dd>{{ count($theme->pages) }}</dd></div>@endif
+                            <div><dt>Hiển thị</dt><dd>Responsive đa thiết bị</dd></div>
+                            <div><dt>Thời gian dự kiến</dt><dd>{{ $theme->duration ?: 'Theo phạm vi' }}</dd></div>
+                        </dl>
+                        <x-theme-price :theme="$theme" label="Chi phí triển khai tham khảo từ" class="theme-summary__price" />
+                        <p class="small text-muted">Giá chính thức phụ thuộc nội dung, chức năng và mức độ tùy chỉnh.</p>
+                        <div class="theme-summary__actions">
+                            <a class="btn btn-primary" href="#chon-mau">Chọn mẫu này <x-icon name="arrow-right" /></a>
+                            @if ($theme->preview_url)
+                                <a class="btn btn-outline-dark" href="{{ $theme->preview_url }}" target="_blank" rel="noopener">Xem demo <x-icon name="external-link" /></a>
+                            @endif
+                        </div>
+                        <a class="link-arrow" href="tel:{{ site_config('phone_href') }}"><x-icon name="phone" /> {{ site_config('phone') }}</a>
+                        @if ($previousTheme || $nextTheme)
+                            <nav class="theme-summary__pager" aria-label="Mẫu trước và mẫu tiếp theo">
+                                @if ($previousTheme)<a href="{{ $previousTheme->url }}" rel="prev"><small><x-icon name="arrow-left" /> Mẫu trước</small>{{ $previousTheme->name }}</a>@endif
+                                @if ($nextTheme)<a class="theme-summary__next" href="{{ $nextTheme->url }}" rel="next"><small>Mẫu tiếp theo <x-icon name="arrow-right" /></small>{{ $nextTheme->name }}</a>@endif
+                            </nav>
+                        @endif
+                    </aside>
+                </div>
+                <div class="col-lg-7 col-xl-8">
+                    <ul class="nav theme-tabs" role="tablist">
+                        @foreach ($tabs as $key => $label)
+                            <li role="presentation">
+                                <button @class(['theme-tabs__button', 'active' => $loop->first]) id="tab-{{ $key }}" type="button" role="tab" data-bs-toggle="tab" data-bs-target="#{{ $key }}" aria-controls="{{ $key }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}">
+                                    {{ $label }}
+                                    @if ($key === 'giao-dien')<span>{{ count($slides) }}</span>@endif
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="giao-dien" role="tabpanel" aria-labelledby="tab-giao-dien" tabindex="0">
+                            <div class="project-gallery theme-gallery" data-project-gallery>
+                                <div class="swiper project-gallery__main">
+                                    <div class="swiper-wrapper">
+                                        @foreach ($slides as $index => $slide)
+                                            {{-- Hovering scrolls through a tall screenshot. --}}
+                                            <div class="swiper-slide" tabindex="0">
+                                                <x-img :src="$slide" sizes="(min-width: 992px) 60vw, 100vw" alt="{{ $theme->name }}{{ $index ? ' - ảnh '.($index + 1) : '' }}" width="960" height="600" @if ($index) loading="lazy" @else fetchpriority="high" @endif />
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    @if (count($slides) > 1)
+                                        <button class="project-gallery__nav project-gallery__nav--prev" type="button" aria-label="Ảnh trước"><x-icon name="chevron-left" /></button>
+                                        <button class="project-gallery__nav project-gallery__nav--next" type="button" aria-label="Ảnh tiếp theo"><x-icon name="chevron-right" /></button>
+                                        <span class="project-gallery__counter"></span>
+                                    @endif
+                                </div>
+                                @if (count($slides) > 1)
+                                    <div class="swiper project-gallery__thumbs">
+                                        <div class="swiper-wrapper">
+                                            @foreach ($slides as $index => $slide)
+                                                <div class="swiper-slide"><button type="button" aria-label="Xem ảnh {{ $index + 1 }}"><img src="{{ $slide['thumb'] }}" alt="" width="120" height="80" loading="lazy"></button></div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        @isset($tabs['tinh-nang'])
+                            <div class="tab-pane fade" id="tinh-nang" role="tabpanel" aria-labelledby="tab-tinh-nang" tabindex="0">
+                                @foreach ([
+                                    'Chức năng và tiêu chuẩn bàn giao' => $theme->included_features,
+                                    'Tùy chỉnh theo doanh nghiệp' => $theme->customizations,
+                                    'Mẫu này phù hợp với ai?' => $theme->audiences,
+                                ] as $heading => $items)
+                                    @if ($items)
+                                        <div class="theme-list">
+                                            <h2>{{ $heading }}</h2>
+                                            <ul class="check-list check-list--gold check-list--2col">@foreach ($items as $item)<li>{{ $item }}</li>@endforeach</ul>
+                                        </div>
+                                    @endif
                                 @endforeach
                             </div>
-                        @endif
+                        @endisset
+                        @isset($tabs['cac-trang'])
+                            <div class="tab-pane fade" id="cac-trang" role="tabpanel" aria-labelledby="tab-cac-trang" tabindex="0">
+                                <div class="theme-list">
+                                    <h2>Các trang dự kiến</h2>
+                                    <ol class="scope-grid">@foreach ($theme->pages as $page)<li>{{ $page }}</li>@endforeach</ol>
+                                </div>
+                            </div>
+                        @endisset
                     </div>
-                </div>
-                <div class="col-lg-4">
-                    <aside class="order-card">
-                        <span class="order-card__code">{{ $theme->code }}</span>
-                        <span class="text-muted small">Chi phí triển khai tham khảo từ</span>
-                        <strong class="order-card__price">{{ money($theme->price ?? 0) }}</strong>
-                        <p class="small text-muted">Giá chính thức phụ thuộc nội dung, chức năng và mức độ tùy chỉnh.</p>
-                        <dl class="order-card__specs">
-                            <div><dt>Thời gian dự kiến</dt><dd>{{ $theme->duration ?: 'Theo phạm vi' }}</dd></div>
-                            <div><dt>Loại website</dt><dd>{{ $theme->type_label }}</dd></div>
-                            <div><dt>Hiển thị</dt><dd>Responsive đa thiết bị</dd></div>
-                            <div><dt>Tùy chỉnh</dt><dd>Màu, nội dung, bố cục</dd></div>
-                        </dl>
-                        <div class="d-grid gap-2">
-                            <a class="btn btn-primary" href="#chon-mau">Chọn mẫu này</a>
-                            @if ($theme->demo_url)
-                                <a class="btn btn-outline-dark" href="{{ $theme->demo_url }}" target="_blank" rel="noopener">Xem demo <x-icon name="external-link" /></a>
-                            @endif
-                            <a class="btn btn-outline-primary" href="tel:{{ site_config('phone_href') }}"><x-icon name="phone" /> {{ site_config('phone') }}</a>
+                    <div class="theme-cta">
+                        <div>
+                            <h2>Cần thêm tính năng riêng?</h2>
+                            <p>Mẫu chỉ là điểm bắt đầu. Chúng tôi phát triển thêm theo cách doanh nghiệp đang vận hành.</p>
                         </div>
-                        <p class="small text-muted mb-0 mt-3">Không bắt buộc giữ nguyên mẫu. Có thể kết hợp bố cục từ nhiều giao diện.</p>
-                    </aside>
+                        <button class="btn btn-dark" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Cùng trao đổi <x-icon name="arrow-right" /></button>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    @if ($theme->audiences)
-        <section class="section">
-            <div class="container">
-                <div class="row g-4 g-lg-5">
-                    <div class="col-lg-5">
-                        <p class="eyebrow">Mẫu này phù hợp với ai?</p>
-                        <h2>Một nền tảng website rõ ràng để tiếp tục bán hàng và phát triển nội dung.</h2>
-                        <p class="lead-text mt-3 mb-0">Mẫu được sử dụng như điểm xuất phát. Khi triển khai, WebApp Bắc Ninh sẽ thay nhận diện, nội dung và điều chỉnh cấu trúc theo doanh nghiệp.</p>
-                    </div>
-                    <div class="col-lg-7">
-                        <ul class="check-list check-list--gold check-list--2col">
-                            @foreach ($theme->audiences as $item)<li>{{ $item }}</li>@endforeach
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-    @endif
-
-    @if ($theme->pages || $theme->included_features)
+    @if ($relatedThemes->isNotEmpty())
         <section class="section section--soft">
             <div class="container">
-                <x-section-head eyebrow="Phạm vi bàn giao" title="Các trang và chức năng cơ bản đã có trong mẫu" lead="Phạm vi có thể điều chỉnh sau khi chốt cấu trúc và dữ liệu thực tế." center />
-                <div class="row g-4">
-                    @if ($theme->pages)
-                        <div class="col-lg-5">
-                            <div class="feature-card"><h3>Các trang dự kiến</h3><ul class="check-list">@foreach ($theme->pages as $page)<li>{{ $page }}</li>@endforeach</ul></div>
-                        </div>
-                    @endif
-                    @if ($theme->included_features)
-                        <div class="col-lg-7">
-                            <div class="feature-card"><h3>Chức năng và tiêu chuẩn bàn giao</h3><ul class="check-list check-list--2col">@foreach ($theme->included_features as $feature)<li>{{ $feature }}</li>@endforeach</ul></div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </section>
-    @endif
-
-    @if ($theme->customizations)
-        <section class="section">
-            <div class="container">
-                <div class="media-split">
-                    <div class="media-split__image"><img src="{{ $gallery[1] ?? $gallery[0] }}" alt="Tùy chỉnh {{ $theme->name }}" width="720" height="540" loading="lazy"></div>
-                    <div>
-                        <p class="eyebrow">Tùy chỉnh theo doanh nghiệp</p>
-                        <h2>Không phải mua một mẫu đóng khung.</h2>
-                        <p class="lead-text my-3">Màu sắc, hình ảnh, nội dung và chức năng sẽ được thay đổi để website phù hợp với thương hiệu và cách doanh nghiệp đang vận hành.</p>
-                        <ul class="check-list check-list--gold">@foreach ($theme->customizations as $item)<li>{{ $item }}</li>@endforeach</ul>
-                    </div>
+                <x-section-head eyebrow="Giao diện liên quan" title="Mẫu tương tự" :href="route('themes.index')" link="Xem tất cả mẫu" />
+                <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
+                    @foreach ($relatedThemes as $related)
+                        <div class="col"><x-card.theme :theme="$related" /></div>
+                    @endforeach
                 </div>
             </div>
         </section>
@@ -113,19 +150,6 @@
                 <div class="row g-3 g-lg-4 row-cols-1 row-cols-sm-2 row-cols-lg-4">
                     @foreach ($operationServices as $service)
                         <div class="col"><x-feature-card :icon="$service->icon ?: 'settings'" :title="$service->title" :text="$service->description" :href="$service->url" /></div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
-
-    @if ($relatedThemes->isNotEmpty())
-        <section class="section section--soft">
-            <div class="container">
-                <x-section-head eyebrow="Giao diện liên quan" title="Tham khảo thêm các mẫu gần nhu cầu này" :href="route('themes.index')" link="Xem toàn bộ kho giao diện" />
-                <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
-                    @foreach ($relatedThemes as $related)
-                        <div class="col"><x-card.theme :theme="$related" /></div>
                     @endforeach
                 </div>
             </div>

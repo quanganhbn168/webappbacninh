@@ -44,6 +44,8 @@ class ImportLocalImageTest extends TestCase
         $this->assertSame($media->id, $again->id);
         $this->assertSame([4, 3, 'image/png'], [$media->width, $media->height, $media->type]);
         Storage::disk('public')->assertExists($media->path);
+        // The address says what the file is.
+        $this->assertMatchesRegularExpression('#^tests/import-test-[a-z0-9]+-[a-f0-9]{8}\.png$#', $media->path);
     }
 
     public function test_missing_or_outside_files_are_ignored(): void

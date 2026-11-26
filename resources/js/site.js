@@ -4,9 +4,9 @@ import { Alert, Collapse, Dropdown, Modal, Offcanvas, Tab, Toast } from 'bootstr
 import { initLeadForms } from './site/lead-forms';
 import { initCatalogs } from './site/catalog';
 import { initThemeLibrary } from './site/theme-library';
-import { initGalleries } from './site/gallery';
 import { initHeader } from './site/header';
 import { initScrollTop } from './site/scroll-top';
+import { initToc } from './site/toc';
 import { initContactTracking } from './site/analytics';
 import './site/toolkit';
 
@@ -16,7 +16,7 @@ window.bootstrap = { Alert, Collapse, Dropdown, Modal, Offcanvas, Tab, Toast };
 initLeadForms();
 initCatalogs();
 initThemeLibrary();
-initGalleries();
 initHeader();
 initScrollTop();
+initToc();
 initContactTracking();

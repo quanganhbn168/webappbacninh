@@ -22,7 +22,7 @@ enum NavigationGroup: string implements HasLabel
     /** Hồ sơ năng lực: dự án, giao diện mẫu, đánh giá */
     case Portfolio = 'portfolio';
 
-    case Blog = 'blog';
+    case Articles = 'articles';
 
     case System = 'system';
 
@@ -33,7 +33,7 @@ enum NavigationGroup: string implements HasLabel
             self::Website => 'Website',
             self::Services => 'Dịch vụ & Bảng giá',
             self::Portfolio => 'Dự án & Giao diện',
-            self::Blog => 'Kiến thức',
+            self::Articles => 'Kiến thức',
             self::System => 'Hệ thống',
         };
     }

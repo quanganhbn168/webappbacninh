@@ -11,6 +11,7 @@ use App\Models\Project;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\Template;
+use App\Models\TemplateCategory;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Sitemap\Sitemap;
@@ -20,73 +21,52 @@ class SitemapController extends Controller
 {
     public function index(): Response
     {
-        $xml = Cache::remember('sitemap:v3', now()->addHour(), function (): string {
+        $xml = Cache::remember('sitemap:v5', now()->addHour(), function (): string {
             $sitemap = Sitemap::create();
 
             // Fixed pages, except those hidden from search engines in the admin.
             Page::query()->where('noindex', false)->get()->each(function (Page $page) use ($sitemap): void {
                 if ($page->url) {
-                    $priority = match ($page->key) {
-                        'home' => 1.0,
-                        'privacy', 'terms', 'warranty', 'payment-process' => 0.3,
-                        default => 0.8,
-                    };
-                    $sitemap->add($this->url($page->url, $page->updated_at, $priority, Url::CHANGE_FREQUENCY_WEEKLY));
+                    $sitemap->add($this->url($page->url, $page->updated_at));
                 }
             });
 
             Post::published()
                 ->where('published_at', '<=', now())
                 ->get()
-                ->each(fn (Post $post) => $sitemap->add($this->url(
-                    $post->url,
-                    $post->updated_at,
-                    0.8,
-                    Url::CHANGE_FREQUENCY_WEEKLY,
-                )));
+                // Not a post hidden from Google, nor one whose canonical address is somewhere else.
+                ->reject(fn (Post $post): bool => str_contains((string) data_get($post->data, 'seo.robots'), 'noindex')
+                    || (data_get($post->data, 'seo.canonical_url') ?: $post->url) !== $post->url)
+                ->each(fn (Post $post) => $sitemap->add($this->url($post->url, $post->updated_at)));
 
             // Empty categories are left out until they have something to read.
             PostCategory::active()->whereHas('posts', fn ($query) => $query->published())->get()
-                ->each(fn (PostCategory $category) => $sitemap->add($this->url(
-                    $category->url,
-                    $category->updated_at,
-                    0.7,
-                    Url::CHANGE_FREQUENCY_WEEKLY,
-                )));
+                ->each(fn (PostCategory $category) => $sitemap->add($this->url($category->url, $category->updated_at)));
 
-            Service::active()->get()->each(fn (Service $service) => $sitemap->add($this->url(
-                $service->url,
-                $service->updated_at,
-                0.9,
-                Url::CHANGE_FREQUENCY_WEEKLY,
-            )));
+            Service::active()->get()->each(fn (Service $service) => $sitemap->add($this->url($service->url, $service->updated_at)));
 
             OperationService::where('is_active', true)->get()->each(fn (OperationService $service) => $sitemap->add($this->url(
                 route('operations.show', ['slug' => $service->slug]),
                 $service->updated_at,
-                0.8,
-                Url::CHANGE_FREQUENCY_WEEKLY,
             )));
 
             Project::where('is_active', true)->get()->each(fn (Project $project) => $sitemap->add($this->url(
                 route('projects.show', ['slug' => $project->slug]),
                 $project->updated_at,
-                0.8,
-                Url::CHANGE_FREQUENCY_MONTHLY,
             )));
 
             Template::active()->get()->each(fn (Template $template) => $sitemap->add($this->url(
                 route('themes.show', ['slug' => $template->slug]),
                 $template->updated_at,
-                0.8,
-                Url::CHANGE_FREQUENCY_WEEKLY,
             )));
+
+            // Industry pages that are ready for search.
+            TemplateCategory::query()->indexable()->get()
+                ->each(fn (TemplateCategory $industry) => $sitemap->add($this->url($industry->url, $industry->updated_at)));
 
             ServiceCategory::where('is_active', true)->get()->each(fn (ServiceCategory $category) => $sitemap->add($this->url(
                 route('slug.handle', ['slug' => $category->slug]),
                 $category->updated_at,
-                0.7,
-                Url::CHANGE_FREQUENCY_MONTHLY,
             )));
 
             MiniApp::active()->get()->each(function (MiniApp $app) use ($sitemap): void {
@@ -96,8 +76,11 @@ class SitemapController extends Controller
                     return;
                 }
 
-                $sitemap->add($this->url(url('/'.ltrim($link, '/')), null, 0.6, Url::CHANGE_FREQUENCY_MONTHLY));
+                $sitemap->add($this->url(url('/'.ltrim($link, '/'))));
             });
+
+            // A tool page that has no mini app entry of its own.
+            $sitemap->add($this->url(route('cover.bulk.page')));
 
             return $sitemap->render();
         });
@@ -114,11 +97,9 @@ class SitemapController extends Controller
         );
     }
 
-    private function url(string $url, mixed $updatedAt, float $priority, string $frequency): Url
+    private function url(string $url, mixed $updatedAt = null): Url
     {
-        $tag = Url::create(canonical_url($url))
-            ->setPriority($priority)
-            ->setChangeFrequency($frequency);
+        $tag = Url::create(canonical_url($url));
 
         if ($updatedAt !== null) {
             $tag->setLastModificationDate($updatedAt);

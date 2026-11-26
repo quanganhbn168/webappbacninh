@@ -9,7 +9,7 @@ enum BannerSlot: string implements HasLabel
     case HOMEPAGE_HERO = 'homepage_hero';
     case HOMEPAGE_PROMO = 'homepage_promo';
     case AFTER_HERO = 'after_hero';
-    case BEFORE_BLOG = 'before_blog';
+    case BEFORE_ARTICLES = 'before_articles';
     case SIDEBAR = 'sidebar';
     case POPUP = 'popup';
 
@@ -24,7 +24,7 @@ enum BannerSlot: string implements HasLabel
             self::HOMEPAGE_HERO => 'Trang chủ - dưới hero',
             self::HOMEPAGE_PROMO => 'Trang chủ - giữa trang',
             self::AFTER_HERO => 'Trang dịch vụ - sau hero',
-            self::BEFORE_BLOG => 'Trang chủ - trước Kiến thức',
+            self::BEFORE_ARTICLES => 'Trang chủ - trước Kiến thức',
             self::SIDEBAR => 'Bài viết - cột phải',
             self::POPUP => 'Popup',
         };

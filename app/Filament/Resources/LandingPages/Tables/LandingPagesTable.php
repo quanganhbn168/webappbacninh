@@ -24,13 +24,14 @@ class LandingPagesTable
                 TextColumn::make('name')->label('Trang')->searchable()->description(fn (LandingPage $record): string => '/landing/'.$record->slug),
                 TextColumn::make('template')->label('Mẫu')->badge()->formatStateUsing(fn (LandingTemplate $state): string => Str::before($state->label(), ' (')),
                 TextColumn::make('price')->label('Giá')->state(fn (LandingPage $record): string => $record->money().'đ'),
+                TextColumn::make('leads_count')->label('Liên hệ')->counts('leads')->sortable(),
                 IconColumn::make('is_active')->label('Hiển thị')->boolean(),
                 TextColumn::make('updated_at')->label('Cập nhật')->since()->sortable(),
             ])
             ->recordActions([
                 EditAction::make(),
                 ReplicateAction::make()->label('Nhân bản')
-                    ->excludeAttributes(['slug'])
+                    ->excludeAttributes(['slug', 'leads_count'])
                     ->beforeReplicaSaved(function (LandingPage $replica, LandingPage $record): void {
                         $replica->slug = $record->slug.'-'.Str::lower(Str::random(4));
                         $replica->name = $record->name.' (bản sao)';

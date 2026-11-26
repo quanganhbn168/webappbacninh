@@ -15,10 +15,8 @@
         "laravel/socialite": "^5.21",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.0",
-        "nwidart/laravel-modules": "^13.0",
         "sepayvn/laravel-sepay": "dev-main",
         "socialiteproviders/zalo": "^5.0",
-        "spatie/laravel-medialibrary": "^11.23",
         "spatie/laravel-permission": "^8.0",
         "spatie/laravel-settings": "^3.9",
         "spatie/laravel-sitemap": "^7.4",
@@ -73,11 +71,6 @@
     "extra": {
         "laravel": {
             "dont-discover": []
-        },
-        "merge-plugin": {
-            "include": [
-                "Modules/*/composer.json"
-            ]
         }
     },
     "config": {
@@ -86,8 +79,7 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true,
-            "wikimedia/composer-merge-plugin": true
+            "php-http/discovery": true
         }
     },
     "minimum-stability": "stable",

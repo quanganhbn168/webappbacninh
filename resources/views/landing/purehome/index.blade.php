@@ -47,8 +47,10 @@
     <link rel="icon" type="image/svg+xml" href="{{ asset('landing/purehome/leaf.svg') }}">
     <link rel="preload" as="image" href="{{ $hero }}" fetchpriority="high">
     @vite(['resources/css/landing/purehome.css', 'resources/js/landing/purehome.js'])
+    <x-landing.tracking :landing="$landing" position="head" />
 </head>
-<body class="purehome">
+<body class="purehome"@if ($landing->isDemo) data-demo @endif>
+    <x-landing.tracking :landing="$landing" position="body_start" />
     <a class="ph-skip" href="#noi-dung">Đến nội dung chính</a>
     <header class="ph-header" id="trang-chu">
         <div class="ph-container ph-header-inner">
@@ -192,7 +194,7 @@
     </footer>
 
     <dialog class="ph-dialog" id="ph-order" aria-labelledby="ph-order-title"><button class="ph-dialog-close ph-icon-button" type="button" data-dialog-close aria-label="Đóng"><x-landing.purehome-icon name="close" /></button><p class="ph-eyebrow">{{ $c['hero_subtitle'] }}</p><h2 id="ph-order-title">Đặt mua {{ $product }}</h2><div class="ph-order-product"><img src="{{ $detail }}" alt="{{ $product }}" width="160" height="160" loading="lazy"><div><h3>{{ $landing->name }}</h3><p>Số lượng: 1</p>{{ $price() }}@if ($landing->compare_price)<del>{{ $landing->money($landing->compare_price) }}đ</del>@endif</div></div><p>{{ $c['order_note'] }}</p>
-        <form class="ph-lead" action="{{ route('leads.store') }}" method="post" data-landing-lead data-need="Đặt mua {{ $product }}" novalidate>
+        <form class="ph-lead" @if ($landing->isDemo) method="dialog" @else action="{{ route('leads.store') }}" method="post" @endif data-landing-lead data-need="Đặt mua {{ $product }}" novalidate>
             @csrf
             <div class="ph-lead-trap" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
             <p class="ph-lead-title">Để lại số điện thoại, {{ $c['brand'] }} gọi lại ngay:</p>
@@ -205,5 +207,6 @@
     <dialog class="ph-dialog ph-dialog-wide" id="ph-reviews-dialog" aria-labelledby="ph-all-reviews-title"><button class="ph-dialog-close ph-icon-button" type="button" data-dialog-close aria-label="Đóng"><x-landing.purehome-icon name="close" /></button><h2 id="ph-all-reviews-title">Đánh giá về {{ $product }}</h2><p class="ph-dialog-rating"><span class="ph-stars" aria-label="5 trên 5 sao">★★★★★</span> 5/5 · {{ count($c['reviews']) }} đánh giá</p><div class="ph-dialog-reviews"></div></dialog>
     <dialog class="ph-dialog" id="ph-policy" aria-labelledby="ph-policy-title"><button class="ph-dialog-close ph-icon-button" type="button" data-dialog-close aria-label="Đóng"><x-landing.purehome-icon name="close" /></button><h2 id="ph-policy-title"></h2><p id="ph-policy-content"></p><p>Cần hỗ trợ thêm? Gọi <a href="tel:{{ $tel }}">{{ $c['hotline'] }}</a> hoặc email <a href="mailto:{{ $c['email'] }}">{{ $c['email'] }}</a>.</p></dialog>
     <script type="application/json" id="landing-config">@json($config, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG)</script>
+    <x-landing.tracking :landing="$landing" position="body_end" />
 </body>
 </html>

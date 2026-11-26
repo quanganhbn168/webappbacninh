@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Domain\Media\Actions\BuildResponsiveImage;
 use App\Models\PricingPlan;
 use Awcodes\Curator\Models\Media;
 use Illuminate\Database\Eloquent\Builder;
@@ -62,6 +63,14 @@ trait HasServiceContent
     protected function secondaryImageUrl(): Attribute
     {
         return Attribute::get(fn (): string => $this->secondaryImage?->url ?? $this->image_url);
+    }
+
+    /** The second picture of the page in sizes for its frame; the cover when there is none. */
+    protected function secondaryCover(): Attribute
+    {
+        return Attribute::get(fn (): array => $this->secondaryImage
+            ? app(BuildResponsiveImage::class)->execute($this->secondaryImage, [480, 800, 1200])
+            : $this->cover)->shouldCache();
     }
 
     protected function eyebrowLabel(): Attribute

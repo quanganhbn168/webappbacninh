@@ -1,7 +1,7 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero :eyebrow="$service->eyebrow_label" :title="$service->title" :lead="$service->description" :image="$service->image_url" :image-alt="$service->title">
+    <x-hero :eyebrow="$service->eyebrow_label" :title="$service->title" :lead="$service->description" :image="$service->cover" :image-alt="$service->title">
         <a class="btn btn-primary" href="#lien-he-dich-vu">{{ $service->cta_label }} <x-icon name="arrow-right" /></a>
         @if ($service->section === \App\Enums\ServiceSection::Website)
             <a class="btn btn-outline-dark" href="{{ route('themes.index') }}">Xem kho giao diện</a>
@@ -32,7 +32,7 @@
             <div class="container">
                 <div class="media-split">
                     <div class="media-split__image">
-                        <img src="{{ $service->secondary_image_url }}" alt="Minh họa {{ $service->eyebrow_label }}" width="720" height="540" loading="lazy">
+                        <x-img :src="$service->secondary_cover" sizes="(min-width: 992px) 50vw, 100vw" alt="Minh họa {{ $service->eyebrow_label }}" width="720" height="540" loading="lazy" />
                         <div class="note-card"><strong>Không làm theo cảm tính</strong>Cấu trúc được xác định từ mục tiêu, dữ liệu và hành vi khách hàng.</div>
                     </div>
                     <div>

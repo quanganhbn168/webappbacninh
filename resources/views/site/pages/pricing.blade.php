@@ -1,8 +1,7 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero title="Bảng giá dịch vụ" highlight="Minh bạch – Linh hoạt – Phù hợp"
-        lead="Lựa chọn giải pháp phù hợp với mục tiêu và ngân sách của doanh nghiệp. Chúng tôi luôn tư vấn chi tiết, tối ưu chi phí và đồng hành lâu dài."
+    <x-hero
         :image="asset('images/prices-hero.webp')" image-alt="Bảng điều khiển doanh thu trên laptop">
         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận báo giá theo yêu cầu <x-icon name="arrow-right" /></button>
         <x-slot:after>

@@ -6,6 +6,11 @@ export function initHeader() {
     const header = document.querySelector('.site-header');
     if (!header) return;
 
+    // Sticky columns, anchor offsets and the hidden position follow the height the content gives.
+    new ResizeObserver(() => {
+        document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
+    }).observe(header, { box: 'border-box' });
+
     let lastY = window.scrollY;
     let pending = false;
 

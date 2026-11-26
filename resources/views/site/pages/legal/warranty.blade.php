@@ -2,9 +2,6 @@
 
 @section('content')
     <x-legal-document
-        title="Chính sách bảo hành và hỗ trợ"
-        eyebrow="THÔNG TIN VÀ CHÍNH SÁCH"
-        summary="Chính sách này mô tả nguyên tắc bảo hành đối với website và hạng mục kỹ thuật do WebApp Bắc Ninh trực tiếp triển khai. Thời hạn và phạm vi cụ thể của từng dự án sẽ được ghi trong báo giá hoặc biên bản bàn giao."
         notice="Bảo hành là sửa lỗi thuộc phạm vi đã bàn giao. Bổ sung chức năng, thay đổi bố cục hoặc nhập thêm nội dung là công việc phát sinh và được đánh giá riêng."
         icon="wrench"
         updated="2026-07-11"

@@ -10,6 +10,7 @@ use App\Settings\SiteDefaults;
 use App\Settings\SocialSettings;
 use App\Settings\TrackingSettings;
 use App\Settings\WebsiteSettings;
+use Awcodes\Curator\Models\Media;
 
 if (! function_exists('site_settings')) {
     function site_settings(bool $refresh = false): array
@@ -23,9 +24,9 @@ if (! function_exists('site_settings')) {
             'site_name' => SiteDefaults::get('name'),
             'company_name' => SiteDefaults::get('name'),
             'default_language' => 'vi',
-            'site_logo_wide' => '',
-            'site_logo_white' => '',
-            'site_logo_square' => '',
+            'logo_wide_media_id' => null,
+            'logo_white_media_id' => null,
+            'logo_square_media_id' => null,
             'site_favicon' => '',
             'favicon_short_name' => '',
             'favicon_maskable_icon' => '',
@@ -60,9 +61,9 @@ if (! function_exists('site_settings')) {
             ],
             WebsiteSettings::class => [
                 'site_url' => 'site_url',
-                'site_logo_wide' => 'site_logo_wide',
-                'site_logo_white' => 'site_logo_white',
-                'site_logo_square' => 'site_logo_square',
+                'logo_wide_media_id' => 'logo_wide_media_id',
+                'logo_white_media_id' => 'logo_white_media_id',
+                'logo_square_media_id' => 'logo_square_media_id',
                 'site_favicon' => 'site_favicon',
             ],
             SeoSettings::class => [
@@ -137,6 +138,16 @@ if (! function_exists('site_settings')) {
     }
 }
 
+if (! function_exists('site_logo')) {
+    /** The logo picked in Cài đặt ('wide', 'white' or 'square'), looked up once per request. */
+    function site_logo(string $kind = 'wide'): ?Media
+    {
+        $id = site_config("logo_{$kind}_media_id");
+
+        return $id ? once(fn (): ?Media => Media::query()->find($id)) : null;
+    }
+}
+
 if (! function_exists('site_asset_url')) {
     function site_asset_url(?string $path, string $fallback = ''): string
     {
@@ -184,6 +195,23 @@ if (! function_exists('absolute_url')) {
         return preg_match('~^https?://~', $path)
             ? $path
             : rtrim((string) site_config('site_url', config('app.url')), '/').'/'.ltrim($path, '/');
+    }
+}
+
+if (! function_exists('public_image_srcset')) {
+    /** For a picture in public/images with an 800px copy beside it ("name-800.webp"), both sizes. */
+    function public_image_srcset(?string $url): ?string
+    {
+        $path = (string) parse_url((string) $url, PHP_URL_PATH);
+
+        if (! preg_match('#/images/([a-z0-9-]+)\.webp$#', $path, $match)) {
+            return null;
+        }
+
+        $copy = public_path("images/{$match[1]}-800.webp");
+        $size = is_file($copy) ? getimagesize(public_path("images/{$match[1]}.webp")) : false;
+
+        return $size ? preg_replace('#\.webp$#', '-800.webp', (string) $url).' 800w, '.$url.' '.$size[0].'w' : null;
     }
 }
 

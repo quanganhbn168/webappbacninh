@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
-use App\Filament\Forms\SeoTitleInput;
-use App\Filament\Forms\BlogRichEditor as RichEditor;
 use App\Filament\Forms\PermalinkInput;
+use App\Filament\Forms\SeoTitleInput;
 use App\Models\Post;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Awcodes\Curator\Components\Forms\RichEditor\AttachCuratorMediaPlugin;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -44,9 +45,16 @@ class PostForm
                             ->plugins([AttachCuratorMediaPlugin::make()])
                             ->disableToolbarButtons(['attachFiles'])
                             ->enableToolbarButtons(['attachCuratorMedia'])
-                            ->extraAttributes(['class' => 'blog-content-editor'])
+                            ->extraAttributes(['class' => 'rich-editor-scroll'])
                             ->helperText('Thời gian đọc được ước tính tự động từ nội dung bài viết.'),
                     ])->columns(1),
+                    Section::make('Câu hỏi thường gặp')->description('Hiện thành một mục riêng ở cuối bài và gửi cho Google dưới dạng FAQ.')->schema([
+                        Repeater::make('faqs')->hiddenLabel()->schema([
+                            TextInput::make('q')->label('Câu hỏi')->required()->maxLength(255),
+                            Textarea::make('a')->label('Trả lời')->required()->rows(3)->maxLength(2000),
+                        ])->itemLabel(fn (array $state): ?string => $state['q'] ?? null)
+                            ->collapsible()->reorderable()->addActionLabel('Thêm câu hỏi')->defaultItems(0),
+                    ])->collapsible(),
                     Section::make('SEO')->schema([
                         SeoTitleInput::make('meta_title'),
                         Textarea::make('meta_description')->label('Mô tả SEO')->rows(3),

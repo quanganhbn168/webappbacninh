@@ -28,6 +28,7 @@
         <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
     @endif
     @stack('head')
+    @include('site.partials.font-preload')
     @vite(['resources/scss/site.scss', 'resources/js/site.js'])
     {!! tracking_code('head') !!}
 </head>

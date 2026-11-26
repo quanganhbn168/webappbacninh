@@ -31,9 +31,9 @@ final class LoadSiteSettings
             ],
             'website' => [
                 'site_url' => $website->site_url,
-                'site_logo_wide' => $website->site_logo_wide,
-                'site_logo_white' => $website->site_logo_white,
-                'site_logo_square' => $website->site_logo_square,
+                'logo_wide_media_id' => $website->logo_wide_media_id,
+                'logo_white_media_id' => $website->logo_white_media_id,
+                'logo_square_media_id' => $website->logo_square_media_id,
                 'site_favicon' => $website->site_favicon,
             ],
             'seo' => [

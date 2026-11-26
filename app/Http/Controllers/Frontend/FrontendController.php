@@ -8,7 +8,9 @@ use App\Domain\Site\Actions\ResolveSocialChannels;
 use App\Domain\Tools\ToolPages;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\View as ViewFacade;
 use Illuminate\Support\Str;
 
@@ -66,6 +68,22 @@ abstract class FrontendController extends Controller
                 ['name' => $tool['name'], 'url' => request()->url()],
             ],
         ]);
+    }
+
+    /**
+     * Each page of a list is its own page to search engines: it names itself as canonical, never
+     * the first page. A page number past the end does not exist.
+     */
+    protected function paginatedUrl(LengthAwarePaginator $paginator): string
+    {
+        abort_if($paginator->currentPage() > 1 && $paginator->isEmpty(), 404);
+
+        $query = array_filter([
+            'q' => trim((string) request()->query('q')),
+            'page' => $paginator->currentPage() > 1 ? $paginator->currentPage() : null,
+        ]);
+
+        return request()->url().($query === [] ? '' : '?'.Arr::query($query));
     }
 
     protected function page(string $view, array $data): View
@@ -147,7 +165,8 @@ abstract class FrontendController extends Controller
                 'addressCountry' => 'VN',
             ],
         ];
-        $logo = site_asset_url(site_config('site_logo_square') ?: site_config('site_logo_wide'));
+        $picture = site_logo('square') ?? site_logo('wide');
+        $logo = $picture ? absolute_url((string) $picture->url) : null;
         // Official profiles only; Zalo, Messenger and the like are chat links.
         $profiles = collect($data['socialChannels']['footer'])->whereIn('key', ['facebook', 'youtube'])->pluck('url')->values()->all();
         $organization += array_filter(['logo' => $logo, 'image' => $logo, 'sameAs' => $profiles]);

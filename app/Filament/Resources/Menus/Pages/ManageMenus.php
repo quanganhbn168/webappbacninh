@@ -9,6 +9,7 @@ use App\Models\MenuItem;
 use App\Models\OperationService;
 use App\Models\PostCategory;
 use App\Models\Service;
+use App\Models\TemplateCategory;
 use App\Support\FrontendMenuCache;
 use App\Support\Icons;
 use Filament\Notifications\Notification;
@@ -23,6 +24,8 @@ use Livewire\Attributes\Url;
  * Menu builder: pick existing pages on the left, arrange the tree on the right
  * (drag to reorder, buttons to nest), then save the whole menu at once.
  * The header allows one level of sub-items; footer columns are flat lists.
+ * A header item can open as a mega menu, whose sub-items carry a column title,
+ * an icon, a description and a badge.
  */
 class ManageMenus extends Page
 {
@@ -110,6 +113,8 @@ class ManageMenus extends Page
                 ->map(fn (Service $service): array => ['title' => $service->title, 'url' => $path($service->url)])->all()],
             'operations' => ['label' => 'Dịch vụ vận hành', 'links' => OperationService::query()->active()->ordered()->get()
                 ->map(fn (OperationService $service): array => ['title' => $service->title, 'url' => $path($service->url)])->all()],
+            'industries' => ['label' => 'Ngành giao diện', 'links' => TemplateCategory::query()->whereHas('templates', fn ($query) => $query->active())->orderBy('name')->get()
+                ->map(fn (TemplateCategory $category): array => ['title' => $category->name, 'url' => $path($category->url)])->all()],
             'articles' => ['label' => 'Danh mục bài viết', 'links' => PostCategory::query()->where('is_active', true)->orderBy('name')->get()
                 ->map(fn (PostCategory $category): array => ['title' => $category->name, 'url' => $path($category->url)])->all()],
         ], fn (array $group): bool => $group['links'] !== []);
@@ -241,6 +246,10 @@ class ManageMenus extends Page
             'items.*.url' => ['required', 'max:2048', self::URL_RULE],
             'items.*.children.*.title' => ['required', 'max:255'],
             'items.*.children.*.url' => ['required', 'max:2048', self::URL_RULE],
+            'items.*.badge' => ['nullable', 'max:30'],
+            'items.*.children.*.badge' => ['nullable', 'max:30'],
+            'items.*.children.*.description' => ['nullable', 'max:255'],
+            'items.*.children.*.column_title' => ['nullable', 'max:80'],
         ], [
             'regex' => 'Đường dẫn phải bắt đầu bằng /, #, https://, tel: hoặc mailto:',
         ], [
@@ -249,6 +258,10 @@ class ManageMenus extends Page
             'items.*.url' => 'đường dẫn',
             'items.*.children.*.title' => 'tên hiển thị',
             'items.*.children.*.url' => 'đường dẫn',
+            'items.*.badge' => 'nhãn',
+            'items.*.children.*.badge' => 'nhãn',
+            'items.*.children.*.description' => 'mô tả',
+            'items.*.children.*.column_title' => 'tên cột',
         ]);
 
         $menu = $this->menu;
@@ -306,6 +319,10 @@ class ManageMenus extends Page
             'title' => $item->title,
             'url' => $item->url,
             'icon' => $item->icon,
+            'description' => $item->description,
+            'badge' => $item->badge,
+            'column_title' => $item->column_title,
+            'is_mega' => $item->is_mega,
             'open_in_new_tab' => $item->open_in_new_tab,
             'is_active' => $item->is_active,
         ];
@@ -320,6 +337,10 @@ class ManageMenus extends Page
             'title' => $title,
             'url' => $url,
             'icon' => null,
+            'description' => null,
+            'badge' => null,
+            'column_title' => null,
+            'is_mega' => false,
             'open_in_new_tab' => false,
             'is_active' => true,
             'children' => [],
@@ -332,12 +353,20 @@ class ManageMenus extends Page
         $item = $state['id'] ? $menu->allItems()->find($state['id']) : null;
         $item ??= new MenuItem(['menu_id' => $menu->id]);
 
+        // Sub-item details only mean something inside a header drop-down.
+        $isChild = $parentId && $this->allowsChildren();
+        $text = fn (string $key): ?string => trim((string) Arr::get($state, $key)) ?: null;
+
         $item->fill([
             'menu_id' => $menu->id,
             'parent_id' => $parentId,
             'title' => trim((string) $state['title']),
             'url' => trim((string) $state['url']),
-            'icon' => $parentId && $this->allowsChildren() ? (Arr::get($state, 'icon') ?: null) : null,
+            'icon' => $isChild ? $text('icon') : null,
+            'description' => $isChild ? $text('description') : null,
+            'column_title' => $isChild ? $text('column_title') : null,
+            'badge' => $this->allowsChildren() ? $text('badge') : null,
+            'is_mega' => ! $parentId && $this->allowsChildren() && (bool) Arr::get($state, 'is_mega'),
             'open_in_new_tab' => (bool) $state['open_in_new_tab'],
             'is_active' => (bool) $state['is_active'],
             'position' => $position,

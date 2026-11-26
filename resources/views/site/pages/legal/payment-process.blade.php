@@ -2,9 +2,6 @@
 
 @section('content')
     <x-legal-document
-        title="Quy trình thanh toán và triển khai"
-        eyebrow="THÔNG TIN VÀ CHÍNH SÁCH"
-        summary="Quy trình thanh toán được chia theo từng giai đoạn nhằm bảo đảm hai bên cùng kiểm soát phạm vi, tiến độ và chất lượng bàn giao. Tỷ lệ cụ thể có thể thay đổi theo quy mô dự án và sẽ được ghi trong báo giá."
         notice="Khách hàng chỉ thanh toán theo thông tin tài khoản được xác nhận trong báo giá, hợp đồng, email hoặc kênh liên hệ chính thức của WebApp Bắc Ninh."
         icon="banknote"
         updated="2026-07-11"

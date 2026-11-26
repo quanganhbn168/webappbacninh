@@ -39,6 +39,8 @@
             <nav aria-label="Chính sách">
                 <a href="{{ route('legal.privacy') }}">Bảo mật</a>
                 <a href="{{ route('legal.terms') }}">Điều khoản</a>
+                <a href="{{ route('legal.warranty') }}">Bảo hành</a>
+                <a href="{{ route('legal.payment') }}">Thanh toán</a>
                 <a href="{{ route('sitemap') }}">Sitemap</a>
             </nav>
         </div>

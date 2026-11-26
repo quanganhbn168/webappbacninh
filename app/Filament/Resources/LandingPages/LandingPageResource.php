@@ -24,11 +24,11 @@ class LandingPageResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Website;
 
-    protected static ?string $navigationLabel = 'Landing page';
+    protected static ?string $navigationLabel = 'Landing quảng cáo';
 
     protected static ?string $modelLabel = 'landing page';
 
-    protected static ?string $pluralModelLabel = 'Landing page';
+    protected static ?string $pluralModelLabel = 'Landing quảng cáo';
 
     protected static ?int $navigationSort = 30;
 

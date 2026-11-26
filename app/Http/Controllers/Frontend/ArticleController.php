@@ -22,7 +22,9 @@ class ArticleController extends FrontendController
             'featured' => $search === '' && $posts->onFirstPage() ? Post::query()->forCatalog()->reorder()->orderByDesc('is_featured')->orderByDesc('published_at')->take(4)->get() : collect(),
             'categories' => $this->categories(),
             'search' => $search,
-            'robots' => $search !== '' || ! $posts->onFirstPage() ? 'noindex, follow' : 'index, follow, max-image-preview:large',
+            'canonicalUrl' => $this->paginatedUrl($posts),
+            // Search results stay out of Google. Without a search the page's own admin setting applies.
+            ...($search !== '' ? ['robots' => 'noindex, follow'] : []),
             'schemaType' => 'CollectionPage',
             'schemaItems' => $posts->getCollection()->map(fn (Post $post): array => ['name' => $post->title, 'url' => $post->url])->all(),
         ]);
@@ -36,9 +38,10 @@ class ArticleController extends FrontendController
         return $this->page('site.articles.category', [
             'category' => $category,
             'posts' => $posts,
+            'canonicalUrl' => $this->paginatedUrl($posts),
             'categories' => $this->categories(),
             'pageTitle' => $category->meta_title ?: $category->name.' | '.site_config('name'),
-            'pageDescription' => $category->meta_description ?: ($category->description ?? ''),
+            'pageDescription' => $category->meta_description ?: ($category->description ?: 'Tổng hợp bài viết chủ đề '.$category->name.' của '.site_config('name').': kinh nghiệm và hướng dẫn thực tế cho doanh nghiệp.'),
             'ogImage' => $category->ogMedia?->url ?: ($category->image?->url ?: $this->defaultOgImage()),
             'schemaType' => 'CollectionPage',
             'breadcrumbs' => $this->breadcrumbs($category),
@@ -47,7 +50,7 @@ class ArticleController extends FrontendController
 
     public function detail(string $slug): View
     {
-        $article = Post::query()->published()->with(['category', 'featuredMedia', 'ogMedia', 'media'])->where('slug', $slug)->firstOrFail();
+        $article = Post::query()->published()->with(['category', 'featuredMedia', 'ogMedia'])->where('slug', $slug)->firstOrFail();
 
         return $this->page('site.articles.show', [
             'article' => $article,
@@ -60,6 +63,7 @@ class ArticleController extends FrontendController
             'ogType' => 'article',
             'ogImage' => $article->og_image_url,
             'schemaType' => 'Article',
+            'schemaFaqs' => $article->faqItems(),
             'schemaData' => [
                 'headline' => $article->title,
                 'image' => $article->og_image_url,

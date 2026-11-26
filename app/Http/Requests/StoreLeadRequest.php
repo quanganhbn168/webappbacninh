@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Lead;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreLeadRequest extends FormRequest
@@ -10,6 +11,14 @@ class StoreLeadRequest extends FormRequest
     {
         if (! $this->filled('need') && $this->filled('service')) {
             $this->merge(['need' => $this->input('service')]);
+        }
+
+        // Ad parameters are trimmed rather than validated: a long or odd one must never cost a lead.
+        if ($this->has('campaign')) {
+            $this->merge(['campaign' => collect((array) $this->input('campaign'))->only(Lead::CAMPAIGN_KEYS)
+                ->filter(fn (mixed $value): bool => is_string($value) && $value !== '')
+                ->map(fn (string $value): string => mb_substr($value, 0, 500))
+                ->all()]);
         }
     }
 
@@ -36,6 +45,7 @@ class StoreLeadRequest extends FormRequest
             'timeline' => ['nullable', 'string', 'max:100'],
             'message' => ['nullable', 'string', 'max:5000'],
             'source' => ['nullable', 'string', 'max:255'],
+            'campaign' => ['nullable', 'array'],
         ];
     }
 }

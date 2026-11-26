@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Domain\Media\Actions\BuildResponsiveImage;
+use App\Domain\Media\Actions\ResizeContentImages;
 use App\Domain\Projects\Actions\GenerateProjectCode;
+use App\Traits\HasCoverImage;
 use App\Traits\HasCuratorGallery;
 use Awcodes\Curator\Models\Media;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,6 +19,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Project extends Model
 {
+    use HasCoverImage;
     use HasCuratorGallery;
     use HasSlug;
 
@@ -132,18 +135,10 @@ class Project extends Model
     /** Sanitized editor HTML; empty when the editor only holds blank paragraphs. */
     private function richHtml(?string $content): string
     {
-        $html = (string) str($content ?? '')->sanitizeHtml();
+        $html = app(ResizeContentImages::class)->execute((string) str($content ?? '')->sanitizeHtml());
         $text = html_entity_decode(strip_tags($html, ['img', 'hr', 'table']));
 
         return preg_replace('/[\s\x{00A0}]+/u', '', $text) === '' ? '' : $html;
-    }
-
-    /** Card and banner image, in sizes for those frames. */
-    protected function cover(): Attribute
-    {
-        return Attribute::get(fn (): array => $this->image
-            ? app(BuildResponsiveImage::class)->execute($this->image, [480, 800, 1200])
-            : ['src' => $this->image_url, 'srcset' => null])->shouldCache();
     }
 
     /**

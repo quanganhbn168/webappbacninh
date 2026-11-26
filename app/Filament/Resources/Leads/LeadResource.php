@@ -7,6 +7,7 @@ use App\Models\Lead;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\SelectColumn;
@@ -66,6 +67,9 @@ class LeadResource extends Resource
             TextInput::make('timeline')->label('Thời gian dự kiến'),
             Textarea::make('message')->label('Nội dung')->rows(6)->columnSpanFull(),
             TextInput::make('source')->label('Trang gửi yêu cầu')->columnSpanFull(),
+            TextEntry::make('campaign')->label('Thông số quảng cáo')->columnSpanFull()->listWithLineBreaks()
+                ->state(fn (?Lead $record): array => collect($record?->meta['campaign'] ?? [])->map(fn (string $value, string $key): string => $key.': '.$value)->values()->all())
+                ->placeholder('Không đến từ liên kết quảng cáo'),
         ]);
     }
 
@@ -78,10 +82,14 @@ class LeadResource extends Resource
             TextColumn::make('phone')->label('Điện thoại')->searchable()->copyable(),
             TextColumn::make('email')->label('Email')->searchable()->toggleable(),
             TextColumn::make('need')->label('Nhu cầu')->limit(40),
+            TextColumn::make('campaign')->label('Quảng cáo')->state(fn (Lead $record): ?string => $record->campaignLabel())->placeholder('—')->toggleable(),
             SelectColumn::make('status')->label('Trạng thái')->options($statuses)->rules(['in:new,contacted,closed']),
             TextColumn::make('created_at')->label('Ngày gửi')->dateTime('d/m/Y H:i')->sortable(),
         ])->defaultSort('created_at', 'desc')
-            ->filters([SelectFilter::make('status')->label('Trạng thái')->options($statuses)])
+            ->filters([
+                SelectFilter::make('status')->label('Trạng thái')->options($statuses),
+                SelectFilter::make('landing_page_id')->label('Landing page')->relationship('landingPage', 'name'),
+            ])
             ->recordActions([ViewAction::make()]);
     }
 

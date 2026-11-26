@@ -1,13 +1,12 @@
 // Page chrome: header, navigation, footer, floating buttons and the page hero.
 
-// Header: sticky navbar; the menu is an offcanvas below lg. No transform/filter on the header:
+// Header: sticky navbar; the menu is an offcanvas below xl. No transform/filter on the header:
 // they would make it the containing block of the fixed offcanvas. z-index sits above the offcanvas
 // backdrop (1040) so the panel inside the header stays visible, and below modal backdrops (1050).
 .site-header {
     position: sticky;
     top: 0;
     z-index: 1041;
-    height: var(--header-height);
     border-bottom: 1px solid $border;
     background: rgba(#fff, .98);
     transition: top .3s ease;
@@ -21,14 +20,17 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    height: 100%;
+    padding-block: .75rem; // the header is as tall as its content plus this
+
+    @include media-breakpoint-down(sm) { padding-block: .5rem; }
 
     // Brand | menu | actions, with the menu centred in the container. Written as .navbar > …
     // to outrank Bootstrap's `.navbar > .container { display: flex }`.
-    @include media-breakpoint-up(lg) {
+    @include media-breakpoint-up(xl) {
         .navbar > & { display: grid; }
         grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
         gap: 1.5rem;
+        padding-block: 0; // here the menu links carry the padding, down to the edge of the header
     }
 }
 .site-header__actions {
@@ -44,7 +46,7 @@
         min-height: 2.75rem;
     }
 
-    @include media-breakpoint-up(lg) { justify-self: end; }
+    @include media-breakpoint-up(xl) { justify-self: end; }
 }
 
 .brand {
@@ -93,7 +95,6 @@
         color: $text;
         font-size: .92rem;
         font-weight: 550;
-        white-space: nowrap;
 
         &:hover, &:focus-visible { color: $gold-700; }
         &.active { color: $gold-800; }
@@ -141,31 +142,110 @@
 }
 .site-nav__icon { width: 1.3rem; height: 1.3rem; color: $gold-600; }
 .site-nav__actions { display: grid; gap: .75rem; margin-top: 1.5rem; }
+.nav-badge {
+    margin-left: .35rem;
+    padding: .05rem .4rem;
+    border-radius: $radius-sm;
+    background: $red;
+    color: #fff;
+    font-size: .65rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1.5;
+    white-space: nowrap;
+    vertical-align: middle;
+}
 
-@include media-breakpoint-up(lg) {
+// Mega menu: a full-width panel with the sub-items in columns.
+.site-mega {
+    --bs-dropdown-border-radius: 0;
+    --bs-dropdown-padding-y: 0;
+}
+.site-mega__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem 3rem;
+}
+.site-mega__column { flex: 1 1 24rem; }
+.site-mega__column--described { flex: 0 1 22rem; }
+.site-mega__heading {
+    margin-bottom: .75rem;
+    color: $muted;
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+.site-mega__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: .25rem .75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    .site-mega__column--described & { grid-template-columns: minmax(0, 1fr); gap: .5rem; }
+}
+.site-mega__link {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .5rem;
+    border-radius: $radius-sm;
+    color: $ink;
+    font-size: .93rem;
+    white-space: normal;
+
+    &:hover, &:focus-visible { background: $gold-50; color: $ink; }
+    small { display: block; margin-top: .15rem; color: $muted; font-size: .8rem; line-height: 1.45; }
+    .site-mega__column--described & { align-items: flex-start; }
+}
+.site-mega__title { display: block; font-weight: 600; }
+.site-mega__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    color: $gold-700;
+
+    .icon { width: 1.2rem; height: 1.2rem; }
+    .site-mega__column--described & {
+        width: 2.75rem;
+        height: 2.75rem;
+        border: 1px solid $border;
+        border-radius: $radius-sm;
+        background: #fff;
+    }
+}
+
+@include media-breakpoint-up(xl) {
+    // Menu items fill the whole header: any gap above a panel would close it under the mouse.
+    // (Bootstrap forces `height: auto` on the expanded offcanvas, so stretch instead.)
     .site-nav {
-        height: 100%;
+        align-self: stretch;
 
-        .offcanvas-body { height: 100%; }
-        .nav-item { display: flex; align-items: center; }
+        &.offcanvas .offcanvas-body { flex-grow: 1; } // outranks Bootstrap's `flex-grow: 0`
+        .nav-item { display: flex; }
+        // A long title (or a long menu from the admin) wraps onto a second line and the header grows.
         .nav-link {
             display: inline-flex;
             align-items: center;
-            height: 100%;
-            padding: 0 !important;
+            padding: 1.4rem 0 !important;
+            text-align: center;
         }
     }
     .site-nav__list {
         align-items: stretch;
         gap: 1.5rem;
-        height: 100%;
 
-        @include media-breakpoint-only(lg) { gap: 1rem; }
+        @include media-breakpoint-only(xl) { gap: .8rem; }
     }
     // The underline belongs to the text, so it sits just under the word. It grows from the
     // left on hover and stays drawn on the current page.
     .site-nav__text {
         position: relative;
+        display: inline-block;
 
         &::after {
             content: "";
@@ -186,17 +266,53 @@
         .nav-link.active &::after { transform: scaleX(1); }
     }
     .site-nav__dropdown { position: relative; gap: .15rem; }
-    .site-nav__toggle { width: 1.2rem; height: 100%; }
+    .site-nav__toggle { width: 1.2rem; }
     .site-nav__panel {
         top: calc(100% - .15rem) !important;
         left: -1.25rem;
         margin-top: 0;
     }
-    // Open on hover too; click and keyboard use Bootstrap's dropdown.
-    .site-nav__dropdown:hover > .site-nav__panel,
-    .site-nav__dropdown:focus-within > .site-nav__panel { display: block; }
+    // Open on hover too; click and keyboard use Bootstrap's dropdown. A panel waits a moment before
+    // opening and closing, so a mouse that slips off or cuts a corner does not lose it.
+    .site-nav__dropdown > :is(.site-nav__panel, .site-mega) {
+        display: block;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity .15s ease .3s, visibility 0s linear .45s;
+    }
+    .site-nav__dropdown:hover > :is(.site-nav__panel, .site-mega) {
+        visibility: visible;
+        opacity: 1;
+        transition-delay: .1s;
+    }
+    // Moving on to another menu item swaps the panels at the same moment.
+    .site-nav__list:has(> .nav-item:hover) > .site-nav__dropdown:not(:hover) > :is(.site-nav__panel, .site-mega) {
+        transition: opacity 0s linear .1s, visibility 0s linear .1s;
+    }
+    // No delay for the keyboard or a click: the links must be reachable at once.
+    .site-nav__dropdown:focus-within > :is(.site-nav__panel, .site-mega),
+    .site-nav__dropdown > :is(.site-nav__panel, .site-mega).show {
+        visibility: visible;
+        opacity: 1;
+        transition-delay: 0s;
+    }
+
+    // The panel spans the header, so its item must not be the positioning parent.
+    .site-nav .nav-item.site-nav__dropdown--mega { position: static; }
+    .site-nav .site-mega {
+        top: 100%;
+        right: 0;
+        left: 0;
+        max-height: calc(100vh - var(--header-height));
+        margin-top: 0;
+        overflow-y: auto;
+        padding-block: 1.75rem;
+        border-width: 1px 0;
+        border-color: $border;
+        box-shadow: $shadow-lg;
+    }
 }
-@include media-breakpoint-down(lg) {
+@include media-breakpoint-down(xl) {
     .site-nav { --bs-offcanvas-width: min(22rem, 88vw); }
     .site-nav__list .nav-link {
         min-height: 2.9rem;
@@ -211,6 +327,17 @@
         > .nav-link { flex: 1; }
     }
     .site-nav__toggle { width: 2.9rem; height: 2.9rem; }
+    .site-mega {
+        position: static;
+        flex-basis: 100%;
+        width: 100%;
+        border: 0;
+
+        .container { padding: 0; }
+    }
+    .site-mega__grid { flex-direction: column; gap: 1rem; padding-bottom: .75rem; }
+    .site-mega__column, .site-mega__column--described { flex-basis: auto; }
+    .site-mega__list { grid-template-columns: minmax(0, 1fr); }
     .site-nav__panel {
         position: static;
         flex-basis: 100%;
@@ -219,6 +346,14 @@
         border: 0;
         box-shadow: none;
     }
+}
+
+// A long menu in the 1140px container: smaller text, logo and gaps.
+@include media-breakpoint-only(xl) {
+    .site-nav .nav-link { font-size: .84rem; }
+    .site-header__inner { gap: 1rem; }
+    .site-header .brand__name { font-size: 1.4rem; }
+    .site-header .brand__logo { max-width: 170px; height: 46px; }
 }
 
 // Footer
@@ -283,8 +418,11 @@
     font-size: .85rem;
 
     p { margin: 0; }
-    nav { display: flex; gap: 1.25rem; }
+    nav { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; }
     a:hover { color: $gold-800; }
+
+    // On a phone the floating buttons cover the bottom right corner: keep the links clear of it.
+    @include media-breakpoint-down(md) { padding-right: 4rem; }
 }
 
 // Floating contact buttons

@@ -1,5 +1,5 @@
 {{-- Policy / terms page: hero, table of contents and numbered sections. --}}
-@props(['title', 'eyebrow' => 'Thông tin và chính sách', 'summary' => null, 'notice' => null, 'icon' => 'file-text', 'updated' => null, 'sections' => []])
+@props(['title' => null, 'eyebrow' => null, 'summary' => null, 'notice' => null, 'icon' => 'file-text', 'updated' => null, 'sections' => []])
 <x-hero :eyebrow="$eyebrow" :title="$title" :lead="$summary" class="page-hero--compact">
     <x-slot:meta>
         <div class="page-hero__meta">

@@ -1,8 +1,7 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero title="Hạ tầng Website ổn định," highlight="bảo mật và dễ vận hành"
-        lead="WebApp Bắc Ninh cung cấp giải pháp Hosting, Domain, Email doanh nghiệp và cấu hình kỹ thuật đồng bộ, giúp website của bạn hoạt động ổn định, nhanh chóng và an toàn."
+    <x-hero
         :image="asset('images/hero-hosting.webp')" image-alt="Hệ thống máy chủ hosting, website trên laptop và điện thoại" note="Hạ tầng vững chắc cho doanh nghiệp phát triển"
         :breadcrumbs="[['name' => 'Trang chủ', 'url' => route('home')], ['name' => 'Dịch vụ', 'url' => route('services.overview')], ['name' => 'Hosting - Domain - Email', 'url' => route('hosting')]]">
         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn hạ tầng <x-icon name="arrow-right" /></button>

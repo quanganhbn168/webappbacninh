@@ -51,7 +51,7 @@ class TaxController extends FrontendController
         return response()->json([
             'success' => true,
             'data' => array_merge($result->toArray(), [
-                // Legacy fields for backward compatibility
+                // The field names the calculator page reads.
                 'gross_income' => $result->grossAmount,
                 'taxable_income' => $result->taxableAmount,
                 'total_tax' => $result->totalTax,

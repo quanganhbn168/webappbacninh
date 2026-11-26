@@ -34,7 +34,7 @@ Banner đầu trang: để trống trong admin thì dùng nội dung viết sẵ
 
 - Không dùng Font Awesome; icon dùng `<x-icon>`.
 - Form tư vấn: `<x-lead-form>` gửi `POST /lien-he` (JSON khi có JavaScript, form thường khi không), lưu vào Admin → Liên hệ. Nút có `data-consult="…"` mở modal tư vấn và điền sẵn nhu cầu; `data-domain` mở modal kiểm tra tên miền (`/domain-check`).
-- Lọc danh sách ngắn bằng `data-catalog` (sản phẩm, dự án, giải pháp); kho giao diện dùng `data-theme-library`; blog phân trang phía máy chủ.
+- Lọc danh sách ngắn bằng `data-catalog` (sản phẩm, dự án, giải pháp); kho giao diện dùng `data-theme-library`, khung xem demo theo thiết bị ở `site/themes/demo.blade.php`; blog phân trang phía máy chủ.
 - Màu chữ vàng trên nền trắng dùng `$gold-700` (chữ lớn, icon; `.text-primary`) hoặc `$gold-800` (chữ thường, link; `.text-primary-emphasis`) để đủ tương phản; nền vàng dùng chữ `$on-gold`.
 - Ưu tiên class/utility của Bootstrap (`input-group`, `object-fit-cover`, `position-*`…) trước khi viết class mới; thẻ trắng mới dùng `@include surface`.
 - Ảnh dưới màn hình đầu dùng `loading="lazy"` và có `width`/`height`.

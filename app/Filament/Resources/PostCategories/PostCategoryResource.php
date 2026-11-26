@@ -22,7 +22,7 @@ class PostCategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
-    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Blog;
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Articles;
 
     protected static ?string $navigationLabel = 'Danh mục bài viết';
 

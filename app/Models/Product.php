@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ProductGroup;
+use App\Traits\HasCoverImage;
 use Awcodes\Curator\Models\Media;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -14,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Product extends Model
 {
+    use HasCoverImage;
+
     protected $fillable = [
         'name',
         'group',

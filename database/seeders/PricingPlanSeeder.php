@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\PricingPlan;
 use App\Models\Service;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
 
 class PricingPlanSeeder extends Seeder
 {
@@ -38,19 +37,9 @@ class PricingPlanSeeder extends Seeder
         $this->linkServices();
     }
 
-    /**
-     * Gives the website and landing services their plans; a service that already
-     * has plans is left alone.
-     *
-     * @param  array<int, array<string, mixed>>  $landingPackages  wording once typed on the landing service
-     */
-    public function linkServices(array $landingPackages = []): void
+    /** Gives the website and landing services their plans; a service that already has plans is left alone. */
+    public function linkServices(): void
     {
-        // An earlier migration runs this seeder before services can pick plans.
-        if (! Schema::hasTable('priceables')) {
-            return;
-        }
-
         foreach (self::SERVICE_PLANS as $slug => $names) {
             $service = Service::query()->where('slug', $slug)->first();
             if (! $service || $service->pricingPlans()->exists()) {
@@ -60,15 +49,10 @@ class PricingPlanSeeder extends Seeder
             $plans = PricingPlan::query()->where('group', 'website')->whereIn('name', $names)->pluck('id');
 
             if ($slug === 'landing-page') {
-                $typed = collect($landingPackages)->keyBy('name');
                 foreach (self::LANDING_PLANS as $order => $plan) {
-                    $package = $typed->get($plan['name']);
                     $plans->push(PricingPlan::query()->firstOrCreate(
                         ['name' => $plan['name'], 'show_in_table' => false],
-                        array_replace($plan, array_filter([
-                            'summary' => $package['desc'] ?? null,
-                            'features' => $package['items'] ?? null,
-                        ])) + ['price_prefix' => 'Từ', 'cta_label' => 'Nhận báo giá', 'order' => 100 + $order, 'is_active' => true],
+                        $plan + ['price_prefix' => 'Từ', 'cta_label' => 'Nhận báo giá', 'order' => 100 + $order, 'is_active' => true],
                     )->id);
                 }
             }

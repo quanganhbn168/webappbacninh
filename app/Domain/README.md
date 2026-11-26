@@ -5,7 +5,7 @@ commands stay thin and call into these classes.
 
 | Folder | Area |
 |---|---|
-| `Content/` | Shared content helpers (slugs, reading time, blog content) |
+| `Content/` | Shared content helpers (slugs, reading time, article content) |
 | `Projects/` | Project code numbering |
 | `Pages/` | The fixed site pages (`SitePages`): routes, default titles and descriptions |
 | `Tools/` | SEO data of the free tool pages |

@@ -1,6 +1,6 @@
 @php($menu = app(\App\Domain\Navigation\Actions\BuildMenuTree::class)->execute(\App\Models\Menu::HEADER))
 <header class="site-header">
-    <nav class="navbar navbar-expand-lg h-100 p-0" aria-label="Điều hướng chính">
+    <nav class="navbar navbar-expand-xl p-0" aria-label="Điều hướng chính">
         <div class="container site-header__inner">
             @include('site.partials.brand')
 
@@ -14,9 +14,12 @@
                         @foreach ($menu as $item)
                             @php($active = \App\Domain\Navigation\Actions\BuildMenuTree::isActive($item))
                             @if ($item['children'] !== [])
-                                <li class="nav-item dropdown site-nav__dropdown">
-                                    <a @class(['nav-link', 'active' => $active]) href="{{ $item['url'] }}" @if ($active) aria-current="page" @endif @if ($item['new_tab']) target="_blank" rel="noopener" @endif><span class="site-nav__text">{{ $item['title'] }}</span></a>
+                                <li @class(['nav-item dropdown site-nav__dropdown', 'site-nav__dropdown--mega' => $item['mega']])>
+                                    <a @class(['nav-link', 'active' => $active]) href="{{ $item['url'] }}" @if ($active) aria-current="page" @endif @if ($item['new_tab']) target="_blank" rel="noopener" @endif><span class="site-nav__text">{{ $item['title'] }}</span>@if ($item['badge'])<em class="nav-badge">{{ $item['badge'] }}</em>@endif</a>
                                     <button class="dropdown-toggle site-nav__toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="Mở danh sách {{ mb_strtolower($item['title']) }}"><x-icon name="chevron-down" class="site-nav__caret" /></button>
+                                    @if ($item['mega'])
+                                        @include('site.partials.mega-menu', ['item' => $item])
+                                    @else
                                     <ul class="dropdown-menu site-nav__panel">
                                         @foreach ($item['children'] as $child)
                                             <li>
@@ -27,15 +30,16 @@
                                             </li>
                                         @endforeach
                                     </ul>
+                                    @endif
                                 </li>
                             @else
                                 <li class="nav-item">
-                                    <a @class(['nav-link', 'active' => $active]) href="{{ $item['url'] }}" @if ($active) aria-current="page" @endif @if ($item['new_tab']) target="_blank" rel="noopener" @endif><span class="site-nav__text">{{ $item['title'] }}</span></a>
+                                    <a @class(['nav-link', 'active' => $active]) href="{{ $item['url'] }}" @if ($active) aria-current="page" @endif @if ($item['new_tab']) target="_blank" rel="noopener" @endif><span class="site-nav__text">{{ $item['title'] }}</span>@if ($item['badge'])<em class="nav-badge">{{ $item['badge'] }}</em>@endif</a>
                                 </li>
                             @endif
                         @endforeach
                     </ul>
-                    <div class="site-nav__actions d-lg-none">
+                    <div class="site-nav__actions d-xl-none">
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn</button>
                     </div>
                 </div>
@@ -43,7 +47,7 @@
 
             <div class="site-header__actions">
                 <button class="btn btn-primary d-none d-sm-inline-flex" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn</button>
-                <button class="btn btn-icon d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#site-nav" aria-controls="site-nav" aria-label="Mở menu">
+                <button class="btn btn-icon d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#site-nav" aria-controls="site-nav" aria-label="Mở menu">
                     <x-icon name="menu" />
                 </button>
             </div>

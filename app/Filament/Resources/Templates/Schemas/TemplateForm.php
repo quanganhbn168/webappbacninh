@@ -2,11 +2,15 @@
 
 namespace App\Filament\Resources\Templates\Schemas;
 
-use App\Filament\Forms\SeoTitleInput;
+use App\Enums\LandingTemplate;
 use App\Enums\TemplateType;
 use App\Filament\Forms\PermalinkInput;
+use App\Filament\Forms\SeoTitleInput;
+use App\Filament\Resources\LandingPages\Schemas\FreshairFields;
+use App\Filament\Resources\LandingPages\Schemas\PurehomeFields;
 use App\Models\Template;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
+use Closure;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -50,7 +54,7 @@ class TemplateForm
                         ])->columns(2),
                         Group::make([
                             Select::make('type')->label('Loại website')->options(TemplateType::options())
-                                ->required()->native(false),
+                                ->required()->native(false)->live(),
                             Select::make('template_category_id')->label('Ngành')->relationship('category', 'name')
                                 ->required()->searchable()->preload()
                                 ->createOptionForm([
@@ -64,6 +68,7 @@ class TemplateForm
                         TagsInput::make('tags')->label('Thẻ nổi bật')->placeholder('Thêm thẻ rồi nhấn Enter')
                             ->helperText('Tối đa 3 thẻ đầu tiên hiện trên thẻ giao diện.'),
                     ])->columns(1),
+                    self::demo(),
                     Section::make('Nội dung trang chi tiết')->schema([
                         self::list('audiences', 'Mẫu này phù hợp với ai?', 'Doanh nghiệp cần website rõ dịch vụ, dễ nhận khách'),
                         self::list('pages', 'Các trang có sẵn', 'Trang chủ'),
@@ -78,20 +83,22 @@ class TemplateForm
                 ])->columnSpan(['default' => 1, 'lg' => 2]),
                 Group::make([
                     Section::make('Chi phí và thời gian')->schema([
-                        TextInput::make('price')->label('Chi phí tham khảo từ')->numeric()->minValue(0)->suffix('đ')->required(),
-                        TextInput::make('sale_price')->label('Giá khuyến mãi')->numeric()->minValue(0)->suffix('đ'),
+                        TextInput::make('price')->label('Chi phí tham khảo từ')->numeric()->minValue(0)->suffix('đ')
+                            ->helperText('Bỏ trống sẽ hiện "Liên hệ".'),
+                        TextInput::make('sale_price')->label('Giá khuyến mãi')->numeric()->minValue(0)->suffix('đ')
+                            ->helperText('Thấp hơn giá trên thì giá trên bị gạch, giá này hiện màu đỏ. Bỏ trống nếu không giảm.'),
                         TextInput::make('duration')->label('Thời gian triển khai')->maxLength(100)->placeholder('7 - 10 ngày'),
                         TextInput::make('year')->label('Năm')->numeric()->minValue(2000)->maxValue(2100)->default(now()->year),
-                        TextInput::make('demo_url')->label('Link demo')->url()->maxLength(255),
                     ])->columns(1),
                     Section::make('Tính năng lọc')->schema([
                         CheckboxList::make('features')->hiddenLabel()->relationship('features', 'name')
                             ->helperText('Dùng cho bộ lọc "Tính năng" ở trang Kho giao diện.'),
                     ]),
                     Section::make('Hình ảnh')->schema([
-                        CuratorPicker::make('image_id')->label('Ảnh đại diện')->constrained(),
+                        CuratorPicker::make('image_id')->label('Ảnh đại diện')->constrained()
+                            ->helperText('Nên dùng ảnh chụp cả trang: khách rê chuột sẽ thấy ảnh cuộn xuống.'),
                         CuratorPicker::make('gallery')->label('Bộ ảnh chi tiết')->multiple()->constrained()
-                            ->helperText('Ảnh đầu tiên là ảnh lớn ở trang chi tiết.'),
+                            ->helperText('Slider ở trang chi tiết, theo đúng thứ tự này. Bỏ trống thì dùng ảnh đại diện.'),
                     ])->columns(1),
                     Section::make('Hiển thị')->schema([
                         Toggle::make('is_featured')->label('Nổi bật'),
@@ -100,6 +107,41 @@ class TemplateForm
                     ])->columns(1),
                 ])->columnSpan(['default' => 1, 'lg' => 1]),
             ]);
+    }
+
+    /**
+     * The demo visitors open from the catalog: either one of our landing layouts,
+     * edited here, or a link to a demo running elsewhere.
+     */
+    private static function demo(): Section
+    {
+        $offersLayout = fn (Get $get): bool => in_array($get('type'), [TemplateType::Landing, TemplateType::Landing->value], true) || filled($get('demo_layout'));
+        // Read from inside the `demo` state path, so the layout is one level up.
+        $uses = fn (LandingTemplate $layout): Closure => fn (Get $get): bool => in_array($get('../demo_layout'), [$layout, $layout->value], true);
+
+        return Section::make('Demo')->schema([
+            Select::make('demo_layout')->label('Bố cục demo có sẵn')->options(LandingTemplate::options())->native(false)->live()
+                ->visible($offersLayout)->placeholder('Không dùng')
+                ->helperText('Chọn để demo chạy ngay trên website này và sửa nội dung bên dưới. Đổi bố cục sẽ thay nội dung bằng bản mẫu của bố cục mới.')
+                ->afterStateUpdated(function (mixed $state, Set $set): void {
+                    $layout = $state instanceof LandingTemplate ? $state : LandingTemplate::tryFrom((string) $state);
+                    if (! $layout) {
+                        return;
+                    }
+                    $sample = $layout->sample();
+                    $set('demo', ['price' => $sample['price'], 'compare_price' => $sample['compare_price'], 'content' => $layout->defaults()]);
+                }),
+            TextInput::make('demo_url')->label('Link demo bên ngoài')->url()->maxLength(255)
+                ->helperText('Dùng khi demo chạy ở trang khác. Bỏ qua nếu đã chọn bố cục có sẵn.'),
+            Group::make([
+                Section::make('Giá sản phẩm trong demo')->schema([
+                    TextInput::make('price')->label('Giá bán (đ)')->numeric()->required()->minValue(0),
+                    TextInput::make('compare_price')->label('Giá gốc (đ)')->numeric()->minValue(0),
+                ])->columns(2),
+                Group::make(PurehomeFields::make())->visible($uses(LandingTemplate::Purehome)),
+                Group::make(FreshairFields::make())->visible($uses(LandingTemplate::Freshair)),
+            ])->statePath('demo')->visible(fn (Get $get): bool => filled($get('demo_layout'))),
+        ])->columns(1);
     }
 
     private static function list(string $name, string $label, string $placeholder): Repeater

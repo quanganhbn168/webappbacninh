@@ -1,7 +1,7 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero :eyebrow="$service->eyebrow_label" :title="$service->title" :lead="$service->description" :image="$service->image_url" :image-alt="$service->title">
+    <x-hero :eyebrow="$service->eyebrow_label" :title="$service->title" :lead="$service->description" :image="$service->cover" :image-alt="$service->title">
         <a class="btn btn-primary" href="#lien-he-dich-vu">{{ $service->cta_label }} <x-icon name="arrow-right" /></a>
         <a class="btn btn-outline-dark" href="{{ route('operations.index') }}">Dịch vụ vận hành khác</a>
         <x-slot:meta>
@@ -46,7 +46,7 @@
         <section class="section">
             <div class="container">
                 <div class="media-split">
-                    <div class="media-split__image"><img src="{{ $service->secondary_image_url }}" alt="Minh họa {{ $service->title }}" width="720" height="540" loading="lazy"></div>
+                    <div class="media-split__image"><x-img :src="$service->secondary_cover" sizes="(min-width: 992px) 50vw, 100vw" alt="Minh họa {{ $service->title }}" width="720" height="540" loading="lazy" /></div>
                     <div>
                         <p class="eyebrow">Kết quả bàn giao</p>
                         <h2 class="mb-4">Không chỉ nói chung chung là “đã làm”</h2>

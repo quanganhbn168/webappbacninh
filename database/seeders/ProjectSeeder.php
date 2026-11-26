@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\ProjectCategory;
 use App\Models\Technology;
 use App\Models\TemplateCategory;
+use App\Settings\ProjectSettings;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 
@@ -26,15 +27,27 @@ class ProjectSeeder extends Seeder
             $category = ProjectCategory::query()->firstOrCreate(['slug' => $categorySlug], ['name' => $categoryName]);
             $image = fn (string $path): ?int => $images->execute('images/'.$path, 'projects', $row['title'])?->id;
 
-            $project = Project::query()->create(Arr::except($row, ['category', 'image', 'gallery', 'industry', 'technologies']) + [
+            $project = Project::query()->create(Arr::except($row, ['category', 'image', 'gallery', 'industry', 'technologies', 'challenge', 'solution']) + [
                 'project_category_id' => $category->id,
+                'challenge' => $this->html($row['challenge']),
+                'solution' => $this->html($row['solution']),
                 'image_id' => $image($row['image']),
                 'gallery' => array_values(array_filter(array_map($image, $row['gallery']))),
                 'is_active' => true,
             ]);
-            $project->industries()->sync([TemplateCategory::findOrCreateByName($row['industry'])->id]);
+            $project->industries()->sync(array_map(fn (string $name): int => TemplateCategory::findOrCreateByName($name)->id, (array) $row['industry']));
             $project->technologies()->sync(array_map(fn (string $name): int => Technology::findOrCreateByName($name)->id, $row['technologies']));
         }
+
+        $settings = app(ProjectSettings::class)->refresh();
+        $settings->code_next = max($settings->code_next, Project::query()->count() + 1);
+        $settings->save();
+    }
+
+    /** A story written as plain text becomes one paragraph. */
+    private function html(string $text): string
+    {
+        return str_starts_with($text, '<') ? $text : '<p>'.$text.'</p>';
     }
 
     /**
@@ -273,7 +286,7 @@ class ProjectSeeder extends Seeder
                     'phan-mem',
                     'Phần mềm quản lý',
                 ],
-                'industry' => 'Dịch vụ kỹ thuật',
+                'industry' => 'Dịch vụ',
                 'year' => 2026,
                 'excerpt' => 'Quản lý khách hàng, lịch sử chăm sóc, công việc, báo giá và tiến độ trên một hệ thống thống nhất.',
                 'client' => 'Doanh nghiệp dịch vụ kỹ thuật',
@@ -307,6 +320,55 @@ class ProjectSeeder extends Seeder
                     'project-software.webp',
                     'seo-operation.webp',
                     'agency-partnership.webp',
+                ],
+            ],
+            [
+                'code' => 'DA-007',
+                'slug' => 'thiet-ke-website-du-lich-hgtrip-nen-tang-gioi-thieu-tour-va-dat-dich-vu-du-lich-truc-tuyen',
+                'title' => 'Thiết kế website du lịch HGTrip – Nền tảng giới thiệu tour và đặt dịch vụ du lịch trực tuyến',
+                'category' => [
+                    'dich-vu',
+                    'Website dịch vụ',
+                ],
+                'industry' => [
+                    'Dịch vụ',
+                    'Du lịch',
+                ],
+                'year' => 2026,
+                'excerpt' => 'HGTrip là dự án thiết kế website dành cho lĩnh vực du lịch và lữ hành, hướng đến xây dựng một nền tảng trực tuyến giúp doanh nghiệp giới thiệu tour, quảng bá điểm đến và hỗ trợ khách hàng tìm kiếm hành trình phù hợp.
+Website được phát triển với giao diện hiện đại, hình ảnh du lịch trực quan, bố cục nội dung rõ ràng và trải nghiệm sử dụng tối ưu trên nhiều thiết bị.',
+                'client' => 'HG Trip',
+                'duration' => '2 tuần',
+                'cost' => 'Từ 5 triệu',
+                'link' => 'https://hgtrip.vn',
+                'meta_title' => 'Thiết kế website du lịch HGTrip – Giao diện Travel hiện đại',
+                'meta_description' => 'WebApp Bắc Ninh triển khai thiết kế website du lịch HGTrip với giao diện hiện đại, danh mục tour, điểm đến, ưu đãi và nội dung du lịch trực quan, tối ưu trải nghiệm khách hàng.',
+                'challenge' => '<p>Trong lĩnh vực du lịch, khách hàng thường cần nhiều thông tin trước khi quyết định lựa chọn một hành trình: điểm đến, lịch trình, thời gian, chi phí, dịch vụ đi kèm và các chương trình ưu đãi.<br>Một website giới thiệu đơn thuần chưa đủ để đáp ứng nhu cầu đó. HGTrip cần một nền tảng có khả năng:<br>Giới thiệu đa dạng tour du lịch và hành trình nổi bật.<br>Phân loại tour theo nhu cầu và hình thức du lịch.<br>Quảng bá các điểm đến trong nước và quốc tế.<br>Làm nổi bật chương trình khuyến mãi và ưu đãi.<br>Tăng độ tin cậy thông qua hình ảnh, đánh giá và thông tin doanh nghiệp.<br>Hỗ trợ khách hàng tìm kiếm, khám phá và gửi yêu cầu tư vấn.</p>',
+                'solution' => '<p>WebApp Bắc Ninh xây dựng giao diện website theo hướng Travel Platform, tập trung vào trải nghiệm khám phá và lựa chọn hành trình.</p><p>Các hạng mục chính:</p><p>1. Trang chủ và nhận diện thương hiệu</p><p>Banner hình ảnh du lịch nổi bật.</p><p>Thông điệp thương hiệu và lời kêu gọi hành động.</p><p>Thanh tìm kiếm hành trình trực quan.</p><p>2. Danh mục tour du lịch</p><p>Phân loại tour theo nhu cầu.</p><p>Danh sách hành trình tiêu biểu.</p><p>Hiển thị hình ảnh, giá tour và thông tin cơ bản.</p><p>Khu vực chương trình ưu đãi.</p><p>3. Hệ thống điểm đến</p><p>Giới thiệu điểm đến theo khu vực và châu lục.</p><p>Thiết kế dạng lưới hình ảnh trực quan.</p><p>Tạo cảm hứng khám phá các hành trình mới.</p><p>4. Nội dung và dịch vụ</p><p>Giới thiệu dịch vụ hỗ trợ chuyến đi.</p><p>Thiết kế tour theo yêu cầu.</p><p>Khu vực đánh giá khách hàng.</p><p>Thư viện hình ảnh và khoảnh khắc du lịch.</p><p>5. Nội dung truyền thông</p><p>Tin tức và cẩm nang du lịch.</p><p>Nội dung giới thiệu điểm đến.</p><p>Tối ưu cấu trúc nội dung phục vụ SEO.</p>',
+                'results' => [],
+                'deliverables' => [
+                    'Toàn bộ source code',
+                    'Thông tin quản trị website',
+                    'thông tin quản trị tên miền',
+                    'thông tin quản trị hosting',
+                ],
+                'technologies' => [
+                    'Laravel',
+                    'CSS',
+                    'JavaScript',
+                ],
+                'is_featured' => true,
+                'order' => 0,
+                'image' => 'projects/hgtrip-1.webp',
+                'gallery' => [
+                    'projects/hgtrip-1.webp',
+                    'projects/hgtrip-2.webp',
+                    'projects/hgtrip-3.webp',
+                    'projects/hgtrip-4.webp',
+                    'projects/hgtrip-5.webp',
+                    'projects/hgtrip-6.webp',
+                    'projects/hgtrip-7.webp',
+                    'projects/hgtrip-8.webp',
                 ],
             ],
         ];

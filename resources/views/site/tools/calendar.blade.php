@@ -18,8 +18,8 @@
                         <div class="position-absolute" style="top: 20px; left: 20px; opacity: 0.5; font-size: 5rem;">
                             <x-icon name="sun" />
                         </div>
-                        <h5 class="text-uppercase mb-3">Dương Lịch</h5>
-                        <h1 class="display-1 fw-bold mb-0" id="todayDay">--</h1>
+                        <h2 class="h5 text-uppercase mb-3">Dương Lịch</h2>
+                        <p class="display-1 lh-sm fw-bold mb-0" id="todayDay">--</p>
                         <h3 class="fw-light mb-0" id="todayMonthYear">--/----</h3>
                         <p class="mt-3 mb-0 text-white-50" id="todayWeekday">Thứ --</p>
                     </div>
@@ -29,8 +29,8 @@
                         <div class="position-absolute" style="top: 20px; right: 20px; opacity: 0.1; font-size: 5rem; color: #000;">
                             <x-icon name="moon" />
                         </div>
-                        <h5 class="text-uppercase mb-3 text-secondary">Âm Lịch</h5>
-                        <h1 class="display-1 fw-bold text-dark mb-0" id="lunarDay">--</h1>
+                        <h2 class="h5 text-uppercase mb-3 text-secondary">Âm Lịch</h2>
+                        <p class="display-1 lh-sm fw-bold text-dark mb-0" id="lunarDay">--</p>
                         <h3 class="fw-light text-muted mb-0" id="lunarMonthYear">--/----</h3>
                         <p class="mt-3 mb-0 text-danger fw-bold" id="canChi">-- --</p>
                     </div>

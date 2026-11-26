@@ -1,7 +1,7 @@
 @props(['post', 'variant' => 'default', 'heading' => 'h3'])
 <article {{ $attributes->class(['media-card', 'media-card--'.$variant]) }}>
     <a class="media-card__image ratio-card" href="{{ $post->url }}" tabindex="-1" aria-hidden="true">
-        <img class="w-100 h-100 object-fit-cover" src="{{ $post->image_url }}" alt="" width="640" height="400" loading="lazy" decoding="async">
+        <x-img :src="$post->cover" sizes="(min-width: 992px) 33vw, (min-width: 768px) 50vw, 100vw" class="w-100 h-100 object-fit-cover" :alt="$post->title" width="640" height="400" loading="lazy" decoding="async" />
     </a>
     <div class="media-card__body">
         @if ($post->category)

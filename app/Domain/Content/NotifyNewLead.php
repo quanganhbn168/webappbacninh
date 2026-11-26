@@ -78,6 +78,7 @@ class NotifyNewLead
             $lead->need ? 'Nhu cầu: '.$lead->need : null,
             $lead->message ? 'Ghi chú: '.mb_substr($lead->message, 0, 500) : null,
             $lead->source ? 'Từ trang: '.$lead->source : null,
+            $lead->campaignLabel() ? 'Quảng cáo: '.$lead->campaignLabel() : null,
         ]);
 
         return implode("\n", $lines);

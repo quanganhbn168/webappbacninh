@@ -4,8 +4,8 @@
 @source '../../../../resources/views/filament';
 @source '../../../../vendor/awcodes/filament-curator/resources/**/*.blade.php';
 
-/* Keep long blog content scrollable while the native toolbar stays visible. */
-.blog-content-editor .tiptap {
+/* Keep long article content scrollable while the native toolbar stays visible. */
+.rich-editor-scroll .tiptap {
     min-height: 320px;
     max-height: 520px;
     overflow-y: auto;

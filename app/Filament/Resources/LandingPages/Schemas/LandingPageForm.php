@@ -44,12 +44,17 @@ class LandingPageForm
                                 $set('content', $template->defaults());
                             }),
                         Toggle::make('is_active')->label('Đang hiển thị')->default(true),
-                        Toggle::make('noindex')->label('Không cho Google lập chỉ mục')->helperText('Bật khi trang chỉ dùng cho quảng cáo, không muốn xuất hiện khi tìm kiếm.'),
+                        Toggle::make('noindex')->label('Không cho Google lập chỉ mục')->default(true)->helperText('Nên bật với trang chỉ chạy quảng cáo. Tắt nếu muốn trang xuất hiện khi tìm kiếm.'),
                     ])->columns(2),
                     Section::make('Giá')->schema([
                         TextInput::make('price')->label('Giá bán (đ)')->numeric()->required()->minValue(0)->helperText('Nhập số, ví dụ 3990000.'),
                         TextInput::make('compare_price')->label('Giá gốc (đ)')->numeric()->minValue(0)->helperText('Để trống nếu không giảm giá. % giảm được tính tự động.'),
                     ])->columns(2),
+                    Section::make('Đo lường quảng cáo')->schema([
+                        Textarea::make('head_code')->label('Mã đo lường riêng của trang')->rows(6)->maxLength(20000)
+                            ->extraInputAttributes(['spellcheck' => 'false', 'class' => 'font-mono'])
+                            ->helperText('Pixel, thẻ Google Ads… của riêng chiến dịch này, dán nguyên đoạn. Mã trong Cài đặt (GA4) đã tự chạy, không dán lại. Quản trị viên đang đăng nhập không được đếm.'),
+                    ])->columns(1),
                     Section::make('SEO & chia sẻ')->schema([
                         TextInput::make('meta_title')->label('Tiêu đề trang')->maxLength(255),
                         Textarea::make('meta_description')->label('Mô tả')->rows(2)->maxLength(500),

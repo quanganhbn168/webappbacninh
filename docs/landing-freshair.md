@@ -1,6 +1,6 @@
 # FreshAir S8 — landing mẫu 2
 
-- Đây là một **mẫu giao diện** của chức năng Landing page (xem README). Địa chỉ mặc định của bản mẫu: `/landing/mau-may-loc-khong-khi-mau-2`; trang mới tạo trong admin có địa chỉ riêng `/landing/<đường-dẫn>`.
+- Đây là một **bố cục** dùng cho cả hai nơi: bản demo trong Kho giao diện (`/kho-giao-dien/landing-freshair-may-loc-khong-khi/demo`, không gửi form, không đo lường, noindex) và các trang chạy quảng cáo `/landing/<đường-dẫn>` tạo trong admin → Landing quảng cáo.
 - Giao diện cố định. Nội dung, thông số, giá, ưu đãi, đánh giá, liên hệ và ảnh lấy từ bảng `landing_pages` (giá trị khởi đầu: `AppDomainLandingFreshairDefaults`), sửa trong admin → Nội dung → Landing page. Gửi form tư vấn tạo `Lead` và báo Telegram.
 - Bố cục kết hợp hero lớn và dải lợi ích, khối mua hàng ba cột, thư viện ảnh sáu góc, công nghệ/thông số/tư vấn, quà tặng, đánh giá, FAQ và thanh mua cố định.
 - View: `resources/views/landing/freshair/index.blade.php`. CSS và JS riêng: `resources/{css,js}/landing/freshair.*`.

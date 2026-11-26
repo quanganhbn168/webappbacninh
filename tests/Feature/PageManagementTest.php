@@ -49,14 +49,15 @@ class PageManagementTest extends TestCase
             ->assertDontSee('Minh bạch – Linh hoạt – Phù hợp');
     }
 
-    public function test_empty_fields_fall_back_to_the_view_defaults(): void
+    public function test_empty_fields_fall_back_to_the_page_title_and_default_description(): void
     {
         Page::query()->where('key', 'pricing')->firstOrFail()->update(['meta_title' => null, 'meta_description' => null, 'banner_title' => null]);
 
         $this->get(route('pricing'))
             ->assertSee('<title>Bảng giá | '.site_config('name').'</title>', false)
             ->assertSee(SitePages::description('pricing'))
-            ->assertSee('Minh bạch – Linh hoạt – Phù hợp');
+            ->assertSee('<h1>Bảng giá</h1>', false)
+            ->assertDontSee('Minh bạch – Linh hoạt – Phù hợp');
     }
 
     public function test_admin_can_edit_but_not_create_or_delete_pages(): void

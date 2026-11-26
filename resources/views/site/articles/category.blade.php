@@ -1,7 +1,7 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero eyebrow="Kiến thức" :title="$category->name" :lead="$category->description" :image="$category->image?->url" :image-alt="$category->name" class="page-hero--compact" />
+    <x-hero eyebrow="Kiến thức" :title="$category->name" :lead="$category->description" :image="$category->image ? app(\App\Domain\Media\Actions\BuildResponsiveImage::class)->execute($category->image, [480, 800, 1200]) : null" :image-alt="$category->name" class="page-hero--compact" />
 
     <section class="section">
         <div class="container">
@@ -11,7 +11,7 @@
             @else
                 <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
                     @foreach ($posts as $post)
-                        <div class="col"><x-card.post :post="$post" /></div>
+                        <div class="col"><x-card.post :post="$post" heading="h2" /></div>
                     @endforeach
                 </div>
                 <div class="mt-5">{{ $posts->links('site.partials.pagination') }}</div>

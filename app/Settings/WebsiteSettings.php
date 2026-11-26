@@ -8,11 +8,12 @@ class WebsiteSettings extends Settings
 {
     public string $site_url;
 
-    public string $site_logo_wide;
+    /** The logos are pictures of the media library. */
+    public ?int $logo_wide_media_id;
 
-    public string $site_logo_white;
+    public ?int $logo_white_media_id;
 
-    public string $site_logo_square;
+    public ?int $logo_square_media_id;
 
     public string $site_favicon;
 

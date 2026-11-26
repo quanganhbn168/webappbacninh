@@ -1,8 +1,7 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero variant="home" eyebrow="Giải pháp số toàn diện cho doanh nghiệp" title="Website – Phần mềm –" highlight="Vận hành số cho doanh nghiệp"
-        lead="Chúng tôi thiết kế website, landing page, phát triển phần mềm, CRM, booking và đồng hành vận hành số cùng doanh nghiệp với giải pháp tối ưu, hiện đại và hỗ trợ lâu dài."
+    <x-hero variant="home"
         :image="asset('images/hero-home.webp')" image-alt="Giải pháp website và phần mềm quản trị doanh nghiệp trên máy tính">
         <a class="btn btn-primary" href="{{ route('products') }}">Xem Demo <x-icon name="arrow-right" /></a>
         <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn miễn phí</button>
@@ -94,7 +93,7 @@
         </section>
     @endif
 
-    <x-ad-banners position="before_blog" class="container" />
+    <x-ad-banners position="before_articles" class="container" />
 
     @if ($posts->isNotEmpty())
         <section class="section" id="kien-thuc">

@@ -1,10 +1,11 @@
 {{--
-    Page hero. Texts and image can be overridden per page from the admin (Page banner fields);
-    the values passed here are the defaults written in the view.
+    Page hero. On a fixed page every text comes from its admin record (Trang → Banner đầu trang);
+    pages made from a record (a service, a category) pass their own. The image passed by the view
+    is replaced when one is chosen in the admin.
 --}}
 @props([
     'eyebrow' => null,
-    'title',
+    'title' => null,
     'highlight' => null,
     'lead' => null,
     'image' => null,
@@ -16,10 +17,12 @@
 @php
     $banner = $seoPage ?? null;
     $eyebrow = $banner?->banner_eyebrow ?: $eyebrow;
-    $title = $banner?->banner_title ?: $title;
+    $title = $banner?->banner_title ?: ($title ?: $banner?->title);
     $highlight = $banner?->banner_title ? $banner->banner_highlight : $highlight;
     $lead = $banner?->banner_subtitle ?: $lead;
-    $image = $banner?->banner_image_url ?: $image;
+    $image = $banner?->bannerImage
+        ? app(\App\Domain\Media\Actions\BuildResponsiveImage::class)->execute($banner->bannerImage, [480, 800, 1200])
+        : $image;
     $breadcrumbs ??= $pageBreadcrumbs ?? [];
     $hasAside = isset($aside) && $aside->isNotEmpty();
 @endphp
@@ -33,7 +36,7 @@
                 @if ($eyebrow)
                     <p class="eyebrow">{{ $eyebrow }}</p>
                 @endif
-                <h1>{{ $title }}@if ($highlight)<span class="page-hero__highlight">{{ $highlight }}</span>@endif</h1>
+                <h1>{{ $title }}@if ($highlight) <span class="page-hero__highlight">{{ $highlight }}</span>@endif</h1>
                 @if ($lead)
                     <p class="page-hero__lead">{{ $lead }}</p>
                 @endif
@@ -46,7 +49,7 @@
                 <div class="page-hero__aside">{{ $aside }}</div>
             @elseif ($image)
                 <div class="page-hero__art">
-                    <img src="{{ $image }}" alt="{{ $imageAlt }}" width="1448" height="1086" fetchpriority="high" decoding="async">
+                    <x-img :src="$image" sizes="(min-width: 992px) 50vw, 100vw" :alt="$imageAlt" width="1448" height="1086" fetchpriority="high" decoding="async" />
                     @if ($note)
                         <span class="page-hero__note text-hand" aria-hidden="true">{{ $note }}</span>
                     @endif

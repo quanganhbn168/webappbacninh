@@ -14,6 +14,10 @@ class MenuItem extends Model
         'menu_id',
         'parent_id',
         'title',
+        'description',
+        'badge',
+        'column_title',
+        'is_mega',
         'url',
         'icon',
         'open_in_new_tab',
@@ -25,6 +29,7 @@ class MenuItem extends Model
     {
         return [
             'is_active' => 'boolean',
+            'is_mega' => 'boolean',
             'open_in_new_tab' => 'boolean',
             'position' => 'integer',
         ];

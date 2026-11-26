@@ -1,7 +1,7 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero :eyebrow="$service->eyebrow" :title="$service->title" :lead="$service->highlight ?: $service->description" :image="$service->image_url" :image-alt="$service->title">
+    <x-hero :eyebrow="$service->eyebrow" :title="$service->title" :lead="$service->highlight ?: $service->description" :image="$service->cover" :image-alt="$service->title">
         <a class="btn btn-primary" href="#lien-he-dich-vu">Nhận tư vấn <x-icon name="arrow-right" /></a>
         @if ($service->category)
             <a class="btn btn-outline-dark" href="{{ route('slug.handle', ['slug' => $service->category->slug]) }}">Xem nhóm dịch vụ</a>

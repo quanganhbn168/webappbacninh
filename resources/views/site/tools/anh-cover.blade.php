@@ -41,7 +41,7 @@
                     <div class="mt-5 pt-4 border-top" data-cover-result hidden>
                         <div class="row g-4">
                             <div class="col-md-5">
-                                <img data-thumbnail alt="Ảnh thumbnail của video" class="img-fluid w-100 rounded shadow-sm bg-light">
+                                <img data-thumbnail alt="Ảnh thumbnail của video" width="480" height="270" class="img-fluid w-100 rounded shadow-sm bg-light">
                             </div>
                             <div class="col-md-7">
                                 <form action="{{ route('cover.download') }}" method="POST">

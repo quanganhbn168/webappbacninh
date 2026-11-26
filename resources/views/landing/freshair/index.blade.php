@@ -78,8 +78,10 @@
     <link rel="preload" as="image" href="{{ $hero }}" fetchpriority="high">
     <link rel="stylesheet" href="{{ asset('vendor/swiper/swiper-bundle.min.css') }}">
     @vite(['resources/css/landing/freshair.css', 'resources/js/landing/freshair.js'])
+    <x-landing.tracking :landing="$landing" position="head" />
 </head>
-<body class="freshair">
+<body class="freshair"@if ($landing->isDemo) data-demo @endif>
+    <x-landing.tracking :landing="$landing" position="body_start" />
     <a class="fa-skip" href="#noi-dung">Đến nội dung chính</a>
     <div class="fa-sale-banner" id="trang-chu"><div class="fa-container"><x-landing.freshair-icon name="bolt" /><strong>{{ $c['sale_label'] }}</strong><span class="fa-sale-dot">•</span><b>{{ $emLast($c['sale_text_a']) }}</b><span class="fa-sale-dot">•</span><b>{{ $emFirst($c['sale_text_b']) }}</b><a href="#uu-dai">Khám phá ưu đãi <x-landing.freshair-icon name="arrow-right" /></a></div></div>
     <header class="fa-header">
@@ -144,7 +146,7 @@
             <article class="fa-filter-card"><div class="fa-section-heading"><span class="fa-heading-icon"><x-landing.freshair-icon name="filter" /></span><div><h2>{{ $c['filters_title'] }}</h2><p>{{ $c['filters_subtitle'] }}</p></div></div><img src="{{ $filtersImage }}" alt="{{ $c['filters_title'] }}" width="1254" height="1254" loading="lazy"><ol>@foreach ($c['filters'] as $item)<li><b>{{ $loop->iteration }}</b><span><strong>{{ $item['title'] }}</strong><small>{{ $item['text'] }}</small></span></li>@endforeach</ol></article>
             <article class="fa-specs-card"><div class="fa-section-heading"><span class="fa-heading-icon"><x-landing.freshair-icon name="clipboard-list" /></span><h2>Thông số kỹ thuật</h2></div><dl>@foreach ($c['specs'] as $item)<div><dt>{{ $item['label'] }}</dt><dd>{{ $item['value'] }}</dd></div>@endforeach</dl><p class="fa-spec-note"><x-landing.freshair-icon name="ruler-combined" />{{ $c['specs_note'] }}</p></article>
             <section class="fa-consult-card" id="tu-van" aria-labelledby="fa-consult-title"><div class="fa-section-heading"><span class="fa-heading-icon"><x-landing.freshair-icon name="headset" /></span><div><h2 id="fa-consult-title">{{ $c['consult_title'] }}</h2><p>{{ $c['consult_text'] }}</p></div></div>
-                <form id="fa-consult-form" action="{{ route('leads.store') }}" method="post" data-landing-lead data-need="Tư vấn {{ $product }}">
+                <form id="fa-consult-form" @if ($landing->isDemo) method="dialog" @else action="{{ route('leads.store') }}" method="post" @endif data-landing-lead data-need="Tư vấn {{ $product }}">
                     @csrf
                     <div class="fa-lead-trap" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
                     <label><span>Họ và tên <b>*</b></span><input type="text" name="name" placeholder="Họ và tên của bạn" required maxlength="80" autocomplete="name"></label>
@@ -192,5 +194,6 @@
     <dialog class="fa-dialog" id="fa-share-dialog" aria-labelledby="fa-share-title"><button class="fa-dialog-close fa-icon-button" type="button" data-close-dialog aria-label="Đóng chia sẻ"><x-landing.freshair-icon name="xmark" /></button><h2 id="fa-share-title">Chia sẻ không khí trong lành</h2><img class="fa-share-preview" src="{{ $share }}" alt="Ảnh chia sẻ {{ $product }}" width="1200" height="630" loading="lazy"><p class="fa-dialog-description">Gửi {{ $product }} tới người thân và bạn bè.</p><label class="fa-share-url"><span>Đường dẫn sản phẩm</span><input readonly value="{{ $landing->url() }}" aria-label="Đường dẫn chia sẻ sản phẩm"></label><button class="fa-button fa-button-green" type="button" data-copy-share>Sao chép đường dẫn</button><button class="fa-native-share" type="button" data-native-share hidden>Chia sẻ bằng ứng dụng trên thiết bị</button></dialog>
     <script type="application/json" id="landing-config">@json($config, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG)</script>
     <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}"></script>
+    <x-landing.tracking :landing="$landing" position="body_end" />
 </body>
 </html>

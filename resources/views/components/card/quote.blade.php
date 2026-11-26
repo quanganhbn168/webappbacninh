@@ -4,7 +4,7 @@
     <blockquote>{{ $testimonial->quote }}</blockquote>
     <figcaption>
         @if ($testimonial->avatar)
-            <img src="{{ $testimonial->avatar->url }}" alt="" width="48" height="48" loading="lazy">
+            <x-img :src="app(\App\Domain\Media\Actions\BuildResponsiveImage::class)->execute($testimonial->avatar, [96])" alt="" width="48" height="48" loading="lazy" />
         @endif
         <span><strong>{{ $testimonial->name }}</strong>{{ $testimonial->role }}</span>
     </figcaption>

@@ -19,6 +19,9 @@ class EditTemplate extends EditRecord
         return [
             Action::make('view')->label('Xem trang')->icon('heroicon-o-arrow-top-right-on-square')
                 ->url(fn (Template $record): string => $record->url, shouldOpenInNewTab: true),
+            Action::make('demo')->label('Xem demo')->icon('heroicon-o-device-phone-mobile')->color('gray')
+                ->visible(fn (Template $record): bool => $record->preview_url !== null)
+                ->url(fn (Template $record): ?string => $record->preview_url, shouldOpenInNewTab: true),
             DeleteAction::make(),
         ];
     }

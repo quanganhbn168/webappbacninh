@@ -25,8 +25,7 @@ class PostSeeder extends Seeder
 
             Post::query()->create(Arr::except($row, ['category', 'image', 'intro']) + [
                 'category_id' => $category->id,
-                'featured_media_id' => $images->execute('images/'.$row['image'], 'blog/imports', $row['title'])?->id,
-                'curator_managed' => true,
+                'featured_media_id' => $images->execute('images/'.$row['image'], 'kien-thuc', $row['title'])?->id,
                 'data' => ['intro' => $row['intro']],
                 'is_published' => true,
             ]);
@@ -45,7 +44,7 @@ class PostSeeder extends Seeder
                 'title' => 'Website doanh nghiệp cần những trang nào để không bị thừa hoặc thiếu?',
                 'summary' => 'Cấu trúc thực dụng cho doanh nghiệp sản xuất, thương mại và dịch vụ khi bắt đầu xây dựng website.',
                 'category' => [
-                    'thiet-ke-website',
+                    'kinh-nghiem-thiet-ke-website',
                     'Thiết kế website',
                 ],
                 'published_at' => '2026-07-10',
@@ -87,7 +86,7 @@ class PostSeeder extends Seeder
                 'title' => 'Nên chọn giao diện mẫu hay thiết kế riêng?',
                 'summary' => 'So sánh chi phí, thời gian, khả năng tùy chỉnh và trường hợp phù hợp với từng cách triển khai website.',
                 'category' => [
-                    'thiet-ke-website',
+                    'kinh-nghiem-thiet-ke-website',
                     'Thiết kế website',
                 ],
                 'published_at' => '2026-07-02',

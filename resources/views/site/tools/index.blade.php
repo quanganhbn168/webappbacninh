@@ -1,11 +1,11 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero eyebrow="Miễn phí cho doanh nghiệp" title="Công cụ miễn phí" highlight="dùng ngay trên trình duyệt"
-        lead="Tính thuế TNCN, thuế hộ kinh doanh, thuế doanh nghiệp, tạo mã QR, xem lịch vạn niên, lấy ảnh cover video… Không cần đăng ký, không cài đặt." />
+    <x-hero />
 
     <section class="section">
         <div class="container">
+            <h2 class="visually-hidden">Danh sách công cụ</h2>
             @if ($tools->isEmpty())
                 <p class="empty-state">Các công cụ đang được cập nhật.</p>
             @else

@@ -1,10 +1,10 @@
 // Theme showcase (/kho-giao-dien): filters, sort and pagination over server-rendered cards.
 // Cards carry data-type, data-industry, data-features, data-price, data-year, data-featured, data-search.
 const fold = value => String(value ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase();
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 12;
 const PRICE = {
     all: () => true,
-    under10: price => price < 10_000_000,
+    under10: price => price > 0 && price < 10_000_000,
     '10to20': price => price >= 10_000_000 && price <= 20_000_000,
     over20: price => price > 20_000_000,
 };
@@ -23,7 +23,6 @@ export function initThemeLibrary() {
     const pager = root.querySelector('[data-theme-pager]');
     const chips = root.querySelector('[data-theme-chips]');
     let page = 1;
-    let quick = 'all';
 
     const values = name => [...form.querySelectorAll(`[name="${name}"]:checked`)].map(input => input.value);
 
@@ -44,14 +43,14 @@ export function initThemeLibrary() {
             && (!s.types.length || s.types.includes(card.dataset.type))
             && (s.industry === 'all' || card.dataset.industry === s.industry)
             && s.features.every(feature => features.includes(feature))
-            && (PRICE[s.price] ?? PRICE.all)(Number(card.dataset.price))
-            && (quick === 'all' || card.dataset.type === quick || card.dataset.industry === quick);
+            && (PRICE[s.price] ?? PRICE.all)(Number(card.dataset.price));
     }
 
     const sorters = {
         featured: (a, b) => Number(b.dataset.featured) - Number(a.dataset.featured),
         newest: (a, b) => Number(b.dataset.year) - Number(a.dataset.year),
-        'price-asc': (a, b) => Number(a.dataset.price) - Number(b.dataset.price),
+        // Designs without a price ("Liên hệ") go after the priced ones.
+        'price-asc': (a, b) => (Number(a.dataset.price) || Number.MAX_SAFE_INTEGER) - (Number(b.dataset.price) || Number.MAX_SAFE_INTEGER),
         'price-desc': (a, b) => Number(b.dataset.price) - Number(a.dataset.price),
         'name-asc': (a, b) => a.dataset.name.localeCompare(b.dataset.name, 'vi'),
     };
@@ -96,7 +95,6 @@ export function initThemeLibrary() {
         cards.forEach(card => { cell(card).hidden = !shown.has(card); });
         count.textContent = String(filtered.length);
         empty.hidden = filtered.length > 0;
-        root.querySelectorAll('[data-quick]').forEach(button => button.classList.toggle('active', button.dataset.quick === quick));
         renderChips(s);
         renderPager(pages);
     }
@@ -107,11 +105,10 @@ export function initThemeLibrary() {
     form.addEventListener('submit', event => event.preventDefault());
     root.querySelector('[data-theme-sort]').addEventListener('change', () => { page = 1; render(); });
     root.addEventListener('click', event => {
-        const target = event.target.closest('[data-page], [data-quick], [data-theme-reset]');
+        const target = event.target.closest('[data-page], [data-theme-reset]');
         if (!target) return;
         if (target.dataset.page) page = Number(target.dataset.page);
-        if (target.dataset.quick) { quick = target.dataset.quick; page = 1; }
-        if (target.hasAttribute('data-theme-reset')) { form.reset(); quick = 'all'; page = 1; }
+        if (target.hasAttribute('data-theme-reset')) { form.reset(); page = 1; }
         render();
         scrollToList();
     });

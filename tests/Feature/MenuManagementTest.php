@@ -46,6 +46,41 @@ class MenuManagementTest extends TestCase
         $this->get('/')->assertDontSee('Tuyển dụng gấp');
     }
 
+    public function test_a_mega_menu_groups_its_links_into_columns_with_icons_descriptions_and_badges(): void
+    {
+        $menu = Menu::query()->where('location', Menu::HEADER)->firstOrFail();
+        $parent = $menu->allItems()->create(['title' => 'Mục mega', 'url' => '/mega', 'position' => 99, 'is_mega' => true, 'badge' => 'Hot']);
+        $menu->allItems()->create(['parent_id' => $parent->id, 'title' => 'Theo mẫu', 'url' => '/theo-mau', 'icon' => 'star', 'column_title' => 'Cột hình thức', 'description' => 'Mô tả dòng nhỏ', 'badge' => 'Nhanh', 'position' => 0]);
+        $menu->allItems()->create(['parent_id' => $parent->id, 'title' => 'Ngành thử', 'url' => '/mau-website/thu', 'column_title' => 'Cột ngành', 'position' => 1]);
+
+        $html = $this->get('/')->assertOk()
+            ->assertSee('site-nav__dropdown--mega', false)
+            ->assertSeeInOrder(['Mục mega', 'Hot', 'Cột hình thức', 'Theo mẫu', 'Nhanh', 'Mô tả dòng nhỏ', 'Cột ngành', 'Ngành thử'])
+            ->getContent();
+
+        // Only the column whose links have descriptions is drawn as the described one.
+        $this->assertSame(1, preg_match_all('/site-mega__column--described[^>]*>\s*<p class="site-mega__heading">Cột hình thức/', $html));
+        $this->assertSame(0, preg_match_all('/site-mega__column--described[^>]*>\s*<p class="site-mega__heading">Cột ngành/', $html));
+    }
+
+    public function test_builder_saves_the_mega_menu_fields(): void
+    {
+        $page = Livewire::actingAs($this->admin(), 'admin')->test(ManageMenus::class);
+        $items = $page->get('items');
+        $index = collect($items)->search(fn (array $item): bool => $item['children'] !== []);
+
+        $page->set("items.$index.is_mega", true)->set("items.$index.badge", 'Mới')
+            ->set("items.$index.children.0.column_title", 'Cột thử')
+            ->set("items.$index.children.0.description", 'Mô tả thử')
+            ->call('save')->assertHasNoErrors();
+
+        $parent = Menu::query()->where('location', Menu::HEADER)->firstOrFail()->allItems()->findOrFail($items[$index]['id']);
+        $this->assertTrue($parent->is_mega);
+        $this->assertSame('Mới', $parent->badge);
+        $this->assertSame(['Cột thử', 'Mô tả thử'], [$parent->children()->first()->column_title, $parent->children()->first()->description]);
+        $this->assertArrayHasKey('industries', $page->instance()->sources);
+    }
+
     public function test_admin_can_open_and_save_a_menu(): void
     {
         $admin = $this->admin();

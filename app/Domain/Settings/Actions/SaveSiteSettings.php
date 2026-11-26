@@ -46,7 +46,7 @@ final class SaveSiteSettings
 
         DB::transaction(function () use ($data, $faviconData, $websiteData): void {
             $this->persist(app(GeneralSettings::class), Arr::get($data, 'general', []), ['name', 'company_name', 'default_language']);
-            $this->persist(app(WebsiteSettings::class), $websiteData, ['site_url', 'site_logo_wide', 'site_logo_white', 'site_logo_square', 'site_favicon']);
+            $this->persist(app(WebsiteSettings::class), $websiteData, ['site_url', 'logo_wide_media_id', 'logo_white_media_id', 'logo_square_media_id', 'site_favicon']);
 
             $this->persist(app(SeoSettings::class), Arr::get($data, 'seo', []), ['default_meta_title', 'default_meta_description', 'default_meta_keywords', 'default_og_image', 'google_site_verification']);
 
@@ -66,6 +66,8 @@ final class SaveSiteSettings
         foreach ($fields as $field) {
             $value = $values[$field] ?? '';
             $settings->{$field} = match (true) {
+                // A picture of the library, or none.
+                str_ends_with($field, '_media_id') => filled($value) ? (int) (is_array($value) ? data_get(array_values($value), '0.id') : $value) : null,
                 is_bool($settings->{$field}) => (bool) $value,
                 is_array($value) => $value,
                 default => trim((string) $value),

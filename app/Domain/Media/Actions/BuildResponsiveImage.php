@@ -7,20 +7,24 @@ use Awcodes\Curator\Glide\GlideBuilder;
 use Awcodes\Curator\Models\Media;
 
 /**
- * WebP versions of a library image, sized for the frame that shows it.
- * The uploaded original is kept as it is; Glide creates and caches each size on first request.
+ * WebP versions of a library image, sized for the frame that shows it, served by Curator
+ * (/curator/{path}?w=…&fm=webp&q=…&s=…). The uploaded original is kept as it is; Glide creates
+ * and caches each size on first request. Curator serves library files only.
  */
 final class BuildResponsiveImage
 {
-    /** High enough that text in website screenshots stays crisp. */
-    private const QUALITY = 90;
+    /** Text in website screenshots stays readable, at about two thirds of the weight of 90. */
+    private const QUALITY = 80;
+
+    /** The "src" for a browser that picks no size from the list. */
+    private const DEFAULT_WIDTH = 768;
 
     /**
      * @param  array<int, int>  $widths  wanted widths; none is larger than the original
      * @param  float|null  $ratio  width / height to crop to; null keeps the whole image
      * @return array{src: string, srcset: string|null}
      */
-    public function execute(Media $media, array $widths, ?float $ratio = null): array
+    public function execute(Media $media, array $widths, ?float $ratio = null, int $quality = self::QUALITY): array
     {
         // SVGs and records without a known size are served as uploaded.
         if (! Curator::isResizable($media->ext) || ! $media->width) {
@@ -33,8 +37,8 @@ final class BuildResponsiveImage
             ->filter(fn (int $width): bool => $width < $largest)
             ->push($largest)
             ->sort()
-            ->mapWithKeys(function (int $width) use ($media, $ratio): array {
-                $image = GlideBuilder::make()->width($width)->format('webp')->quality(self::QUALITY)->fit($ratio ? 'crop' : 'max');
+            ->mapWithKeys(function (int $width) use ($media, $ratio, $quality): array {
+                $image = GlideBuilder::make()->width($width)->format('webp')->quality($quality)->fit($ratio ? 'crop' : 'max');
 
                 if ($ratio) {
                     $image->height((int) round($width / $ratio));
@@ -44,7 +48,7 @@ final class BuildResponsiveImage
             });
 
         return [
-            'src' => $urls->last(),
+            'src' => $urls->first(fn (string $url, int $width): bool => $width >= self::DEFAULT_WIDTH) ?? $urls->last(),
             'srcset' => $urls->count() > 1 ? $urls->map(fn (string $url, int $width): string => $url.' '.$width.'w')->implode(', ') : null,
         ];
     }

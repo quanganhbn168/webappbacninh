@@ -60,7 +60,7 @@
 
                         <!-- Preview Column -->
                         <div class="col-md-5 text-center d-flex flex-column justify-content-center align-items-center bg-light rounded py-4">
-                            <h5 class="mb-3 text-muted">Xem trước</h5>
+                            <h2 class="h5 mb-3 text-muted">Xem trước</h2>
                             <div id="qrcode" class="bg-white p-3 shadow-sm rounded mb-3"></div>
                             
                             <div class="mt-3">
@@ -74,7 +74,7 @@
             </div>
             
             <div class="mt-4">
-                <h4><x-icon name="info" class="text-primary" /> Thông tin thêm</h4>
+                <h3 class="h4"><x-icon name="info" class="text-primary" /> Thông tin thêm</h3>
                 <p>Công cụ này dành cho việc tạo mã QR chứa thông tin văn bản, trang web (URL), email, hoặc Wifi. Nếu bạn muốn tạo mã QR chuyển khoản ngân hàng, vui lòng sử dụng công cụ <a href="{{ route('tools.bank-qr') }}">Tạo QR Ngân Hàng</a>.</p>
             </div>
         </div>

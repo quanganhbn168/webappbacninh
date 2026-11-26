@@ -22,6 +22,7 @@ export default defineConfig({
         ...pageScripts('resources/js/tools'),
         ...pageScripts('resources/js/payment'),
         ...pageScripts('resources/js/projects'),
+        ...pageScripts('resources/js/themes'),
       ],
       refresh: true,
     }),

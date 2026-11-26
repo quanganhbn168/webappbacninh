@@ -811,32 +811,6 @@
 }
 
 // Image gallery with thumbnails
-.gallery__main {
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-    border-radius: $radius-lg;
-    background: $sand;
-    box-shadow: $shadow;
-}
-.gallery__thumbs {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 6.5rem);
-    gap: .75rem;
-    margin-top: 1rem;
-}
-.gallery__thumb {
-    overflow: hidden;
-    padding: 0;
-    border: 2px solid transparent;
-    border-radius: $radius-sm;
-    background: none;
-    opacity: .75;
-    transition: opacity $transition, border-color $transition;
-
-    img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
-    &:hover, &.active { border-color: $gold; opacity: 1; }
-}
 
 // Callout box with a gold edge.
 .note-box {

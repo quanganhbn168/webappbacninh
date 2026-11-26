@@ -42,7 +42,7 @@
                         <div class="swiper-wrapper">
                             @foreach ($slides as $index => $slide)
                                 <div class="swiper-slide">
-                                    <img src="{{ $slide['src'] }}" @if ($slide['srcset']) srcset="{{ $slide['srcset'] }}" sizes="(min-width: 992px) 50vw, 100vw" @endif alt="{{ $project->title }}{{ $index ? ' - ảnh '.($index + 1) : '' }}" width="800" height="500" @if ($index) loading="lazy" @else fetchpriority="high" @endif>
+                                    <x-img :src="$slide" sizes="(min-width: 992px) 50vw, 100vw" alt="{{ $project->title }}{{ $index ? ' - ảnh '.($index + 1) : '' }}" width="800" height="500" @if ($index) loading="lazy" @else fetchpriority="high" @endif />
                                 </div>
                             @endforeach
                         </div>

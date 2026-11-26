@@ -9,7 +9,6 @@ use App\Models\PricingPlan;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class ServiceController extends FrontendController
 {
@@ -24,7 +23,7 @@ class ServiceController extends FrontendController
         ]);
     }
 
-    public function detail(string|Service $service): View|RedirectResponse
+    public function detail(string|Service $service): View
     {
         if ($service instanceof Service) {
             return $this->dynamicDetail($service);
@@ -34,22 +33,16 @@ class ServiceController extends FrontendController
     }
 
     /** Landing pages of the non-website services, under /dich-vu/{slug}. */
-    public function general(string $slug): View|RedirectResponse
+    public function general(string $slug): View
     {
         return $this->landingPage($slug, ServiceSection::General);
     }
 
-    /**
-     * A landing page is served only under its own section; the other prefix
-     * redirects to it so old links and mistyped prefixes still land.
-     */
-    private function landingPage(string $slug, ServiceSection $section): View|RedirectResponse
+    /** A landing page is served only under the prefix of its own section. */
+    private function landingPage(string $slug, ServiceSection $section): View
     {
         $landing = Service::query()->active()->where('is_landing', true)->with(['image', 'secondaryImage'])->where('slug', $slug)->firstOrFail();
-
-        if ($landing->section !== $section) {
-            return redirect()->to($landing->url, 301);
-        }
+        abort_unless($landing->section === $section, 404);
 
         return $this->page('site.services.show', [
             'service' => $landing,
@@ -90,13 +83,10 @@ class ServiceController extends FrontendController
         ]);
     }
 
-    private function dynamicDetail(Service $service): View|RedirectResponse
+    private function dynamicDetail(Service $service): View
     {
-        if ($service->is_landing) {
-            return redirect()->to($service->url, 301);
-        }
-
-        abort_unless($service->is_active, 404);
+        // A service with a landing page lives only under its section's prefix.
+        abort_unless($service->is_active && ! $service->is_landing, 404);
 
         $service->loadMissing('category');
 

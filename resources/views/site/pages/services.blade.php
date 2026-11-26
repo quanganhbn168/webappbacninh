@@ -1,8 +1,7 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero eyebrow="Dịch vụ WebApp Bắc Ninh" title="Giải pháp dịch vụ toàn diện" highlight="cho doanh nghiệp"
-        lead="Chúng tôi cung cấp dịch vụ thiết kế website, phát triển phần mềm, CRM, booking, SEO, quảng cáo và vận hành số, giúp doanh nghiệp tối ưu quy trình, tăng trưởng bền vững với sự đồng hành lâu dài."
+    <x-hero
         :image="asset('images/hero-services.webp')" image-alt="Giải pháp website và phần mềm quản trị doanh nghiệp trên máy tính">
         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn miễn phí <x-icon name="arrow-right" /></button>
         <a class="btn btn-outline-dark" href="{{ route('about') }}">Xem hồ sơ năng lực</a>
@@ -40,7 +39,7 @@
                     <div class="btn-row"><a class="btn btn-outline-primary" href="{{ route('services.index') }}">Xem dịch vụ thiết kế website</a></div>
                 </x-feature-row>
                 @foreach ($generalServices as $service)
-                    <x-feature-row :id="$service->slug" :reversed="$loop->odd" :image="$service->image_url" :title="$service->title" :text="$service->description" :note="$service->highlight">
+                    <x-feature-row :id="$service->slug" :reversed="$loop->odd" :image="$service->cover" :title="$service->title" :text="$service->description" :note="$service->highlight">
                         @if ($service->features)
                             <ul class="check-list check-list--gold">
                                 @foreach (array_slice($service->features, 0, 5) as $feature)

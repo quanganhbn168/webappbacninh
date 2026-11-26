@@ -16,12 +16,8 @@ class ReadingTimeTest extends TestCase
         $this->assertSame(1, $post->read_time);
     }
 
-    public function test_legacy_sections_count_text_not_json_keys_or_html_attributes(): void
+    public function test_reading_time_counts_visible_text_only(): void
     {
-        $content = json_encode([
-            ['title' => 'Website', 'paragraphs' => [str_repeat('nội dung ', 100)], 'bullets' => ['Kiểm tra']],
-        ]);
-        $this->assertSame(2, app(EstimateReadingTime::class)->execute($content));
         $this->assertSame(1, app(EstimateReadingTime::class)->execute('<img alt="'.str_repeat('word ', 600).'"> <script>'.str_repeat('word ', 600).'</script>'));
         $this->assertSame(1, app(EstimateReadingTime::class)->execute(null));
     }

@@ -17,7 +17,7 @@ final class BuildMenuTree
     public function __construct(private readonly FrontendMenuCache $cache) {}
 
     /**
-     * @return array<int, array{title: string, url: string, icon: ?string, new_tab: bool, children: array<int, mixed>}>
+     * @return array<int, array{title: string, description: ?string, badge: ?string, column: string, mega: bool, url: string, icon: ?string, new_tab: bool, children: array<int, mixed>}>
      */
     public function execute(string $location): array
     {
@@ -81,6 +81,10 @@ final class BuildMenuTree
     {
         return $items->get($parentId ?? '', collect())->map(fn (MenuItem $item): array => [
             'title' => $item->title,
+            'description' => $item->description,
+            'badge' => $item->badge,
+            'column' => (string) $item->column_title,
+            'mega' => $item->is_mega,
             'url' => (string) $item->url,
             'icon' => $item->icon,
             'new_tab' => $item->open_in_new_tab,

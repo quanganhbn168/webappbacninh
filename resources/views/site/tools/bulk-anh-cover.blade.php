@@ -69,7 +69,7 @@
                     <div class="card h-100 border shadow-sm">
                         <div class="card-body p-2">
                             <div class="d-flex gap-3">
-                                <div class="flex-shrink-0" style="width: 120px"><img class="img-fluid rounded border" loading="lazy" alt="" data-thumb></div>
+                                <div class="flex-shrink-0" style="width: 120px"><img class="img-fluid rounded border" loading="lazy" alt="" width="120" height="68" data-thumb></div>
                                 <div class="flex-grow-1 overflow-hidden">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <span class="badge" data-provider></span>

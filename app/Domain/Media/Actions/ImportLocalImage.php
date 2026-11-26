@@ -4,6 +4,7 @@ namespace App\Domain\Media\Actions;
 
 use Awcodes\Curator\Models\Media;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * Copies an image that already lives under public/ or storage/app/public
@@ -21,7 +22,9 @@ final class ImportLocalImage
         }
 
         $extension = image_type_to_extension($image[2], false);
-        $target = trim($directory, '/').'/'.hash_file('sha256', $source).'.'.$extension;
+        // The source name keeps the address readable; the short hash stores one file once.
+        $name = Str::slug(pathinfo($source, PATHINFO_FILENAME)) ?: 'anh';
+        $target = trim($directory, '/').'/'.$name.'-'.substr(hash_file('sha256', $source), 0, 8).'.'.$extension;
         $disk = Storage::disk('public');
 
         if (! $disk->exists($target)) {

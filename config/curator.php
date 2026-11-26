@@ -2,7 +2,7 @@
 
 return [
     'default_disk' => 'public',
-    'default_directory' => 'blog',
+    'default_directory' => 'media',
     'default_visibility' => 'public',
 
     // Repeated in full because the package merges its config one level deep only.

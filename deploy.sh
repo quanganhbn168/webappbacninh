@@ -23,7 +23,15 @@ MAINTENANCE=1
 run_step "Install PHP dependencies" composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
 run_step "Install frontend dependencies" pnpm install --frozen-lockfile
 run_step "Build versioned frontend assets" pnpm run build
-run_step "Run database migrations" php artisan migrate --force
+# FRESH=1 rebuilds the database from the seeders and deletes everything in it.
+if [ "${FRESH:-0}" = "1" ]; then
+    # Settings and pages cached from the old database must not be read while seeding.
+    run_step "Clear the old cache" php artisan optimize:clear
+    run_step "Rebuild the database from scratch" php artisan migrate:fresh --seed --force
+    run_step "Remove the old upload folder" rm -rf storage/app/public/blog
+else
+    run_step "Run database migrations" php artisan migrate --force
+fi
 
 # A real public/storage directory (not a symlink) makes uploaded images return 403/404.
 if [ -e public/storage ] && [ ! -L public/storage ]; then

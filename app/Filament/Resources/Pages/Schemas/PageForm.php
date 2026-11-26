@@ -29,11 +29,11 @@ class PageForm
                         TextInput::make('meta_keywords')->label('Từ khóa')->maxLength(255),
                         Toggle::make('noindex')->label('Ẩn trang khỏi công cụ tìm kiếm (noindex)'),
                     ])->columns(1),
-                    Section::make('Banner đầu trang')->description('Bỏ trống để dùng nội dung đang có trong giao diện.')->schema([
+                    Section::make('Banner đầu trang')->description('Tiêu đề banner và dòng nhấn ghép thành H1 của trang. Bỏ trống tiêu đề thì dùng tên trang; ô khác bỏ trống thì không hiện.')->schema([
                         TextInput::make('banner_eyebrow')->label('Dòng chữ nhỏ trên tiêu đề')->maxLength(255),
                         TextInput::make('banner_title')->label('Tiêu đề banner')->maxLength(255),
                         TextInput::make('banner_highlight')->label('Dòng nhấn màu vàng')->maxLength(255)
-                            ->helperText('Dòng thứ hai của tiêu đề, chỉ dùng khi có tiêu đề banner.'),
+                            ->helperText('Phần thứ hai của H1, in màu vàng. Chỉ dùng khi có tiêu đề banner.'),
                         Textarea::make('banner_subtitle')->label('Đoạn mô tả')->rows(3),
                     ])->columns(1),
                 ])->columnSpan(['default' => 1, 'lg' => 2]),

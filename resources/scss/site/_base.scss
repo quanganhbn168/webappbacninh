@@ -1,5 +1,6 @@
 // Page-wide rules, typography, buttons and small helpers.
 
+// The first value of --header-height; js/site/header.js replaces it with the real height.
 :root {
     --header-height: #{$header-height};
 

@@ -1,8 +1,7 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero title="Sản phẩm & Giải pháp đóng gói" highlight="Sẵn sàng cho doanh nghiệp bạn"
-        lead="Các mẫu website theo ngành và phần mềm quản lý được dựng sẵn, dễ dàng tùy biến theo nhu cầu thực tế của doanh nghiệp, giúp bạn triển khai nhanh chóng, tiết kiệm chi phí và vận hành hiệu quả."
+    <x-hero
         :image="asset('images/products-hero.webp')" image-alt="Phần mềm quản lý khách hàng trên laptop và điện thoại" note="Quản lý khách hàng – Dễ dàng hơn mỗi ngày!">
         <a class="btn btn-primary" href="#san-pham">Khám phá sản phẩm <x-icon name="arrow-right" /></a>
         <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn lựa chọn</button>
@@ -57,12 +56,12 @@
         <div class="container">
             <div class="row g-4 g-lg-5 align-items-center">
                 <div class="col-lg-5">
-                    <h2>Chọn mẫu sẵn.<br>Phát triển theo cách của bạn.</h2>
+                    <h2>Chọn mẫu sẵn. <br>Phát triển theo cách của bạn.</h2>
                     <p class="lead-text my-3">Tất cả sản phẩm đều có thể tùy biến giao diện, tính năng và tích hợp hệ thống theo nhu cầu riêng của doanh nghiệp.</p>
                     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Trao đổi nhu cầu tùy chỉnh <x-icon name="arrow-right" /></button>
                 </div>
                 <div class="col-lg-4 col-md-6">
-                    <img class="img-fluid rounded-3" src="{{ asset('images/contact-hero.webp') }}" alt="Đồng hành cùng doanh nghiệp" width="560" height="400" loading="lazy">
+                    <x-img :src="asset('images/contact-hero.webp')" sizes="(min-width: 992px) 40vw, 100vw" class="img-fluid rounded-3" alt="Đồng hành cùng doanh nghiệp" width="560" height="400" loading="lazy" />
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <ul class="check-list check-list--dot">

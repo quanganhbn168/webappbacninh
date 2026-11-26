@@ -8,22 +8,18 @@
     <meta name="robots" content="@yield('robots', 'noindex, follow')">
     @hasSection('meta_description')<meta name="description" content="@yield('meta_description')">@endif
     @hasSection('meta_keywords')<meta name="keywords" content="@yield('meta_keywords')">@endif
-    @hasSection('error-page')
-        <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
-    @else
-        @include('site.partials.favicon')
-        {!! tracking_code('head') !!}
-    @endif
+    @include('site.partials.favicon')
+    {!! tracking_code('head') !!}
     @vite(['resources/scss/basic.scss', 'resources/js/basic.js'])
     @stack('head')
 </head>
 <body class="bg-light">
-    @unless($__env->hasSection('error-page')) {!! tracking_code('body_start') !!} @endunless
+    {!! tracking_code('body_start') !!}
     <main>
         @if(session('success')) <div class="alert alert-success rounded-0 mb-0 text-center" role="status">{{ session('success') }}</div> @endif
         @yield('content')
     </main>
     @stack('scripts')
-    @unless($__env->hasSection('error-page')) {!! tracking_code('body_end') !!} @endunless
+    {!! tracking_code('body_end') !!}
 </body>
 </html>

@@ -1,6 +1,6 @@
 # PureHome A3 — landing mẫu 1
 
-- Đây là một **mẫu giao diện** của chức năng Landing page (xem README). Địa chỉ mặc định của bản mẫu: `/landing/mau-may-loc-khong-khi-mau-1`; trang mới tạo trong admin có địa chỉ riêng `/landing/<đường-dẫn>`.
+- Đây là một **bố cục** dùng cho cả hai nơi: bản demo trong Kho giao diện (`/kho-giao-dien/landing-purehome-may-loc-khong-khi/demo`, không gửi form, không đo lường, noindex) và các trang chạy quảng cáo `/landing/<đường-dẫn>` tạo trong admin → Landing quảng cáo.
 - Giao diện cố định. Nội dung, giá, thương hiệu, đánh giá, liên hệ, chính sách và ảnh lấy từ bảng `landing_pages` (giá trị khởi đầu: `AppDomainLandingPurehomeDefaults`), sửa trong admin → Nội dung → Landing page. Ô "Gọi lại cho tôi" trong hộp đặt mua tạo `Lead` và báo Telegram.
 - View: `resources/views/landing/purehome/index.blade.php`.
 - CSS/JS riêng: `resources/css/landing/purehome.css`, `resources/js/landing/purehome.js`.

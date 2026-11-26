@@ -31,10 +31,10 @@ class ServicePagesAndPricingTest extends TestCase
         }
     }
 
-    public function test_a_page_requested_under_the_wrong_prefix_redirects_to_its_own(): void
+    public function test_a_page_requested_under_the_wrong_prefix_is_not_found(): void
     {
-        $this->get('/thiet-ke-website/phan-mem')->assertRedirect(url('/dich-vu/phan-mem'))->assertStatus(301);
-        $this->get('/dich-vu/website-doanh-nghiep')->assertRedirect(url('/thiet-ke-website/website-doanh-nghiep'))->assertStatus(301);
+        $this->get('/thiet-ke-website/phan-mem')->assertNotFound();
+        $this->get('/dich-vu/website-doanh-nghiep')->assertNotFound();
         $this->get('/dich-vu/khong-ton-tai')->assertNotFound();
     }
 

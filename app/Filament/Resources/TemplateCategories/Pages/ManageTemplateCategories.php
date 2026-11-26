@@ -5,6 +5,7 @@ namespace App\Filament\Resources\TemplateCategories\Pages;
 use App\Filament\Resources\TemplateCategories\TemplateCategoryResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ManageRecords;
+use Filament\Support\Enums\Width;
 
 class ManageTemplateCategories extends ManageRecords
 {
@@ -13,7 +14,7 @@ class ManageTemplateCategories extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()->modalWidth(Width::FiveExtraLarge),
         ];
     }
 }

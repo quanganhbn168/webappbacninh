@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Frontend\SlugController;
-use App\Http\Middleware\RedirectFrontControllerPaths;
 use App\Http\Middleware\RequireSePayToken;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -28,7 +27,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
         ]);
-        $middleware->prepend(RedirectFrontControllerPaths::class);
         // Global, so it also covers the SePay package's own webhook route (and survives route:cache).
         $middleware->append(RequireSePayToken::class);
     })

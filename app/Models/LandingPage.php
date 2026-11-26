@@ -6,6 +6,7 @@ use App\Enums\LandingTemplate;
 use Awcodes\Curator\Models\Media;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 class LandingPage extends Model
@@ -16,6 +17,7 @@ class LandingPage extends Model
         'name',
         'is_active',
         'noindex',
+        'head_code',
         'meta_title',
         'meta_description',
         'price',
@@ -32,6 +34,12 @@ class LandingPage extends Model
         'compare_price' => 'integer',
     ];
 
+    /** Set on the demo of a catalog design: it measures nothing and sends nothing. */
+    public bool $isDemo = false;
+
+    /** The address of a page that is not served under /landing, such as a demo. */
+    public ?string $publicUrl = null;
+
     /** @var Collection<int, Media>|null */
     private ?Collection $media = null;
 
@@ -42,7 +50,13 @@ class LandingPage extends Model
 
     public function url(): string
     {
-        return route('landing.show', $this->slug);
+        return $this->publicUrl ?? route('landing.show', $this->slug);
+    }
+
+    /** Contact requests sent from this page. */
+    public function leads(): HasMany
+    {
+        return $this->hasMany(Lead::class);
     }
 
     /**

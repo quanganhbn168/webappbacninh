@@ -2,9 +2,6 @@
 
 @section('content')
     <x-legal-document
-        title="Điều khoản sử dụng website"
-        eyebrow="THÔNG TIN VÀ CHÍNH SÁCH"
-        summary="Khi truy cập và sử dụng website WebApp Bắc Ninh, người dùng được hiểu là đã đọc và đồng ý tuân thủ các điều khoản dưới đây. Các nội dung báo giá, phạm vi triển khai và nghĩa vụ cụ thể của từng dự án sẽ được xác nhận riêng."
         notice="Nội dung trên website mang tính giới thiệu và tham khảo. Báo giá cuối cùng chỉ có hiệu lực khi phạm vi công việc được hai bên xác nhận."
         icon="file-pen-line"
         updated="2026-07-11"

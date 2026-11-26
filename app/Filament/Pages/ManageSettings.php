@@ -10,6 +10,7 @@ use App\Filament\NavigationGroup;
 use App\Filament\Resources\OperationServices\OperationServiceResource;
 use App\Filament\Resources\ServiceCategories\ServiceCategoryResource;
 use App\Filament\Resources\Services\ServiceResource;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\CodeEditor;
@@ -93,11 +94,11 @@ class ManageSettings extends Page
                                     ])
                                     ->columns(2),
                                 Section::make('Logo website')
-                                    ->description('Ảnh được lưu trên public disk. Server cần có liên kết storage để hiển thị ngoài website.')
+                                    ->description('Chọn từ thư viện ảnh hoặc tải lên ngay trong hộp chọn. Website tự thu ảnh về đúng cỡ.')
                                     ->schema([
-                                        self::brandImage('website.site_logo_wide', 'Logo ngang', 'site/branding/logos', ['3:1', '4:1', '16:5']),
-                                        self::brandImage('website.site_logo_white', 'Logo trắng / nền tối', 'site/branding/logos', ['3:1', '4:1', '16:5']),
-                                        self::brandImage('website.site_logo_square', 'Logo vuông', 'site/branding/logos', ['1:1']),
+                                        self::logo('website.logo_wide_media_id', 'Logo ngang')->helperText('Hiện ở đầu và cuối trang.'),
+                                        self::logo('website.logo_white_media_id', 'Logo trắng / nền tối'),
+                                        self::logo('website.logo_square_media_id', 'Logo vuông')->helperText('Gửi cho Google; bỏ trống thì dùng logo ngang.'),
                                     ])
                                     ->columns(3),
                                 Section::make('Bộ favicon đa nền tảng')
@@ -413,6 +414,12 @@ class ManageSettings extends Page
             ->danger()
             ->persistent()
             ->send();
+    }
+
+    private static function logo(string $name, string $label): CuratorPicker
+    {
+        return CuratorPicker::make($name)->label($label)->disk('public')->directory('site/branding')
+            ->acceptedFileTypes(['image/png', 'image/webp', 'image/jpeg', 'image/svg+xml'])->constrained();
     }
 
     /** @param array<int, string> $aspectRatios */

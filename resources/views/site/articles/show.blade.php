@@ -1,65 +1,70 @@
 @extends('layouts.site')
 
 @section('content')
-    @php($toc = $article->tableOfContents())
-    <section class="page-hero page-hero--compact page-hero--text">
+    @php
+        $faqs = $article->faqItems();
+        $contents = collect($article->tableOfContents())->mapWithKeys(fn (string $heading, int $anchor): array => ['section-'.$anchor => $heading])
+            ->when($faqs !== [], fn ($list) => $list->put('cau-hoi-thuong-gap', 'Câu hỏi thường gặp'))->all();
+    @endphp
+    <header class="article-head">
         <div class="container">
-            <div class="article-hero">
-                <x-breadcrumbs :items="$breadcrumbs" />
-                <a class="tag tag--gold mb-3" href="{{ $article->category ? $article->category->url : route('articles.index') }}">{{ $article->category_label }}</a>
+            <div class="article-column">
                 <h1>{{ $article->title }}</h1>
-                @if ($article->excerpt)
-                    <p class="page-hero__lead">{{ $article->excerpt }}</p>
-                @endif
-                <p class="page-hero__meta mt-0">
-                    <span><x-icon name="calendar" class="icon-sm" /> {{ $article->published_label }}</span>
-                    <span><x-icon name="clock" class="icon-sm" /> {{ $article->read_time_label }}</span>
-                    <span><x-icon name="user-pen" class="icon-sm" /> {{ site_config('name') }}</span>
-                </p>
+                <x-breadcrumbs :items="$breadcrumbs" />
             </div>
+        </div>
+    </header>
+
+    <section class="section article-section">
+        <div class="container">
+            <article class="article-column">
+                <x-img :src="$article->cover" sizes="(min-width: 992px) 832px, 100vw" class="article-cover" :alt="$article->title" width="960" height="540" fetchpriority="high" />
+                @if ($article->intro && $article->intro !== $article->excerpt)
+                    <p class="article-intro">{{ $article->intro }}</p>
+                @endif
+
+                @if ($contents !== [])
+                    <details class="article-toc" data-toc open>
+                        <summary><x-icon name="list-ordered" /> Nội dung bài viết <x-icon name="chevron-down" class="article-toc__caret" /></summary>
+                        <ol>
+                            @foreach ($contents as $anchor => $heading)
+                                <li><a href="#{{ $anchor }}">{{ $heading }}</a></li>
+                            @endforeach
+                        </ol>
+                    </details>
+                @endif
+
+                <div class="prose">{!! $article->body_html !!}</div>
+
+                @if ($faqs !== [])
+                    <section class="article-faq" id="cau-hoi-thuong-gap" aria-labelledby="article-faq-title">
+                        <h2 id="article-faq-title">Câu hỏi thường gặp</h2>
+                        <x-faq :items="$faqs" :columns="1" name="article-faq" />
+                    </section>
+                @endif
+
+                <x-company-card :channels="$socialChannels['floating']" />
+                <x-ad-banners position="sidebar" class="article-banners" />
+            </article>
         </div>
     </section>
 
-    <section class="section">
-        <div class="container">
-            <div class="article-layout">
-                <article class="article-body">
-                    <img class="article-cover" src="{{ $article->image_url }}" alt="{{ $article->title }}" width="960" height="540" fetchpriority="high">
-                    @if ($article->intro && $article->intro !== $article->excerpt)
-                        <p class="article-intro">{{ $article->intro }}</p>
-                    @endif
-                    <div class="prose">{!! $article->body_html !!}</div>
-                    <div class="article-cta">
-                        <span class="icon-tile icon-tile--lg"><x-icon name="messages-square" /></span>
-                        <div>
-                            <h2 class="h3">Cần áp dụng nội dung này cho website của doanh nghiệp?</h2>
-                            <p class="mb-0 text-muted">WebApp Bắc Ninh có thể kiểm tra hiện trạng và đề xuất phạm vi thực tế.</p>
-                        </div>
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Nhận tư vấn</button>
-                    </div>
-                </article>
-                <aside class="article-sidebar">
-                    @if ($toc !== [])
-                        <nav class="legal-toc" aria-label="Nội dung bài viết">
-                            <strong>Nội dung bài viết</strong>
-                            @foreach ($toc as $anchor => $heading)
-                                <a href="#section-{{ $anchor }}">{{ $heading }}</a>
-                            @endforeach
-                        </nav>
-                    @endif
-                    <div class="feature-card">
-                        <span class="icon-tile"><x-icon name="headset" /></span>
-                        <div>
-                            <h2 class="h3">Trao đổi dự án</h2>
-                            <p>Thiết kế website, vận hành, SEO hoặc hợp tác kỹ thuật.</p>
-                            <a class="link-arrow mt-2" href="tel:{{ site_config('phone_href') }}"><x-icon name="phone" /> {{ site_config('phone') }}</a>
-                        </div>
-                    </div>
-                    <x-ad-banners position="sidebar" />
-                </aside>
-            </div>
+    @if ($contents !== [])
+        {{-- Once the table of contents scrolls away, this round button keeps it one tap from anywhere. --}}
+        <div class="toc-float" data-toc-float hidden>
+            <nav class="toc-float__panel" id="toc-float-panel" aria-label="Nội dung bài viết" data-toc-panel hidden>
+                <strong>Nội dung bài viết</strong>
+                <ol>
+                    @foreach ($contents as $anchor => $heading)
+                        <li><a href="#{{ $anchor }}">{{ $heading }}</a></li>
+                    @endforeach
+                </ol>
+            </nav>
+            <button class="toc-float__button" type="button" aria-expanded="false" aria-controls="toc-float-panel" aria-label="Mở nội dung bài viết" data-toc-button>
+                <x-icon name="list-ordered" />
+            </button>
         </div>
-    </section>
+    @endif
 
     @if ($relatedItems->isNotEmpty())
         <section class="section section--soft">

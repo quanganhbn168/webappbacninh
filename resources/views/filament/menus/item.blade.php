@@ -23,6 +23,7 @@
         <button type="button" wire:click="edit('{{ $item['key'] }}')" class="min-w-0 flex-1 text-left">
             <span class="flex items-center gap-2">
                 <span class="truncate font-medium text-gray-950 dark:text-white">{{ $item['title'] ?: 'Chưa đặt tên' }}</span>
+                @if (! $child && ($item['is_mega'] ?? false))<x-filament::badge color="warning" size="sm">Mega menu</x-filament::badge>@endif
                 @unless ($item['is_active'])<x-filament::badge color="gray" size="sm">Đang ẩn</x-filament::badge>@endunless
                 @if ($item['open_in_new_tab'])<x-filament::badge color="info" size="sm">Tab mới</x-filament::badge>@endif
                 @if (! $item['id'])<x-filament::badge color="success" size="sm">Mới</x-filament::badge>@endif
@@ -69,8 +70,34 @@
                         <x-filament::input type="text" list="menu-icon-names" wire:model.blur="{{ $path }}.icon" placeholder="Gõ để tìm, ví dụ: monitor" />
                     </x-filament::input.wrapper>
                 </div>
+                @foreach ([
+                    'column_title' => ['Tên cột', 'trong mega menu', 'Ví dụ: Theo ngành'],
+                    'description' => ['Mô tả', 'dòng nhỏ dưới tên, mega menu', ''],
+                ] as $field => [$label, $hint, $placeholder])
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-gray-950 dark:text-white">{{ $label }} <span class="font-normal text-gray-500">({{ $hint }})</span></label>
+                        <x-filament::input.wrapper :valid="! $errors->has($path.'.'.$field)">
+                            <x-filament::input type="text" wire:model.blur="{{ $path }}.{{ $field }}" :placeholder="$placeholder" />
+                        </x-filament::input.wrapper>
+                        @error($path.'.'.$field)<p class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
+                    </div>
+                @endforeach
+            @endif
+            @if ($this->allowsChildren())
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-950 dark:text-white">Nhãn <span class="font-normal text-gray-500">(ví dụ: Hot, Mới)</span></label>
+                    <x-filament::input.wrapper :valid="! $errors->has($path.'.badge')">
+                        <x-filament::input type="text" wire:model.blur="{{ $path }}.badge" maxlength="30" />
+                    </x-filament::input.wrapper>
+                    @error($path.'.badge')<p class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
+                </div>
             @endif
             <div class="flex flex-wrap items-end gap-x-6 gap-y-2 pb-2">
+                @if (! $child && $this->allowsChildren())
+                    <label class="flex items-center gap-2 text-sm text-gray-950 dark:text-white">
+                        <x-filament::input.checkbox wire:model.live="{{ $path }}.is_mega" /> Mega menu (menu con chia cột, rộng cả màn hình)
+                    </label>
+                @endif
                 <label class="flex items-center gap-2 text-sm text-gray-950 dark:text-white">
                     <x-filament::input.checkbox wire:model.live="{{ $path }}.open_in_new_tab" /> Mở tab mới
                 </label>

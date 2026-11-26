@@ -9,7 +9,8 @@ use Illuminate\Database\Seeder;
 class TestimonialSeeder extends Seeder
 {
     /**
-     * Sample testimonials from the approved design; replace them with real customer feedback in the admin.
+     * Sample testimonials from the approved design, kept hidden: made-up reviews must not be shown.
+     * Replace them with real customer feedback in the admin, then switch them on.
      */
     public function run(ImportLocalImage $images): void
     {
@@ -25,7 +26,7 @@ class TestimonialSeeder extends Seeder
                 'avatar_id' => $images->execute('images/'.$row['avatar'], 'testimonials', $row['name'])?->id,
                 'rating' => 5,
                 'order' => $order + 1,
-                'is_active' => true,
+                'is_active' => false,
             ]);
         }
     }

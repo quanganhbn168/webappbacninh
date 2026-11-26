@@ -2,9 +2,6 @@
 
 @section('content')
     <x-legal-document
-        title="Chính sách bảo mật thông tin"
-        eyebrow="THÔNG TIN VÀ CHÍNH SÁCH"
-        summary="WebApp Bắc Ninh tôn trọng quyền riêng tư của khách hàng. Chính sách này giải thích loại thông tin có thể được tiếp nhận, mục đích sử dụng và cách khách hàng yêu cầu kiểm tra hoặc điều chỉnh dữ liệu đã cung cấp."
         notice="Website chỉ thu thập thông tin do khách hàng chủ động gửi qua biểu mẫu, điện thoại, email hoặc các kênh liên hệ được công bố."
         icon="shield-check"
         updated="2026-07-11"

@@ -206,21 +206,20 @@
     padding: 1.5rem;
 }
 
-// Article page
-.article-hero { max-width: 52rem; }
-.article-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 20rem;
-    align-items: start;
-    gap: clamp(2rem, 4vw, 3.5rem);
+// Article page: one reading column with the title, then the contents, the text,
+// its questions and the company details.
+.article-column { max-width: 52rem; margin-inline: auto; }
+.article-head {
+    padding-top: 2rem;
 
-    @include media-breakpoint-down(lg) { grid-template-columns: minmax(0, 1fr); }
+    h1 { margin-bottom: .75rem; font-size: clamp(1.4rem, 1.15rem + 1vw, 2rem); line-height: 1.3; }
+    .site-breadcrumb { margin-bottom: 0; }
 }
-.article-body { min-width: 0; }
+.article-section { padding-top: 1.5rem; }
 .article-cover {
     width: 100%;
     aspect-ratio: 16 / 9;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     object-fit: cover;
     border-radius: $radius;
 }
@@ -231,29 +230,99 @@
     font-weight: 500;
     line-height: 1.65;
 }
-.article-cta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1.25rem;
-    margin-top: 3rem;
-    padding: 1.5rem;
+.article-toc {
+    margin-bottom: 2rem;
     border: 1px solid $gold-200;
     border-radius: $radius;
     background: $gold-50;
 
-    > div { flex: 1 1 18rem; }
-}
-.article-sidebar {
-    display: grid;
-    gap: 1.25rem;
+    summary {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        padding: .9rem 1.1rem;
+        color: $ink;
+        font-weight: 700;
+        list-style: none;
+        cursor: pointer;
 
-    @include media-breakpoint-up(lg) {
-        position: sticky;
-        top: calc(var(--header-height) + 1.5rem);
+        &::-webkit-details-marker { display: none; }
+        .icon { width: 1.2rem; height: 1.2rem; }
     }
+    .article-toc__caret { margin-left: auto; transition: transform $transition; }
+    &[open] .article-toc__caret { transform: rotate(180deg); }
+    ol { margin: 0; padding: 0 1.1rem 1rem 2.4rem; }
+    li { margin-bottom: .35rem; color: $muted; }
+    a { color: $ink; }
+    a:hover, a[aria-current] { color: $gold-800; }
+}
+.article-faq {
+    margin-top: 2.5rem;
+    scroll-margin-top: calc(var(--header-height) + 1rem);
 
-    .legal-toc { position: static; }
+    h2 { margin-bottom: 1rem; font-size: 1.5rem; }
+}
+.company-card {
+    @include surface($shadow: $shadow-sm, $radius: $radius-lg);
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+    border-top: 3px solid $gold;
+
+    h2 { margin-bottom: 1rem; font-size: 1.2rem; }
+}
+.company-card__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: .6rem 1.5rem;
+    margin: 0 0 1.25rem;
+    padding: 0;
+    list-style: none;
+
+    li { display: flex; align-items: flex-start; gap: .6rem; overflow-wrap: anywhere; }
+    .icon { flex-shrink: 0; width: 1.1rem; height: 1.1rem; margin-top: .2rem; color: $gold-700; }
+    a { color: $ink; }
+    a:hover { color: $gold-800; }
+}
+.company-card__actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.article-banners { margin-top: 1.5rem; }
+// Floating table of contents, on the side opposite the contact buttons.
+.toc-float {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 1031;
+
+    ol { margin: 0; padding-left: 1.2rem; }
+    li { margin-bottom: .45rem; color: $muted; }
+    a { color: $ink; }
+    a:hover, a[aria-current] { color: $gold-800; font-weight: 600; }
+}
+.toc-float__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: $gold;
+    color: $on-gold;
+    box-shadow: $shadow-lg;
+
+    .icon { width: 1.4rem; height: 1.4rem; }
+}
+.toc-float__panel {
+    @include surface($shadow: $shadow-lg, $radius: $radius);
+    position: absolute;
+    bottom: calc(100% + .6rem);
+    left: 0;
+    width: min(20rem, calc(100vw - 2rem));
+    max-height: min(24rem, 60vh);
+    overflow-y: auto;
+    padding: 1rem 1.1rem;
+    font-size: .9rem;
+
+    strong { display: block; margin-bottom: .6rem; color: $ink; }
 }
 .ad-banners {
     display: grid;
@@ -262,93 +331,140 @@
     img { width: 100%; height: auto; border-radius: $radius; }
 }
 
-// Theme catalog (/kho-giao-dien)
-.theme-quick {
-    border-bottom: 1px solid $border;
-    background: #fff;
+// Theme catalog (/kho-giao-dien): a short dark banner, one row of filters, then the designs.
+.page-hero--catalog {
+    background: $on-gold;
+    color: #fff;
+
+    .page-hero__grid { padding-block: 1.25rem 1.75rem; }
+    .site-breadcrumb { margin-bottom: .75rem; }
+    .eyebrow { color: $gold; }
+    h1 { margin-bottom: .5rem; color: #fff; }
+    .page-hero__lead { margin-bottom: 0; color: rgba(#fff, .72); }
+    .breadcrumb { --bs-breadcrumb-divider-color: #{rgba(#fff, .4)}; }
+    .breadcrumb a, .breadcrumb-item.active { color: rgba(#fff, .72); }
 }
-.theme-quick__track {
+.theme-library { padding-top: 1.75rem; }
+.theme-toolbar {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: .6rem;
-    padding-block: 1.25rem;
+    gap: .75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid $border;
 }
-.theme-quick__item {
-    @include surface($shadow: false, $radius: 50rem);
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    min-height: 2.75rem;
-    padding: .5rem 1.1rem;
-    color: $ink;
-    font-size: .88rem;
+.theme-toolbar__search { flex: 1 1 16rem; max-width: 22rem; }
+.theme-toolbar__select { width: auto; }
+.theme-toolbar__button {
+    --bs-btn-bg: #{$sand};
+    --bs-btn-hover-bg: #{$gold-50};
+    --bs-btn-active-bg: #{$gold-50};
+    --bs-btn-color: #{$ink};
+    --bs-btn-hover-color: #{$ink};
+    --bs-btn-active-color: #{$ink};
     font-weight: 600;
-    transition: background $transition, border-color $transition, color $transition, box-shadow $transition;
-
-    .icon { width: 1.1rem; height: 1.1rem; color: $gold-700; }
-    &:hover { border-color: $gold; background: $gold-50; }
-    &.active {
-        border-color: $gold;
-        background: $gold;
-        box-shadow: 0 .3rem .9rem rgba($gold, .35);
-        color: $on-gold;
-
-        .icon { color: inherit; }
-    }
 }
+.theme-toolbar__menu {
+    min-width: 15rem;
+    padding: .9rem 1.1rem .45rem;
 
-.theme-filter {
-    @include surface($shadow: $shadow-sm, $radius: $radius-lg);
-    display: grid;
-    padding: .5rem 1.5rem 1rem;
-
-    .form-check { margin-bottom: .45rem; font-size: .92rem; }
-    .form-check-input { width: 1.1em; height: 1.1em; margin-top: .2em; border-color: #b9aea2; }
-    .form-check-label { color: $ink; }
-
-    @include media-breakpoint-up(lg) {
-        position: sticky;
-        top: calc(var(--header-height) + 1rem);
-    }
-    @include media-breakpoint-down(lg) {
-        .offcanvas-lg & { padding: 0; border: 0; box-shadow: none; }
-    }
-}
-.theme-filter__head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-block: 1rem;
-    font-size: 1.05rem;
-
-    @include media-breakpoint-down(lg) {
-        .offcanvas-lg & { display: none; }
-    }
-}
-.theme-filter__group {
-    margin: 0;
-    padding: 1.15rem 0 .75rem;
-    border: 0;
-    border-top: 1px solid $border;
-
-    .form-label { margin-bottom: .7rem; color: $ink; font-size: .78rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+    .form-check { margin-bottom: .45rem; }
 }
 .theme-resultbar {
-    @include surface($shadow: false, $radius: $radius);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.25rem;
-    padding: .7rem 1.1rem;
+    gap: .5rem 1rem;
+    margin-block: 1rem 1.25rem;
 
     strong { color: $gold-800; font-size: 1.1rem; }
 }
 
-// Theme cards: equal height, three-line description, one row of tags, price pinned to the bottom
-.theme-card, .project-card {
+// Theme cards: the design's screenshot, then name, price and the two actions.
+.theme-card {
+    @include surface($shadow: false, $radius: $radius-lg);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    transition: border-color $transition, box-shadow $transition;
+
+    &:hover { border-color: $gold; box-shadow: $shadow; }
+}
+.theme-card__window {
+    position: relative;
+    display: block;
+    border-bottom: 1px solid $border;
+}
+.theme-card__screen {
+    display: block;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: #fff;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top;
+        transition: object-position 1.2s ease;
+    }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .theme-card:hover .theme-card__screen img {
+        object-position: bottom;
+        transition: object-position 6s linear;
+    }
+}
+.theme-card__badge {
+    position: absolute;
+    top: .85rem;
+    left: .85rem;
+    padding: .2rem .65rem;
+    border-radius: $radius-sm;
+    background: $on-gold;
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 700;
+}
+.theme-card__badge--hot { background: $red; }
+.theme-card__badge--new { background: $green; }
+.theme-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.1rem 1.25rem 1.25rem;
+}
+.theme-card__title {
+    margin-bottom: .25rem;
+    font-size: 1.1rem;
+    line-height: 1.35;
+
+    a { color: $ink; }
+    a:hover { color: $gold-800; }
+}
+.theme-card__meta { margin-bottom: .9rem; color: $muted; font-size: .8rem; }
+.theme-card__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-top: auto;
+    padding-top: .9rem;
+    border-top: 1px solid $border;
+
+    small { display: block; color: $muted; font-size: .75rem; }
+    strong { color: $ink; font-size: 1.15rem; line-height: 1.2; }
+}
+.theme-price {
+    del { display: block; color: $muted; font-size: .8rem; }
+    .theme-price__sale { display: block; color: $red; }
+}
+.theme-card__actions { display: flex; gap: .5rem; }
+.theme-card__preview { display: inline-flex; align-items: center; }
+
+// Project cards: equal height, three-line description, price pinned to the bottom
+.project-card {
     border-radius: $radius-lg;
 
     &:hover { border-color: $gold; }
@@ -376,9 +492,8 @@
         -webkit-line-clamp: 3;
         line-clamp: 3;
     }
-    .media-card__tags { max-height: 1.65rem; margin-top: 0; overflow: hidden; }
 
-    // Cards sit side by side from md up: fix title and description heights so tags and prices line up.
+    // Cards sit side by side from md up: fix title and description heights so prices line up.
     @include media-breakpoint-up(md) {
         .media-card__title { min-height: 2.99rem; }
         .media-card__body > p { min-height: 4.05rem; }
@@ -403,107 +518,115 @@
     gap: .5rem 1rem;
 }
 .project-card__cost { color: $gold-800; font-size: .95rem; }
-.theme-card__badges {
-    position: absolute;
-    z-index: 1;
-    top: .85rem;
-    left: .85rem;
-    right: .85rem;
+
+// Theme detail: summary and price on the left, the image slider and details on the right.
+// The hero clips its overflow by default, which would stop the summary from sticking.
+.theme-detail { overflow: visible; }
+.theme-summary {
+    @include media-breakpoint-up(lg) {
+        position: sticky;
+        top: calc(var(--header-height) + 1rem);
+    }
+
+    h1 { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem); }
+}
+.theme-summary__meta {
     display: flex;
     flex-wrap: wrap;
-    gap: .4rem;
-}
-.theme-card__badge {
-    padding: .25rem .7rem;
-    border-radius: 50rem;
-    background: rgba($on-gold, .82);
-    color: #fff;
-    font-size: .72rem;
-    font-weight: 700;
-    backdrop-filter: blur(4px);
-}
-.theme-card__badge--hot { background: $red; }
-.theme-card__badge--new { background: $green; }
-.theme-card__meta {
-    display: flex;
     align-items: center;
+    gap: .6rem;
+    margin-bottom: .6rem;
+    color: $muted;
+    font-size: .85rem;
+}
+.theme-summary__lead { color: $muted; }
+.theme-summary__specs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: 1.25rem;
+    border-top: 1px solid $border;
+
+    div { padding: .7rem .5rem .7rem 0; border-bottom: 1px solid $border; }
+    dt { color: $muted; font-size: .75rem; font-weight: 500; }
+    dd { margin: 0; font-weight: 600; font-size: .92rem; }
+}
+.theme-summary__price {
+    margin-bottom: .25rem;
+
+    small { display: block; color: $muted; }
+    strong { font-size: 2rem; line-height: 1.2; }
+}
+.theme-summary__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    margin-bottom: 1rem;
+
+    .btn { flex: 1 1 11rem; }
+}
+.theme-summary__pager {
+    display: flex;
     justify-content: space-between;
     gap: 1rem;
-    color: $gold-800;
-    font-size: .72rem;
-    font-weight: 800;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-}
-.theme-card__code {
-    padding: .1rem .45rem;
-    border-radius: $radius-sm;
-    background: $sand;
-    color: $muted;
-    letter-spacing: .04em;
-}
-.theme-card__footer {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: .75rem;
-    margin-top: auto;
+    margin-top: 1.25rem;
     padding-top: 1rem;
     border-top: 1px solid $border;
 
-    small { display: block; color: $muted; font-size: .75rem; }
-    strong { color: $gold-800; font-size: 1.2rem; line-height: 1.2; }
+    a { max-width: 48%; color: $ink; font-size: .9rem; font-weight: 600; }
+    a:hover { color: $gold-800; }
+    small { display: block; color: $muted; font-weight: 500; }
+    .icon { width: 1em; height: 1em; }
 }
+.theme-summary__next { margin-left: auto; text-align: right; }
+.theme-tabs {
+    gap: 1.75rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid $border;
+}
+.theme-tabs__button {
+    padding: 0 0 .75rem;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: $muted;
+    font-weight: 700;
 
+    span { margin-left: .35rem; padding: .05rem .45rem; border-radius: $radius-sm; background: $gold; color: $on-gold; font-size: .75rem; }
+    &.active { border-bottom-color: $gold; color: $ink; }
+}
+// Website screenshots fill the frame from the top (project ones are shown whole);
+// hovering scrolls through a tall one.
+.theme-gallery {
+    .project-gallery__main img { object-fit: cover; object-position: top; transition: object-position 1.2s ease; }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .swiper-slide:hover img, .swiper-slide:focus img { object-position: bottom; transition: object-position 8s linear; }
+    }
+}
+.theme-list {
+    margin-bottom: 2rem;
+
+    h2 { margin-bottom: 1rem; font-size: 1.2rem; }
+}
+.theme-cta {
+    @include surface($shadow: false, $radius: $radius-lg);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    padding: 1.1rem 1.25rem;
+
+    h2 { margin-bottom: .2rem; font-size: 1.1rem; }
+    p { margin: 0; color: $muted; font-size: .9rem; }
+}
 [data-theme-pager] {
     --bs-pagination-color: #{$ink};
     --bs-pagination-padding-x: 1rem;
     --bs-pagination-padding-y: .55rem;
 
     .page-link { border-radius: $radius-sm !important; font-weight: 600; }
-}
-
-.order-card {
-    @include surface($shadow: $shadow);
-    position: sticky;
-    top: calc(var(--header-height) + 1rem);
-    display: flex;
-    flex-direction: column;
-    gap: .35rem;
-    padding: 1.5rem;
-    border-top: 3px solid $gold-600;
-}
-.order-card__code {
-    align-self: flex-start;
-    margin-bottom: .5rem;
-    padding: .25rem .6rem;
-    border-radius: $radius-sm;
-    background: $ink;
-    color: #fff;
-    font-size: .78rem;
-    font-weight: 700;
-}
-.order-card__price {
-    color: $gold-800;
-    font-size: 1.9rem;
-    font-weight: 800;
-    line-height: 1.1;
-}
-.order-card__specs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: .75rem;
-    margin: .75rem 0 1.25rem;
-    padding: 1rem 0;
-    border-block: 1px solid $border;
-
-    dt { color: $muted; font-size: .75rem; font-weight: 500; }
-    dd { margin: 0; color: $ink; font-size: .88rem; font-weight: 700; }
-
-    @include media-breakpoint-down(sm) { grid-template-columns: minmax(0, 1fr); }
 }
 
 // Free tools (resources/views/site/tools)
@@ -650,3 +773,39 @@
         font-weight: 600;
     }
 }
+
+// Industry pages (/mau-website/{slug}) and the links to them.
+.industry-column {
+    max-width: 52rem;
+    margin-inline: auto;
+
+    .prose h2:first-child { margin-top: 0; }
+}
+.industry-faq {
+    margin-top: 2.5rem;
+
+    h2 { margin-bottom: 1rem; font-size: 1.4rem; }
+}
+.industry-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    a {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .6rem 1rem;
+        border: 1px solid $border;
+        border-radius: $radius-sm;
+        background: #fff;
+        color: $ink;
+        font-weight: 600;
+
+        &:hover, &:focus-visible { border-color: $gold; color: $gold-800; }
+    }
+}
+.theme-summary__meta a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }

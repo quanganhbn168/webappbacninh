@@ -9,7 +9,7 @@ final class FrontendMenuCache
 {
     public function key(string $location): string
     {
-        return 'frontend.menu.'.$location.'.v2';
+        return 'frontend.menu.'.$location.'.v3';
     }
 
     public function forget(string $location): void

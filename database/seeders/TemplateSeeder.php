@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Domain\Media\Actions\ImportLocalImage;
+use App\Enums\LandingTemplate;
 use App\Models\Template;
 use App\Models\TemplateCategory;
 use App\Models\ThemeFeature;
@@ -27,14 +28,18 @@ class TemplateSeeder extends Seeder
             ThemeFeature::query()->firstOrCreate(['slug' => $slug], ['name' => $name]);
         }
 
-        foreach ($this->templates() as $row) {
+        $drafts = require database_path('data/industry-pages.php');
+
+        foreach ([...$this->templates(), ...$this->landingSamples()] as $row) {
             if (Template::query()->where('slug', $row['slug'])->exists()) {
                 continue;
             }
 
             [$industrySlug, $industryName] = $row['industry'];
-            $category = TemplateCategory::query()->firstOrCreate(['slug' => $industrySlug], ['name' => $industryName]);
-            $image = fn (string $file): ?int => $images->execute('images/'.$file, 'showcase', $row['name'])?->id;
+            $draft = $drafts[$industrySlug] ?? [];
+            $category = TemplateCategory::query()->firstOrCreate(['slug' => $industrySlug], ['name' => $industryName] + ($draft === [] ? [] : array_merge($draft, ['faqs' => json_decode($draft['faqs'], true)])));
+            // A path with a folder is already complete; a bare file name lives in public/images.
+            $image = fn (string $file): ?int => $images->execute(str_contains($file, '/') ? $file : 'images/'.$file, 'showcase', $row['name'])?->id;
 
             $template = Template::query()->create(Arr::except($row, ['industry', 'image', 'gallery', 'features']) + [
                 'template_category_id' => $category->id,
@@ -47,12 +52,68 @@ class TemplateSeeder extends Seeder
     }
 
     /**
+     * Sample pages that run on our own landing layouts: the page itself is the demo.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function landingSamples(): array
+    {
+        $sample = function (LandingTemplate $layout, string $code, string $slug, int $order, string $name, string $description, array $pages): array {
+            $defaults = $layout->sample();
+
+            return [
+                'code' => $code,
+                'slug' => $slug,
+                'name' => $name,
+                'type' => 'landing-page',
+                'industry' => ['dien-gia-dung', 'Điện gia dụng'],
+                'description' => $description,
+                'year' => 2026,
+                'order' => $order,
+                'image' => 'landing/'.$layout->value.'/preview.webp',
+                'gallery' => [],
+                'features' => ['lead'],
+                'tags' => ['Landing page', 'Chạy quảng cáo'],
+                'pages' => $pages,
+                'included_features' => ['Hiển thị tốt trên điện thoại', 'Form thu thông tin khách hàng', 'Nút gọi và liên hệ', 'Gắn mã đo lường quảng cáo'],
+                'demo_layout' => $layout->value,
+                'demo' => ['price' => $defaults['price'], 'compare_price' => $defaults['compare_price'], 'content' => $layout->defaults()],
+            ];
+        };
+
+        return [
+            $sample(LandingTemplate::Purehome, 'WABN-LP01', 'landing-purehome-may-loc-khong-khi', 12, 'PureHome - Landing page bán sản phẩm gia dụng',
+                'Trang đích một sản phẩm, tông xanh nhẹ: giới thiệu ưu điểm, đánh giá, ưu đãi và form để lại số điện thoại.',
+                ['Đầu trang kèm giá', 'Ưu điểm sản phẩm', 'Công nghệ', 'Đánh giá khách hàng', 'Ưu đãi', 'Câu hỏi thường gặp']),
+            $sample(LandingTemplate::Freshair, 'WABN-LP02', 'landing-freshair-may-loc-khong-khi', 13, 'FreshAir - Landing page bán hàng có thư viện ảnh',
+                'Trang đích bán hàng với thư viện ảnh, thông số, quà tặng, voucher, giỏ hàng và form tư vấn.',
+                ['Khối mua hàng', 'Thư viện ảnh', 'Thông số kỹ thuật', 'Quà tặng và voucher', 'Đánh giá khách hàng', 'Câu hỏi thường gặp']),
+        ];
+    }
+
+    /**
      * @return array<int, array<string, mixed>>
      */
     private function templates(): array
     {
         return
         [
+            [
+                'code' => 'WABN-013',
+                'slug' => 's-star-may-nen-khi',
+                'name' => 'S-STAR - Máy nén khí công nghiệp',
+                'type' => 'doanh-nghiep',
+                'industry' => ['may-moc-thiet-bi', 'Máy móc - thiết bị'],
+                'description' => 'Website doanh nghiệp cung cấp thiết bị công nghiệp: sản phẩm, dịch vụ, giải pháp ngành, tin kỹ thuật và form báo giá.',
+                'badge' => 'Mới',
+                'demo_url' => 'https://s-star.webappbacninh.vn/',
+                'year' => 2026,
+                'is_featured' => true,
+                'order' => 0,
+                'image' => 'images/showcase/s-star.webp',
+                'gallery' => [],
+                'features' => [],
+            ],
             [
                 'code' => 'WABN-001',
                 'slug' => 'corporate-pro-doanh-nghiep-san-xuat',
@@ -550,8 +611,8 @@ class TemplateSeeder extends Seeder
                 'name' => 'Tech Service - Thiết bị và kỹ thuật',
                 'type' => 'doanh-nghiep',
                 'industry' => [
-                    'ky-thuat',
-                    'Thiết bị - kỹ thuật',
+                    'may-moc-thiet-bi',
+                    'Máy móc - thiết bị',
                 ],
                 'price' => 12500000,
                 'year' => 2025,

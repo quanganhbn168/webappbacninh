@@ -19,7 +19,7 @@ class CreateLandingPage extends CreateRecord
         $this->form->fill($template->sample() + [
             'template' => $template->value,
             'is_active' => true,
-            'noindex' => false,
+            'noindex' => true,
             'slug' => '',
             'content' => $template->defaults(),
         ]);

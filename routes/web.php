@@ -7,7 +7,6 @@ use App\Http\Controllers\Frontend\ArticleController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\LandingPageController;
 use App\Http\Controllers\Frontend\LeadController;
-use App\Http\Controllers\Frontend\LegacyArticleRedirectController;
 use App\Http\Controllers\Frontend\OperationServiceController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\ProjectController;
@@ -21,12 +20,7 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\TenantRegisterController;
 use App\Http\Controllers\ThumbnailController;
 use App\Http\Controllers\ToolController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-// Images moved from /frontend/images and /frontend/assets/images to /images; keep old links working.
-Route::get('/frontend/{path}', fn (string $path) => redirect('/images/'.basename($path), 301))
-    ->where('path', '(assets/)?images/[A-Za-z0-9._-]+');
 
 Route::get('/landing/{slug}', [LandingPageController::class, 'show'])->name('landing.show');
 
@@ -56,13 +50,6 @@ Route::controller(PageController::class)->group(function (): void {
 
 Route::get('/du-an', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/kien-thuc', [ArticleController::class, 'index'])->name('articles.index');
-// Former list addresses, keeping ?q= and ?page=. Posts and categories live at the site root.
-// /kien-thuc used to 301 to /blog and browsers remember that, which would loop: have them drop it.
-Route::get('/blog', fn (Request $request) => redirect()->route('articles.index', $request->query(), 301)
-    ->withHeaders(['Cache-Control' => 'no-store', 'Clear-Site-Data' => '"cache"']));
-Route::redirect('/tin-tuc', '/kien-thuc', 301);
-Route::get('/kien-thuc/danh-muc/{slug}', [LegacyArticleRedirectController::class, 'category'])->where('slug', '[a-z0-9-]+');
-Route::get('/kien-thuc/{slug}', [LegacyArticleRedirectController::class, 'post'])->where('slug', '[a-z0-9-]+');
 Route::get('/cong-cu', [ToolController::class, 'index'])->name('tools.index');
 
 Route::get('/thiet-ke-website', [ServiceController::class, 'index'])->name('services.index');
@@ -71,6 +58,10 @@ Route::get('/dich-vu/{slug}', [ServiceController::class, 'general'])->name('serv
 
 Route::get('/kho-giao-dien', [ThemeController::class, 'index'])->name('themes.index');
 Route::get('/kho-giao-dien/{slug}', [ThemeController::class, 'detail'])->name('themes.show');
+Route::get('/mau-website/{slug}', [ThemeController::class, 'industry'])->name('themes.industry');
+
+Route::get('/kho-giao-dien/{slug}/demo', [ThemeController::class, 'demo'])->name('themes.demo');
+Route::get('/kho-giao-dien/{slug}/demo/xem', [ThemeController::class, 'demoFrame'])->name('themes.demo.frame');
 
 Route::get('/du-an/{slug}', [ProjectController::class, 'detail'])->name('projects.show');
 
@@ -83,8 +74,6 @@ Route::get('/site.webmanifest', SiteManifestController::class)->name('site.manif
 Route::get('/favicon.ico', [SiteIconController::class, 'favicon'])->name('site.favicon');
 Route::get('/apple-touch-icon.png', [SiteIconController::class, 'appleTouchIcon'])->name('site.apple-touch-icon');
 Route::get('/apple-touch-icon-precomposed.png', [SiteIconController::class, 'appleTouchIcon'])->name('site.apple-touch-icon-precomposed');
-Route::redirect('/contact', '/lien-he', 301);
-Route::get('/search', fn () => redirect()->route('articles.index'))->name('search');
 
 Route::get('/login', [CustomerAuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [CustomerAuthController::class, 'login']);
@@ -132,7 +121,6 @@ Route::prefix('payment')->group(function (): void {
     Route::get('/sepay/status/{orderId}', [PaymentController::class, 'sepayStatus'])->name('payment.sepay.status')->middleware('throttle:30,1');
 });
 
-Route::post('/subscribe', fn () => back()->with('success', 'Cảm ơn bạn đã để lại email, chúng tôi sẽ liên hệ sớm!'))->name('subscribe.email');
 // Each call creates and migrates a database, so only signed-in admins may use it
 // until public sign-up for the SaaS plan is designed.
 Route::post('/create-tenant', [TenantRegisterController::class, 'store'])->middleware(['auth:admin', 'throttle:5,1']);

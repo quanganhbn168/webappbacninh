@@ -2,29 +2,72 @@
 
 namespace App\Models;
 
-use App\Traits\ImportsLegacyMedia;
-use Illuminate\Support\Str;
+use App\Domain\Media\Actions\ResizeContentImages;
+use App\Traits\HasFaqs;
+use App\Traits\HasSlug;
+use Awcodes\Curator\Models\Media;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Support\Str;
 
-class TemplateCategory extends Model implements HasMedia
+class TemplateCategory extends Model
 {
-    use HasFactory, ImportsLegacyMedia, InteractsWithMedia;
-    use \App\Traits\HasSlug;
+    use HasFactory, HasFaqs;
+    use HasSlug;
 
     protected $fillable = [
         'parent_id',
         'name',
         'slug',
-        'image',
-        'og_image',
         'meta_title',
         'meta_description',
         'description',
         'content',
+        'faqs',
+        'banner_image_id',
+        'is_published',
     ];
+
+    protected $casts = [
+        'faqs' => 'array',
+        'is_published' => 'boolean',
+    ];
+
+    public function bannerImage()
+    {
+        return $this->belongsTo(Media::class, 'banner_image_id');
+    }
+
+    /** The industry's own page: /mau-website/{slug}. */
+    protected function url(): Attribute
+    {
+        return Attribute::get(fn (): string => route('themes.industry', $this->slug));
+    }
+
+    /** Sanitized body of the industry page. */
+    protected function bodyHtml(): Attribute
+    {
+        return Attribute::get(fn (): string => app(ResizeContentImages::class)->execute((string) str((string) $this->content)->sanitizeHtml()));
+    }
+
+    /**
+     * Pages Google may list: turned on in the admin, with their own text and at least one design.
+     * Anything thinner stays reachable but is kept out of search.
+     */
+    public function scopeIndexable(Builder $query): Builder
+    {
+        return $query->where('is_published', true)
+            ->where('description', '!=', '')
+            ->where('content', '!=', '')
+            ->whereHas('templates', fn (Builder $templates) => $templates->where('is_active', true));
+    }
+
+    public function isIndexable(): bool
+    {
+        return self::query()->indexable()->whereKey($this->getKey())->exists();
+    }
 
     public function parent()
     {
@@ -34,30 +77,6 @@ class TemplateCategory extends Model implements HasMedia
     public function children()
     {
         return $this->hasMany(TemplateCategory::class, 'parent_id');
-    }
-
-    public function getImageUrlAttribute(): string
-    {
-        if ($this->hasMedia('featured')) {
-            return $this->getFirstMediaUrl('featured');
-        }
-
-        return $this->image ? asset($this->image) : asset('images/placeholder.svg');
-    }
-
-    public function getOgImageUrlAttribute(): string
-    {
-        if ($this->hasMedia('og')) {
-            return $this->getFirstMediaUrl('og');
-        }
-
-        return $this->og_image ? asset($this->og_image) : $this->image_url;
-    }
-
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('featured')->singleFile();
-        $this->addMediaCollection('og')->singleFile();
     }
 
     public function templates()

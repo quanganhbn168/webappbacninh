@@ -1,8 +1,7 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero eyebrow="Dịch vụ thiết kế website" title="Website rõ nội dung," highlight="dễ quản trị và có khả năng bán hàng."
-        lead="WebApp Bắc Ninh thiết kế website theo mục tiêu thực tế của doanh nghiệp: giới thiệu năng lực, nhận khách hàng, bán sản phẩm, chạy chiến dịch hoặc xây nền tảng nội dung lâu dài."
+    <x-hero
         :image="asset('images/hero-industrial.webp')" image-alt="Dịch vụ thiết kế website tại Bắc Ninh">
         <a class="btn btn-primary" href="#tu-van-website">Nhận tư vấn & báo giá <x-icon name="arrow-right" /></a>
         <a class="btn btn-outline-dark" href="{{ route('themes.index') }}">Xem kho giao diện</a>
@@ -29,7 +28,7 @@
                     @foreach ($landingServices as $service)
                         <div class="col">
                             <article class="media-card">
-                                <a class="media-card__image ratio-card" href="{{ $service->url }}" tabindex="-1" aria-hidden="true"><img class="w-100 h-100 object-fit-cover" src="{{ $service->image_url }}" alt="" width="640" height="400" loading="lazy"></a>
+                                <a class="media-card__image ratio-card" href="{{ $service->url }}" tabindex="-1" aria-hidden="true"><x-img :src="$service->cover" sizes="(min-width: 992px) 25vw, (min-width: 768px) 50vw, 100vw" class="w-100 h-100 object-fit-cover" :alt="$service->title" width="640" height="400" loading="lazy" /></a>
                                 <div class="media-card__body">
                                     <p class="eyebrow mb-0">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</p>
                                     <h3 class="media-card__title"><a href="{{ $service->url }}">{{ $service->title }}</a></h3>
@@ -133,7 +132,7 @@
                             @endforeach
                         </div>
                     </div>
-                    <div class="media-split__image"><img src="{{ asset('images/seo-operation.webp') }}" alt="Dịch vụ SEO và vận hành website" width="720" height="540" loading="lazy"></div>
+                    <div class="media-split__image"><x-img :src="asset('images/seo-operation.webp')" sizes="(min-width: 992px) 50vw, 100vw" alt="Dịch vụ SEO và vận hành website" width="720" height="540" loading="lazy" /></div>
                 </div>
             </div>
         </section>

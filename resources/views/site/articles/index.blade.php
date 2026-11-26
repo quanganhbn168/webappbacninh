@@ -1,8 +1,7 @@
 @extends('layouts.site')
 
 @section('content')
-    <x-hero title="Kiến thức" highlight="Đồng hành cùng doanh nghiệp"
-        lead="Chia sẻ kiến thức hữu ích về website, phần mềm, marketing và vận hành số, giúp doanh nghiệp bắt kịp xu hướng và phát triển bền vững."
+    <x-hero
         :image="asset('images/news-hero.webp')" image-alt="Bài viết kiến thức trên laptop và máy tính bảng" />
 
     @if ($featured->isNotEmpty())

@@ -29,6 +29,6 @@ class FullRichEditor extends RichEditor
             ->customTextColors()
             ->resizableImages()
             // Scrolls long content under a visible toolbar (resources/css/filament/admin/theme.css).
-            ->extraAttributes(['class' => 'blog-content-editor']);
+            ->extraAttributes(['class' => 'rich-editor-scroll']);
     }
 }

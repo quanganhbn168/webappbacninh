@@ -1,5 +1,33 @@
 // Article table of contents: the box inside the article ([data-toc]) and a round floating
 // button ([data-toc-float]) that appears once the box has scrolled away.
+
+// A long list in the box is cut short behind a fade, with "Xem thêm" to open all of it.
+function initLongList(box) {
+    const body = box.querySelector('[data-toc-body]');
+    const more = box.querySelector('[data-toc-more]');
+    if (!body || !more) return;
+
+    // Not worth a button when only a line or two would be hidden.
+    body.classList.add('is-clamped');
+    if (body.scrollHeight <= body.clientHeight + 48) {
+        body.classList.remove('is-clamped');
+        return;
+    }
+    more.hidden = false;
+
+    const setOpen = open => {
+        body.classList.toggle('is-clamped', !open);
+        more.setAttribute('aria-expanded', String(open));
+        more.querySelector('span').textContent = open ? 'Thu gọn' : 'Xem thêm';
+    };
+
+    more.addEventListener('click', () => setOpen(body.classList.contains('is-clamped')));
+    // Tabbing into a hidden link opens the list.
+    body.addEventListener('focusin', event => {
+        if (event.target.getBoundingClientRect().bottom > body.getBoundingClientRect().bottom) setOpen(true);
+    });
+}
+
 export function initToc() {
     const box = document.querySelector('[data-toc]');
     const float = document.querySelector('[data-toc-float]');
@@ -46,5 +74,6 @@ export function initToc() {
         button.focus();
     });
 
+    initLongList(box);
     update();
 }

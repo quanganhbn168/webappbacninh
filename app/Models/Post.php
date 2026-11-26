@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class Post extends Model
@@ -22,6 +23,7 @@ class Post extends Model
 
     protected $fillable = [
         'category_id',
+        'user_id',
         'title',
         'slug',
         'summary',
@@ -41,6 +43,7 @@ class Post extends Model
     protected $casts = [
         'is_published' => 'boolean',
         'published_at' => 'datetime',
+        'content_updated_at' => 'datetime',
         'is_featured' => 'boolean',
         'data' => 'array',
         'faqs' => 'array',
@@ -51,6 +54,11 @@ class Post extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(PostCategory::class, 'category_id');
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function featuredMedia(): BelongsTo
@@ -85,9 +93,10 @@ class Post extends Model
         return Attribute::get(fn (): string => (string) $this->summary);
     }
 
+    /** The lead paragraph of the article page; the short description stands in when it is left empty. */
     protected function intro(): Attribute
     {
-        return Attribute::get(fn (): string => (string) data_get($this->data, 'intro', $this->summary));
+        return Attribute::get(fn (): string => trim((string) data_get($this->data, 'intro')) ?: (string) $this->summary);
     }
 
     protected function imageUrl(): Attribute
@@ -113,6 +122,8 @@ class Post extends Model
         return Attribute::get(function (): string {
             $index = 0;
             $html = app(ResizeContentImages::class)->execute((string) str((string) $this->content)->sanitizeHtml());
+            // The title is the page's only h1; a pasted one becomes a section heading.
+            $html = (string) preg_replace('/<(\/?)h1\b/i', '<$1h2', $html);
 
             return (string) preg_replace_callback('/<h2(\s[^>]*)?>/i', function (array $match) use (&$index): string {
                 $index++;
@@ -159,9 +170,66 @@ class Post extends Model
         return $this->featuredMedia?->url ?? asset('images/placeholder.svg');
     }
 
-    public function getOgImageUrlAttribute(): string
+    protected static function booted(): void
     {
-        return $this->ogMedia?->url ?? $this->featured_image_url;
+        // Whoever is signed in to the admin and creates the article is its author.
+        static::creating(function (self $post): void {
+            $post->user_id ??= auth('admin')->id();
+        });
+
+        // The publication date is the moment it first goes out, not the day the draft was started.
+        static::saving(function (self $post): void {
+            if ($post->is_published) {
+                $post->published_at ??= now();
+            }
+        });
+
+        // Google warns against freshening dates when the content has not really changed, so
+        // only a change to what readers read moves the "updated" date.
+        static::updating(function (self $post): void {
+            if ($post->getOriginal('is_published') && $post->getOriginal('published_at')?->lte(now()) && $post->readableTextChanged()) {
+                $post->content_updated_at = now();
+            }
+        });
+    }
+
+    private function readableTextChanged(): bool
+    {
+        $read = fn (mixed $title, mixed $summary, mixed $content, mixed $faqs, mixed $data): array => [
+            (string) $title,
+            (string) $summary,
+            // Markup alone does not count: the editor rewrites it when it first saves a text.
+            preg_replace('/\s+/u', '', html_entity_decode(strip_tags((string) $content, '<img>'), ENT_QUOTES | ENT_HTML5, 'UTF-8')),
+            array_values($faqs ?? []),
+            (string) data_get($data, 'intro'),
+        ];
+
+        return $read($this->title, $this->summary, $this->content, $this->faqs, $this->data)
+            != $read(...array_map(fn (string $key): mixed => $this->getOriginal($key), ['title', 'summary', 'content', 'faqs', 'data']));
+    }
+
+    /** The date of the latest version: the update after publishing, else the publication itself. */
+    protected function modifiedAt(): Attribute
+    {
+        return Attribute::get(fn (): ?Carbon => $this->was_updated ? $this->content_updated_at : $this->published_at);
+    }
+
+    protected function wasUpdated(): Attribute
+    {
+        return Attribute::get(fn (): bool => $this->content_updated_at !== null
+            && ($this->published_at === null || $this->content_updated_at->gt($this->published_at)));
+    }
+
+    /** The byline: the writer's account, or the company for an article nobody signed. */
+    protected function authorName(): Attribute
+    {
+        return Attribute::get(fn (): string => (string) ($this->author?->name ?: site_config('name')));
+    }
+
+    /** Whether visitors can read it now; the single-record form of the published scope. */
+    public function isLive(): bool
+    {
+        return $this->is_published && $this->published_at !== null && $this->published_at->lte(now());
     }
 
     // ==================== SCOPES ====================

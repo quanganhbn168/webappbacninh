@@ -2,23 +2,24 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Filament\Forms\FullRichEditor;
 use App\Filament\Forms\PermalinkInput;
 use App\Filament\Forms\SeoTitleInput;
 use App\Models\Post;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
-use Awcodes\Curator\Components\Forms\RichEditor\AttachCuratorMediaPlugin;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -40,15 +41,14 @@ class PostForm
                         Hidden::make('slug_manually_edited')->default(false)->dehydrated(false),
                         PermalinkInput::make('slug')->prefix(url('/').'/')
                             ->afterStateUpdated(fn (Set $set) => $set('slug_manually_edited', true)),
-                        Textarea::make('summary')->label('Mô tả ngắn')->rows(4),
-                        RichEditor::make('content')->label('Nội dung')->required()
-                            ->plugins([AttachCuratorMediaPlugin::make()])
-                            ->disableToolbarButtons(['attachFiles'])
-                            ->enableToolbarButtons(['attachCuratorMedia'])
-                            ->extraAttributes(['class' => 'rich-editor-scroll'])
+                        Textarea::make('summary')->label('Mô tả ngắn')->rows(4)
+                            ->helperText('Hiện trên thẻ bài viết và kết quả tìm kiếm.'),
+                        Textarea::make('data.intro')->label('Đoạn mở bài')->rows(3)
+                            ->helperText('Hiện in đậm ở đầu bài viết. Bỏ trống: dùng mô tả ngắn.'),
+                        FullRichEditor::make('content')->label('Nội dung')->required()
                             ->helperText('Thời gian đọc được ước tính tự động từ nội dung bài viết.'),
                     ])->columns(1),
-                    Section::make('Câu hỏi thường gặp')->description('Hiện thành một mục riêng ở cuối bài và gửi cho Google dưới dạng FAQ.')->schema([
+                    Section::make('Câu hỏi thường gặp')->description('Hiện thành một mục riêng ở cuối bài.')->schema([
                         Repeater::make('faqs')->hiddenLabel()->schema([
                             TextInput::make('q')->label('Câu hỏi')->required()->maxLength(255),
                             Textarea::make('a')->label('Trả lời')->required()->rows(3)->maxLength(2000),
@@ -56,6 +56,8 @@ class PostForm
                             ->collapsible()->reorderable()->addActionLabel('Thêm câu hỏi')->defaultItems(0),
                     ])->collapsible(),
                     Section::make('SEO')->schema([
+                        TextInput::make('data.focus_keyword')->label('Từ khóa chính')->maxLength(100)
+                            ->helperText('Cụm từ bạn muốn bài này đứng đầu. Chỉ dùng để chấm điểm, không hiện trên web.'),
                         SeoTitleInput::make('meta_title'),
                         Textarea::make('meta_description')->label('Mô tả SEO')->rows(3),
                     ])->columns(1),
@@ -64,15 +66,23 @@ class PostForm
                     Section::make('Thiết lập bài viết')->schema([
                         Select::make('category_id')->label('Danh mục')
                             ->relationship('category', 'name')->searchable()->preload(),
-                        DateTimePicker::make('published_at')->label('Ngày xuất bản')->seconds(false)->default(now()),
+                        DateTimePicker::make('published_at')->label('Ngày xuất bản')->seconds(false)
+                            ->helperText('Bỏ trống: tự ghi lúc xuất bản. Chọn thời điểm sau này để hẹn giờ.'),
                         Toggle::make('is_published')->label('Đã xuất bản')->default(true),
                         Toggle::make('is_featured')->label('Nổi bật'),
+                        TextEntry::make('author.name')->label('Tác giả')->placeholder(fn (): string => (string) site_config('name'))->visibleOn('edit'),
+                        TextEntry::make('created_at')->label('Ngày tạo')->dateTime('d/m/Y H:i')->visibleOn('edit'),
+                        TextEntry::make('content_updated_at')->label('Cập nhật nội dung')->dateTime('d/m/Y H:i')
+                            ->placeholder('Chưa cập nhật sau khi xuất bản')->visibleOn('edit'),
                     ])->columns(1),
                     Section::make('Hình ảnh')->schema([
                         CuratorPicker::make('featured_media_id')->label('Ảnh đại diện')->constrained(),
                         CuratorPicker::make('og_media_id')->label('Ảnh chia sẻ')->constrained()
                             ->helperText('Ảnh hiển thị khi chia sẻ liên kết. Để trống sẽ dùng ảnh đại diện.'),
                     ])->columns(1),
+                    Section::make('Chấm điểm SEO')->schema([
+                        View::make('filament.seo.panel'),
+                    ]),
                 ])->columnSpan(['default' => 1, 'lg' => 1]),
             ]);
     }

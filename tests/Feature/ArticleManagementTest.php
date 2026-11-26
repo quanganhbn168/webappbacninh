@@ -71,6 +71,61 @@ class ArticleManagementTest extends TestCase
         $this->get($post->url)->assertOk()->assertDontSee('data-toc', false)->assertDontSee('FAQPage', false);
     }
 
+    public function test_article_lead_falls_back_to_the_short_description_and_shows_date_and_reading_time(): void
+    {
+        $post = Post::create(['title' => 'Bài '.Str::random(10), 'summary' => 'Mô tả ngắn làm đoạn mở bài', 'content' => '<p>Test</p>', 'is_published' => true, 'published_at' => now()->subMinute()]);
+
+        $this->get($post->url)->assertOk()
+            ->assertSee('<p class="article-intro">Mô tả ngắn làm đoạn mở bài</p>', false)
+            ->assertSeeInOrder(['article-meta', $post->published_label, $post->read_time_label], false)
+            // Without a picture of its own the article starts with its text, not a placeholder.
+            ->assertDontSee('article-cover', false);
+
+        $post->update(['data' => ['intro' => 'Đoạn mở bài riêng'], 'featured_media_id' => Media::query()->firstOrFail()->id]);
+        $this->get($post->url)->assertOk()
+            ->assertSee('<p class="article-intro">Đoạn mở bài riêng</p>', false)
+            ->assertSee('article-cover', false);
+    }
+
+    public function test_admin_edits_the_lead_without_losing_other_extra_data(): void
+    {
+        $post = Post::create(['title' => 'Bài '.Str::random(10), 'content' => '<p>Test</p>', 'data' => ['intro' => 'Cũ', 'seo' => ['robots' => 'noindex']]]);
+
+        Livewire::actingAs($this->admin(), 'admin')->test(EditPost::class, ['record' => $post->id])
+            ->assertSchemaStateSet(['data.intro' => 'Cũ'])
+            ->fillForm(['data.intro' => 'Mới'])
+            ->call('save')->assertHasNoFormErrors();
+
+        $this->assertSame('Mới', $post->fresh()->data['intro']);
+        $this->assertSame(['robots' => 'noindex'], $post->fresh()->data['seo']);
+    }
+
+    public function test_only_an_admin_can_preview_a_draft_or_a_scheduled_article(): void
+    {
+        $draft = Post::create(['title' => 'Nháp '.Str::random(10), 'content' => '<p>Test</p>', 'is_published' => false]);
+        $scheduled = Post::create(['title' => 'Hẹn giờ '.Str::random(10), 'content' => '<p>Test</p>', 'is_published' => true, 'published_at' => now()->addDay()]);
+
+        foreach ([$draft, $scheduled] as $post) {
+            $this->get($post->url)->assertNotFound();
+        }
+        // A signed-in customer is not an admin.
+        $this->actingAs(User::factory()->create())->get($draft->url)->assertNotFound();
+        $this->actingAs(User::factory()->create(), 'admin')->get($draft->url)->assertNotFound();
+
+        foreach ([$draft, $scheduled] as $post) {
+            $this->actingAs($this->admin(), 'admin')->get($post->url)->assertOk()
+                ->assertSee('article-preview', false)
+                ->assertSee('<meta name="robots" content="noindex, nofollow">', false);
+            Livewire::actingAs($this->admin(), 'admin')->test(EditPost::class, ['record' => $post->id])
+                ->assertActionHasLabel('view', 'Xem trước')->assertActionHasUrl('view', $post->url);
+        }
+
+        $live = Post::query()->published()->firstOrFail();
+        $this->get($live->url)->assertOk()->assertDontSee('article-preview', false);
+        Livewire::actingAs($this->admin(), 'admin')->test(EditPost::class, ['record' => $live->id])
+            ->assertActionHasLabel('view', 'Xem bài');
+    }
+
     public function test_breadcrumbs_run_through_kien_thuc_and_the_category(): void
     {
         $category = PostCategory::create(['name' => 'Danh mục '.Str::random(10), 'is_active' => true]);
@@ -148,8 +203,7 @@ class ArticleManagementTest extends TestCase
         $post->refresh();
         $this->assertNull($post->og_media_id);
         $this->assertSame(Str::slug($title), $post->slug);
-        $this->assertSame($media->url, $post->og_image_url);
-        $this->get($post->url)->assertOk()->assertSee($media->url, false);
+        $this->get($post->url)->assertOk()->assertSee('property="og:image" content="'.$media->url.'"', false);
         Livewire::actingAs($this->admin(), 'admin')->test(EditPost::class, ['record' => $post->id])
             ->set('data.featured_media_id', [])->call('save')->assertHasNoFormErrors();
         $this->assertNull($post->fresh()->featured_media_id);

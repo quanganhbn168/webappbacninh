@@ -13,6 +13,61 @@
     overscroll-behavior-y: contain;
 }
 
+/* SEO score panel of the article form. One colour per verdict, readable on light and dark. */
+.seo-panel { display: grid; gap: .875rem; font-size: .875rem; }
+.seo-panel__report { display: grid; gap: .875rem; }
+.seo-panel__note, .seo-panel small { color: var(--color-gray-500); }
+.seo-panel__score { --grade: #dc2626; display: flex; align-items: center; gap: .875rem; }
+.seo-panel__score[data-grade="fair"] { --grade: #d97706; }
+.seo-panel__score[data-grade="good"] { --grade: #16a34a; }
+.seo-panel__score strong {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 4rem;
+    height: 4rem;
+    border: .35rem solid var(--grade);
+    border-radius: 999px;
+    font-size: 1.35rem;
+}
+.seo-panel__score span { display: block; color: var(--grade); font-weight: 700; }
+.seo-panel__preview {
+    display: grid;
+    gap: .2rem;
+    padding: .75rem;
+    border: 1px solid var(--color-gray-200);
+    border-radius: .5rem;
+    overflow-wrap: anywhere;
+}
+.seo-panel__preview strong { color: #1a0dab; font-size: 1rem; font-weight: 500; line-height: 1.35; }
+.dark .seo-panel__preview { border-color: rgb(255 255 255 / 0.1); }
+.dark .seo-panel__preview strong { color: #8ab4f8; }
+.seo-panel__preview p { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.seo-panel__group { border-top: 1px solid var(--color-gray-200); padding-top: .625rem; }
+.dark .seo-panel__group { border-color: rgb(255 255 255 / 0.1); }
+.seo-panel__group summary { display: flex; justify-content: space-between; gap: .75rem; font-weight: 600; cursor: pointer; }
+.seo-panel__count { flex-shrink: 0; color: #d97706; font-weight: 500; }
+.seo-panel__count[data-clean="true"] { color: #16a34a; }
+.seo-panel__group ul { display: grid; gap: .45rem; margin-top: .625rem; }
+.seo-panel__group li { position: relative; padding-left: 1.25rem; overflow-wrap: anywhere; }
+.seo-panel__group li::before {
+    content: "";
+    position: absolute;
+    top: .4em;
+    left: .15rem;
+    width: .55rem;
+    height: .55rem;
+    border-radius: 999px;
+    background: var(--color-gray-400);
+}
+.seo-panel__group li[data-status="fail"]::before { background: #dc2626; }
+.seo-panel__group li[data-status="warn"]::before { background: #d97706; }
+.seo-panel__group li[data-status="pass"]::before { background: #16a34a; }
+.seo-panel__group li[data-status="tip"]::before { background: #2563eb; }
+.seo-panel__group li a { color: var(--color-gray-500); white-space: nowrap; text-decoration: underline; }
+.seo-panel__again { justify-self: start; color: var(--primary-600); font-weight: 600; cursor: pointer; }
+.seo-panel__again:disabled { opacity: .6; cursor: wait; }
+
 /* Topbar: the search grows on the left, "Tạo mới", the bell and the user sit on the right. */
 .fi-topbar-end {
     flex: 1 1 auto;

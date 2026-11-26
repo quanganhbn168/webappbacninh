@@ -7,7 +7,14 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreatePost extends CreateRecord
 {
+    use AnalyzesSeo;
+
     protected ?bool $hasDatabaseTransactions = true;
 
     protected static string $resource = PostResource::class;
+
+    protected function afterCreate(): void
+    {
+        $this->storeSeoScore();
+    }
 }

@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Frontend;
 use App\Models\Page;
 use App\Models\Post;
 use App\Models\PostCategory;
+use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ArticleController extends FrontendController
 {
@@ -50,26 +53,45 @@ class ArticleController extends FrontendController
 
     public function detail(string $slug): View
     {
-        $article = Post::query()->published()->with(['category', 'featuredMedia', 'ogMedia'])->where('slug', $slug)->firstOrFail();
+        $article = Post::query()->with(['author', 'category', 'featuredMedia', 'ogMedia'])->where('slug', $slug)->firstOrFail();
+        // A draft or a scheduled article opens only for someone signed in to the admin, as a preview.
+        $isPreview = ! $article->isLive();
+        $viewer = auth('admin')->user();
+        abort_if($isPreview && ! ($viewer instanceof User && $viewer->canAccessPanel(Filament::getPanel('admin'))), 404);
+
+        return $this->articlePage($article, $isPreview);
+    }
+
+    /** The page of one article, also read by the SEO score before the article is saved. */
+    public function articlePage(Post $article, bool $isPreview = false): View
+    {
+        // Without a written description, the opening of the text is better than an empty one.
+        $description = $article->meta_description ?: data_get($article->data, 'seo.meta_description') ?: $article->excerpt
+            ?: Str::limit(trim((string) preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags(str_replace('<', ' <', $article->body_html)), ENT_QUOTES | ENT_HTML5, 'UTF-8'))), 155, '…', true);
+        $shareImage = $article->ogMedia?->url ?? $article->featuredMedia?->url ?? $this->defaultOgImage();
 
         return $this->page('site.articles.show', [
             'article' => $article,
+            'isPreview' => $isPreview,
+            'categories' => $this->categories(),
             'relatedItems' => $article->related(),
             'pageTitle' => $article->meta_title ?: data_get($article->data, 'seo.meta_title', $article->title.' | '.site_config('name')),
-            'pageDescription' => $article->meta_description ?: data_get($article->data, 'seo.meta_description', $article->excerpt),
+            'pageDescription' => $description,
             'pageKeywords' => (string) $article->meta_keywords,
             'canonicalUrl' => data_get($article->data, 'seo.canonical_url') ?: $article->url,
-            'robots' => data_get($article->data, 'seo.robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'),
+            'robots' => $isPreview ? 'noindex, nofollow' : data_get($article->data, 'seo.robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'),
             'ogType' => 'article',
-            'ogImage' => $article->og_image_url,
+            'ogImage' => $shareImage,
             'schemaType' => 'Article',
             'schemaFaqs' => $article->faqItems(),
             'schemaData' => [
                 'headline' => $article->title,
-                'image' => $article->og_image_url,
+                'image' => absolute_url((string) $shareImage),
                 'datePublished' => $article->published_at?->toIso8601String(),
-                'dateModified' => $article->updated_at?->toIso8601String(),
-                'author' => ['@id' => rtrim((string) site_config('site_url'), '/').'/#organization'],
+                'dateModified' => $article->modified_at?->toIso8601String(),
+                'author' => $article->author
+                    ? ['@type' => 'Person', 'name' => $article->author_name]
+                    : ['@id' => rtrim((string) site_config('site_url'), '/').'/#organization'],
             ],
             'breadcrumbs' => $this->breadcrumbs($article->category, $article),
         ]);

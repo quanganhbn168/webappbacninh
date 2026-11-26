@@ -35,6 +35,11 @@ final class ResizeContentImages
 
             $image = $this->images->execute($media, self::WIDTHS);
             $attributes = ' src="'.e($image['src']).'"'.($image['srcset'] ? ' srcset="'.e($image['srcset']).'" sizes="'.self::SIZES.'"' : '');
+            // The size lets the browser keep room for the picture, so the text does not jump.
+            if ($media->width && $media->height && ! preg_match('/\s(width|height)=/i', $tag)) {
+                $attributes .= ' width="'.(int) $media->width.'" height="'.(int) $media->height.'"';
+            }
+
             $tag = str_replace($source[0], $attributes, $tag);
 
             return stripos($tag, ' loading=') === false ? preg_replace('/^<img/i', '<img loading="lazy"', $tag) : $tag;

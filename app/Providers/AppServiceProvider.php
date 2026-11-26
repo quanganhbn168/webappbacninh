@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Awcodes\Curator\Config\CuratorManager;
+use Awcodes\Curator\Facades\Curator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use SocialiteProviders\Manager\SocialiteWasCalled;
@@ -30,5 +31,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Event::listen(SocialiteWasCalled::class, [ZaloExtendSocialite::class, 'handle']);
         CuratorPicker::configureUsing(fn (CuratorPicker $picker) => $picker->maxSize(self::MAX_IMAGE_KB));
+        // Uploads keep their file name (without accents), which search engines read as a hint
+        // about the picture; a random code says nothing.
+        Curator::preserveFilenames(true);
     }
 }

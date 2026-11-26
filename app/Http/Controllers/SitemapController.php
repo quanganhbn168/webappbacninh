@@ -37,7 +37,7 @@ class SitemapController extends Controller
                 // Not a post hidden from Google, nor one whose canonical address is somewhere else.
                 ->reject(fn (Post $post): bool => str_contains((string) data_get($post->data, 'seo.robots'), 'noindex')
                     || (data_get($post->data, 'seo.canonical_url') ?: $post->url) !== $post->url)
-                ->each(fn (Post $post) => $sitemap->add($this->url($post->url, $post->updated_at)));
+                ->each(fn (Post $post) => $sitemap->add($this->url($post->url, $post->modified_at)));
 
             // Empty categories are left out until they have something to read.
             PostCategory::active()->whereHas('posts', fn ($query) => $query->published())->get()

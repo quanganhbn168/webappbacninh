@@ -1,0 +1,75 @@
+// Image slider with a thumbnail strip (<x-gallery>): project and theme detail pages.
+.gallery { min-width: 0; }
+.gallery__main {
+    border-radius: $radius-lg;
+    background: $sand;
+    box-shadow: $shadow;
+
+    // The whole screenshot, never cropped or zoomed to fill the frame.
+    img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: contain; }
+}
+.gallery__nav {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(#fff, .92);
+    color: $ink;
+    box-shadow: $shadow;
+    transform: translateY(-50%);
+    transition: background $transition, opacity $transition;
+
+    &--prev { left: .75rem; }
+    &--next { right: .75rem; }
+    &:hover { background: $gold; }
+    &.swiper-button-disabled { opacity: .35; }
+}
+.gallery__counter.swiper-pagination-fraction {
+    position: absolute;
+    z-index: 2;
+    inset: auto .75rem .75rem auto;
+    width: auto;
+    padding: .2rem .65rem;
+    border-radius: 999px;
+    background: rgba($ink, .75);
+    color: #fff;
+    font-size: .8rem;
+}
+.gallery__thumbs {
+    margin-top: .75rem;
+
+    .swiper-slide { width: 6.5rem; }
+    // Before Swiper starts it has not spaced the slides yet.
+    &:not(.swiper-initialized) .swiper-slide { margin-right: .75rem; }
+
+    button {
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        padding: 0;
+        border: 2px solid transparent;
+        border-radius: $radius-sm;
+        background: none;
+        opacity: .65;
+        transition: opacity $transition, border-color $transition;
+    }
+    img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+    button:hover,
+    .swiper-slide-thumb-active button { border-color: $gold; opacity: 1; }
+}
+
+// Website screenshots fill the frame from the top (the others are shown whole);
+// hovering scrolls through a tall one.
+.gallery--scroll {
+    .gallery__main img { object-fit: cover; object-position: top; transition: object-position 1.2s ease; }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .swiper-slide:hover img, .swiper-slide:focus img { object-position: bottom; transition: object-position 8s linear; }
+    }
+}

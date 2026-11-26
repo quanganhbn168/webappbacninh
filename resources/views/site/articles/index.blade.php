@@ -1,4 +1,4 @@
-@extends('layouts.site')
+@extends('layouts.master')
 
 @section('content')
     <x-hero
@@ -32,7 +32,7 @@
                         <div class="col"><x-card.post :post="$post" /></div>
                     @endforeach
                 </div>
-                <div class="mt-5">{{ $posts->links('site.partials.pagination') }}</div>
+                <div class="mt-5">{{ $posts->links('site.articles._pagination') }}</div>
             @endif
         </div>
     </section>

@@ -1,0 +1,135 @@
+// Projects (/du-an): the story cards, the cards of the list and the technology logos.
+
+// Project story: collapsible cards (header, body, footer) with rich content
+.story-card {
+    @include surface;
+    overflow: hidden;
+    scroll-margin-top: calc(var(--header-height) + 1rem);
+}
+.story-card__header { margin: 0; font-size: 1.15rem; }
+.story-card__toggle {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+    width: 100%;
+    padding: 1rem 1.4rem;
+    border: 0;
+    background: $gold-50;
+    color: $ink;
+    font: inherit;
+    text-align: left;
+
+    .icon-tile { flex: none; background: #fff; }
+    &:focus-visible { outline-offset: -3px; }
+}
+.story-card__chevron {
+    margin-left: auto;
+    transition: transform $transition;
+
+    .collapsed & { transform: rotate(-90deg); }
+}
+.story-card__body {
+    overflow-x: auto;
+    padding: 1.4rem;
+    border-top: 1px solid $border;
+
+    .prose { font-size: 1rem; }
+    .prose h1 { font-size: 1.4rem; }
+    .prose h2 { margin-top: 1.4em; font-size: 1.25rem; }
+    .prose h3 { font-size: 1.1rem; }
+}
+.story-card__footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: .6rem 1.4rem;
+    border-top: 1px solid $border;
+}
+.story-card__close {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .25rem 0;
+    border: 0;
+    background: none;
+    color: $gold-800;
+    font-size: .9rem;
+    font-weight: 600;
+}
+
+// Project cards: equal height, three-line description, price pinned to the bottom
+.project-card {
+    border-radius: $radius-lg;
+
+    &:hover { border-color: $gold; }
+    .media-card__image::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(#1c1208, .4), transparent 45%);
+        pointer-events: none;
+    }
+    .media-card__body { gap: .7rem; padding: 1.3rem 1.4rem 1.4rem; }
+    .media-card__title {
+        display: -webkit-box;
+        overflow: hidden;
+        font-size: 1.15rem;
+        line-height: 1.3;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+    .media-card__body > p {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+    }
+
+    // Cards sit side by side from md up: fix title and description heights so prices line up.
+    @include media-breakpoint-up(md) {
+        .media-card__title { min-height: 2.99rem; }
+        .media-card__body > p { min-height: 4.05rem; }
+    }
+}
+.project-card .media-card__badge {
+    z-index: 1;
+    top: .85rem;
+    bottom: auto;
+    left: .85rem;
+    padding: .25rem .75rem;
+    border-radius: 50rem;
+    font-size: .72rem;
+}
+.project-card__foot {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem 1rem;
+}
+.project-card__cost { color: $gold-800; font-size: .95rem; }
+
+.tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .5rem .85rem;
+        border: 1px solid $border;
+        border-radius: $radius-sm;
+        background: #fff;
+        color: $ink;
+        font-size: .9rem;
+        font-weight: 600;
+    }
+}

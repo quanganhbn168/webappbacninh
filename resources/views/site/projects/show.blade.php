@@ -1,16 +1,10 @@
-@extends('layouts.site')
-
-@push('head')
-    <link rel="stylesheet" href="{{ asset('vendor/swiper/swiper-bundle.min.css') }}">
-@endpush
+@extends('layouts.master')
 
 @push('scripts')
-    <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}"></script>
-    @vite(['resources/js/projects/gallery.js', 'resources/js/projects/story.js'])
+    @vite('resources/js/projects/story.js')
 @endpush
 
 @section('content')
-    @php($slides = $project->slides)
     <section class="page-hero page-hero--compact">
         <div class="container">
             <div class="page-hero__grid">
@@ -37,31 +31,7 @@
                         @endif
                     </div>
                 </div>
-                <div class="project-gallery" data-project-gallery>
-                    <div class="swiper project-gallery__main">
-                        <div class="swiper-wrapper">
-                            @foreach ($slides as $index => $slide)
-                                <div class="swiper-slide">
-                                    <x-img :src="$slide" sizes="(min-width: 992px) 50vw, 100vw" alt="{{ $project->title }}{{ $index ? ' - ảnh '.($index + 1) : '' }}" width="800" height="500" :loading="$index ? 'lazy' : null" :fetchpriority="$index ? null : 'high'" />
-                                </div>
-                            @endforeach
-                        </div>
-                        @if (count($slides) > 1)
-                            <button class="project-gallery__nav project-gallery__nav--prev" type="button" aria-label="Ảnh trước"><x-icon name="chevron-left" /></button>
-                            <button class="project-gallery__nav project-gallery__nav--next" type="button" aria-label="Ảnh tiếp theo"><x-icon name="chevron-right" /></button>
-                            <span class="project-gallery__counter"></span>
-                        @endif
-                    </div>
-                    @if (count($slides) > 1)
-                        <div class="swiper project-gallery__thumbs">
-                            <div class="swiper-wrapper">
-                                @foreach ($slides as $index => $slide)
-                                    <div class="swiper-slide"><button type="button" aria-label="Xem ảnh {{ $index + 1 }}"><img src="{{ $slide['thumb'] }}" alt="" width="120" height="80" loading="lazy"></button></div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-                </div>
+                <x-gallery :slides="$project->slides" :title="$project->title" sizes="(min-width: 992px) 50vw, 100vw" />
             </div>
         </div>
     </section>

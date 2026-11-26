@@ -1,0 +1,57 @@
+// Free tools (resources/views/site/tools)
+.tool-toggle {
+    display: flex;
+    gap: .25rem;
+    padding: .25rem;
+    border: 1px solid $border;
+    border-radius: 50rem;
+    background: $cream;
+
+    .btn {
+        flex: 1;
+        min-height: 2.75rem;
+        border-radius: 50rem;
+        white-space: normal;
+    }
+}
+.tool-info {
+    @include surface($shadow: false);
+    padding: 1.25rem;
+}
+
+// Lunar calendar
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: .6rem;
+}
+.cal-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 5rem;
+    border: 1px solid transparent;
+    border-radius: $radius;
+    background: $paper;
+    cursor: pointer;
+    transition: background $transition, transform $transition, box-shadow $transition;
+
+    &:not(.empty):hover {
+        background: $sand;
+        box-shadow: $shadow-sm;
+        transform: translateY(-2px);
+    }
+    &.today {
+        border-color: $gold;
+        background: $gold-50;
+        color: $gold-800;
+
+        .lunar { color: $gold-700; }
+    }
+    &.empty { background: transparent; cursor: default; }
+    &.sunday .solar { color: $red; }
+
+    .solar { font-size: 1.5rem; font-weight: 700; line-height: 1; }
+    .lunar { margin-top: .3rem; color: $muted; font-size: .85rem; }
+}

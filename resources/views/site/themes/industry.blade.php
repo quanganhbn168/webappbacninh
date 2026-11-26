@@ -1,4 +1,4 @@
-@extends('layouts.site')
+@extends('layouts.master')
 
 @section('content')
     @php($faqs = $industry->faqItems())

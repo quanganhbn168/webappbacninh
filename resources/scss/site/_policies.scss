@@ -1,0 +1,70 @@
+// Policy pages
+.legal-hero-icon {
+    align-items: center;
+    justify-content: center;
+    width: 11rem;
+    height: 11rem;
+    margin-left: auto;
+    border-radius: 50%;
+    background: #fff;
+    color: $gold-600;
+    box-shadow: $shadow;
+
+    .icon { width: 4.5rem; height: 4.5rem; }
+}
+.legal-toc {
+    @include surface($shadow: false);
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+    padding: 1.25rem;
+    font-size: .9rem;
+
+    @include media-breakpoint-up(lg) {
+        position: sticky;
+        top: calc(var(--header-height) + 1.5rem);
+    }
+
+    strong { margin-bottom: .5rem; color: $ink; }
+    a {
+        padding: .4rem .6rem;
+        border-radius: $radius-sm;
+        color: $muted;
+
+        &:hover { background: $gold-50; color: $gold-800; }
+    }
+}
+.legal-notice {
+    display: flex;
+    gap: .9rem;
+    margin-bottom: 1.5rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid $gold-200;
+    border-radius: $radius;
+    background: $gold-50;
+    color: $text-soft;
+
+    .icon { color: $gold-600; }
+    p { margin: 0; }
+}
+.legal-document {
+    @include surface($shadow: false);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+
+    article + article {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid $border;
+    }
+    article h2 { margin-top: 0; }
+}
+.legal-contact {
+    @include surface($shadow: false);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+}

@@ -1,0 +1,85 @@
+// Long-form text: articles, policies and service content from the admin.
+.prose {
+    color: $text-soft;
+    font-size: 1.05rem;
+    line-height: 1.75;
+
+    > * + * { margin-top: 1.1em; }
+    > :first-child { margin-top: 0; }
+    h2 {
+        margin-top: 2em;
+        font-size: clamp(1.35rem, 1.1rem + .7vw, 1.65rem);
+        scroll-margin-top: calc(var(--header-height) + 1.5rem);
+    }
+    h3 { margin-top: 1.6em; font-size: 1.2rem; }
+    p, ul, ol { margin-bottom: 0; }
+    ul, ol { padding-left: 1.3rem; }
+    li + li { margin-top: .4em; }
+    li::marker { color: $gold-600; }
+    img { height: auto; border-radius: $radius; }
+    blockquote {
+        margin-inline: 0;
+        padding: 1rem 1.25rem;
+        border-left: 4px solid $gold;
+        border-radius: 0 $radius-sm $radius-sm 0;
+        background: $gold-50;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+    th, td { padding: .6rem .75rem; border: 1px solid $border; }
+    td > *, th > * { margin: 0; }
+
+    // Blocks produced by the admin RichEditor
+    span.color { color: var(--color); }
+    .lead { color: $ink; }
+    pre {
+        overflow-x: auto;
+        padding: 1rem 1.25rem;
+        border-radius: $radius-sm;
+        background: $ink;
+        color: #fff;
+
+        code { color: inherit; }
+    }
+    details {
+        padding: .85rem 1.1rem;
+        border: 1px solid $border;
+        border-radius: $radius-sm;
+
+        summary { color: $ink; font-weight: 600; cursor: pointer; }
+        [data-type="detailsContent"] { margin-top: .75rem; }
+    }
+    .grid-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+    }
+    .grid-layout-col {
+        min-width: 0;
+
+        > * + * { margin-top: .75em; }
+    }
+    @each $breakpoint in sm, md, lg, xl, xxl {
+        // The editor calls Bootstrap's xxl "2xl".
+        $name: if($breakpoint == xxl, "2xl", "#{$breakpoint}");
+
+        @include media-breakpoint-up($breakpoint) {
+            .grid-layout[data-from-breakpoint="#{$name}"] {
+                grid-template-columns: var(--cols);
+
+                > .grid-layout-col { grid-column: var(--col-span); }
+            }
+        }
+    }
+    .grid-layout[data-from-breakpoint="default"] {
+        grid-template-columns: var(--cols);
+
+        > .grid-layout-col { grid-column: var(--col-span); }
+    }
+}
+
+.ad-banners {
+    display: grid;
+    gap: 1rem;
+
+    img { width: 100%; height: auto; border-radius: $radius; }
+}

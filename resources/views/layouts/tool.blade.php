@@ -1,5 +1,5 @@
 {{-- Free tool pages: site header and footer, breadcrumbs, then the tool itself. --}}
-@extends('layouts.site')
+@extends('layouts.master')
 
 @section('content')
     <div>

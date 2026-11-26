@@ -4,19 +4,19 @@ Giao diện public giữ thiết kế đã duyệt (màu vàng #ffac00, nâu đ�
 
 ## Cấu trúc
 
-- Layout: `resources/views/layouts/site.blade.php` (trang public), `layouts/tool.blade.php` (trang công cụ, kế thừa `site`), `layouts/basic.blade.php` (đăng nhập, lỗi 404/500/503, thanh toán).
+- Layout: `resources/views/layouts/master.blade.php` (trang public), `layouts/tool.blade.php` (trang công cụ, kế thừa `master`), `layouts/basic.blade.php` (đăng nhập, thanh toán). Trang lỗi 404/500/503 dùng `errors/layout.blade.php`.
 - Header, footer, nút liên hệ nổi, modal tư vấn/kiểm tra tên miền: `resources/views/site/partials/`.
 - Trang: `resources/views/site/`
-  - `home.blade.php`, `pages/{services,hosting,solutions,products,pricing,contact,about,agency}.blade.php`, `pages/legal/*.blade.php`
-  - `projects/`, `articles/`, `themes/`, `services/`, `operations/`, `tools/index.blade.php`
-  - `partials/`: lưới dịch vụ, dải hợp tác Agency, quy trình 5 bước, module mở rộng — dùng lại ở nhiều trang.
+  - `home.blade.php`, `pages/{hosting,solutions,products,pricing,contact,about,agency}.blade.php`, `pages/legal/*.blade.php`
+  - `projects/`, `articles/`, `themes/`, `services/` (`index` là trang `/dich-vu`), `operations/`, `tools/`
+  - `partials/`: header, footer, lưới dịch vụ, dải hợp tác Agency, quy trình 5 bước, module mở rộng — dùng lại ở nhiều trang.
 - Component: `resources/views/components/` (xem README).
 - CSS (Sass, mỗi layout nạp một file):
   - `resources/scss/_tokens.scss`: màu, bo góc, đổ bóng, font. Chỉ khai báo màu ở đây.
   - `resources/scss/_bootstrap.scss`: Bootstrap 5.3 cấu hình từ token (chỉ các phần đang dùng).
   - `resources/scss/_common.scss`: mixin `surface()` cho thẻ trắng, icon, khung tối `.panel-dark`.
-  - `resources/scss/site.scss` (layout `site`) gồm `site/_base`, `_layout`, `_components`, `_pages`.
-  - `resources/scss/basic.scss` (layout `basic`): trang lỗi, đăng nhập, thanh toán.
+  - `resources/scss/site.scss` (layout `master`) gồm `site/_base`, `_layout`, `_components`, `_content`, `_gallery`, rồi mỗi phần một file: `_articles`, `_policies`, `_themes`, `_projects`, `_tools`.
+  - `resources/scss/basic.scss` (layout `basic`): đăng nhập, thanh toán.
   - Landing page có CSS riêng trong `resources/css/landing/`.
 
 ## Nội dung nào sửa ở đâu

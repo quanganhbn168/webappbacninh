@@ -24,7 +24,7 @@ class PublicDesignSystemTest extends TestCase
 
     public function test_public_head_uses_vite_and_has_no_remote_or_filament_font_stylesheet(): void
     {
-        $head = (string) file_get_contents(dirname(__DIR__, 2).'/resources/views/layouts/site.blade.php');
+        $head = (string) file_get_contents(dirname(__DIR__, 2).'/resources/views/layouts/master.blade.php');
 
         $this->assertStringContainsString('resources/scss/site.scss', $head);
         $this->assertStringNotContainsString('frontend/assets/css/', $head);

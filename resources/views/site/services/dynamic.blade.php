@@ -1,4 +1,4 @@
-@extends('layouts.site')
+@extends('layouts.master')
 
 @section('content')
     <x-hero :eyebrow="$service->eyebrow" :title="$service->title" :lead="$service->highlight ?: $service->description" :image="$service->cover" :image-alt="$service->title">

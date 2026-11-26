@@ -1,4 +1,4 @@
-@extends('layouts.site')
+@extends('layouts.master')
 
 @section('content')
     <x-hero eyebrow="Nhóm dịch vụ" :title="$category->name" :lead="$category->description ?: 'Các dịch vụ được tổng hợp theo cùng một nhu cầu triển khai.'">

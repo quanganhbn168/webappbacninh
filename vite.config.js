@@ -19,6 +19,7 @@ export default defineConfig({
         'resources/js/landing/purehome.js',
         'resources/css/landing/freshair.css',
         'resources/js/landing/freshair.js',
+        ...pageScripts('resources/js/components'),
         ...pageScripts('resources/js/tools'),
         ...pageScripts('resources/js/payment'),
         ...pageScripts('resources/js/projects'),

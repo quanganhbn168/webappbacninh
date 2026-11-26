@@ -57,7 +57,7 @@ class ProjectManagementTest extends TestCase
             ->assertSee('Ẩm thực '.$suffix)
             ->assertSee('Lữ hành '.$suffix)
             ->assertSee('<span>Laravel</span>', false)
-            ->assertSee('data-project-gallery', false)
+            ->assertSee('data-gallery', false)
             ->assertSee('Tăng đơn đặt bàn')
             ->assertSee('Thực đơn');
 

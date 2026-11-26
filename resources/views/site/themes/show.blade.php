@@ -1,13 +1,4 @@
-@extends('layouts.site')
-
-@push('head')
-    <link rel="stylesheet" href="{{ asset('vendor/swiper/swiper-bundle.min.css') }}">
-@endpush
-
-@push('scripts')
-    <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}"></script>
-    @vite('resources/js/projects/gallery.js')
-@endpush
+@extends('layouts.master')
 
 @section('content')
     @php
@@ -66,32 +57,7 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="giao-dien" role="tabpanel" aria-labelledby="tab-giao-dien" tabindex="0">
-                            <div class="project-gallery theme-gallery" data-project-gallery>
-                                <div class="swiper project-gallery__main">
-                                    <div class="swiper-wrapper">
-                                        @foreach ($slides as $index => $slide)
-                                            {{-- Hovering scrolls through a tall screenshot. --}}
-                                            <div class="swiper-slide" tabindex="0">
-                                                <x-img :src="$slide" sizes="(min-width: 992px) 60vw, 100vw" alt="{{ $theme->name }}{{ $index ? ' - ảnh '.($index + 1) : '' }}" width="960" height="600" :loading="$index ? 'lazy' : null" :fetchpriority="$index ? null : 'high'" />
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                    @if (count($slides) > 1)
-                                        <button class="project-gallery__nav project-gallery__nav--prev" type="button" aria-label="Ảnh trước"><x-icon name="chevron-left" /></button>
-                                        <button class="project-gallery__nav project-gallery__nav--next" type="button" aria-label="Ảnh tiếp theo"><x-icon name="chevron-right" /></button>
-                                        <span class="project-gallery__counter"></span>
-                                    @endif
-                                </div>
-                                @if (count($slides) > 1)
-                                    <div class="swiper project-gallery__thumbs">
-                                        <div class="swiper-wrapper">
-                                            @foreach ($slides as $index => $slide)
-                                                <div class="swiper-slide"><button type="button" aria-label="Xem ảnh {{ $index + 1 }}"><img src="{{ $slide['thumb'] }}" alt="" width="120" height="80" loading="lazy"></button></div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
+                            <x-gallery :slides="$slides" :title="$theme->name" sizes="(min-width: 992px) 60vw, 100vw" width="960" height="600" scroll />
                         </div>
                         @isset($tabs['tinh-nang'])
                             <div class="tab-pane fade" id="tinh-nang" role="tabpanel" aria-labelledby="tab-tinh-nang" tabindex="0">

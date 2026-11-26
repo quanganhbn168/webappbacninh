@@ -1,4 +1,4 @@
-@extends('layouts.site')
+@extends('layouts.master')
 
 @section('content')
     <x-hero eyebrow="Kiến thức" :title="$category->name" :lead="$category->description" :image="$category->image ? app(\App\Domain\Media\Actions\BuildResponsiveImage::class)->execute($category->image, [480, 800, 1200]) : null" :image-alt="$category->name" class="page-hero--compact" />
@@ -14,7 +14,7 @@
                         <div class="col"><x-card.post :post="$post" heading="h2" /></div>
                     @endforeach
                 </div>
-                <div class="mt-5">{{ $posts->links('site.partials.pagination') }}</div>
+                <div class="mt-5">{{ $posts->links('site.articles._pagination') }}</div>
             @endif
         </div>
     </section>

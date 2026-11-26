@@ -7,10 +7,13 @@ use App\Domain\Media\Actions\ResizeContentImages;
 use App\Filament\Pages\ManageSettings;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\Project;
+use App\Models\Template;
 use App\Models\User;
 use App\Settings\WebsiteSettings;
 use Awcodes\Curator\Models\Media;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -82,6 +85,38 @@ class ResponsiveImageTest extends TestCase
 
         $page->update(['banner_title' => null]);
         $this->get('/')->assertSee('<h1>'.e($page->title).'</h1>', false);
+    }
+
+    public function test_the_project_and_theme_galleries_show_their_pictures(): void
+    {
+        $media = [$this->media('png'), $this->media('jpg')];
+        $project = Project::query()->where('is_active', true)->firstOrFail();
+        $theme = Template::query()->active()->firstOrFail();
+
+        foreach ([route('projects.show', $project->slug) => $project, route('themes.show', $theme->slug) => $theme] as $address => $record) {
+            $record->update(['gallery' => collect($media)->pluck('id')->all()]);
+            $html = $this->get($address)->assertOk()->getContent();
+
+            // The main slides hold the picture directly; the thumbnails wrap theirs in a button.
+            preg_match_all('#<div class="swiper-slide"[^>]*>\s*<img [^>]*>#', $html, $slides);
+            $this->assertCount(2, $slides[0], $address);
+            $this->assertStringContainsString('fetchpriority="high"', $slides[0][0]);
+            $this->assertStringNotContainsString('loading="lazy"', $slides[0][0]);
+            $this->assertStringContainsString('loading="lazy"', $slides[0][1]);
+            $this->assertStringNotContainsString('fetchpriority', $slides[0][1]);
+        }
+    }
+
+    /** A directive inside a component tag makes Blade print the tag instead of rendering it. */
+    public function test_no_public_page_sends_an_unrendered_component_to_the_browser(): void
+    {
+        Cache::forget('sitemap:v5');
+        preg_match_all('#<loc>([^<]+)</loc>#', $this->get('/sitemap.xml')->assertOk()->getContent(), $addresses);
+        $this->assertNotEmpty($addresses[1]);
+
+        foreach ($addresses[1] as $address) {
+            $this->assertStringNotContainsString('<x-', $this->get($address)->assertOk()->getContent(), $address);
+        }
     }
 
     private function media(string $extension): Media

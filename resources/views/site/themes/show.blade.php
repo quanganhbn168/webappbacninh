@@ -72,7 +72,7 @@
                                         @foreach ($slides as $index => $slide)
                                             {{-- Hovering scrolls through a tall screenshot. --}}
                                             <div class="swiper-slide" tabindex="0">
-                                                <x-img :src="$slide" sizes="(min-width: 992px) 60vw, 100vw" alt="{{ $theme->name }}{{ $index ? ' - ảnh '.($index + 1) : '' }}" width="960" height="600" @if ($index) loading="lazy" @else fetchpriority="high" @endif />
+                                                <x-img :src="$slide" sizes="(min-width: 992px) 60vw, 100vw" alt="{{ $theme->name }}{{ $index ? ' - ảnh '.($index + 1) : '' }}" width="960" height="600" :loading="$index ? 'lazy' : null" :fetchpriority="$index ? null : 'high'" />
                                             </div>
                                         @endforeach
                                     </div>

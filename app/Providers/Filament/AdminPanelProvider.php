@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Domain\Site\Actions\ResolveFaviconAssets;
+use App\Filament\Auth\EditProfile;
 use App\Filament\NavigationGroup;
 use Awcodes\Curator\CuratorPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -36,6 +37,7 @@ class AdminPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->authGuard('admin')
             ->login()
+            ->profile(EditProfile::class, isSimple: false)
             ->favicon(function (): string {
                 $assets = app(ResolveFaviconAssets::class)->execute();
 

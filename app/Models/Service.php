@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ServiceSection;
 use App\Traits\HasCoverImage;
+use App\Traits\HasFaqs;
 use App\Traits\HasServiceContent;
 use App\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +16,7 @@ use Illuminate\Support\Str;
 
 class Service extends Model
 {
-    use HasCoverImage;
+    use HasCoverImage, HasFaqs;
     use HasFactory;
     use HasServiceContent;
     use HasSlug;

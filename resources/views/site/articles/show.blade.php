@@ -29,8 +29,8 @@
                 @if ($article->featuredMedia)
                     <x-img :src="$article->cover" sizes="(min-width: 1400px) 896px, (min-width: 1200px) 764px, (min-width: 992px) 600px, 100vw" class="article-cover" :alt="$article->title" width="960" height="540" fetchpriority="high" />
                 @endif
-                @if ($article->intro)
-                    <p class="article-intro">{{ $article->intro }}</p>
+                @if ($article->summary)
+                    <p class="article-intro">{{ $article->summary }}</p>
                 @endif
 
                 @if ($contents !== [])

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Filament\Forms\FaqEditor;
 use App\Filament\Forms\FullRichEditor;
 use App\Filament\Forms\PermalinkInput;
 use App\Filament\Forms\SeoTitleInput;
@@ -9,7 +10,6 @@ use App\Models\Post;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -42,18 +42,12 @@ class PostForm
                         PermalinkInput::make('slug')->prefix(url('/').'/')
                             ->afterStateUpdated(fn (Set $set) => $set('slug_manually_edited', true)),
                         Textarea::make('summary')->label('Mô tả ngắn')->rows(4)
-                            ->helperText('Hiện trên thẻ bài viết và kết quả tìm kiếm.'),
-                        Textarea::make('data.intro')->label('Đoạn mở bài')->rows(3)
-                            ->helperText('Hiện in đậm ở đầu bài viết. Bỏ trống: dùng mô tả ngắn.'),
+                            ->helperText('Hiện ở đầu bài, trên thẻ bài viết và kết quả tìm kiếm.'),
                         FullRichEditor::make('content')->label('Nội dung')->required()
                             ->helperText('Thời gian đọc được ước tính tự động từ nội dung bài viết.'),
                     ])->columns(1),
                     Section::make('Câu hỏi thường gặp')->description('Hiện thành một mục riêng ở cuối bài.')->schema([
-                        Repeater::make('faqs')->hiddenLabel()->schema([
-                            TextInput::make('q')->label('Câu hỏi')->required()->maxLength(255),
-                            Textarea::make('a')->label('Trả lời')->required()->rows(3)->maxLength(2000),
-                        ])->itemLabel(fn (array $state): ?string => $state['q'] ?? null)
-                            ->collapsible()->reorderable()->addActionLabel('Thêm câu hỏi')->defaultItems(0),
+                        FaqEditor::make('faqs')->hiddenLabel(),
                     ])->collapsible(),
                     Section::make('SEO')->schema([
                         TextInput::make('data.focus_keyword')->label('Từ khóa chính')->maxLength(100)

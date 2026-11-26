@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\Posts\Pages;
 
+use App\Domain\Content\Faqs;
 use App\Domain\Content\ResolveUniqueSlug;
 use App\Domain\Seo\AnalyzePost;
 use App\Domain\Seo\StoreSeoScore;
+use App\Filament\Forms\FaqEditor;
 use App\Models\Post;
 use Awcodes\Curator\Components\Forms\RichEditor\AttachCuratorMediaPlugin;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
@@ -48,7 +50,7 @@ trait AnalyzesSeo
         $post->forceFill([
             ...Arr::only($state, ['title', 'summary', 'meta_title', 'meta_description', 'category_id', 'is_published', 'published_at']),
             'content' => (string) $content,
-            'faqs' => array_values($state['faqs'] ?? []),
+            'faqs' => Faqs::parse(FaqEditor::htmlOf($state['faqs'] ?? ''))['items'],
             'data' => array_merge($record?->data ?? [], $state['data'] ?? []),
             // The media picker holds the chosen picture as a list with its details.
             'featured_media_id' => data_get(Arr::first(Arr::wrap($state['featured_media_id'] ?? [])), 'id'),

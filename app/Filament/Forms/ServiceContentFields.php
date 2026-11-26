@@ -35,16 +35,9 @@ final class ServiceContentFields
             ->addActionLabel('Thêm thẻ');
     }
 
-    public static function faqs(): Repeater
+    public static function faqs(): FaqEditor
     {
-        return Repeater::make('faqs')->label('Câu hỏi thường gặp')
-            ->schema([
-                TextInput::make('q')->label('Câu hỏi')->required()->maxLength(255),
-                Textarea::make('a')->label('Trả lời')->required()->rows(3),
-            ])
-            ->collapsible()->reorderable()->defaultItems(0)
-            ->itemLabel(fn (array $state): ?string => $state['q'] ?? null)
-            ->addActionLabel('Thêm câu hỏi');
+        return FaqEditor::make('faqs');
     }
 
     public static function process(): Repeater

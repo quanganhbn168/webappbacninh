@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TemplateCategories;
 
+use App\Filament\Forms\FaqEditor;
 use App\Filament\Forms\SeoTitleInput;
 use App\Filament\NavigationGroup;
 use App\Filament\Resources\TemplateCategories\Pages\ManageTemplateCategories;
@@ -12,7 +13,6 @@ use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -60,11 +60,7 @@ class TemplateCategoryResource extends Resource
                     ->plugins([AttachCuratorMediaPlugin::make()])
                     ->disableToolbarButtons(['attachFiles'])
                     ->enableToolbarButtons(['attachCuratorMedia']),
-                Repeater::make('faqs')->label('Câu hỏi thường gặp')->schema([
-                    TextInput::make('q')->label('Câu hỏi')->required()->maxLength(255),
-                    Textarea::make('a')->label('Trả lời')->required()->rows(3)->maxLength(2000),
-                ])->itemLabel(fn (array $state): ?string => $state['q'] ?? null)
-                    ->collapsible()->collapsed()->reorderable()->addActionLabel('Thêm câu hỏi')->defaultItems(0),
+                FaqEditor::make('faqs'),
                 CuratorPicker::make('banner_image_id')->label('Ảnh đầu trang')->constrained()
                     ->helperText('Không bắt buộc. Tỷ lệ 4:3.'),
             ])->columns(1),

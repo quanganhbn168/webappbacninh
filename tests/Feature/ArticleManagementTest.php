@@ -71,7 +71,7 @@ class ArticleManagementTest extends TestCase
         $this->get($post->url)->assertOk()->assertDontSee('data-toc', false)->assertDontSee('FAQPage', false);
     }
 
-    public function test_article_lead_falls_back_to_the_short_description_and_shows_date_and_reading_time(): void
+    public function test_article_leads_with_the_short_description_and_shows_date_and_reading_time(): void
     {
         $post = Post::create(['title' => 'Bài '.Str::random(10), 'summary' => 'Mô tả ngắn làm đoạn mở bài', 'content' => '<p>Test</p>', 'is_published' => true, 'published_at' => now()->subMinute()]);
 
@@ -81,22 +81,19 @@ class ArticleManagementTest extends TestCase
             // Without a picture of its own the article starts with its text, not a placeholder.
             ->assertDontSee('article-cover', false);
 
-        $post->update(['data' => ['intro' => 'Đoạn mở bài riêng'], 'featured_media_id' => Media::query()->firstOrFail()->id]);
-        $this->get($post->url)->assertOk()
-            ->assertSee('<p class="article-intro">Đoạn mở bài riêng</p>', false)
-            ->assertSee('article-cover', false);
+        $post->update(['featured_media_id' => Media::query()->firstOrFail()->id]);
+        $this->get($post->url)->assertOk()->assertSee('article-cover', false);
     }
 
-    public function test_admin_edits_the_lead_without_losing_other_extra_data(): void
+    public function test_saving_in_the_admin_keeps_extra_data_the_form_does_not_edit(): void
     {
-        $post = Post::create(['title' => 'Bài '.Str::random(10), 'content' => '<p>Test</p>', 'data' => ['intro' => 'Cũ', 'seo' => ['robots' => 'noindex']]]);
+        $post = Post::create(['title' => 'Bài '.Str::random(10), 'content' => '<p>Test</p>', 'data' => ['seo' => ['robots' => 'noindex']]]);
 
         Livewire::actingAs($this->admin(), 'admin')->test(EditPost::class, ['record' => $post->id])
-            ->assertSchemaStateSet(['data.intro' => 'Cũ'])
-            ->fillForm(['data.intro' => 'Mới'])
+            ->fillForm(['data.focus_keyword' => 'Mới'])
             ->call('save')->assertHasNoFormErrors();
 
-        $this->assertSame('Mới', $post->fresh()->data['intro']);
+        $this->assertSame('Mới', $post->fresh()->data['focus_keyword']);
         $this->assertSame(['robots' => 'noindex'], $post->fresh()->data['seo']);
     }
 

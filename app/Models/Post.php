@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Domain\Content\EstimateReadingTime;
+use App\Domain\Content\Faqs;
 use App\Domain\Media\Actions\ResizeContentImages;
 use App\Traits\HasCoverImage;
 use App\Traits\HasFaqs;
@@ -91,12 +92,6 @@ class Post extends Model
     protected function excerpt(): Attribute
     {
         return Attribute::get(fn (): string => (string) $this->summary);
-    }
-
-    /** The lead paragraph of the article page; the short description stands in when it is left empty. */
-    protected function intro(): Attribute
-    {
-        return Attribute::get(fn (): string => trim((string) data_get($this->data, 'intro')) ?: (string) $this->summary);
     }
 
     protected function imageUrl(): Attribute
@@ -195,17 +190,16 @@ class Post extends Model
 
     private function readableTextChanged(): bool
     {
-        $read = fn (mixed $title, mixed $summary, mixed $content, mixed $faqs, mixed $data): array => [
+        $read = fn (mixed $title, mixed $summary, mixed $content, mixed $faqs): array => [
             (string) $title,
             (string) $summary,
             // Markup alone does not count: the editor rewrites it when it first saves a text.
             preg_replace('/\s+/u', '', html_entity_decode(strip_tags((string) $content, '<img>'), ENT_QUOTES | ENT_HTML5, 'UTF-8')),
-            array_values($faqs ?? []),
-            (string) data_get($data, 'intro'),
+            array_map(fn (array $faq): array => [(string) ($faq['q'] ?? ''), Faqs::plain((string) ($faq['a'] ?? ''))], array_values($faqs ?? [])),
         ];
 
-        return $read($this->title, $this->summary, $this->content, $this->faqs, $this->data)
-            != $read(...array_map(fn (string $key): mixed => $this->getOriginal($key), ['title', 'summary', 'content', 'faqs', 'data']));
+        return $read($this->title, $this->summary, $this->content, $this->faqs)
+            != $read(...array_map(fn (string $key): mixed => $this->getOriginal($key), ['title', 'summary', 'content', 'faqs']));
     }
 
     /** The date of the latest version: the update after publishing, else the publication itself. */

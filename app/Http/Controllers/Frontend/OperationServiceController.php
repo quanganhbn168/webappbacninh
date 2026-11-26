@@ -35,7 +35,7 @@ class OperationServiceController extends FrontendController
             'ogImage' => $service->image_url,
             'schemaType' => 'Service',
             'schemaData' => ['serviceType' => $service->title],
-            'schemaFaqs' => $service->faqs ?? [],
+            'schemaFaqs' => $service->faqItems(),
             'breadcrumbs' => [
                 ['name' => 'Trang chủ', 'url' => route('home')],
                 ['name' => 'Dịch vụ vận hành', 'url' => route('operations.index')],

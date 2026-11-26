@@ -21,7 +21,7 @@ class ServiceManagementTest extends TestCase
 
         Livewire::actingAs($this->admin(), 'admin')->test(EditService::class, ['record' => $service->getRouteKey()])
             ->fillForm([
-                'faqs' => [['q' => 'Câu hỏi kiểm thử?', 'a' => 'Câu trả lời kiểm thử.']],
+                'faqs' => '<p>Câu hỏi kiểm thử?</p><p>Câu trả lời kiểm thử.</p>',
             ])
             ->call('save')
             ->assertHasNoFormErrors();

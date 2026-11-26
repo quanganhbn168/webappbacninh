@@ -27,17 +27,18 @@ The script stops on the first failed command and reports its line. It puts the s
 
 PHP must be able to write to `storage` and `bootstrap/cache`. When the script runs as root it hands both to the web user, `www` by default (override with `WEB_USER=www-data bash deploy.sh`). After running any other `artisan` command as root, restore ownership yourself: `chown -R www: storage bootstrap/cache`.
 
-## Rebuild the database from scratch
+## Database
 
-Only when the database may be thrown away: **everything in it is deleted** (contact requests, orders, accounts and anything typed in the admin) and rebuilt from the seeders.
+The live database holds real content. A schema change is a new migration, which `deploy.sh` applies; the script never rebuilds or empties the database.
+
+Only on a new server with an **empty** database, once:
 
 ```bash
-git pull --ff-only
-FRESH=1 bash deploy.sh
+php artisan db:seed --force
 php artisan app:setup-admin --email=<admin email>
 ```
 
-`FRESH=1` runs `migrate:fresh --seed` instead of `migrate` and removes the old `storage/app/public/blog` upload folder. Pull first, so the script that runs is already the new one. `app:setup-admin` asks for the password (leave it empty to have one generated and shown once). With `APP_ENV=production` the seeders also add the Google Analytics tag.
+`app:setup-admin` asks for the password (leave it empty to have one generated and shown once). With `APP_ENV=production` the seeders also add the Google Analytics tag.
 
 ## One-time server setup
 

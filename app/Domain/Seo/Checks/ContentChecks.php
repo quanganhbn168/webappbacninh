@@ -70,7 +70,6 @@ class ContentChecks implements SeoChecks
             SeoCheck::tip('paragraph_length', $longParagraphs === 0, 'Các đoạn văn vừa mắt.', $longParagraphs.' đoạn dài hơn 120 chữ: tách nhỏ cho dễ đọc trên điện thoại.'),
             SeoCheck::tip('sentence_length', $longSentences <= 25, 'Câu văn gọn.', $longSentences.'% số câu dài hơn 35 chữ: ngắt câu cho ngắn lại.'),
             SeoCheck::tip('lists', ! $long || $page->body('//*[self::ul or self::ol or self::table]') !== [], 'Người đọc lướt được ý chính.', 'Thêm danh sách hoặc bảng để người đọc lướt được ý chính.'),
-            SeoCheck::tip('intro', filled($context->post->intro), 'Có đoạn mở bài.', 'Chưa có đoạn mở bài.'),
         ];
     }
 

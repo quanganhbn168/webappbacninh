@@ -83,7 +83,7 @@
         </section>
     @endif
 
-    @if ($service->faqs)
+    @if ($service->faqItems())
         <section class="section">
             <div class="container">
                 <div class="row g-4 g-lg-5">
@@ -92,7 +92,7 @@
                         <h2>Làm rõ trước khi triển khai</h2>
                         <button class="btn btn-outline-primary mt-3" type="button" data-bs-toggle="modal" data-bs-target="#consult-modal">Gửi câu hỏi khác</button>
                     </div>
-                    <div class="col-lg-7"><x-faq :items="$service->faqs" :columns="1" /></div>
+                    <div class="col-lg-7"><x-faq :items="$service->faqItems()" :columns="1" /></div>
                 </div>
             </div>
         </section>

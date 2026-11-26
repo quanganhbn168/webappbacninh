@@ -461,6 +461,10 @@
     padding: 0 1.25rem 1.2rem;
     color: $muted;
     line-height: 1.6;
+    overflow-wrap: anywhere;
+
+    > :last-child { margin-bottom: 0; }
+    a { color: $gold-800; text-decoration: underline; }
 }
 
 // Comparison table

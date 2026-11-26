@@ -32,6 +32,7 @@ class LinkChecks implements SeoChecks
     public function run(SeoContext $context): array
     {
         $links = collect($context->page->body('//a[@href]'))
+            ->concat($context->page->elements('//div[@class="faq__answer"]//a[@href]'))
             ->map(fn (DOMElement $node): array => ['href' => trim($node->getAttribute('href')), 'text' => SeoText::normalize($node->textContent), 'image' => $node->getElementsByTagName('img')->length > 0])
             ->reject(fn (array $link): bool => preg_match('/^(mailto:|tel:|javascript:)/i', $link['href']) === 1);
         $web = $links->reject(fn (array $link): bool => str_starts_with($link['href'], '#'));

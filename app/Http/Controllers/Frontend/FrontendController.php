@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Domain\Content\AppendSiteName;
+use App\Domain\Content\Faqs;
 use App\Domain\Pages\SitePages;
 use App\Domain\Site\Actions\ResolveSocialChannels;
 use App\Domain\Tools\ToolPages;
@@ -218,7 +219,7 @@ abstract class FrontendController extends Controller
             return [
                 '@type' => 'Question',
                 'name' => $faq['q'],
-                'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq['a']],
+                'acceptedAnswer' => ['@type' => 'Answer', 'text' => Faqs::plain($faq['a'])],
             ];
         })->values()->all();
         if ($faqItems !== []) {

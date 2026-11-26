@@ -51,7 +51,7 @@ class ServiceController extends FrontendController
             'ogImage' => $landing->image_url,
             'schemaType' => 'Service',
             'schemaData' => ['serviceType' => $landing->title],
-            'schemaFaqs' => $landing->faqs ?? [],
+            'schemaFaqs' => $landing->faqItems(),
             'breadcrumbs' => [
                 ['name' => 'Trang chủ', 'url' => route('home')],
                 $section->parent(),

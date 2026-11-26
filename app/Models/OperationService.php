@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Traits\HasCoverImage;
+use App\Traits\HasFaqs;
 use App\Traits\HasServiceContent;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class OperationService extends Model
 {
-    use HasCoverImage;
+    use HasCoverImage, HasFaqs;
     use HasServiceContent;
 
     protected $fillable = [

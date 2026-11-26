@@ -53,7 +53,8 @@ Enable gzip or Brotli for `text/css`, `application/javascript`, `image/svg+xml` 
 ```nginx
 gzip on;
 gzip_types text/css application/javascript image/svg+xml application/json;
-location /build/ { expires 1y; add_header Cache-Control "public, immutable"; }
+# ^~ so a panel's own "location ~ .*\.(js|css)$" rule (aaPanel: 12 hours) does not win.
+location ^~ /build/ { expires 1y; add_header Cache-Control "public, immutable"; }
 ```
 
 During maintenance mode the branded page `resources/views/errors/503.blade.php` is pre-rendered by `php artisan down --render`.
